@@ -1,0 +1,103 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body id="root">
+    <div class="OpenContainer" style="padding-top:30px">
+        <form class="layui-form" action="" onsubmit="return false">
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:120px">角色名称：</label>
+                <div class="layui-input-inline" style="width:300px">
+                    <input type="text" name="title" v-model="queryFormData.Name" lay-verify="required" placeholder="角色名最长10个中文字符"
+                           autofocus="autofocus" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item layui-hide">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit @click="formDemo">立即提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="/Resources/js/Controls/Common.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate"],
+        function (fnr) {
+            var laydate = layui.laydate;
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+
+            window.rootApp = new Vue({
+                el: "#root",
+                data: {
+                    queryFormData: {
+                        Name: '', //名称
+                        Stationproxy_ID: 0 //渠道id
+                    },
+                    _roleId: 0,
+                },
+                ready: function () {
+                    _this = this;
+                    _this._roleId = fnr.getQueryString("ID");
+                    _this.queryFormData.Stationproxy_ID = fnr.getQueryString("Stationproxy_ID");
+                    //请求接口填充数据
+                    if (_this._roleId) {
+                        $.get("/service/hr/Role/GetRoleByRoleID", { RoleID: _this._roleId }, function (rsp) {
+                            if (rsp.SuccessResponse) {
+                                _this.queryFormData.Name = rsp.Data.Name;
+                                _this.queryFormData.Stationproxy_ID = rsp.Data.Stationproxy_ID;
+                            } else {
+                                layer.msg(rsp.Message)
+                            }
+                        });
+                    }
+                },
+                methods: {
+                    //保存数据关闭弹窗
+                    formDemo: function (e) {
+                        _this = this;
+                        if (!layui.form.checkInput(e)) {
+                            return false;
+                        }
+
+                        if (_this.queryFormData.Name.length > 10) {
+                            layer.msg("角色名最长10个中文字符！")
+                            return false;
+                        }
+
+                        if (_this._roleId) {
+                            $.post("/service/hr/Role/RoleUpdate", { ID: _this._roleId, Name: _this.queryFormData.Name }, function (rsp) {
+                                if (rsp.SuccessResponse) {
+                                    fnr.callDialog('refresh'); //回调打开窗口events中的refresh
+                                    fnr.closeDialog(); //关闭当前的对话框
+                                } else {
+                                    layer.msg(rsp.Message)
+                                }
+                            })
+                            return false;
+                        } else {
+                            $.post("/service/hr/Role/RoleInsert", _this.queryFormData, function (rsp) {
+                                if (rsp.SuccessResponse) {
+                                    fnr.callDialog('refresh'); //回调打开窗口events中的refresh
+                                    fnr.closeDialog(); //关闭当前的对话框
+                                } else {
+                                    layer.msg(rsp.Message)
+                                }
+                            })
+                            return false;
+                        }
+                    },
+                }
+            });
+        });
+</script>

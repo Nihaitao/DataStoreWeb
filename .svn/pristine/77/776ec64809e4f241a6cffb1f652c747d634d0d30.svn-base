@@ -1,0 +1,168 @@
+﻿666 -->
+
+<link href="/Resources/CSS/usercenter.css" rel="stylesheet" />
+
+<div id="userbkdetail">
+    <div class="layui-form content">
+        <div class="layui-form-item-bk" v-for="(index,item) in childs">
+            <label class="my-label" v-if="item.FieldName!='Remark'">{{item.ShowName}}</label>
+            <div class="layui-input-inline bk-input " v-if="item.FieldName!='Remark'">
+                <div class="text_tip layui-form-mid">{{item.Value_Name}}</div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <p class="reg_tips" style="margin-bottom: 10px;"><label>温馨提示:请仔细查看自己的报考信息,如无误请点击"</label><i class="iconfont icon-wodeshuji-gou" style="color:#5fb878;"></i><span style="color:#5fb878;">确认无误</span><label>",如不正确请点击"</label><i class="iconfont icon-youyiyi" style="color:#ff0000;"></i><span style="color:#ff0000;">有异议</span>,确认完毕显示"已确认".</p>
+        <div class="footer" v-if="objection.Valid == '1'">已确认<i class="iconfont icon-wodeshuji-gou" style="color:#5fb878;"></i></div>
+        <div class="footer" v-if="objection.Valid == '0'">
+            <i class="iconfont icon-wodeshuji-gou" style="color:#5fb878;"></i><span style="color:#5fb878;cursor:pointer;font-size:14px;" href="#" @click="comfirmObjection">确认无误</span>
+            <i class="iconfont icon-youyiyi" style="color:#ff0000;"></i><span style="color:#ff0000;cursor:pointer;font-size:14px;" href="#" @click="showShadow">有异议</span>
+        </div>
+        <div class="footer" v-if="objection.Valid == '3'||objection.Valid == '2'">
+            已提交,处理中...<span></span>
+            <div style="font-size:14px;">
+                <i class="iconfont icon-kechengguanli" style="color:#FFB800;cursor:pointer;" @click="objMsgList"></i><span style="color:#FFB800;cursor:pointer;font-size:14px;" @click="objMsgList">查看</span>
+                <i class="iconfont icon-wodeshuji-gou" style="color:#5fb878;cursor:pointer;"></i><span style="color:#5fb878;cursor:pointer;font-size:14px;" href="#" @click="comfirmObjection">确认无误</span>
+            </div>
+        </div>
+    </div>
+    <div id="shadow2" style="display:none;">
+        <div class="layui-form-item layui-form-text">
+            <div class="layui-input-inline ta_cls" style="width: 100%;padding: 10px;">
+                <textarea name="desc" placeholder="请在输入框提出你的异议吧" v-model="objcontent" style="height:185px;resize: none;" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <p href="#" class="layui-btn layui-btn-danger layui-btn-small subp" style="background-color:#ff0000;position: relative;bottom: 80px;" @click="subObjection">提交</p>
+    </div>
+</div>
+<script>
+    require_js_file(['table', 'tree', 'form', 'jquery', 'tableExt', "customUtil", 'laydate'],
+    function (fnr) {
+        var table = layui.table;
+        var form = layui.form;
+        var laydate = layui.laydate;
+        var tableExt = layui.tableExt;
+        var $ = layui.$;
+        window.rootApp = new Vue({
+            el: '#userbkdetail',
+            data: {
+                childs: [],
+                showFlag: true,
+                objection: {
+                    Valid: "",
+                    ID: "",
+                },
+                objcontent: ""
+            },
+            ready: function () {
+                this.getRegMsg();
+                this.getObjection();
+            },
+            methods: {
+                //拿到报考信息
+                getRegMsg: function () {
+                    var _this = this;
+                    $.ajax({
+                        url: '/service/edu/StudentinfoDetail/GetStudentRegDetailSet',
+                        success: function (res) {
+                            if (res.SuccessResponse) {
+                                if (res.Data) {
+                                    _this.childs = res.Data[0].Childs;
+
+                                }
+                            } else {
+                                _this.showFlag = false;
+                                layer.msg(res.Message)
+
+                            }
+                        }
+                    })
+
+                },
+                //获取是否有异议
+                getObjection: function () {
+                    var _this = this;
+                    $.ajax({
+                        url: '/service/edu/Confirm/GetConfirmStudesList',
+                        data: { isID: 1 },
+                        success: function (res) {
+                            if (res.SuccessResponse) {
+                                if (res.Data) {
+                                    console.log(res)
+                                    // 0未确认 1确认无误 2有异议 3 处理中
+                                    var objection = res.Data;
+                                    _this.objection = objection;
+                                }
+                            }
+                        }
+                    })
+                },
+                //弹出异议弹框
+                showShadow: function () {
+                    layer.open({
+                        type: 1,
+                        title: false,
+                        resize: false,
+                        area: ['420px', '240px'], //宽高
+                        content: $('#shadow2')
+                    });
+
+                },
+                //提交异议
+                subObjection: function () {
+                    var val = this.objcontent;
+                    var objection = this.objection;
+                    if (val == "") {
+                        layer.msg("异议内容不能为空喔！");
+                        return false;
+                    }
+                    var _this = this;
+                    if ($("p.subp").hasClass("layui-disabled")) {
+
+                        return false;
+                    }
+                    $("p.subp").addClass("layui-disabled")
+                    $.ajax({
+                        url: '/service/edu/Confirm/GetConfirmhfStudateList',
+                        data: { ObjectionContent: val, ID: objection.ID, Valid: objection.Valid },
+                        type: "post",
+                        success: function (res) {
+                            if (res.SuccessResponse) {
+                                _this.getObjection();//提交异议成功后,重新加载学生信息
+                                _this.objcontent = "";
+                                $("p.subp").removeClass("layui-disabled");
+                                $("#shadow2").hide();
+                                layer.closeAll();
+                            } else {
+                                $("p.subp").removeClass("layui-disabled");
+                                layer.msg(res.Message)
+                            }
+                        }
+                    })
+                },
+                objMsgList: function () {
+                    var _this = this;
+                    location.href = "ObjectionMsgLst.shtml?ID=" + _this.objection.ID + "&Valid=" + _this.objection.Valid;
+                },
+                comfirmObjection: function () {
+                    var _this = this;
+                    $.ajax({
+                        url: '/service/edu/Confirm/GetConfirmhfStudatehf',
+                        data: { ID: _this.objection.ID },
+                        type: "POST",
+                        success: function (res) {
+                            if (res.SuccessResponse) {
+                                if (fnr.getQueryString('url')) {
+                                    location.href = fnr.getQueryString('url');
+                                } else {
+                                    location.href = "accountsettings.shtml";
+                                }
+
+                            }
+                        }
+                    })
+                },
+            }
+        });
+    });
+</script>

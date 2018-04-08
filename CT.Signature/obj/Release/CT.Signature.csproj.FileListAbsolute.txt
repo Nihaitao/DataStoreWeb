@@ -1,0 +1,10 @@
+D:\project\dotnet\CT.Signature\CT.Signature\bin\Release\CT.Signature.dll
+D:\project\dotnet\CT.Signature\CT.Signature\bin\Release\CT.Signature.pdb
+D:\project\dotnet\CT.Signature\CT.Signature\obj\Release\CT.Signature.csproj.CoreCompileInputs.cache
+D:\project\dotnet\CT.Signature\CT.Signature\obj\Release\CT.Signature.dll
+D:\project\dotnet\CT.Signature\CT.Signature\obj\Release\CT.Signature.pdb
+D:\公司项目20170207\SmartSchool 5.0\CT.Signature\bin\Release\CT.Signature.dll
+D:\公司项目20170207\SmartSchool 5.0\CT.Signature\bin\Release\CT.Signature.pdb
+D:\公司项目20170207\SmartSchool 5.0\CT.Signature\obj\Release\CT.Signature.csprojResolveAssemblyReference.cache
+D:\公司项目20170207\SmartSchool 5.0\CT.Signature\obj\Release\CT.Signature.dll
+D:\公司项目20170207\SmartSchool 5.0\CT.Signature\obj\Release\CT.Signature.pdb

@@ -1,0 +1,198 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>订单支付</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link rel="shortcut icon" href="" type="image/x-icon" class="favIcon" />
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <script src="/script/jquery.js"></script>
+    <script src="/Resources/js/headFootLayout.js"></script>
+    <script src="/Resources/js/bootstrap.min.js"></script>
+    <link href="/Resources/fonts/iconfont.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/Resources/CSS/Font/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/Resources/CSS/PC_css.css">
+    <link href="/Resources/CSS/video-js.css" rel="stylesheet" />
+    <link href="/Resources/CSS/question.css" rel="stylesheet" />
+
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body id="root" v-cloak style="background-color: #f7f7f7;user-select: none;">
+    <div class="totalContaier">
+        <!--顶部-->
+        <!--#<!--#include file="/PublicControl/topmenu.html"-->
+        <!--结算中心主体-->
+        <div class="jie--container">
+            <div class="container">
+                <div class="Ps-sectionBlock">
+                    <h4 style="color: #666;font-size: 14px ;margin-left: 20px">
+                        <span style="margin-right: 20px">下单时间：{{someOrderData.addTime}}</span>
+                        <span>订单编号: {{someOrderData.orderId}}</span>
+                        <div class="pull-right" style="margin-right: 20px">总金额 <span class="df1813 f30">￥</span><span class="df1813 f30" id="Price"></span><span class="df1813 f30">元</span></div>
+                    </h4>
+                    <div class="pay-way weixinPay clearfix" style="width:97%">
+                        <div class="pull-left" style="padding-left: 100px; padding-top: 20px;">
+                            <img src="" id="Img" style="width: 300px;" />
+                        </div>
+                        <div class="pull-left" style="text-align: center;">
+                            <img src="/Resources/images/justPhone.png" />
+                        </div>
+                    </div>
+                    <div hidden="hidden" id="zfb"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--footer-->
+    <!--#<!--#include file="/PublicControl/bottommenu.html"-->
+
+    <script>
+    require_js_file(["table", "form", "jquery", "tableExt"], function (fnr) {
+        //ele判断元素，clsClass名
+        function hasClass(ele, cls) {
+            return (new RegExp('(\\s|^)' + cls + '(\\s|$)')).test(ele.className);
+        }
+        function removeClass(ele, cls) {
+            if (hasClass(ele, cls)) {
+                var reg = new RegExp('(\\s|^)' + cls + '(\\s|$)');
+                ele.className = ele.className.replace(reg, ' ');
+            }
+        }
+        function addClass(ele, cls) {
+            if (!hasClass(ele, cls)) {
+                ele.className += ' ' + cls;
+            }
+        }
+        ///参数获取
+        function GetQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+        }
+
+        function delAllCookie() {
+            var myDate = new Date();
+            myDate.setTime(myDate.getTime() - 10000);//设置时间
+            var data = document.cookie;
+            var dataArray = data.split("; ");
+            for (var i = 0; i < dataArray.length; i++) {
+                var varName = dataArray[i].split("=");
+                document.cookie = varName[0] + "=''; expires=" + myDate.toGMTString();
+            }
+        }
+
+        var setTime;
+
+        window.rootApp = new Vue({
+            el: '#root',
+            data: {
+                loginState: false,
+                headPhoto: '',
+                msg: '',
+                someOrderData: {
+                    orderId: '',
+                    addTime: ''
+                },
+                layoutData: {}
+            },
+            ready: function () {
+                this.checkLogin();
+
+                if (GetQueryString("ID") != null && GetQueryString("ID") != "") {
+                    this.QueryOrder();
+                }
+
+                var contaierHeight = $('.totalContaier').height();
+                var windowScreenHeight = window.innerHeight;
+                if(contaierHeight < windowScreenHeight){
+                    $('.totalContaier').css('min-height', (windowScreenHeight - 160) + 'px');
+                }
+            },
+            methods: {
+                //退出
+                exit: function () {
+                    delAllCookie();
+                    location.href = '/usercenter/Login.shtml';
+                },
+
+                //查询stuID
+                checkLogin: function () {
+                    _this = this;
+                    var loginState = fnr.Cookie.get("StuId")
+                    if (!loginState && loginState != 'undefined') {
+                        layer.open({
+                            type: 2,
+                            area: ['400px', '550px'],
+                            fixed: false, //不固定
+                            maxmin: true,
+                            title: '欢迎登录',
+                            content: '/usercenter/login_model.html',
+                        });
+                    }
+                    else {
+                        _this.loginState = true;
+                    }
+                },
+
+                //获取支付信息
+                QueryOrder: function () {
+                    var self = this;
+                    if (self.loginState == true) {
+                        $.post("/service/pay/OnLinePay/QueryOrder", { ID: GetQueryString("ID") }, function (rsp) {
+                            if (rsp.SuccessResponse) {
+                                $("#Price").html(rsp.Data.Money);
+                                self.someOrderData.orderId = rsp.Data.OrderId;
+                                self.someOrderData.addTime = fnr.format(rsp.Data.AddTime, 'yyyy-MM-dd HH:mm');
+                                var padData = {};
+                                padData.ID = rsp.Data.ID;
+                                padData.OrderId = rsp.Data.OrderId;
+                                padData.System_Station_ID = rsp.Data.System_Station_ID;
+                                padData.PayType = GetQueryString("payType");
+                                $.post("/service/pay/OnLinePay/PayOrder", padData, function (rp) {
+                                    if (rp.SuccessResponse) {
+                                        if (padData.PayType == 1)//微信
+                                            $("#Img").attr("src", rp.Message);
+                                        else
+                                            $("#zfb").html(rp.Message);
+
+                                        setTime = setInterval(function () { self.intervalFn(self.someOrderData.orderId) }, 1000);
+                                    }
+                                    else {
+                                        layer.msg(rp.Message);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                },
+
+                //轮询
+                intervalFn: function (id) {
+                    $.get('/service/datastore/Order/GetOrderById', { orderId: GetQueryString("OrderId") }, function (res) {
+                        if (res.SuccessResponse) {
+                            if (res.Data.PayStatus == 1) {
+                                clearInterval(setTime);
+                                location.href = 'paysuccess.shtml?ID=' + GetQueryString("ID");
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    });
+    </script>
+</body>
+</html>
+

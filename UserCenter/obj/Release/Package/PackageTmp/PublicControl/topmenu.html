@@ -1,0 +1,156 @@
+﻿666 -->
+
+
+<style>
+    .bs-docs-nav {
+        background-color: #333;
+        margin-bottom: 0;
+    }
+
+    .nav > li:hover {
+        text-decoration: none;
+        background-color: #000;
+    }
+
+    .nav > li > a:focus, .nav > li > a:hover {
+        text-decoration: none;
+        background-color: inherit;
+    }
+
+    .navbar {
+        min-height: 45px;
+    }
+
+    .header-nav li {
+        padding: 5px 0;
+    }
+
+        .header-nav li > a {
+            padding: 0 10px !important;
+        }
+
+    [v-cloak] {
+        display: none;
+    }
+</style>
+<body id="root">
+    <div class="navbar navbar-static-top bs-docs-nav" id="top">
+        <div class="w1200">
+            <nav class="collapse navbar-collapse">
+                <ul class="nav navbar-nav header-nav">
+                    <li>
+                        <a href="">网校中心</a>
+                    </li>
+                    <li>
+                        <a href="">手机端</a>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right header-nav" v-cloak>
+                    <li v-if="!loginState"><a href="javascript:;" @click="LoginFn">登录</a></li>
+                    <li v-else><a href="javascript:;">{{HeaderName + ',欢迎你'}}</a></li>
+                    <li><a id="exit" href="javascript:;" @click="exit">退出</a></li>
+                    <li><a href="">客服中心</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <div class="masthead">
+        <div class="w1200 clearfix">
+            <div class="nav-header pull-left" @click="hrefIndex">
+                <a href="#"><img src="/usercenter/Resources/images/hd.png" /></a>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="/script/jquery.js"></script>
+<script src="/Resources/js/modules/vue/vue.min.js"></script>
+<script src="/script/layer/layer.js"></script>
+
+<script>
+    //读取COOKIE方法
+    function getCookie(name) {
+        var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+        if (arr = document.cookie.match(reg))
+            return unescape(arr[2]);
+        else
+            return null;
+    }
+    //退出，删除cookie
+    function delAllCookie() {
+        var myDate = new Date();
+        myDate.setTime(-1000);//设置时间
+        var data = document.cookie;
+        var dataArray = data.split("; ");
+        for (var i = 0; i < dataArray.length; i++) {
+            var varName = dataArray[i].split("=");
+            document.cookie = varName[0] + "=''; expires=" + myDate.toGMTString() + ";path=/";
+        }
+    }
+    var rootApp = new Vue({
+        el: '#root',
+        data: {
+            LoginPageConfig: '',
+            loginState: '',
+            HeaderName: '',   //头部学员姓名
+        },
+        ready: function () {
+            this.LoginPageFn();
+            this.loginState = getCookie("StuId");
+            if (this.loginState != '') {
+                this.GetStudentInfo();
+            }
+        },
+        methods: {
+            //退出
+            exit: function () {
+                delAllCookie();
+                location.href = '/usercenter/login.shtml';
+            },
+
+            //LOGO跳转首页
+            hrefIndex: function () {
+                location.href = '/index.html';
+            },
+
+            //获取学员信息
+            GetStudentInfo: function () {
+                var self = this;
+                $.get('/service/edu/Student/GetStudentInfo', function (res) {
+                    self.HeaderName = res.Data.student_model.Name;
+                });
+            },
+
+            //获取本站点学员设置的数据
+            LoginPageFn: function () {
+                var self = this;
+                $.get('/service/datastore/HConfiguration/GetConfiguration', function (res) {
+                    if (res.SuccessResponse) {
+                        self.LoginPageConfig = res.Data.LoginPageConfig;
+                    }
+                });
+            },
+            //登录
+            LoginFn: function () {
+                var self = this;
+                if (sessionStorage.getItem("thisUrl")) {
+                    sessionStorage.removeItem("thisUrl");
+                    sessionStorage.setItem("thisUrl", location.href);
+                } else {
+                    sessionStorage.setItem("thisUrl", location.href);
+                }
+                if (self.LoginPageConfig == 0) {
+                    layer.open({
+                        type: 2,
+                        area: ['400px', '550px'],
+                        fixed: false, //不固定
+                        maxmin: true,
+                        title: '欢迎登陆',
+                        content: '/usercenter/login_model.html',
+                    });
+                } else {
+                    location.href = '/usercenter/Login.shtml';
+                }
+            },
+        }
+    });
+</script>

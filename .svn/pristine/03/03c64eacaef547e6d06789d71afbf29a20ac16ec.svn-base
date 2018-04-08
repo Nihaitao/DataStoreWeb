@@ -1,0 +1,131 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">预约类型</label>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="AppointmentTypeSetting" layverify="required" v-bind:value.sync="submitForm.AppointmentType_ID"
+                                    initial="off"></remote-sel>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">提醒方式</label>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="remindSetting" layverify="required" v-bind:value.sync="submitForm.RemindType"
+                                    initial="off"></remote-sel>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">提醒时间</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="remindDate" id="remindDate" lay-verify="required" placeholder="选择日期" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">提醒内容</label>
+                <div class="layui-input-block">
+                    <textarea placeholder="请输入内容" class="layui-textarea" lay-verify="required" v-model="submitForm.Content"></textarea>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <button class="layui-btn layui-hide" lay-submit @click="submit">提交</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="/Resources/js/Controls/Common.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate"],
+    function (fnr) {
+        var laydate = layui.laydate;
+        var $ = layui.jquery;
+        var form = layui.form;
+        function trim(str) {
+            return str.replace(/(^\s*)|(\s*$)/g, "");
+        }
+        laydate.render({
+            elem: '#remindDate',
+            type: 'datetime',
+            min: 0,
+            max: 365,
+            done: function (value) {
+                rootApp.submitForm.Date = value;
+            }
+        });
+
+        var remindOptions =
+            [
+                { ID: 1, Description: '短信提醒' },
+                { ID: 2, Description: '冒泡提醒' },
+            ];
+
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+                AppointmentTypeSetting: {
+                    search: true,
+                    options: [],
+                    fields: { root: 'ReturnData.Data', key: 'ID', value: 'Description' },
+                    remote: { url: '/service/HDictionary/GetHDictionaryList', data: { Valid: 1, ColumnName: 'AppointmentType_ID' } }
+                },
+                remindSetting: {
+                    search: true,
+                    options: remindOptions,
+                    fields: { root: 'ReturnData.Data', key: 'ID', value: 'Description' }
+                },
+                chbSwitch: false,
+                submitForm: {
+                    BusID: '',
+                    BusType: '2',
+                    AppointmentType_ID: '',
+                    RemindType: "",
+                    Date: "",
+                    Content: "",
+                }
+            },
+            ready: function () {
+                this.submitForm.BusID = GetQueryString('ID');
+            },
+            methods: {
+                submit: function (e) {
+                    var self = this;
+                    self.submitForm.Content = trim(self.submitForm.Content);
+                    if (!layui.form.checkInput(e)) {
+                        return false;
+                    }
+                    $.ajax({
+                        url: '/service/Appointment/InsertAppointment',
+                        type: 'POST',
+                        data: self.submitForm,
+                        dataType: 'json',
+                        success: function (data) {
+                            fnr.callDialog('refresh', { status: data.SuccessResponse, msg: data.Message });
+                            if (data.SuccessResponse) {
+                                fnr.closeDialog();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    });
+</script>

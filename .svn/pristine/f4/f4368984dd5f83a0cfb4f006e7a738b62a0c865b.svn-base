@@ -1,0 +1,267 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心</title>
+    <script src="../Resources/js/jquery.js"></script>
+    <link rel="stylesheet" href="../Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../Resources/CSS/Font/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../Resources/CSS/PC_css.css">
+</head>
+<body style="background-color: #E8E8E8;">
+    <!--顶部-->
+    <div class="top_head">
+        <div class="container">
+            <div class="pull-left" style="margin-left: 15px">
+                <span>欢迎来到励弘在线</span>
+            </div>
+            <div class="pull-right Gcenter">
+                <a>
+                    <img src="../Resources/images/photo.png" alt="" width="30" height="30" style="border-radius: 50%">
+                    <i class="fa fa-angle-down" style="margin-left: 20px"></i>
+                </a>
+
+                <a href="#"><i class="fa fa-bell"></i></a>
+                <a href="#">客服中心</a>
+                <a id="exit">退出</a>
+            </div>
+        </div>
+    </div>
+    <!--logo and search-->
+    <div style="background: #fff" class="top_search">
+        <div class="container">
+            <a href="../index.html" class="pull-left">
+                <img src="../Resources/images/lhlogo.png" alt="" class="logo">
+            </a>
+            <div class="search pull-left">
+                <span class="TOP-selected">课程 <i class=" fa fa-angle-down" style="position: absolute;right: 10px;top: 0"></i></span>
+                <input type="text" class="search_input" placeholder="2017年10月考期自考报名时间">
+                <div class="gary">搜索</div>
+            </div>
+        </div>
+    </div>
+    <!--个人中心主体部分-->
+    <div class="Ps-advertisement">
+        <div class="container">
+            <img src="../Resources/images/addBanner.png" alt="404" width="100%" height="100%">
+        </div>
+    </div>
+    <div class="Ps-body">
+        <div class="container">
+            <div class="Ps-nav pull-left">
+                <ul>
+                    <li class="active"><a href="./index.html"><i class="fa fa-home"></i>首页 <span class="Ps-down-icon"></span></a>  </li>
+                    <li class=""><a href="./baseInfo.html"><i class="fa fa-user-circle"></i>基本资料 <span class="Ps-down-icon"></span></a>  </li>
+                    <li class=""><a href="/Center/Setting.html"><i class="fa fa-cog"></i>账户设置 <span class="Ps-down-icon"></span></a>  </li>
+                    <li class=""><a href="./myCourse.html"><i class="fa fa-book"></i>我的课程 <span class="Ps-down-icon"></span></a>  </li>
+                    <li class=""><a href="./Order.html"><i class="fa fa-jpy"></i>我的订单 <span class="Ps-down-icon"></span></a>  </li>
+                    <!--<li class=""><a href=""><i class="fa fa-question-circle"></i>我的问答 <span class="Ps-down-icon"></span></a>  </li>-->
+                    <!--<li class=""><a href=""><i class="fa fa-bell-o"></i>我的消息 <span class="Ps-down-icon"></span></a>  </li>-->
+                    <!--<li><a href=""><i class="fa fa-pencil-square-o"></i>我的评论   <span class="Ps-down-icon"></span></a>  </li>-->
+                </ul>
+            </div>
+            <div class="tab-content pull-right">
+                <!--首页-->
+                <div role="tabpanel" class="tab-pane active" id="Ps-index">
+                    <div class="Ps-section clearfix" id="Ps-section">
+                    </div>
+                    <div class="Ps-warmingInfo hide">
+                        <i class="fa fa-volume-up" style="color: #FC6409"></i>
+                        <span class="Ps-msg">
+                            2017年09月10日 19:30--21:00，《国际贸易与基础理论》直播 点击查看 &gt;&gt;
+                        </span>
+                    </div>
+                    <div class="Ps-sectionBlock">
+                        <h3 style="margin-right:25px;">我的课程 <a href="myCourse.html" class="look-more">查看更多&gt;&gt;</a></h3>
+                        <div id="MyCourse">
+
+                        </div>
+                    </div>
+                    <div class="Ps-sectionBlock">
+                        <h3>登录记录</h3>
+                        <div style="padding: 0 20px;color: #666">
+                            <p style="font-size: 12px">由于宽带运营商不定期调整网络，我们获取IP所在地址可能不准确，请通过登录时间判断是否是你本人操作</p>
+                            <p style="color: #e45e04">如确定非您本人登录，请您立即 <a style="color: #E23634" href="Setting.html">修改密码</a></p>
+                            <table class="Ps-index-table">
+                                <thead>
+                                    <tr>
+                                        <th>登录日期</th>
+                                        <th>登录时间</th>
+                                        <th>IP</th>
+                                        <th>登录方式</th>
+                                        <th>登录形式</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="loginRecord"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--footer-->
+    <div class="foot">
+        <ul class="clearfix info hide">
+            <li>eol简介</li>
+            <li>联系方式</li>
+            <li>招聘信息</li>
+            <li>京IC证140769号</li>
+            <li>京IC备12045350号</li>
+            <li>京IC网文[2014]2106-306号</li>
+            <li>京公网安备&nbsp;11010802020236号</li>
+        </ul>
+        <p class="copyright">Copyright @2017　励弘在线　湖南八方科技有限公司　版权所有　湘ICP备10201076号-1</p>
+    </div>
+    <script type="text/html" id="baseinfo">
+        <img src="{{Userinfo.HeadImg ? Userinfo.HeadImg : "../Resources/images/head.png"}}" a alt="" width="110" height="110" class="Ps-photo">
+        <div class="pull-left " style="margin-top: 10px">
+            <p><span class="Ps-index-name" style="margin-right: 5px;font-size: 16px;color: #333">{{Userinfo.Name}}</span><span>,欢迎你！！</span></p>
+            <p><span class="">学习时长：</span><span class="Ps-index-time">3天18小时23分钟</span></p>
+        </div>
+        <div class="pull-left" style="line-height: 110px">
+            <div class="Ps-dingdan">
+                <img src="../Resources/images/dingdan.png" alt="" width="40" height="40">
+                {{if PayCount>0}}
+                <i class="Ps-dingdan-number">{{PayCount}}</i>
+                {{/if}}
+            </div>
+            <span style="color:#333;margin-left: 10px">
+                订单
+            </span>
+            {{if PayCount>0}}
+            <span class="Ps-if-num">你有 <a href="Order.html">{{PayCount}}条</a>订单要处理</span>
+            {{else}}
+            <span class="Ps-if-num">暂无订单要处理</span>
+            {{/if}}
+        </div>
+        <div class="pull-right">
+            <div class="Ps-CSC-button">课程表</div>
+            <a style="color: inherit">直播课程请查看这里</a>
+        </div>
+    </script>
+    <script type="text/html" id="Course">
+        <ul class="My-Ps-list clearfix">
+            {{each OrderListBy as value index}}
+            <!--录播-->
+            {{if value.TeachingMethod == '1'}}
+            <li class="clearfix">
+                <img src="{{value.CoverPath ? value.CoverPath : "../Resources/images/null.jpg"}}" sty style="border-radius: 4px" class="pull-left" alt="" width="200" height="110">
+                <div class="pull-left Ps-rightBlock">
+                    <h4><a href="../Course/Detail.html?ID={{value.ID}}" target="_blank">{{value.Name}}</a></h4>
+                    <div class="Ps-name-state">
+                        {{if value.CourseChaptersID == 0}}
+                        <span class="Ps-state">未开始学习</span>
+                        {{else}}
+                        <span class="Ps-state">已学至</span>
+                        <span>{{value.CourseChaptersNameParent}}&nbsp;{{value.CourseChaptersName}}</span>
+                        {{/if}}
+                    </div>
+                    {{if value.StudyLength>0}}
+                    <div class="">
+                        <span style="color: #df1813">学习进度：{{value.StudyLength}}%</span>
+                    </div>
+                    {{/if}}
+                </div>
+                {{if value.CourseChaptersID == 0}}
+                <a class="learning-button" href="../Course/Detail.html?ID={{value.ID}}" target="_blank">开始学习</a>
+                {{else}}
+                <a class="learning-button" href="../Course/Video.html?ID={{value.CourseChaptersID}}&Course_ID={{value.ID}}" target="_blank">继续学习</a>
+                {{/if}}
+            </li>
+            <!--直播-->
+            {{else if value.TeachingMethod == '2'}}
+            <li class="clearfix">
+                <img src="{{value.CoverPath ? value.CoverPath : "../Resources/images/null.jpg"}}" sty style="border-radius: 4px" class="pull-left" alt="" width="200" height="110">
+                <div class="pull-left Ps-rightBlock">
+                    <h4>{{value.Name}}</h4>
+                    <div class="Ps-name-state">
+                        <span class="Ps-state">直播</span>
+                        <span>{{value.CourseChaptersNameParent}}&nbsp;{{value.CourseChaptersName}}</span>
+                    </div>
+                    <div class="">
+                        直播时间：{{value.PayTime | dataFormat:"yyyy-MM-dd HH-mm-ss"}}<span style="color: #df1813;margin-left: 15px">(直播中)</span>
+                    </div>
+                </div>
+                <button class="learning-button" data-id="{{value.ID}}">进入直播</button>
+            </li>
+
+            <!--面授-->
+            {{else if value.TeachingMethod == '3'}}
+            <li class="clearfix">
+                <img src="{{value.CoverPath ? value.CoverPath : "../Resources/images/null.jpg"}}" sty style="border-radius: 4px" class="pull-left" alt="" width="200" height="110">
+                <div class="pull-left Ps-rightBlock">
+                    <h4>{{value.Name}}</h4>
+                    <div class="Ps-name-state">
+                        <span class="Ps-state">面授</span>
+                        <span>{{value.CourseChaptersNameParent}}&nbsp;{{value.CourseChaptersName}}</span>
+                    </div>
+                    <div class="PS-Tinfo">
+                        <span>讲师：{{value.TeacherName}}</span>
+                        <span>时间：{{value.PayTime | dataFormat:"yyyy-MM-dd HH-mm-ss"}}</span>
+                        <span>地点：湖大北校区逸夫楼二楼502室</span>
+                    </div>
+                </div>
+                <button class="learning-button" data-id="{{value.ID}}">查看</button>
+            </li>
+            {{/if}}
+            {{/each}}
+        </ul>
+    </script>
+    <script type="text/html" id="loginList">
+        {{each LoginList as value index}}
+        <tr>
+            <td>{{value.LoginTime | dataFormat:"yyyy-MM-dd"}}</td>
+            <td>{{value.LoginTime | dataFormat:"HH:mm:ss"}}</td>
+            <td>{{value.Ip}}</td>
+            <td>{{value.LoginType ==2?"手机验证码登录":(value.LoginType == 1 ? "账号密码登录":"微信扫码登录")}}</td>
+            <td>{{value.LoginSource ==1 ? "PC端":"移动端"}}</td>
+        </tr>
+        {{/each}}
+    </script>
+    <script src="../Resources/js/jquery.js"></script>
+    <script src="../Resources/js/bootstrap.min.js"></script>
+    <script src="../script/artTemplate.js"></script>
+    <script src="../script/layer/layer.js"></script>
+    <script src="../Resources/js/Center/Center.js"></script>
+    <script>
+        $(function () {
+            GetStudentInfo(function (res) {
+                var data = {
+                    "Userinfo": res.ReturnData.Data,
+                }
+                if (res.ReturnData.Data.HeadImg) {
+                    $(".top_head  img").attr('src', res.ReturnData.Data.HeadImg)
+                }
+                GetOrderDetailListByStuId(0, function (res) {
+                    if (res.ReturnData.Data.length > 0) {
+                        data.PayCount = res.ReturnData.Data[0].PayCount;
+                    } else {
+                        data.PayCount = 0;
+                    }
+                    var html = template('baseinfo', data);
+                    document.getElementById('Ps-section').innerHTML = html;
+                });
+            })
+
+
+            GetOrderListByCourse(-1, 4, function (res) {
+                var data = {
+                    "OrderListBy": res.ReturnData.Data
+                };
+                var html = template('Course', data);
+                $('#MyCourse').html(html);
+            });
+            GetStudentLoginList('4', function (res) {
+                var data = {
+                    "LoginList": res.ReturnData.Data
+                }
+                var html = template('loginList', data);
+                $('#loginRecord').html(html);
+            });
+
+        })
+    </script>
+</body>
+</html>

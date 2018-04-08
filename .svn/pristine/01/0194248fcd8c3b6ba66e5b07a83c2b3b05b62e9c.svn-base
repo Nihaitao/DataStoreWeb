@@ -1,0 +1,212 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>支付方式</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link rel="shortcut icon" href="" type="image/x-icon" class="favIcon" />
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <link href="/Resources/fonts/iconfont.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link href="/Resources/CSS/Font/css/font-awesome.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/Resources/CSS/PC_css.css">
+    <link href="/Resources/CSS/video-js.css" rel="stylesheet" />
+    <link href="/Resources/CSS/question.css" rel="stylesheet" />
+    <style type="text/css">
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body style="background-color: #f7f7f7;user-select: none;" id="root" v-cloak>
+    <div class="totalContaier">
+        <!--顶部-->
+        <!--#<!--#include file="/PublicControl/topmenu.html"-->
+        <div class="w1200 clearfix">
+            <div class="payMain">
+                <div class="Ps-sectionBlock clearfix">
+                    <h3 style="color: #666;">
+                        选择支付方式
+                    </h3>
+                    <div class="pay-way clearfix" style="width:97%">
+                        <div class="pull-left" style="">
+                            <input type="radio" id="zhifubao" name="payWay" class="pay-checkbox" value="2"><label for="zhifubao"></label>
+                            <img src="/Resources/images/zhifubao.png" alt="">
+                        </div>
+                        <div class="pull-left" style="">
+                            <input type="radio" id="weixin" name="payWay" class="pay-checkbox" value="1"><label for="weixin"></label>
+                            <img src="/Resources/images/weixinpay.png" alt="">
+                        </div>
+                    </div>
+                    <ul class="ordersList">
+                        <li style="background-color: #fafafa;" v-for="(indexx, itemx) in data.OrderPayDetailList">
+                            <table style="width: 100%;"> 
+                                <tr>
+                                    <td style="width: 85%; padding: 21px 18px 18px;">
+                                        <img v-bind:src="itemx.CoverPath != null ? itemx.CoverPath : '/Resources/images/def.jpg'" style="width: 160px; height: 90px;" />
+                                        <div class="courseWarp">
+                                            <h2 class="courseName">{{itemx.Name}}</h2>
+                                            <p class="teacherMsg">{{itemx.JobTitle}} <span class="teacName">{{itemx.teachName}}</span> <span class="courseNum">{{itemx.TotalHours}}</span>课</p>
+                                        </div>
+                                    </td>
+                                    <td style="width:15%;">
+                                        <p style="color: #9a9a9a;">
+                                            实付款：
+                                            &nbsp;&nbsp;
+                                            <span style="color: #ef4141;">￥{{(itemx.PreferentialPrice > 0 && itemx.Price > 0) ? itemx.PreferentialPrice : itemx.Price}}</span>
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </li>
+                    </ul>
+                    <div class="payTips clearfix">
+                        <span>提示：请在<span id="timeShow"></span>内支付完成，如未完成此订单将自动关闭，需要重新购买！</span>
+                        <p>应付总额&nbsp;&nbsp;&nbsp; <span>￥ {{totalPrice}}</span></p>
+                    </div>
+                    <div style="float: right; margin-top: 30px;">
+                        <button class="Submit-pay" style="outline: none; background-color: #ef4141;margin-right: 20px;padding: 11px 18px;" @click="buyNow()">立即支付</button>
+                    </div>
+                    <a class="zhifubao1"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!--footer-->
+    <!--#<!--#include file="/PublicControl/bottommenu.html"-->
+    
+    <script>
+        require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil'],
+            function (fnr) {
+                //参数获取
+                function GetQueryString(name) {
+                    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+                    var r = window.location.search.substr(1).match(reg);
+                    if (r != null) return unescape(r[2]); return null;
+                }
+                var setTime;
+
+                var $ = layui.$;
+                var table = layui.table;
+                var tableExt = layui.tableExt;
+                var vm = new Vue({
+                    el: "#root",
+                    data: {
+                        loginState: false,
+                        data: '',
+                        totalPrice: 0  //总额
+                    },
+                    ready: function () {
+                        this.checkLogin();
+                        this.QueryOrder();
+
+                        if (GetQueryString("ID") != null && GetQueryString("ID") != "") {
+                            var intDiff = parseInt(1800);//倒计时总秒数量
+                            this.intervalFn(intDiff);
+                        }
+
+                         var contaierHeight = $('.totalContaier').height();
+                        var windowScreenHeight = window.innerHeight;
+                        if(contaierHeight < windowScreenHeight){
+                            $('.totalContaier').css('min-height', (windowScreenHeight - 160) + 'px');
+                        }
+                    },
+                    methods: {
+                        //查询stuID
+                        checkLogin: function () {
+                            _this = this;
+                            var loginState = fnr.Cookie.get("StuId")
+                            if (!loginState && loginState != 'undefined') {
+                                layer.open({
+                                    type: 2,
+                                    area: ['400px', '550px'],
+                                    fixed: false, //不固定
+                                    maxmin: true,
+                                    title: '欢迎登录',
+                                    content: '/usercenter/login_model.html',
+                                });
+                            }
+                            else {
+                                _this.loginState = true;
+                            }
+                        },
+                        //获取订单信息
+                        QueryOrder: function () {
+                            _self = this;
+                            if (GetQueryString("OrderId") != null && GetQueryString("OrderId") != "") {
+                                $.get('/service/datastore/Order/GetOrderPayById', { orderId: GetQueryString("OrderId") }, function (res) {
+                                    if (res.SuccessResponse) {
+                                        _self.data = res.Data;
+                                        $.each(_self.data.OrderPayDetailList, function(_k, _v){
+                                            if(_v.PreferentialPrice > 0 && _v.Price > 0){
+                                                _self.totalPrice += _v.PreferentialPrice;
+                                            }else{
+                                                _self.totalPrice += _v.Price;
+                                            }
+                                        })
+                                    } else {
+                                        _self.dataLength = 0;
+                                    }
+                                });
+                            }
+                        },
+                        buyNow: function () {
+                            _self = this;
+                            if (_self.loginState == true) {
+                                if ($("input[name='payWay']:checked").val() != '' && $("input[name='payWay']:checked").val() != undefined) {
+                                    location.href = 'pay.shtml?ID=' + GetQueryString("ID") + '&OrderId=' + GetQueryString("OrderId") + '&payType=' + $("input[name='payWay']:checked").val();
+                                } else {
+                                    layer.msg('请选择付款方式')
+                                }
+                            }
+                            else {
+                                layer.open({
+                                    type: 2,
+                                    area: ['400px', '550px'],
+                                    fixed: false, //不固定
+                                    maxmin: true,
+                                    title: '欢迎登录',
+                                    content: '/usercenter/login_model.html',
+                                });
+                            }
+                        },
+                        intervalFn: function timer(intDiff) {
+                            window.setInterval(function () {
+                                var day = 0,
+                                  hour = 0,
+                                  minute = 0,
+                                  second = 0;//时间默认值
+                                if (intDiff > 0) {
+                                    day = Math.floor(intDiff / (60 * 60 * 24));
+                                    hour = Math.floor(intDiff / (60 * 60)) - (day * 24);
+                                    minute = Math.floor(intDiff / 60) - (day * 24 * 60) - (hour * 60);
+                                    second = Math.floor(intDiff) - (day * 24 * 60 * 60) - (hour * 60 * 60) - (minute * 60);
+                                } else {//当时间耗尽，刷新页面
+                                    alert("订单已失效!");
+                                    //删除订单
+                                    $.post('/service/datastore/Order/DeleteOrderCourseByCID', { Ids: _self.data.ID }, function (res) {
+                                        if (res.SuccessResponse) {
+                                        }
+                                    });
+                                    location.href = '/usercenter/order/myorder.shtml';
+                                }
+                                if (minute <= 9) minute = '0' + minute;
+                                if (second <= 9) second = '0' + second;
+                                $("#timeShow").html(minute + '分' + second + '秒');
+                                intDiff--;
+                            }, 1000);
+                        },
+                    }
+                });
+            })
+    </script>
+</body>
+
+</html>

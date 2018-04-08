@@ -1,0 +1,198 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title></title>
+	</head>
+
+	<body id="root">
+		<div class="mainContainer">
+
+			<blockquote class="layui-elem-quote">
+				<div class="layui-row layui-form">
+                    <label class="layui-form-label" style="width:96px">试听时长设置</label>
+					
+				</div>
+			</blockquote>
+
+            <form class="layui-form" action="" onsubmit="return false">
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width:94px">试听时长设置 :</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="password" lay-verify="time" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">分钟</div>
+                </div>
+
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label" style="width:94px">试听到时提示 : </label>
+                    <div class="layui-input-block">
+                        <textarea placeholder="" class="layui-textarea" style="width:600px"></textarea>
+                    </div>
+                </div>
+
+                <div class="layui-form-item audition" pane="">
+                    <label class="layui-form-label" style="width:94px">试听视频权限 :</label>
+                    <div class="layui-input-block" style="padding-top:10px">
+                        <input type="radio" name="alluser" value="所有用户" title="所有用户" checked="">
+                        <input type="radio" name="alluser" value="注册用户" title="注册用户" style="margin-left:30px">
+                    </div>
+                </div>
+
+                <blockquote class="layui-elem-quote">
+                    <div class="layui-row layui-form">
+                        <label class="layui-form-label" style="width:150px">免费视频/资源观看权限</label>
+
+                    </div>
+                </blockquote>
+                <div class="layui-form-item free" pane="">
+                    <label class="layui-form-label" style="width:154px">免费视频/资源观看权限 :</label>
+                    <div class="layui-input-block" style="padding-top:10px">
+                        <input type="radio" name="registerUser" value="所有用户" title="所有用户" checked="">
+                        <input type="radio" name="registerUser" value="注册用户" title="注册用户" style="margin-left:30px">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-input-block" id="layerDemo" style="margin-top:30px;">
+                        <button class="layui-btn updata" lay-submit="" lay-filter="demo1" data-method="offset" data-type="auto" @click="saveUpdate">保存</button>
+                        <button class="layui-btn" lay-submit="" lay-filter="demo1">取消</button>
+                    </div>
+                </div>
+
+            </form>
+                <!--操作模板-->
+
+
+
+</div>
+	</body>
+
+</html>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+	require_js_file([ 'form', 'jquery', 'layer'],
+		function(fnr) {
+			var form = layui.form;
+			var layer = layui.layer;
+			var $ = layui.$;
+
+			var etext;//声明保存按钮一个弹框文本值
+
+			//搜索条件
+			var rootApp = new Vue({
+				el: '#root',
+				data: {
+					
+				},
+				ready: function(){
+				    $.get("/Base/Aciton?urlData=WConfiguration/GetWConfiguration", function (data) {
+				        var that = data.ReturnData.Data
+
+				        $(".layui-input").val(that.OverFlowTime)//试听时长
+				        $(".layui-textarea").val(that.OverFlowInfo)
+                        //试听数据
+				        if (that.OverFlowAuth == 0) {
+				            text = "所有用户"
+				        } else if (that.OverFlowAuth == 1) {
+				            text = "注册用户"
+				        }
+
+				        //text为选中的值
+                        //试听选中项的设置
+				        $(".audition").find("span:contains('" + text + "')").parent().addClass("layui-form-radioed")
+				        $(".audition").find("span:contains('" + text + "')").parent().find('i').addClass("layui-anim-scaleSpring")
+				        $(".audition").find("span:contains('" + text + "')").parent().find('i').html('&#xe643;')
+                        //试听非选中项的设置
+				        $(".audition").find("span:not(:contains('" + text + "'))").parent().removeClass("layui-form-radioed")
+                        $(".audition").find("span:not(:contains('" + text + "'))").parent().find('i').removeClass("layui-anim-scaleSpring")
+                        $(".audition").find("span:not(:contains('" + text + "'))").parent().find('i').html('&#xe63f;')
+
+				        //试看数据
+                        if (that.UserSeeAuth == 0) {
+                            that_text = "所有用户"
+                        } else if (that.UserSeeAuth == 1) {
+                            that_text = "注册用户"
+                        }
+				        //that_text为选中的值
+				        //试看选中项的设置
+                        $(".free").find("span:contains('" + that_text + "')").parent().addClass("layui-form-radioed")
+                        $(".free").find("span:contains('" + that_text + "')").parent().find('i').addClass("layui-anim-scaleSpring")
+                        $(".free").find("span:contains('" + that_text + "')").parent().find('i').html('&#xe643;')
+				        //试看非选中项的设置
+                        $(".free").find("span:not(:contains('" + that_text + "'))").parent().removeClass("layui-form-radioed")
+                        $(".free").find("span:not(:contains('" + that_text + "'))").parent().find('i').removeClass("layui-anim-scaleSpring")
+                        $(".free").find("span:not(:contains('" + that_text + "'))").parent().find('i').html('&#xe63f;')
+
+				    })
+
+				},
+				methods: {
+					
+					saveUpdate: function () {
+					    var that_time = $(".layui-input").val() //获取试听时长
+
+					   var that_text = $(".layui-textarea").val()//试听到时提示内容
+
+					   var that_audition = $(".audition").find(".layui-form-radioed").find("span").html()//试听权限
+					   if (that_audition == '所有用户') {
+					       that_OverFlowAuth = 0
+					   } else if (that_audition == '注册用户') {
+					       that_OverFlowAuth = 1
+					   }
+					   var that_free = $(".free").find(".layui-form-radioed").find("span").html()//免费视频权限
+					   if (that_free == '所有用户') {
+					       that_UserSeeAuth = 0
+					   } else if (that_free == '注册用户') {
+					       that_UserSeeAuth = 1
+					   }
+					   $.post("/Base/Aciton?urlData=WConfiguration/SetWConfiguration", { OverFlowTime: that_time, OverFlowInfo: that_text, OverFlowAuth: that_OverFlowAuth, UserSeeAuth: that_UserSeeAuth })
+					},
+
+				}
+			});
+
+		    //设置保存按钮的弹框
+			var active = {
+			    offset: function (othis) {
+
+			        $.ajax({
+			            url: "/Base/Aciton?urlData=HConfiguration/SetConfiguration",
+			            type: "post",
+			            async: false,
+			            data: { ok: "1" },
+			            success: function (data) {
+			                etext = data.Message
+			            }
+			        })
+			        if (etext == '成功！') {
+			            etext = '保存成功'
+			        }
+			        var type = othis.data("type");
+			        var text = etext
+			        // console.log(text)
+			        layer.open({
+			            type: 1,
+			            offset: type,
+			            id: "laydemo" + type,
+			            content: '<div style="padding: 20px 100px;">' + text + '</div>',
+			            btn: "确定",
+			            btnAlign: 'c',//按钮居中
+			            shade: 0,//不显示遮罩
+			            yes: function () {
+			                layer.closeAll();
+			            }
+			        })
+			    }
+			};
+			$('#layerDemo .updata').on('click', function () {
+			    var othis = $(this), method = othis.data('method');
+			    active[method] ? active[method].call(this, othis) : '';
+			});
+
+		});
+</script>

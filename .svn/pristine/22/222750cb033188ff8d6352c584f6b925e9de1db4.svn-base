@@ -1,0 +1,482 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A9C943BF-11A6-477C-B6DB-F75D99DC3188}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>UserCenter</RootNamespace>
+    <AssemblyName>UserCenter</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <TypeScriptToolsVersion>1.0</TypeScriptToolsVersion>
+    <Use64BitIISExpress />
+    <UseGlobalApplicationHostFile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CT.HttpProxy, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CT.HttpProxy.1.154.0\lib\net40\CT.HttpProxy.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Nancy, Version=1.4.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\Documents\WXWork\1688850536852916\Cache\File\2018-01\Nancy.dll</HintPath>
+    </Reference>
+    <Reference Include="Nancy.Hosting.Aspnet">
+      <HintPath>D:\Documents\WXWork\1688850536852916\Cache\File\2018-01\Nancy.Hosting.Aspnet.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="favicon.ico" />
+    <Content Include="index.html" />
+    <Content Include="onlineschool\UserControl\Footer.html" />
+    <Content Include="onlineschool\UserControl\Header.html" />
+    <Content Include="onlineschool\UserControl\stepHeader.html" />
+    <Content Include="PublicControl\bottommenu.html" />
+    <Content Include="PublicControl\leftmenu.html" />
+    <Content Include="PublicControl\topmenu.html" />
+    <Content Include="Resources\images\headIcon.png" />
+    <Content Include="Resources\images\noneData.png" />
+    <Content Include="Resources\images\questionIcon.png" />
+    <Content Include="Resources\images\th1.png" />
+    <Content Include="Resources\js\moment.js" />
+    <Content Include="usercenter\index.shtml" />
+    <Content Include="usercenter\login_model.html" />
+    <Content Include="usercenter\order\myorder.html" />
+    <Content Include="usercenter\order\myorder.shtml" />
+    <Content Include="usercenter\order\pay.html" />
+    <Content Include="usercenter\order\paysuccess.html" />
+    <Content Include="usercenter\order\payType.html" />
+    <Content Include="usercenter\order\submitorder.html" />
+    <Content Include="usercenter\questionbank\bindcellphone.html" />
+    <Content Include="usercenter\questionbank\DoChapter.html" />
+    <Content Include="usercenter\questionbank\DoChapterPractice.html" />
+    <Content Include="usercenter\questionbank\MyCourse.html" />
+    <Content Include="usercenter\questionbank\MyCourse.shtml" />
+    <Content Include="usercenter\questionbank\myorder.html" />
+    <Content Include="usercenter\questionbank\QuestionRecord.shtml" />
+    <Content Include="usercenter\questionbank\tk\chapterAnswer.html" />
+    <Content Include="usercenter\questionbank\tk\courseList.shtml" />
+    <Content Include="usercenter\questionbank\tk\doAnswer.html" />
+    <Content Include="usercenter\questionbank\tk\doCharter.html" />
+    <Content Include="usercenter\questionbank\tk\doExam.html" />
+    <Content Include="usercenter\questionbank\tk\Exam\ExamAnalysis.html" />
+    <Content Include="usercenter\questionbank\tk\Exam\examGetInto.html" />
+    <Content Include="usercenter\questionbank\tk\Exam\examZuoti.html" />
+    <Content Include="usercenter\questionbank\tk\history.html" />
+    <Content Include="usercenter\questionbank\tk\myCourseList.html" />
+    <Content Include="usercenter\questionbank\tk\setting.html" />
+    <Content Include="usercenter\register.shtml" />
+    <Content Include="usercenter\register_model.html" />
+    <Content Include="Resources\CSS\bootstrap\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Resources\CSS\bootstrap\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Resources\CSS\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Resources\CSS\bootstrap\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Resources\CSS\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Resources\CSS\Font\css\font-awesome.css.map" />
+    <Content Include="Resources\CSS\Font\fonts\fontawesome-webfont.eot" />
+    <Content Include="Resources\CSS\Font\fonts\fontawesome-webfont.svg" />
+    <Content Include="Resources\CSS\Font\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Resources\CSS\Font\fonts\fontawesome-webfont.woff" />
+    <Content Include="Resources\CSS\Font\fonts\fontawesome-webfont.woff2" />
+    <Content Include="Resources\CSS\Font\fonts\FontAwesome.otf" />
+    <Content Include="Resources\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Resources\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Resources\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Resources\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Resources\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Resources\images\noneOrder.png" />
+    <Content Include="Resources\images\paySuccess.png" />
+    <Content Include="Resources\images\QQIcon.png" />
+    <Content Include="Resources\images\weChatIcon.png" />
+    <Content Include="Resources\js\modules\layer\font\iconfont.eot" />
+    <Content Include="Resources\js\modules\layer\font\iconfont.svg" />
+    <Content Include="Resources\js\modules\layer\font\iconfont.ttf" />
+    <Content Include="Resources\js\modules\layer\font\iconfont.woff" />
+    <Content Include="Resources\js\modules\zTree_v3\css\awesomeStyle\awesome.less" />
+    <Content Include="Resources\js\modules\zTree_v3\css\awesomeStyle\fa.less" />
+    <Content Include="Resources\js\uploadify\uploadify.php" />
+    <Content Include="script\package.json" />
+    <Content Include="Resources\fonts\iconfont.eot" />
+    <Content Include="Resources\fonts\iconfont.svg" />
+    <Content Include="Resources\fonts\iconfont.ttf" />
+    <Content Include="Resources\fonts\iconfont.woff" />
+    <Content Include="onlineschool\CourseList.shtml" />
+    <Content Include="usercenter\onlinecourse\Detail.shtml" />
+    <Content Include="usercenter\onlinecourse\Video.shtml" />
+    <Content Include="onlineschool\IntrList.shtml" />
+    <Content Include="onlineschool\ScreenList.shtml" />
+    <None Include="packages.config" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="usercenter\finance\financelist.html" />
+    <Content Include="usercenter\login.shtml" />
+    <Content Include="usercenter\onlinecourse\coursemanage.shtml" />
+    <Content Include="usercenter\onlinecourse\courserecord.shtml" />
+    <Content Include="usercenter\questionbank\QuestionRecord.html" />
+    <Content Include="usercenter\questionbank\questionstart.html" />
+    <Content Include="Resources\CSS\bootstrap\css\bootstrap.min.css" />
+    <Content Include="Resources\CSS\bootstrap\js\bootstrap.min.js" />
+    <Content Include="Resources\CSS\common.css" />
+    <Content Include="Resources\CSS\Font\css\font-awesome.css" />
+    <Content Include="Resources\CSS\Font\css\font-awesome.min.css" />
+    <Content Include="Resources\CSS\index.css" />
+    <Content Include="Resources\CSS\indexType2.css" />
+    <Content Include="Resources\CSS\jquery.mCustomScrollbar.css" />
+    <Content Include="Resources\CSS\login.css" />
+    <Content Include="Resources\CSS\PC_css.css" />
+    <Content Include="Resources\CSS\question.css" />
+    <Content Include="Resources\CSS\Resources\images\viod.png" />
+    <Content Include="Resources\CSS\video-js.css" />
+    <Content Include="Resources\fonts\iconfont.css" />
+    <Content Include="Resources\images\addBanner.png" />
+    <Content Include="Resources\images\banner.png" />
+    <Content Include="Resources\images\chapter-icon.png" />
+    <Content Include="Resources\images\ch_ico.png" />
+    <Content Include="Resources\images\def.jpg" />
+    <Content Include="Resources\images\defBanner.jpg" />
+    <Content Include="Resources\images\dianshang.png" />
+    <Content Include="Resources\images\dingdan.png" />
+    <Content Include="Resources\images\file.png" />
+    <Content Include="Resources\images\gou.png" />
+    <Content Include="Resources\images\guangao.png" />
+    <Content Include="Resources\images\hd.png" />
+    <Content Include="Resources\images\head.png" />
+    <Content Include="Resources\images\icon-jiantoupng.png" />
+    <Content Include="Resources\images\icon-weizhi.png" />
+    <Content Include="Resources\images\icon-密码.png" />
+    <Content Include="Resources\images\icon-账号.png" />
+    <Content Include="Resources\images\index-sprite.png" />
+    <Content Include="Resources\images\isShiT.png" />
+    <Content Include="Resources\images\JSlogo.png" />
+    <Content Include="Resources\images\justPhone.png" />
+    <Content Include="Resources\images\lhlogo.png" />
+    <Content Include="Resources\images\like-0.png" />
+    <Content Include="Resources\images\like-1.png" />
+    <Content Include="Resources\images\localtion.png" />
+    <Content Include="Resources\images\login_bot_bg.png" />
+    <Content Include="Resources\images\logo-login.png" />
+    <Content Include="Resources\images\logo.png" />
+    <Content Include="Resources\images\null.jpg" />
+    <Content Include="Resources\images\password.png" />
+    <Content Include="Resources\images\phone.png" />
+    <Content Include="Resources\images\photo.png" />
+    <Content Include="Resources\images\picture.png" />
+    <Content Include="Resources\images\picture2.png" />
+    <Content Include="Resources\images\pra_icon.png" />
+    <Content Include="Resources\images\pra_leicopsd.png" />
+    <Content Include="Resources\images\qq.png" />
+    <Content Include="Resources\images\QQ1.png" />
+    <Content Include="Resources\images\QQBIG.png" />
+    <Content Include="Resources\images\SD-banner.png" />
+    <Content Include="Resources\images\shangdonglogo.png" />
+    <Content Include="Resources\images\shejiao.png" />
+    <Content Include="Resources\images\sprites.png" />
+    <Content Include="Resources\images\step041.png" />
+    <Content Include="Resources\images\tcxian.gif" />
+    <Content Include="Resources\images\teacher.png" />
+    <Content Include="Resources\images\test0111.png" />
+    <Content Include="Resources\images\tk-pic.gif" />
+    <Content Include="Resources\images\tk.png" />
+    <Content Include="Resources\images\tk_exam.png" />
+    <Content Include="Resources\images\viod.png" />
+    <Content Include="Resources\images\weixing.png" />
+    <Content Include="Resources\images\weixinpay.png" />
+    <Content Include="Resources\images\wxdef.png" />
+    <Content Include="Resources\images\WxLogo.png" />
+    <Content Include="Resources\images\xiaoxi.png" />
+    <Content Include="Resources\images\youxiang.png" />
+    <Content Include="Resources\images\zhifubao.png" />
+    <Content Include="Resources\images\微信.png" />
+    <Content Include="Resources\images\示例图3.png" />
+    <Content Include="Resources\images\示例图4.png" />
+    <Content Include="Resources\images\示例头像.png" />
+    <Content Include="Resources\images\课程图片.png" />
+    <Content Include="Resources\images\课程图片2.png" />
+    <Content Include="Resources\js\bootstrap.min.js" />
+    <Content Include="Resources\js\Center\Center.js" />
+    <Content Include="Resources\js\headFootLayout.js" />
+    <Content Include="Resources\js\jquery.js" />
+    <Content Include="Resources\js\jquery.mCustomScrollbar.min.js" />
+    <Content Include="Resources\js\jquery.mousewheel.min.js" />
+    <Content Include="Resources\js\jquery\jquery-ui.js" />
+    <Content Include="Resources\js\modules\layer\css\layui.css" />
+    <Content Include="Resources\js\modules\layer\css\layui.mobile.css" />
+    <Content Include="Resources\js\modules\layer\css\modules\code.css" />
+    <Content Include="Resources\js\modules\layer\css\modules\laydate\default\laydate.css" />
+    <Content Include="Resources\js\modules\layer\css\modules\layer\default\icon-ext.png" />
+    <Content Include="Resources\js\modules\layer\css\modules\layer\default\icon.png" />
+    <Content Include="Resources\js\modules\layer\css\modules\layer\default\layer.css" />
+    <Content Include="Resources\js\modules\layer\css\modules\layer\default\loading-0.gif" />
+    <Content Include="Resources\js\modules\layer\css\modules\layer\default\loading-1.gif" />
+    <Content Include="Resources\js\modules\layer\css\modules\layer\default\loading-2.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\0.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\1.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\10.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\11.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\12.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\13.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\14.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\15.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\16.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\17.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\18.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\19.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\2.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\20.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\21.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\22.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\23.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\24.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\25.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\26.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\27.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\28.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\29.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\3.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\30.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\31.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\32.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\33.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\34.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\35.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\36.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\37.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\38.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\39.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\4.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\40.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\41.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\42.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\43.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\44.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\45.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\46.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\47.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\48.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\49.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\5.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\50.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\51.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\52.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\53.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\54.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\55.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\56.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\57.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\58.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\59.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\6.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\60.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\61.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\62.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\63.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\64.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\65.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\66.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\67.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\68.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\69.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\7.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\70.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\71.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\8.gif" />
+    <Content Include="Resources\js\modules\layer\images\face\9.gif" />
+    <Content Include="Resources\js\modules\layer\images\fileStep.png" />
+    <Content Include="Resources\js\modules\layer\images\indexLogo.png" />
+    <Content Include="Resources\js\modules\layer\layui.js" />
+    <Content Include="Resources\js\modules\layer\lay\all-mobile.js" />
+    <Content Include="Resources\js\modules\layer\lay\all.js" />
+    <Content Include="Resources\js\modules\layer\lay\modules\carousel.js" />
+    <Content Include="Resources\js\modules\layer\lay\modules\code.js" />
+    <Content Include="Resources\js\modules\layer\lay\modules\element.js" />
+    <Content Include="Resources\js\modules\layer\lay\modules\flow.js" />
+    <Content Include="Resources\js\modules\layer\lay\modules\form.js" />
+    <Content Include="Resources\js\modules\layer\lay\modules\jquery.js" />
+    <Content Include="Resources\js\modules\layer\lay\modules\jquery.polyv.js" />
+    <Content Include="Resources\js\modules\layer\lay\modules\laydate.js" />
+    <Content Include="Resources\js\modules\layer\lay\modules\layedit.js" />
+    <Content Include="Resources\js\modules\layer\lay\modules\layer.js" />
+    <Content Include="Resources\js\modules\layer\lay\modules\laypage.js" />
+    <Content Include="Resources\js\modules\layer\lay\modules\laytpl.js" />
+    <Content Include="Resources\js\modules\layer\lay\modules\mobile.js" />
+    <Content Include="Resources\js\modules\layer\lay\modules\mobile\layer-mobile.js" />
+    <Content Include="Resources\js\modules\layer\lay\modules\mobile\layim-mobile-open.js" />
+    <Content Include="Resources\js\modules\layer\lay\modules\mobile\upload-mobile.js" />
+    <Content Include="Resources\js\modules\layer\lay\modules\mobile\zepto.js" />
+    <Content Include="Resources\js\modules\layer\lay\modules\polyvfbp.js" />
+    <Content Include="Resources\js\modules\layer\lay\modules\table.js" />
+    <Content Include="Resources\js\modules\layer\lay\modules\tableExt.js" />
+    <Content Include="Resources\js\modules\layer\lay\modules\tree.js" />
+    <Content Include="Resources\js\modules\layer\lay\modules\upload.js" />
+    <Content Include="Resources\js\modules\layer\lay\modules\util.js" />
+    <Content Include="Resources\js\modules\vue\summernote.min.js" />
+    <Content Include="Resources\js\modules\vue\vue-datepicker.js" />
+    <Content Include="Resources\js\modules\vue\vue-resource.min.js" />
+    <Content Include="Resources\js\modules\vue\vue-validator.min.js" />
+    <Content Include="Resources\js\modules\vue\vue.min.js" />
+    <Content Include="Resources\js\modules\zTree_v3\css\awesomeStyle\awesome.css" />
+    <Content Include="Resources\js\modules\zTree_v3\css\awesomeStyle\img\loading.gif" />
+    <Content Include="Resources\js\modules\zTree_v3\css\demo.css" />
+    <Content Include="Resources\js\modules\zTree_v3\css\metroStyle\img\line_conn.png" />
+    <Content Include="Resources\js\modules\zTree_v3\css\metroStyle\img\loading.gif" />
+    <Content Include="Resources\js\modules\zTree_v3\css\metroStyle\img\metro.gif" />
+    <Content Include="Resources\js\modules\zTree_v3\css\metroStyle\img\metro.png" />
+    <Content Include="Resources\js\modules\zTree_v3\css\metroStyle\metroStyle.css" />
+    <Content Include="Resources\js\modules\zTree_v3\css\zTreeStyle\img\diy\1_close.png" />
+    <Content Include="Resources\js\modules\zTree_v3\css\zTreeStyle\img\diy\1_open.png" />
+    <Content Include="Resources\js\modules\zTree_v3\css\zTreeStyle\img\diy\2.png" />
+    <Content Include="Resources\js\modules\zTree_v3\css\zTreeStyle\img\diy\3.png" />
+    <Content Include="Resources\js\modules\zTree_v3\css\zTreeStyle\img\diy\4.png" />
+    <Content Include="Resources\js\modules\zTree_v3\css\zTreeStyle\img\diy\5.png" />
+    <Content Include="Resources\js\modules\zTree_v3\css\zTreeStyle\img\diy\6.png" />
+    <Content Include="Resources\js\modules\zTree_v3\css\zTreeStyle\img\diy\7.png" />
+    <Content Include="Resources\js\modules\zTree_v3\css\zTreeStyle\img\diy\8.png" />
+    <Content Include="Resources\js\modules\zTree_v3\css\zTreeStyle\img\diy\9.png" />
+    <Content Include="Resources\js\modules\zTree_v3\css\zTreeStyle\img\line_conn.gif" />
+    <Content Include="Resources\js\modules\zTree_v3\css\zTreeStyle\img\loading.gif" />
+    <Content Include="Resources\js\modules\zTree_v3\css\zTreeStyle\img\zTreeStandard.gif" />
+    <Content Include="Resources\js\modules\zTree_v3\css\zTreeStyle\img\zTreeStandard.png" />
+    <Content Include="Resources\js\modules\zTree_v3\css\zTreeStyle\zTreeStyle.css" />
+    <Content Include="Resources\js\modules\zTree_v3\js\jquery-1.4.4.min.js" />
+    <Content Include="Resources\js\modules\zTree_v3\js\jquery.ztree.all.js" />
+    <Content Include="Resources\js\modules\zTree_v3\js\jquery.ztree.all.min.js" />
+    <Content Include="Resources\js\modules\zTree_v3\js\jquery.ztree.core.js" />
+    <Content Include="Resources\js\modules\zTree_v3\js\jquery.ztree.core.min.js" />
+    <Content Include="Resources\js\modules\zTree_v3\js\jquery.ztree.excheck.js" />
+    <Content Include="Resources\js\modules\zTree_v3\js\jquery.ztree.excheck.min.js" />
+    <Content Include="Resources\js\modules\zTree_v3\js\jquery.ztree.exedit.js" />
+    <Content Include="Resources\js\modules\zTree_v3\js\jquery.ztree.exedit.min.js" />
+    <Content Include="Resources\js\modules\zTree_v3\js\jquery.ztree.exhide.js" />
+    <Content Include="Resources\js\modules\zTree_v3\js\jquery.ztree.exhide.min.js" />
+    <Content Include="Resources\js\Page.js" />
+    <Content Include="Resources\js\require_config.js" />
+    <Content Include="Resources\js\uploadify\jquery.min.js" />
+    <Content Include="Resources\js\uploadify\jquery.uploadify.js" />
+    <Content Include="Resources\js\uploadify\jquery.uploadify.min.js" />
+    <Content Include="Resources\js\uploadify\UpdateCourse.html" />
+    <Content Include="Resources\js\uploadify\uploadify-cancel.png" />
+    <Content Include="Resources\js\uploadify\uploadify.css" />
+    <Content Include="Resources\js\uploadify\uploadify.swf" />
+    <Content Include="Resources\js\upload\jquery.min.js" />
+    <Content Include="Resources\js\upload\jquery.uploadify.js" />
+    <Content Include="Resources\js\upload\jquery.uploadify.min.js" />
+    <Content Include="Resources\js\util.js" />
+    <Content Include="Resources\js\validate.js" />
+    <Content Include="script\artTemplate.js" />
+    <Content Include="script\bluebird.js" />
+    <Content Include="script\bluebird.min.js" />
+    <Content Include="script\jquery.js" />
+    <Content Include="script\knockout.js" />
+    <Content Include="script\layer\layer.js" />
+    <Content Include="script\layer\mobile\layer.js" />
+    <Content Include="script\layer\mobile\need\layer.css" />
+    <Content Include="script\layer\theme\default\icon-ext.png" />
+    <Content Include="script\layer\theme\default\icon.png" />
+    <Content Include="script\layer\theme\default\layer.css" />
+    <Content Include="script\layer\theme\default\loading-0.gif" />
+    <Content Include="script\layer\theme\default\loading-1.gif" />
+    <Content Include="script\layer\theme\default\loading-2.gif" />
+    <Content Include="script\template-web.js" />
+    <Content Include="usercenter\usercenter\accountsettings.html" />
+    <Content Include="usercenter\usercenter\question.html" />
+    <Content Include="usercenter\usercenter\questiondetail.html" />
+    <Content Include="Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>32329</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:32399/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>这台计算机上缺少此项目引用的 NuGet 程序包。启用“NuGet 程序包还原”可下载这些程序包。有关详细信息，请参阅 http://go.microsoft.com/fwlink/?LinkID=322105。缺少的文件是 {0}。</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

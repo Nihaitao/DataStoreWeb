@@ -1,0 +1,570 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>做题记录</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="../../Resources/fonts/iconfont.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../../Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link href="../../Resources/CSS/Font/css/font-awesome.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../../Resources/CSS/PC_css.css">
+    <script src="../../script/artTemplate.js"></script>
+    <link href="../../Resources/CSS/question.css" rel="stylesheet" />
+    <style>
+        [v-cloak]{
+            display: none;
+        }
+    </style>
+</head>
+<body style="background-color: #f7f7f7;user-select: none;" id="root">
+    <!--顶部-->
+    <!--#<!--#include file="../UserControl/stepHeader.html"-->
+    <!--学校图标以及当前专业-->
+    <div class="nav">
+        <div class="w1200 clearfix">
+            <div class="nav-header pull-left">
+                <a href="#"><img src="../../Resources/images/hd.png" /></a>
+            </div>
+            <div class="nav-bar-right pull-right">
+                <div class="toggle-switch">
+                    <span class="inlineblock subject-label">当前专业</span>
+                    <div class="drowntoggle inlineblock">
+                        <i class="iconfont icon-lianxijilu"></i>
+                        <span class="current">自学考试-本科-人力资源管理</span>
+                        <i class="glyphicon glyphicon-triangle-bottom"></i>
+                    </div>
+                    <div class="drownmenu">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="w1200 clearfix">
+
+        <!--左侧导航-->
+        <div class="nav-left">
+            <div class="nav-title">
+                <h3>首页</h3>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">我的网课</div>
+                <ul class="sub-nav">
+                    <li><a href="#"><i class="iconfont icon-kechengguanli"></i>课程管理</a></li>
+                    <li><i class="iconfont icon-tingkejilu"></i>听课记录</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">我的题库</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-kaishizuoti"></i>开始做题</li>
+                    <li><i class="iconfont icon-zuotijilu"></i>做题记录</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">我的学费</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-lijijiaofei"></i>立即缴费</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">我的教务</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-wodechengji"></i>我的成绩</li>
+                    <li><i class="iconfont icon-wodebaokao"></i>我的报考</li>
+                    <li><i class="iconfont icon-wodeshuji"></i>我的书籍</li>
+                    <li><i class="iconfont icon-lianxijilu"></i>联系记录</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">我要毕业</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-xuexijindu"></i>学习进度</li>
+                    <li><i class="iconfont icon-lunwendabian"></i>论文答辩</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">个人管理</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-wodedingdan"></i>我的订单</li>
+                    <li><i class="iconfont icon-zhanghaoshezhi"></i>账号设置</li>
+                    <li><i class="iconfont icon-tousuyutiwen"></i>投诉提问</li>
+                    <li><i class="iconfont icon-xiaoxizhongxin"></i>消息中心</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">过程性考核</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-kaishixuexi"></i>开始学习</li>
+                    <li><i class="iconfont icon-peiyangjihua"></i>培养计划</li>
+                    <li><i class="iconfont icon-xuankeguanli"></i>选课管理</li>
+                    <li><i class="iconfont icon-chengjichaxun"></i>成绩查询</li>
+                </ul>
+            </div>
+        </div>
+
+        <!--做题记录-->
+        <div class="main">
+            <div class="order-top">
+                <ul class="orderTabs">
+                    <li class="active" data-temp="practice">练习记录</li>
+                    <li data-temp="collection">我的收藏</li>
+                    <li data-temp="note">我的笔记</li>
+                </ul>
+                <div class="courseListByQR" v-cloak>
+                    <p>题库：</p>
+                    <ul class="items">
+                        <li class="allItem" @click="allQuestion($event)">全部</li>
+                        <li v-for="(index, item) in QuestionStoreListData" @click="toggleQuestion(item, $event)">{{item.Name}}</li>
+                    </ul>
+                </div>
+                <div class="typeListByQR" v-show="isTypeList" v-cloak>
+                    <p>类型：</p>
+                    <ul class="items">
+                        <li class="allItem" @click="allQuestion($event)">全部</li>
+                        <li v-for="(index, item) in QuestionTypeListData" @click="toggleQuestion(item, $event)">{{item.Name}}</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!--做题记录-->
+            <div class="practiceRecord practiceBox" v-bind:class="{'isDisplay': practiceActive}">
+                <ul>
+                    <li class="praItem">
+                        <div class="praItemLeft">
+                            <p>
+                                <span class="chapterPractice">[章节练习]</span>
+                                <span class="color: #333;">第一节&nbsp;马克思主义的产生与发展</span>
+                            </p>
+                            <p>
+                                <span style="margin-right: 20px;">2017-10-19 10:12</span>
+                                <span>10题/对0题</span>
+                            </p>
+                        </div>
+                        <div class="praItemRight">
+                            <p class="unfinishedBtn">未完成</p><p class="continueBtn">继续做题</p>
+                        </div>
+                    </li>
+                    <li class="praItem">
+                        <div class="praItemLeft">
+                            <p>
+                                <span class="chapterPractice">[章节练习]</span>
+                                <span class="color: #333;">第一节&nbsp;马克思主义的产生与发展</span>
+                            </p>
+                            <p>
+                                <span style="margin-right: 20px;">2017-10-19 10:12</span>
+                                <span>10题/对0题</span>
+                            </p>
+                        </div>
+                        <div class="praItemRight">
+                            <p class="analysisBtn">查看解析</p><p class="continueBtn">继续做题</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!--我的收藏-->
+            <div class="practiceRecord collectionBox" v-bind:class="{'isDisplay': collectionActive}">
+                <ul>
+                    <li class="praItem">
+                        <div class="praItemLeft">
+                            <p>
+                                <span class="chapterPractice">[单选题]</span>
+                                <span class="color: #333;">中国封建社会产生过诸多"盛世"，出现在清代的是（    ）</span>
+                            </p>
+                            <p>
+                                <span>2017-10-19 10:12</span>
+                            </p>
+                        </div>
+                        <div class="praItemRight">
+                            <p class="deleteBtns">删除</p><p class="seeBtn layoutBtn">查看</p>
+                        </div>
+                    </li>
+                    <li class="praItem infoItem">
+                        <ul class="chapterInfo">
+                            <li>A、文景之治</li>
+                            <li>B、贞观之治</li>
+                            <li>C、开元之治</li>
+                            <li>D、康乾盛世</li>
+                        </ul>
+                        <div class="QAText">
+                            <p class="referenceQA">
+                                <span>参考答案：</span>
+                                <span class="refQ">D</span>
+                                <span>您的作答：</span>
+                                <span class="myrQ">A</span>
+                            </p>
+                            <div class="dataBtnBox">
+                                <p>
+                                    <i class="iconfont icon-jiucuo"></i>
+                                    <span>纠错</span>
+                                </p>
+                                <p v-bind:class="{'active': isCollection}" style="margin: 0 40px;" @click="toggleCollection">
+                                    <i class="iconfont icon-pinglunhuangsexingxing"></i>
+                                    <span v-if="isCollection">取消收藏</span>
+                                    <span v-else>收&emsp;&emsp;藏</span>
+                                </p>
+                                <p>
+                                    <i class="iconfont icon-xiala"></i>
+                                    <span>查看解析</span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="analysisBox">
+                            <div class="difficulty">
+                                <p>试题难度：</p>
+                                <div>
+                                    <i class="iconfont icon-pinglunhuangsexingxing active" style="margin-left: 15px;"></i>
+                                    <i class="iconfont icon-pinglunhuisexingxing"></i>
+                                    <i class="iconfont icon-pinglunhuisexingxing"></i>
+                                    <i class="iconfont icon-pinglunhuisexingxing"></i>
+                                    <i class="iconfont icon-pinglunhuisexingxing"></i>
+                                </div>
+                            </div>
+                            <div class="referenceAnalysis">
+                                <p>查看解析：</p>
+                                <div>
+                                    啊啊啊啊啊啊奥所付付付付付付付付撒，的发噶的所发生的法师打发撒打。发士大夫 阿德司法所法师打，发说法是否大是大非阿萨德法师法师法按时发生发顺丰的啊所发生，的法师啊啊啊啊啊啊奥所付付付付付付付付撒，的发噶的所发生的法师打发撒打。发士大夫 阿德司法所法师打，发说法是否大是大非阿萨德法师法师法按时发生发顺丰的啊所发生，的法师啊啊啊啊啊啊奥所付付付付付付付付撒，的发噶的所发生的法师打发撒打。发士大夫 阿德司法所法师打，发说法是否大是大非阿萨德法师法师法按时发生发顺丰的啊所发生，的法师
+                                </div>
+                            </div>
+                            <div class="noteBoxData">
+                                <p>笔&emsp;&emsp;记：</p>
+                                <div>
+                                    <i class="iconfont icon-pinglunhuisexingxing"></i>
+                                    <span>记笔记</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="myNoteText">我的笔记（0）</p>
+                            <div class="textareaNote">
+                                <textarea placeholder="据说认真做笔记的人都成为了大神了呢"></textarea>
+                                <p>
+                                    <i class="iconfont icon-xiala" style="margin-right: 5px; vertical-align: middle;"></i>
+                                    保  存
+                                </p>
+                            </div>
+                        </div>
+
+                    </li>
+
+                    <li class="praItem">
+                        <div class="praItemLeft">
+                            <p>
+                                <span class="chapterPractice">[多选题]</span>
+                                <span class="color: #333;">第一节&nbsp;马克思主义的产生与发展</span>
+                            </p>
+                            <p>
+                                <span style="margin-right: 20px;">2017-10-19 10:12</span>
+                            </p>
+                        </div>
+                        <div class="praItemRight">
+                            <p class="deleteBtns">删除</p><p class="seeBtn layoutBtn">查看</p>
+                        </div>
+                    </li>
+                    <li class="praItem infoItem">
+                        <ul class="chapterInfo">
+                            <li>A、文景之治</li>
+                            <li>B、贞观之治</li>
+                            <li>C、开元之治</li>
+                            <li>D、康乾盛世</li>
+                        </ul>
+                        <div class="QAText">
+                            <p class="referenceQA">
+                                <span>参考答案：</span>
+                                <span class="refQ">D</span>
+                                <span>您的作答：</span>
+                                <span class="myrQ">A</span>
+                            </p>
+                            <div class="dataBtnBox">
+                                <p>
+                                    <i class="iconfont icon-jiucuo"></i>
+                                    <span>纠错</span>
+                                </p>
+                                <p v-bind:class="{'active': isCollection}" style="margin: 0 40px;" @click="toggleCollection">
+                                    <i class="iconfont icon-pinglunhuangsexingxing"></i>
+                                    <span v-if="isCollection">取消收藏</span>
+                                    <span v-else>收&emsp;&emsp;藏</span>
+                                </p>
+                                <p>
+                                    <i class="iconfont icon-xiala"></i>
+                                    <span>查看解析</span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="analysisBox">
+                            <div class="difficulty">
+                                <p>试题难度：</p>
+                                <div>
+                                    <i class="iconfont icon-pinglunhuangsexingxing active" style="margin-left: 15px;"></i>
+                                    <i class="iconfont icon-pinglunhuisexingxing"></i>
+                                    <i class="iconfont icon-pinglunhuisexingxing"></i>
+                                    <i class="iconfont icon-pinglunhuisexingxing"></i>
+                                    <i class="iconfont icon-pinglunhuisexingxing"></i>
+                                </div>
+                            </div>
+                            <div class="referenceAnalysis">
+                                <p>查看解析：</p>
+                                <div>
+                                    啊啊啊啊啊啊奥所付付付付付付付付撒，的发噶的所发生的法师打发撒打。发士大夫 阿德司法所法师打，发说法是否大是大非阿萨德法师法师法按时发生发顺丰的啊所发生，的法师啊啊啊啊啊啊奥所付付付付付付付付撒，的发噶的所发生的法师打发撒打。发士大夫 阿德司法所法师打，发说法是否大是大非阿萨德法师法师法按时发生发顺丰的啊所发生，的法师啊啊啊啊啊啊奥所付付付付付付付付撒，的发噶的所发生的法师打发撒打。发士大夫 阿德司法所法师打，发说法是否大是大非阿萨德法师法师法按时发生发顺丰的啊所发生，的法师
+                                </div>
+                            </div>
+                            <div class="noteBoxData">
+                                <p>笔&emsp;&emsp;记：</p>
+                                <div>
+                                    <i class="iconfont icon-pinglunhuisexingxing"></i>
+                                    <span>记笔记</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="myNoteText">我的笔记（0）</p>
+                            <div class="textareaNote">
+                                <textarea placeholder="据说认真做笔记的人都成为了大神了呢"></textarea>
+                                <p>
+                                    <i class="iconfont icon-xiala" style="margin-right: 5px; vertical-align: middle;"></i>
+                                    保  存
+                                </p>
+                            </div>
+                        </div>
+
+                    </li>
+                </ul>
+            </div>
+
+            <!--我的笔记-->
+            <div class="practiceRecord noteBox" v-bind:class="{'isDisplay': noteActive}">
+                <ul>
+                    <li class="praItem">
+                        <div class="praItemLeft" style="width: 70%;">
+                            <p>
+                                <span class="chapterPractice">[单选题]</span>
+                                <span class="color: #333;">中国封建社会产生过诸多"盛世"，出现在清代的是（    ）</span>
+                            </p>
+                            <p>
+                                <span>2017-10-19 10:12</span>
+                                <span style="display: inline-block;width: 80%;margin-left: 20px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;vertical-align: bottom;">来源：撒的发生的发生的法师打发斯蒂芬撒的发生的发生的法师打发斯蒂芬撒的发生的发生的法师打发斯蒂芬撒的发生的发生的法师打发斯蒂芬撒的发生的发生的法师打发斯蒂芬</span>
+                            </p>
+                        </div>
+                        <div class="praItemRight">
+                            <p class="deleteBtns">删除</p><p class="seeBtn layoutBtn">查看</p>
+                        </div>
+                    </li>
+                    <li class="praItem infoItem" style="border-bottom: none;">
+                        <ul class="chapterInfo">
+                            <li>A、文景之治</li>
+                            <li>B、贞观之治</li>
+                            <li>C、开元之治</li>
+                            <li>D、康乾盛世</li>
+                        </ul>
+                        <div class="QAText">
+                            <p class="referenceQA">
+                                <span>参考答案：</span>
+                                <span class="refQ">D</span>
+                                <span>您的作答：</span>
+                                <span class="myrQ">A</span>
+                            </p>
+                            <div class="dataBtnBox">
+                                <p>
+                                    <i class="iconfont icon-jiucuo"></i>
+                                    <span>纠错</span>
+                                </p>
+                                <p v-bind:class="{'active': isCollection}" style="margin: 0 40px;" @click="toggleCollection">
+                                    <i class="iconfont icon-pinglunhuangsexingxing"></i>
+                                    <span v-if="isCollection">取消收藏</span>
+                                    <span v-else>收&emsp;&emsp;藏</span>
+                                </p>
+                                <p>
+                                    <i class="iconfont icon-xiala"></i>
+                                    <span>查看解析</span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="analysisBox">
+                            <div class="difficulty">
+                                <p>试题难度：</p>
+                                <div>
+                                    <i class="iconfont icon-pinglunhuangsexingxing active" style="margin-left: 15px;"></i>
+                                    <i class="iconfont icon-pinglunhuisexingxing"></i>
+                                    <i class="iconfont icon-pinglunhuisexingxing"></i>
+                                    <i class="iconfont icon-pinglunhuisexingxing"></i>
+                                    <i class="iconfont icon-pinglunhuisexingxing"></i>
+                                </div>
+                            </div>
+                            <div class="referenceAnalysis">
+                                <p>查看解析：</p>
+                                <div>
+                                    啊啊啊啊啊啊奥所付付付付付付付付撒，的发噶的所发生的法师打发撒打。发士大夫 阿德司法所法师打，发说法是否大是大非阿萨德法师法师法按时发生发顺丰的啊所发生，的法师啊啊啊啊啊啊奥所付付付付付付付付撒，的发噶的所发生的法师打发撒打。发士大夫 阿德司法所法师打，发说法是否大是大非阿萨德法师法师法按时发生发顺丰的啊所发生，的法师啊啊啊啊啊啊奥所付付付付付付付付撒，的发噶的所发生的法师打发撒打。发士大夫 阿德司法所法师打，发说法是否大是大非阿萨德法师法师法按时发生发顺丰的啊所发生，的法师
+                                </div>
+                            </div>
+                            <div class="noteBoxData">
+                                <p>笔&emsp;&emsp;记：</p>
+                                <div>
+                                    <i class="iconfont icon-pinglunhuisexingxing"></i>
+                                    <span>记笔记</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 20px;">
+                            <p class="myNoteText">我的笔记（2）</p>
+                            <div class="textareaNote">
+                                <textarea placeholder="据说认真做笔记的人都成为了大神了呢"></textarea>
+                                <p>
+                                    <i class="iconfont icon-xiala" style="margin-right: 5px; vertical-align: middle;"></i>
+                                    保  存
+                                </p>
+                            </div>
+                        </div>
+                        <div class="noteList">
+                            <ul>
+                                <li class="item">
+                                    <p class="noteTitle">实践是社会关系形成的基础</p>
+                                    <div class="noteToolBox clearfix">
+                                        <p>时间: 2017-10-19 11:12</p>
+                                        <div>
+                                            <p>编辑</p>
+                                            <p>删除</p>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <li class="item">
+                                    <p class="noteTitle">实践是社会关系形成的基础</p>
+                                    <div class="noteToolBox clearfix">
+                                        <p>时间: 2017-10-19 11:12</p>
+                                        <div>
+                                            <p>编辑</p>
+                                            <p>删除</p>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--footer-->
+    <!--#<!--#include file="../UserControl/Footer.html"-->
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <script src="/Resources/js/headFootLayout.js"></script>
+    <script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil'],
+        function (fnr) {
+            var $ = layui.$;
+            var table = layui.table;
+            var tableExt = layui.tableExt;
+            var vm = new Vue({
+                el: "#root",
+                data: {
+                    Discipline:[],
+                    tip: [],
+                    isCollection: false, //是否收藏
+                    practiceActive: true, //做题记录
+                    collectionActive: false, //我的收藏
+                    noteActive: false, //我的笔记
+                    isTypeList: false, //是否显示类型
+                    QuestionStoreListData: [], //题库列表数据
+                    QuestionTypeListData: [] //类型列表数据
+                },
+                ready: function () {
+                    this.tabsToggle();
+                    this.GetQuestionStoreList();
+                    this.GetQuestionTypeList();
+                },
+                methods: {
+                    tabsToggle: function () {
+                        var self = this;
+                        $('.orderTabs').on('click', 'li', function () {
+                            var $t = $(this);
+                            var temp = $(this).data('temp');
+                            if (temp == 'practice') {
+                                self.practiceActive = true;
+                                self.collectionActive = false;
+                                self.noteActive = false;
+                                self.isTypeList = false;
+                            } else if (temp == 'collection') {
+                                self.practiceActive = false;
+                                self.collectionActive = true;
+                                self.noteActive = false;
+                                self.isTypeList = true;
+                            } else {
+                                self.practiceActive = false;
+                                self.collectionActive = false;
+                                self.noteActive = true;
+                                self.isTypeList = true;
+                            }
+                            if (!$t.hasClass('active')) {
+                                $t.addClass('active').siblings().removeClass('active');
+                            }
+                        });
+                        $('.layoutBtn').on('click', function () {
+                            var $t = $(this);
+                            var $praItem = $(this).parents('.praItem');
+                            if ($t.hasClass('seeBtn')) {
+                                $t.removeClass('seeBtn').addClass('stopBtn').html('收起');
+                                $praItem.next('li.infoItem').slideDown();
+                            } else {
+                                $t.addClass('seeBtn').removeClass('stopBtn').html('查看');
+                                $praItem.next('li.infoItem').slideUp();
+                            }
+                        });
+                    },
+
+                    //是否收藏
+                    toggleCollection: function () {
+                        var self = this;
+                        self.isCollection = !self.isCollection;
+                    },
+
+                    //题库列表
+                    GetQuestionStoreList: function () {
+                        var self = this;
+                        $.get('/service/datastore/Question/GetQuestionStoreList', {Valid: 1}, function (res) {
+                            if (res.SuccessResponse) {
+                                self.QuestionStoreListData = res.Data;
+                            } else {
+                                layui.msg(res.Message);
+                            }
+                        });
+                    },
+                    //切换题库
+                    toggleQuestion: function (item, e) {
+                        var ev = e.srcElement || e.target || e.toElement;
+                        if (!$(ev).hasClass('active')) {
+                            $(ev).addClass('active').siblings(':not(".allItem")').removeClass('active');
+                        }
+                    },
+                    //全部题库
+                    allQuestion: function (e) {
+                        var ev = e.srcElement || e.target || e.toElement;
+                        $(ev).siblings().removeClass('active');
+                    },
+
+                    //类型列表
+                    GetQuestionTypeList: function () {
+                        var self = this;
+                        $.get('/service/datastore/Question/GetQuestionTypeList', function (res) {
+                            if (res.SuccessResponse) {
+                                self.QuestionTypeListData = res.Data;
+                            } else {
+                                layui.msg(res.Message);
+                            }
+                        });
+                    },
+                   
+                }
+            });
+        })
+    </script>
+</body>
+
+</html>

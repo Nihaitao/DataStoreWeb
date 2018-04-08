@@ -1,0 +1,51 @@
+.remindTime.active{
+    background-color: #F76260;
+}
+.remindTime{
+    font-size: 0.26rem;
+    width: 6.98rem;
+    padding: 0.1rem 0;
+    border-radius: 1.5rem;
+    text-align: center;
+    display: inline-block;
+    margin: 0.20rem 0.26rem;
+    color: #fff;
+    background-color: #ccc;
+}
+.remindTimeBox{
+    margin-bottom: 0.98rem;
+}
+.remindContentTitle{
+    padding-left: 0.26rem;
+    height: 0.7rem;
+    line-height: 0.7rem;
+    font-size: 0.26rem;
+    color: #666;
+    background-color: #F5F5F9;
+}
+.remindContent{
+    padding: 0.28rem 0.26rem 0;
+}
+.remindContent p:first-child{
+    font-size: 0.28rem;
+    color: #333;
+    margin-bottom: 0.16rem;
+}
+.remindContent p:not(:first-child){
+    font-size: 0.26rem;
+    color: #999;
+    margin-bottom: 0.11rem;
+}
+.remindBtn{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: 0.98rem;
+    width: 100%;
+    font-size: 0.32rem;
+    color: #F76260;
+    background-color: #F5F5F9;
+    text-align: center;
+    line-height: 0.98rem;
+
+}

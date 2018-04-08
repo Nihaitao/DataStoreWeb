@@ -1,0 +1,165 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        textarea {
+            resize: none;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <div class="layui-form" action="" onsubmit="return false">
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width: 150px;"><label style="color:red">*</label>&nbsp;Key</label>
+                <div class="layui-input-block" style="margin-left: 200px;">
+                    <input type="text" name="title" v-model="queryFormData.Key" lay-verify="required" placeholder="请输入key" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width: 150px;"><label style="color:red">*</label>&nbsp;秘钥</label>
+                <div class="layui-input-block" style="margin-left: 200px;">
+                    <input type="text" name="title" v-model="queryFormData.Secret" lay-verify="required" placeholder="请输入Secret" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width: 150px;"><label style="color:red">*</label>&nbsp;服务器地址</label>
+                <div class="layui-input-block" style="margin-left: 200px;">
+                    <input type="text" name="title" v-model="queryFormData.Url" lay-verify="required" placeholder="请输入Url" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width: 150px;"><label style="color:red">*</label>&nbsp;学生来源</label>
+                <div class="layui-input-block" style="margin-left: 200px;">
+                    <remote-sel v-bind:setting="SourceSetting" v-bind:value.sync="queryFormData.Source" initial="off"></remote-sel>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width: 150px;">&nbsp;最后拉取时间</label>
+                <div class="layui-input-inline" style="margin-left: 20px;">
+                    <input type="text" name="contactDate" id="contactDate" placeholder="选择日期" autocomplete="off" class="layui-input" v-bind:value.sync="queryFormData.Date">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width: 150px;">&nbsp;状态</label>
+                <div class="layui-input-inline" style="margin-left: 20px;">
+                    <remote-rad v-bind:setting="radioBudget" v-bind:value.sync="queryFormData.Valid" initial="off"></remote-rad>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width: 150px;"></label>
+                <div class="layui-input-inline" style="margin-left: 20px;">
+                    <button class="layui-btn" lay-submit @click="formDemo">保存</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
+
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate"],
+        function (fnr) {
+            var laydate = layui.laydate;
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+
+            laydate.render({
+                elem: '#contactDate',
+                type: 'datetime',
+                min: -365,
+                max: 1,
+                done: function (value) {
+                    rootApp.queryFormData.Date = value;
+                }
+            });
+
+            window.rootApp = new Vue({
+                el: "#root",
+                data: {
+                    radioBudget: {
+                        tags: { name: "Sex" },
+                        search: true,
+                        options:
+                            [
+                                { key: "1", value: "开启" },
+                                { key: "0", value: "关闭" }
+                            ],
+                    },
+                    queryFormData: {
+                        ID: 0,
+                        Key: '',
+                        Secret: '',
+                        Url: '',
+                        Date: '',
+                        Source: 0,
+                        Valid: 0
+                    },
+                    SourceSetting: {
+                        search: true,
+                        selectedIndex: 0,
+                        options: [],
+                        fields: { root: 'Data', key: 'ID', value: 'Description' },
+                        remote: { url: "/service/public/HDictionary/GetHDictionaryList", data: { Valid: 1, ColumnName: 'Source_ID' }, options: { method: 'get' } }
+                    }
+                },
+                ready: function () {
+                    _this = this;
+                    $.get("/service/crm/KuaiLiao/GetKuaiLiaoSet", function (rsp) {
+                        if (rsp.SuccessResponse) {
+                            console.log(rsp.Data.Key)
+                            _this.queryFormData.Key = rsp.Data.Key;
+                            _this.queryFormData.Secret = rsp.Data.Secret;
+                            _this.queryFormData.Url = rsp.Data.Url;
+                            _this.queryFormData.Date = rsp.Data.Date.replace("T", " ").replace("Z", "");
+                            _this.queryFormData.Source = rsp.Data.Source;
+                            _this.queryFormData.Valid = rsp.Data.Valid;
+                        }
+                    });
+                },
+                methods: {
+                    //保存数据关闭弹窗
+                    formDemo: function (e) {
+                        _this = this;
+                        if (!layui.form.checkInput(e)) {
+                            return false;
+                        }
+
+                        if (_this.queryFormData.Source.toString() == "") {
+                            layer.msg("学生来源不能为空！")
+                            return false;
+                        }
+
+                        var data = {
+                            Key: _this.queryFormData.Key,
+                            Secret: _this.queryFormData.Secret,
+                            Url: _this.queryFormData.Url,
+                            Date: _this.queryFormData.Date,
+                            Source: _this.queryFormData.Source,
+                            Valid: _this.queryFormData.Valid
+                        }
+                        $.post("/service/crm/KuaiLiao/SetKuaiLiaoSet", data, function (rsp) {
+                            if (rsp.SuccessResponse) {
+                                layer.msg("保存成功!");
+                            } else {
+                                layer.msg(rsp.Message);
+                            }
+                        });
+                        return false;
+
+                    },
+                }
+            });
+        });
+</script>

@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        textarea {
+            resize: none;
+        }
+
+        .divContract {
+            padding: 0px 30px 0px 30px
+        }
+
+            .divContract div {
+                padding: 10px 10px 10px 40px
+            }
+
+        .divPlan {
+            padding: 0px 30px 0px 30px
+        }
+
+            .divPlan div {
+                padding: 10px 10px 10px 40px
+            }
+
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body id="root" v-cloak>
+    <div class="OpenContainer" style="margin:20px">
+        <div style="font-weight:bolder;font-size:15px;">合同信息</div>
+        <hr class="layui-bg-orange">
+        <div class="divContract">
+            <div>对应客户：{{Contract.ClientName}}</div>
+            <div>所属合同：{{Contract.Name}}</div>
+            <div>合同总金额：{{Contract.TotalAmount}}</div>
+            <div>签约日期：{{Contract.ContractDate}}</div>
+        </div>
+        <br />
+        <br />
+        <h2 style="font-weight:bolder;font-size:15px;">回款计划</h2>
+        <hr class="layui-bg-orange">
+        <div class="divPlan">
+            <div>期次：{{Plan.Number}}期</div>
+            <div>计划回款日期：{{Plan.PlanDate}}</div>
+            <div>计划回款占比：{{Plan.Proportion}}</div>
+            <div>计划回款金额：{{Plan.PlanMoney}}</div>
+            <div>添加时间：{{Plan.AddTime}}</div>
+            <div>添加人：{{Plan.PersonName}}</div>
+            <div>备注：{{Plan.Remart}}</div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate"],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var laydate = layui.laydate;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+
+            window.rootApp = new Vue({
+                el: "#root",
+                data: {
+                    Contract: {
+                        Name: '', //合同名
+                        TotalAmount: 0, //合同总金额
+                        ContractDate: '',//签约日期
+                        ClientName: '', //客户名
+                    },
+                    Plan: {
+                        Number: '',//周期
+                        PlanDate: '',//计划回款日期
+                        Proportion: '',//计划回款占比
+                        PlanMoney: '',//计划回款金额
+                        Remart: '',//备注
+                        AddTime: '',//添加时间
+                        PersonName: '',//添加人
+                    },
+                },
+                ready: function () {
+                    _this = this;
+                    var Contract_ID = fnr.getQueryString('Contract_ID');
+                    if (Contract_ID != undefined && Contract_ID != 0) {
+                        //合同信息
+                        var para = { ID: Contract_ID };
+                        $.get("/service/crm/Contract/GetContractInfoCount", para, function (rsp) {
+                            if (rsp.SuccessResponse) {
+                                if (rsp.Data) {
+                                    _this.Contract.Name = rsp.Data.Name;
+                                    _this.Contract.TotalAmount = rsp.Data.TotalAmount;
+                                    _this.Contract.ContractDate = (fnr.format(rsp.Data.ContractDate, "yyyy-MM-dd HH:mm") == "2001-01-01 00:00" ? "" : fnr.format(rsp.Data.ContractDate, "yyyy-MM-dd"));
+                                    $.get("/service/crm/Client/GetCustomerInfo", { ID: rsp.Data.Client_ID }, function (rsp2) {
+                                        if (rsp2.SuccessResponse) {
+                                            if (rsp2.Data)
+                                                _this.Contract.ClientName = rsp2.Data.Name;
+                                        }
+                                    });
+                                }
+                            }
+                            else {
+                                layer.msg(rsp.Message);
+                            }
+                        });
+
+                        var Plan_ID = fnr.getQueryString('Plan_ID');
+                        if (Plan_ID != undefined && Plan_ID != 0) {
+                            var para2 = { Plan_ID: Plan_ID };
+                            $.get("/service/crm/Repaymentplan/GetRepaymentplanInfo", para2, function (rsp) {
+                                if (rsp.SuccessResponse) {
+                                    if (rsp.Data) {
+                                        _this.Plan.Number = rsp.Data.Number;
+                                        _this.Plan.PlanDate = (fnr.format(rsp.Data.PlanDate, "yyyy-MM-dd HH:mm") == "2001-01-01 00:00" ? "" : fnr.format(rsp.Data.PlanDate, "yyyy-MM-dd"));
+                                        _this.Plan.Proportion = rsp.Data.Proportion;
+                                        _this.Plan.PlanMoney = rsp.Data.PlanMoney;
+                                        _this.Plan.Remart = rsp.Data.Remart;
+                                        _this.Plan.AddTime = (fnr.format(rsp.Data.AddTime, "yyyy-MM-dd HH:mm") == "2001-01-01 00:00" ? "" : fnr.format(rsp.Data.AddTime, "yyyy-MM-dd HH:mm"));
+                                        _this.Plan.PersonName = rsp.Data.PersonName;
+                                    }
+                                }
+                            });
+                        }
+                    }
+                },
+                methods: {}
+            });
+        });
+</script>

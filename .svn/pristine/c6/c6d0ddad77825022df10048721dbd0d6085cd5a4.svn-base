@@ -1,0 +1,314 @@
+﻿<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+        <meta name="format-detection" content="telephone=no">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>列表内容页</title>
+        <link href="../../Resources/css/all.css" rel="stylesheet" />
+        <link href="../../Resources/css/ba.css" rel="stylesheet" />
+        <link href="../../Resources/css/listcont.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="http://at.alicdn.com/t/font_415611_zzk4w6t6v7a54s4i.css" />
+
+        <script src="../../script/jquery.js"></script>
+        <script src="../../js/comment.js"></script>
+        <script src="../../script/artTemplate.js"></script>
+        <script src="../../script/layer_mobile/layer.js"></script>
+        <script>
+            $(function () {
+                var pid = 0,
+                    lid = 0;
+
+                function usuallyEvent(ev) {
+                    if (!ev.hasClass('active')) {
+                        ev.addClass('active').siblings().removeClass('active');
+                    } else {
+                        ev.removeClass('active')
+                    }
+
+                    if (ev.find('i').hasClass('icon-down-trangle')) {
+                        ev.find('i').removeClass('icon-down-trangle').addClass('icon-xiangxia');
+                    } else {
+                        ev.find('i').addClass('icon-down-trangle').removeClass('icon-xiangxia');
+                    }
+                }
+
+                //地区按钮点击触发
+                function provinceEvent() {
+                    $('.ProClick').on('click', function () {
+                        var _this = $(this);
+                        usuallyEvent(_this);
+                        if ($('#proivnceList').css('display') == 'none') {
+                            $('#proivnceList').css('display', 'block').siblings().css('display', 'none');
+                        } else {
+                            $('#proivnceList').css('display', 'none');
+                        }
+                        $.get('/service/edu/Specialty/GetSpecialtyProvince', { Model_ID: 1 }, function (rsp) {
+                            if (rsp.SuccessResponse) {
+                                if (rsp.Data) {
+                                    var data = {
+                                        list: rsp.Data
+                                    }
+                                    if (data.list.length > 0) {
+                                        var html = template('ProvinceList', data);
+                                        $('#proivnceList').html(html);
+                                    } else {
+                                        $('#proivnceList').html('<ul class="provinceList"><li><a>暂无数据</a></li></ul>');
+                                    }
+                                    
+                                    $('.provinceList').on('click', 'li', function () {
+                                        $(this).parents('#proivnceList').css('display', 'none');
+                                        usuallyEvent(_this);
+                                        pid = $(this).data('id');
+                                        CatListEvent(pid, lid);
+                                    });
+                                } else {
+                                    layer.msg('data为空')
+                                }
+                            } else {
+                                layer.msg(rsp.Message ? rsp.Message : '操作失败')
+                            }
+                        });
+                    });
+                }
+
+                //层次按钮点击触发事件
+                function levelEvent() {
+                    $('.LevClick').on('click', function () {
+                        var _this = $(this);
+                        usuallyEvent(_this);
+                        if ($('#levelList').css('display') == 'none') {
+                            $('#levelList').css('display', 'block');
+                        } else {
+                            $('#levelList').css('display', 'none');
+                        }
+                        $.get('/service/edu/SpecialtyLevel/GetSpecialtyLevelList', { Valid: -1 }, function (rsp) {
+                            if (rsp.SuccessResponse) {
+                                if (rsp.Data) {
+                                    var data = {
+                                        list: rsp.Data
+                                    }
+                                    if (data.list.length > 0) {
+                                        var html = template('LevelList', data);
+                                        $('#levelList').html(html);
+                                    } else {
+                                        $('#levelList').html('<ul class="levelList"><li><a>暂无数据</a></li></ul>');
+                                    }
+                                    $('.levelList').on('click', 'li', function () {
+                                        $(this).parents('#levelList').css('display', 'none');
+                                        usuallyEvent(_this);
+                                        lid = $(this).data('id');
+                                        CatListEvent(pid, lid);
+                                    });
+                                } else {
+                                    layer.msg('data为空')
+                                }
+                            } else {
+                                layer.msg(rsp.Message ? rsp.Message : '操作失败')
+                            }
+                        });
+
+                    });
+                }
+
+                //学科列表事件
+                function CatListEvent(p, l) {
+                    $.get('/service/edu/Specialty/GetSpecialtyCategoryList', { Province_ID: p, Level_ID: l, Model_ID: 1 }, function (rsp) {
+                        if (rsp.SuccessResponse) {
+                            if (rsp.Data) {
+                                var data = {
+                                    list: rsp.Data
+                                };
+                                if (data.list.length > 0) {
+                                    var html = template('CategoryList', data);
+                                    $('#categoryList').html(html);
+                                } else {
+                                    $('#categoryList').html('<ul class="categoryList"><li><a>暂无数据</a></li></ul>');
+                                }
+                            } else {
+                                layer.msg('data为空')
+                            }
+                        } else {
+                            layer.msg(rsp.Message ? rsp.Message : '操作失败')
+                        }
+                    });
+                }
+
+                //学科按钮点击触发事件
+                function categoryEvent() {
+                    $('.CatClick').on('click', function () {
+                        usuallyEvent($(this));
+                        if ($('#categoryList').css('display') == 'none') {
+                            $('#categoryList').css('display', 'block');
+                        } else {
+                            $('#categoryList').css('display', 'none');
+                        }
+                    });
+                }
+
+                //课程列表
+                function requestList(pId, lId, cId, mId) {
+                    
+                }
+
+                provinceEvent();
+                levelEvent();
+                categoryEvent();
+            })
+        </script>
+        <!--获取省份分类信息-->
+        <script type="text/html" id="ProvinceList">
+            <ul class="provinceList">
+                {{each list}}
+                <li data-id="{{$value.ProvinceID}}"><a href="javascript:;">{{$value.ProvinceName}}</a></li>
+                {{/each}}
+            </ul>
+        </script>
+        <!--获取层次分类信息-->
+        <script type="text/html" id="LevelList">
+            <ul class="levelList">
+                {{each list}}
+                <li data-id="{{$value.ID}}"><a href="javascript:;">{{$value.Name}}</a></li>
+                {{/each}}
+            </ul>
+        </script>
+        <!--获取层次分类信息-->
+        <script type="text/html" id="CategoryList">
+            <ul class="categoryList">
+                {{each list}}
+                <li data-id="{{$value.ID}}"><a href="javascript:;">{{$value.Name}}</a></li>
+                {{/each}}
+            </ul>
+        </script>
+	</head>
+
+	<body>
+		<header>
+			<div class="ipt">
+				<span class="logo">
+                    <img src="../../Resources/img/logo.jpg" />
+				</span>
+				<input type="text" name="" id="" placeholder="搜索课程、专业" />
+				<i class="iconfont icon-sousuo"></i>
+			</div>
+		</header>
+
+		<main>
+			<nav class="tip">
+				<ul class="clearfix bz-bb tips">
+                    <li class="ProClick">
+                        <span>地区</span>
+                        <i class="iconfont icon-down-trangle"></i>
+                    </li>
+                    <li class="LevClick">
+                        <span>层次</span>
+                        <i class="iconfont icon-down-trangle"></i>
+                    </li>
+                    <li class="CatClick">
+                        <span>学科</span>
+                        <i class="iconfont icon-down-trangle"></i>
+                    </li>
+				</ul>
+				<div class="side clr_f">
+                    <div class="side_show clr_f" id="proivnceList" style="display: none;"></div>
+                    <div class="side_show clr_f" id="levelList" style="display: none;"></div>
+                    <div class="side_show clr_f" id="categoryList" style="display: none;"></div>
+				</div>
+			</nav>
+			<p class="explain">
+				在“<span class="choice">地区</span>”的分类下,找到了<span class="num">188</span>门课程
+			</p>
+			<div class="firstCon clearfix">
+				<div class="international clearfix">
+					<span class="inter_English flt">
+                        <img src="../../Resources/img/20170906-06_03.jpg" alt="学位英语" />
+					</span>
+					<span class="inter_English_describe flt">
+						<h3>国际贸易理论与实务基础理论</h3>
+						<span class="inter_English_describe_person ">
+							<i class="iconfont icon-ren">398人</i>
+							<i class="price">￥300</i>
+						</span>
+					</span>
+				</div>
+				<div class="international clearfix">
+					<span class="inter_English flt">
+                        <img src="../../Resources/img/20170906-06_06.jpg" alt="电商运营" />
+					</span>
+					<span class="inter_English_describe flt">
+						<h3>国际贸易理论与实务基础理论</h3>
+						<span class="inter_English_describe_person ">
+							<i class="iconfont icon-ren">398人</i>
+							<i class="price">￥300</i>
+						</span>
+					</span>
+				</div>
+				<div class="international clearfix">
+					<span class="inter_English flt">
+                        <img src="../../Resources/img/20170906-06_03.jpg" alt="学位英语" />
+					</span>
+					<span class="inter_English_describe flt">
+						<h3>国际贸易理论与实务基础理论</h3>
+						<span class="inter_English_describe_person ">
+							<i class="iconfont icon-ren">398人</i>
+							<i class="price">￥300</i>
+						</span>
+					</span>
+				</div>
+				<div class="international clearfix">
+					<span class="inter_English flt">
+                        <img src="../../Resources/img/20170906-06_03.jpg" alt="学位英语" />
+					</span>
+					<span class="inter_English_describe flt">
+						<h3>国际贸易理论与实务基础理论</h3>
+						<span class="inter_English_describe_person ">
+							<i class="iconfont icon-ren">398人</i>
+							<i class="price">￥300</i>
+						</span>
+					</span>
+				</div>
+				</div>
+				<div class="more_btn">
+					<button class="more">查看更多课程</button>
+				</div>
+				<div class="mask" style="display: none"></div>
+		</main>
+
+
+		<footer>
+			<nav>
+				<ul class="clearfix">
+                    <li class="footer_active">
+                        <a class="footerBtn" href="../index.html">
+                            <i class="iconfont icon-shouye1"></i>
+                            <p>首页</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="listcont.html" class="footerBtn">
+                            <i class="iconfont icon-fenlei1"></i>
+                            <p>分类</p>
+                        </a>
+
+                    </li>
+                    <li>
+                        <a href="../Center/path.html" class="footerBtn">
+                            <i class="iconfont icon-wodekecheng"></i>
+                            <p>我的课程</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../Center/personalIndex.html" class="footerBtn">
+                            <i class="iconfont icon-wode"></i>
+                            <p>我的</p>
+                        </a>
+                    </li>
+				</ul>
+			</nav>
+		</footer>
+	</body>
+	
+	
+	
+</html>

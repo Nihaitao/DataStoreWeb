@@ -1,0 +1,222 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        .tree {
+            border-radius: 2px;
+        }
+
+        .tree-content {
+            padding-left: 30px;
+        }
+
+        .tree-node {
+            border-top: 1px solid #e2e2e2;
+            position: relative;
+        }
+
+            .tree-node:first-child {
+                border-top: none;
+            }
+
+            .tree-node .option-area {
+                position: absolute;
+                top: 50%;
+                right: 15px;
+                transform: translateY(-50%);
+            }
+
+        .option-area .layui-icon {
+            display: inline-block;
+            color: #999;
+        }
+
+            .option-area .layui-icon:hover {
+                color: #333;
+            }
+
+        .tree-tit {
+            position: relative;
+            height: 42px;
+            line-height: 42px;
+            padding: 0 15px;
+            color: #333;
+            background-color: #f0f0f0;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+            .tree-tit .layui-icon {
+                display: inline-block;
+                margin-right: 10px;
+                transition: transform 0.4s;
+            }
+
+                .tree-tit .layui-icon.open {
+                    -webkit-transform: rotate(90deg);
+                    -moz-transform: rotate(90deg);
+                    transform: rotate(90deg);
+                }
+
+            .tree-tit:hover {
+                box-shadow: 2px 2px 5px #ccc;
+            }
+
+        .layui-colla-content {
+            display: none;
+            padding: 10px 15px;
+            line-height: 22px;
+            border-top: 1px solid #f0f0f0;
+            color: #666;
+        }
+
+        .state-highlight {
+            height: 50px;
+            border: 1px dashed #5FB878;
+            margin-bottom: 10px;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">学科名</label>
+                <div class="layui-input-block">
+                    <input type="text" lay-verify="required" autocomplete="off" placeholder="请输入学科名" class="layui-input" v-model="SaveDisciplineForm.Name">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">描述</label>
+                <div class="layui-input-block">
+                    <input type="text" autocomplete="off" placeholder="请输入描述" class="layui-input" v-model="SaveDisciplineForm.Description">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">展示图</label>
+                    <div class="layui-input-inline">
+                        <img v-bind:src="SaveDisciplineForm.Picture" alt="" width="190" height="90" />
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button type="button" class="layui-btn" id="upload">
+                        <i class="layui-icon">&#xe67c;</i>上传图片
+                    </button>
+                </div>
+            </div>
+            <div class="layui-form-item layui-hide">
+                <button class="layui-btn" lay-submit @click="submit">提交</button>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="https://cdn.bootcss.com/jquery/1.10.1/jquery.min.js"></script>
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'laydate', 'upload'],
+        function (fnr) {
+            var form = layui.form;
+            var $ = layui.$;
+            var upload = layui.upload;
+
+            //搜索条件
+            var rootApp = new Vue({
+                el: '#root',
+                data: {
+                    queryFormData:{
+                        Name:'',
+                        SearchIsEnable:''
+                    },
+                    DisciplineLength:'',
+                    Discipline: [],
+                    queryFormData: {
+                        Name: '',
+                        Valid:''
+                    },
+                    emptyDiscipline: {
+                        //AddPerson: '',
+                        //AddPersonName: '',
+                        //AddTime: '',
+                        CID: 0,
+                        ChildNodeList: [],
+                        //ChildNodeList2: '',
+                        Description: '',
+                        //ID: '',
+                        Name: '',
+                        //Orders: '',
+                        //PageSize: '',
+                        Picture: '',
+                        //StartRow: '',
+                        //System_Station_ID: '',
+                        Valid: 1,
+                        ChildNodeList:[],
+                    },
+                    SaveDisciplineForm: {
+                        ID: '',
+                        Name: '',
+                        Description: '',
+                        Picture: '',
+                    },
+
+                },
+                computed:{
+
+                },
+                ready: function () {
+                    this.SaveDisciplineForm.Name = fnr.getQueryString('Name');
+                    this.SaveDisciplineForm.ID = fnr.getQueryString('ID');
+                    this.SaveDisciplineForm.Description = fnr.getQueryString('Description') != 'null' ? fnr.getQueryString('Description') : ' ';
+                    this.SaveDisciplineForm.Picture = fnr.getQueryString('Picture');
+                },
+                methods: {
+                    //保存
+                    submit: function () {
+                        var self = this;
+                        $.post("/service/Discipline/SaveDiscipline", self.SaveDisciplineForm, function (res) {
+                            if (res.SuccessResponse) {
+                                fnr.callDialog('refresh', { status: res.SuccessResponse, msg: res.Message });
+                                fnr.closeDialog();
+                            } else {
+                                layer.msg("添加失败：" + res.Message);
+                            }
+                        })
+                    }
+                }
+            });
+            //上传图片
+            var uploadInst= upload.render({
+                elem: '#upload'
+              , url: '/service/upload'
+              , accept: 'images' //普通文件
+              , done: function (res, index, upload) {
+                  if(!res.SuccessResponse){
+                      return layer.msg('上传失败');
+                  }else{
+                      rootApp._data.SaveDisciplineForm.Picture=res.Message;
+                      return layer.msg('上传成功');
+                  }
+              }
+                ,error: function(){
+                    //演示失败状态，并实现重传
+                    var demoText = $('#demoText');
+                    demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                    demoText.find('.demo-reload').on('click', function(){
+                        uploadInst.upload();
+                    });
+                }
+            });
+        });
+</script>

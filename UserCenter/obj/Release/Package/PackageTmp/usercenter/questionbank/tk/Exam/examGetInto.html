@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="/Resources/fonts/iconfont.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link href="/Resources/CSS/Font/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="/Resources/CSS/video-js.css" rel="stylesheet" />
+    <style>
+        a { text-decoration: none !important; }
+        a:hover { text-decoration: none; }
+    </style>
+</head>
+<body style="background-color: #f7f7f7" id="root">
+    <!--顶部-->
+    <!--#<!--#include file="../UserControl/stepHeader.html"-->
+    <div class="masthead">
+        <div class="w1200 clearfix">
+            <div class="nav-header pull-left">
+                <a href="#"><img src="/usercenter/Resources/images/hd.png" /></a>
+            </div>
+        </div>
+    </div>
+    <div class="w1200 clearfix">
+        <div class="content">
+            <div class="container">
+                <div class="crumbs-nav f-f14">
+                    <span class="current">您当前所在位置：</span>
+                    <ol>
+                        <li><a href="">学习中心首页</a></li>
+                        <li><a href="" id="a_showType">模拟练习</a></li>
+                        <li><a href="" id="title">电子商务理论与实践试题五</a></li>
+                    </ol>
+                </div>
+                <div class="bd-bg mt20">
+                    <div class="lead text-center" id="title1"><h1>{{Exam.Title}}</h1></div>
+                    <div class="item">
+                        <div class="media exam-info">
+                            <div class="media-left">
+                                <img src="/usercenter/Resources/images/tk-pic.gif" alt="" width="350" height="330">
+                            </div>
+                            <div class="media-body exam-info-txt ">
+                                <ul class="info clearfix f-f14">
+                                    <li>
+                                        <span class="info-item">年份：</span>
+                                        <span class="sub-info" id="Addtimes">{{Exam.Year}}年</span>
+                                    </li>
+                                    <li>
+                                        <span class="info-item">类型：</span>
+                                        <span class="sub-info" id="ModelName">{{ExamPaperDo?'自动组卷':'手动组卷'}}</span>
+                                    </li>
+                                    <li>
+                                        <span class="info-item">合格分数：</span>
+                                        <span class="sub-info" id="Pass">{{Exam.PassScore}}分</span>
+                                    </li>
+                                    <li>
+                                        <span class="info-item">总分：</span>
+                                        <span class="sub-info" id="sunMark">{{Counts}}分</span>
+                                    </li>
+                                    <li>
+                                        <span class="info-item">作答：</span>
+                                        <span class="sub-info" id="Minute">{{Exam.Time}}分钟</span>
+                                    </li>
+                                </ul>
+                                <div class="other">
+                                    <i class="replys"></i>
+                                    <span id="renshu">0人做过</span>
+                                </div>
+                                <div class="other">
+                                    <i class="reviews"></i>
+                                    <span id="pingluns">0人评论</span>
+                                </div>
+                                <div class="btn-option">
+                                    <a href="/usercenter/questionbank/tk/Exam/examZuoti.html?ID={{ID}}" class="btn mid-btn btn-red" id="ZuoTi">进入考试</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="item bd-bg mt20" style="padding:20px;">
+                    <div class="title">
+                        <h4>题型介绍</h4>
+                    </div>
+                    <div class="content-item">
+                        <ul class="timeline-block" id="TypeList">
+                            <li v-for="item in PaperType">
+                                <i></i>
+                                <h3 class="f-f16">{{item.Title}}</h3>
+                                <p class="f-f14">
+                                    本题共{{item.Num}}小题，每小题{{item.Sorce}}分，共{{item.Sorce * item.Num}}分。
+                                </p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--footer-->
+    <!--#<!--#include file="../UserControl/Footer.html"-->
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <script>
+        require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil'],
+            function (fnr) {
+                var $ = layui.$;
+                var table = layui.table;
+                var tableExt = layui.tableExt;
+                var vm = new Vue({
+                    el: "#root",
+                    data: {
+                        ID:fnr.getQueryString('ID'),
+                        Exam:'',
+                        PaperType:''
+                    },
+                    computed:{
+                        Counts:function(){
+                            return this.PaperType.map(function(item){
+                                                    return item.Num*item.Sorce
+                                                }).reduce(function(pre,cur){
+                                                    return pre+cur
+                                                },0)
+                        },
+                    },
+                    ready: function () {
+                        this.GetExamPaper(this.ID)
+                        this.GetExamPaperTypebyID(this.ID)
+                    },
+                    methods: {
+                        //获取试卷信息
+                        GetExamPaper:function(ID){
+                            var that=this;
+                            $.get('/service/datastore/ExamPaper/GetExamPaper',{ID:ID},function(res){
+                                if(res.SuccessResponse){
+                                   that.Exam=res.Data[0]; 
+                                }
+                            })
+                        },
+                        //根据试卷ID获取题型列表
+                        GetExamPaperTypebyID:function(examPaperId){
+                            var that=this;
+                            $.get('/service/datastore/ExamPaper/GetExamPaperType',{examPaperId:examPaperId},function(res){
+                                if(res.SuccessResponse){
+                                    that.PaperType=res.Data;
+                                }
+                            })
+                        },
+                    }
+                });
+            })
+    </script>
+</body>
+
+</html>

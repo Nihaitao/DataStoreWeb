@@ -1,0 +1,229 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <blockquote class="layui-elem-quote">
+            <div class="layui-row layui-form">
+                <div class="layui-col-xs6">
+                    <div class="layui-input-inline">
+                        <input type="text" name="SearchValue" class="layui-input" v-model="queryFormData.SearchValue" placeholder="教室名称">
+                    </div>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="option" lay-verify="required" v-bind:value.sync="queryFormData.Valid"
+                                    initial="off" lay-filter="Education_ID" laytips="启用状态"></remote-sel>
+                    </div>
+                    <button class="layui-btn layui-btn-primary" lay-submit lay-filter="btn" @click="doSearch">查询</button>
+                </div>
+                <div class="layui-col-xs6" style="text-align: right">
+                    <button class="layui-btn" @click="addRoom"><i class="layui-icon"></i> 添加校区教室</button>
+                </div>
+            </div>
+        </blockquote>
+        <!--操作模板-->
+        <table id="listTable" lay-filter="listTable"></table>
+    </div>
+</body>
+</html>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt'],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+
+
+            //搜索条件
+            var rootApp = new Vue({
+                el: '#root',
+                data: {
+                    queryFormData: {
+                        SearchValue: '',
+                        Valid:''
+                    },
+                    option: {
+                        defaultValue:-1,
+                        options: [
+                            {
+                                key: '-1',
+                                value: '全部'
+                            },
+                          {
+                              key: '1',
+                              value: '启用'
+                          }, {
+                              key: '0',
+                              value: '禁用'
+                          }
+                        ]
+
+                    }
+
+                },
+                ready: function () {
+
+                },
+                mounted: {
+
+                },
+
+                methods: {
+                    addRoom: function () {
+                        fnr.openDialog({
+                            title: '添加教室',
+                            area: ['500px', '540px'],
+                            content: ['./add.html?CampusID=' + fnr.getQueryString("ID")], //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+                            btn: ['确认添加'],
+                            yes: function (index, layero) {
+
+                                var iframeWin = window[layero.find('iframe')[0]['name']];
+                                $(iframeWin.document).find(".layui-btn").click();
+
+                            },
+                            events: {
+                                refresh: function (data) {
+                                    listTable.reload();
+                                    layer.msg("添加成功")
+                                }
+                            },
+                        });
+                    },
+                    doSearch: function () {
+                        var _this = this;
+                        listTable.reload({
+                            url: '/service/datastore/Campus/GetClassRoomList',
+                            where: {
+                                CampusID:fnr.getQueryString("ID"),
+                                Name: _this.queryFormData.SearchValue,
+                                Valid:_this.queryFormData.Valid
+                            }
+                        });
+                    },
+                    edit: function (int) {
+                        fnr.openDialog({
+                            title: '修改教室',
+                            area: ['500px', "540px"],
+                            content: ['./add.html?ID=' + int.ID], //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+                            btn: ['确认修改'],
+                            yes: function (index, layero) {
+
+                                var iframeWin = window[layero.find('iframe')[0]['name']];
+                                $(iframeWin.document).find(".layui-btn").click();
+
+                            },
+                            events: {
+                                refresh: function (data) {
+                                    listTable.reload();
+                                    layer.msg("添加成功")
+                                }
+                            },
+                        });
+                    },
+
+                }
+            });
+
+
+
+
+            //绑定列表
+            var listTable = table.render({
+                elem: '#listTable',
+                even: true, //开启隔行背景
+                page: true, //页分
+                cols: [
+                   [
+                       { fixed: true, checkbox: true },
+                
+                      
+                       { field: 'CampusName', title: '校区名称', width: 220, sort: true },
+                       { field: 'Name', title: '教室名称', width: 220, sort: true },
+                         {
+                             field: 'ClassRoomType_ID', title: '教室类型', width: 120, templet: function () {
+                                 var array = new Array();
+                                 array.push("<a href='javascript:;'>" + (this.ClassRoomType_ID == 1 ? "普通教室" : "机房") + "</a>");
+                                 return "<div>" + array.join("") + "</div>";
+                             }
+                         },
+                         {
+                             field: 'Capacity_ID', title: '教室容量', width: 120, templet: function () {
+                                 var array = new Array();
+                                 array.push("<a href='javascript:;'>" + (this.Capacity_ID == 1 ? "1-49人" : this.Capacity_ID == 2 ? "50-99人" : this.Capacity_ID == 3 ? "100-199人" : this.Capacity_ID == 4 ? "200-299人 " : "300人以上") + "</a>");
+                                 return "<div>" + array.join("") + "</div>";
+                             }
+                         },
+                       { field: 'Address', title: '地址', width: 220 },
+                      {
+                          field: 'id', title: '状态', width: 120, templet: function () {
+                              var array = new Array();
+                              array.push("<a href='javascript:;'>" + (this.Valid ? "启用" : "禁用") + "</a>");
+                              return "<div>" + array.join("") + "</div>";
+                          }
+                      },
+                       {
+                           fixed: 'right',
+                           field: 'name',
+                           title: '操作',
+                           width: 180,
+                           toolbar: function () {
+                               var array = new Array();
+                               array.push("<button class=\"layui-btn layui-btn-small\" lay-event='edit'>编辑</button>");
+                               array.push("<button class=\"layui-btn layui-btn-small " + (this.Valid == 1 ? "layui-btn-warm" : "layui-btn-normal") + " \" lay-event='editisenable'>" + (this.Valid == 1 ? "禁用" : "启用") + "</button>");
+                               array.push("<button class=\"layui-btn layui-btn-small layui-btn-danger \" lay-event='delete'>删除</button>");
+                               return "<div>" + array.join("") + "</div>";
+                           }
+                       }
+                   ]
+                ],
+                url: '/service/datastore/Campus/GetClassRoomList',
+                where: {CampusID:  fnr.getQueryString("ID"),Valid:-1}
+            });
+
+
+            //监听工具栏事件
+            tableExt.addEvent("tool(listTable)",
+                {
+                    //工具栏编辑事件
+                    "edit": function (data, obj) {
+                        rootApp.edit(data)
+
+                    },
+                    //工具栏禁用启用事件
+                    "editisenable": function (data, obj) {
+                        layer.confirm('确定' + (data.Valid == 1 ? '禁用' : '启用'), { icon: 3, title: '提示' }, function (index) {
+                            var params = { ID: data.ID, Valid: data.Valid == 1 ? 0 : 1 }
+                            $.post("/service/datastore/Campus/UpdateClassRoomValid", params, function (res) {
+                                if (res.SuccessResponse) {
+                                    { listTable.reload(); }
+                                } else { layer.msg(res.Message) }
+                            })
+                            layer.close(index);
+                        });
+                        
+                    },
+                    //工具栏删除事件
+                    "delete": function (data, obj) {
+                        layer.confirm('确认要删除么?', { icon: 3, title: '提示' }, function (index) {
+                            var params = { ID: data.ID }
+                            $.post("/service/datastore/Campus/DeleteClassRoom", params, function (res) {
+                                if (res.SuccessResponse) {
+                                    this.CourseInfoList = res.Data;
+                                    listTable.reload();
+                                } else { layer.msg(res.Message) }
+                            })
+
+                            layer.close(index);
+                        });
+                        
+                    }
+                });
+        });
+</script>

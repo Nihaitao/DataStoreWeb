@@ -1,0 +1,530 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        .tree {
+            border-radius: 2px;
+        }
+
+        .tree-content {
+            padding-left: 30px;
+        }
+
+        .tree-node {
+            border-top: 1px solid #e2e2e2;
+            position: relative;
+        }
+
+            .tree-node:first-child {
+                border-top: none;
+            }
+
+            .tree-node .option-area {
+                position: absolute;
+                top: 50%;
+                right: 15px;
+                transform: translateY(-50%);
+            }
+
+        .option-area .layui-icon {
+            display: inline-block;
+            color: #999;
+        }
+
+            .option-area .layui-icon:hover {
+                color: #333;
+            }
+
+        .tree-tit {
+            position: relative;
+            height: 42px;
+            line-height: 42px;
+            padding: 0 15px;
+            color: #333;
+            background-color: #f0f0f0;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+            .tree-tit .layui-icon {
+                display: inline-block;
+                margin-right: 10px;
+                transition: transform 0.4s;
+            }
+
+                .tree-tit .layui-icon.open {
+                    -webkit-transform: rotate(90deg);
+                    -moz-transform: rotate(90deg);
+                    transform: rotate(90deg);
+                }
+
+            .tree-tit:hover {
+                box-shadow: 2px 2px 5px #ccc;
+            }
+
+        .layui-colla-content {
+            display: none;
+            padding: 10px 15px;
+            line-height: 22px;
+            border-top: 1px solid #f0f0f0;
+            color: #666;
+        }
+
+        .state-highlight {
+            height: 50px;
+            border: 1px dashed #5FB878;
+            margin-bottom: 10px;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+        div.layui-form-switch{
+            margin-top: 0;
+        }
+        div.layui-input-block{
+            margin-left: 150px;
+        }
+    </style>
+    <link href="../../../Resources/css/indexType2.css" rel="stylesheet" />
+</head>
+<body id="root" v-cloak>
+    <div class="mainContainer">
+
+        <div class="layui-tab layui-tab-card">
+            <ul class="layui-tab-title">
+                <li class="layui-this">首页学科配置</li>
+                <li>首页自定义设置</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">
+                    <blockquote class="layui-elem-quote">
+                        <div class="layui-row layui-form">
+                            <div class="layui-col-xs6">
+                                <div class="layui-inline">
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="Name" autocomplete="off" placeholder="学科名称" class="layui-input" v-model="queryFormData.Name">
+                                    </div>
+                                    <div class="layui-input-inline">
+                                        <remote-sel v-bind:setting="validSetting" v-bind:value.sync="queryFormData.Valid" laytips="启用状态" initial="off"></remote-sel>
+                                    </div>
+                                </div>
+                                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="btn" @click="doSearch">
+                                    查询
+                                </button>
+                            </div>
+                        </div>
+                    </blockquote>
+                    <div class="block layui-clear" style="height:700px;overflow:hidden;">
+                        <div class="layui-col-xs4" style="overflow:auto;height:100%;">
+                            <div class="tree-wrap" v-cloak>
+                                <div class="tree" v-for="(index,item) in Discipline" v-bind:data-id="item.ID">
+                                    <div class="tree-node">
+                                        <div class="tree-tit" @click="setInfo(item)">
+                                            <h2 class="tit-area">
+                                                <i class="layui-icon open arrow" v-if="item.ChildNodeList.length>0">&#xe602;</i><i class="layui-icon" style="visibility:hidden;" v-else>&#xe602;</i><span class="name">{{item.Name}}</span>
+                                            </h2>
+                                            <div class="option-area">
+                                                <button class="layui-btn layui-btn-small" v-bind:class='[item.IsRecommend == 0 ? "layui-btn-warm" :"layui-btn-normal"]' @click.stop="SetDisciplineValid(item)">
+                                                    {{item.IsRecommend == 0 ? '不推荐': '推荐'}}
+                                                </button>
+                                                <i class="layui-icon add" @click.stop="setInfo(item)">&#xe642;</i>
+                                            </div>
+                                        </div>
+                                        <div class="tree-content">
+                                            <div class="tree" v-if="item.ChildNodeList.length>0" v-for="(index2,item2) in item.ChildNodeList" v-bind:data-id="item2.ID">
+                                                <div class="tree-node">
+                                                    <div class="tree-tit" @click="setInfo(item2)">
+                                                        <h2 class="tit-area">
+                                                            <i class="layui-icon" style="visibility:hidden;" v-else>&#xe602;</i><span class="name">{{item2.Name}}</span>
+                                                        </h2>
+                                                        <div class="option-area">
+                                                            <button class="layui-btn layui-btn-small" v-bind:class='[item2.IsRecommend == 0 ? " layui-btn-warm" :"layui-btn-normal"]' @click.stop="SetDisciplineValid(item2)" v-if="item.IsRecommend == 1">
+                                                                {{item2.IsRecommend == 0 ? '不推荐' : '推荐'}}
+                                                            </button>
+                                                            <i class="layui-icon add" @click.stop="setInfo(item2)">&#xe642;</i>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-col-xs8" style="overflow:auto;height:100%; padding: 0 10px; background-image: url('../../../Resources/images/backgroundImage.png'); position: relative;">
+                            <!--定位分类导航-->
+                            <div class="nav-block" style="box-sizing: border-box; height: 460px; position: absolute; top: 120px;left: 150px;">
+                                <div class="list-category">
+                                    <!--地区分类-->
+                                    <div class="clearfix" v-for="(index, item) in Discipline" v-if="item.IsRecommend != 0">
+                                        <h4>{{item.Name}}</h4>
+                                        <div class="clearfix pp25">
+                                            <a v-bind:href="'./Course/CourseList.html?index='+items.ID+'&Des='+item.ID" v-
+                                               for="(indexs,items) in item.ChildNodeList" v-if="item.IsRecommend != 0 && items.IsRecommend != 0">{{items.Name}}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="background-color: #cf2c2d;width: 100%; height: 460px; margin-top: 120px;">
+                                <img src="../../../Resources/images/banner33.jpg" style="display: inline-block; margin-left:390px;" />
+                            </div>
+                            <div style="position: absolute; top: 75px; left: 150px;">
+                                <img src="../../../Resources/images/wxHead.png" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-tab-item">
+                    <div class="layui-form">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" style="width:120px">首页自定义开关</label>
+                            <div class="layui-input-block">
+                                <local-switch v-bind:value.sync="chbSwitch" text="开启|关闭" initial="off"></local-switch>
+                            </div>
+                        </div>
+                        <div class="layui-form-item" v-show="chbSwitch">
+                            <label class="layui-form-label" style="width:120px">首页内容</label>
+                            <div class="layui-input-block">
+                                <textarea id="demo" style="display: none;"></textarea>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <button class="layui-btn" style="float: left; margin-left: 150px;" @click="subFn">保存</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="https://cdn.bootcss.com/jquery/1.10.1/jquery.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/jquery/jquery-ui.js"></script>
+<script src="../../ResourcesCenter/classroom/Sortable.js"></script>
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'laydate', 'upload', 'element', 'layedit'],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+            var upload = layui.upload;
+            var layedit = layui.layedit;
+            var element = layui.element;
+            index = layedit.build('demo'); //建立编辑器
+            //搜索条件
+            var rootApp = new Vue({
+                el: '#root',
+                data: {
+                    queryFormData: {
+                        Name: '',
+                        Valid: -1,
+                        IsRecommend: -1
+                    },
+                    chbSwitch: false,
+                    modifyDiscipline: false,
+                    DisciplineLength: '',
+                    Discipline: [],
+                    emptyDiscipline: {
+                        //AddPerson: '',
+                        //AddPersonName: '',
+                        //AddTime: '',
+                        CID: 0,
+                        ChildNodeList: [],
+                        //ChildNodeList2: '',
+                        Description: '',
+                        //ID: '',
+                        Name: '',
+                        //Orders: '',
+                        //PageSize: '',
+                        Picture: '',
+                        //StartRow: '',
+                        //System_Station_ID: '',
+                        Valid: 1,
+                        ChildNodeList: [],
+                    },
+                    validSetting: {
+                        DefaultValid: -1,
+                        options: [
+                            {
+                                key: '-1',
+                                value: '全部'
+                            },
+                            {
+                                key: '1',
+                                value: '启用'
+                            }, {
+                                key: '0',
+                                value: '禁用'
+                            }
+                        ]
+                    },
+                    SaveDisciplineForm: {
+                        CID: '',
+                        Name: '',
+                        Description: '',
+                        Picture: '',
+                    },
+                    Discipline: [],
+
+                },
+                computed: {
+
+                },
+                ready: function () {
+                    this.GetAllDiscipline(this.queryFormData);
+                    this.GetSetlist();
+                },
+                methods: {
+                    //保存首页自定义修改内容
+                    subFn: function () {
+                        var self = this;
+                        var Home_Html = layedit.getText(index); //编辑器内容
+                        if (self.chbSwitch) {
+                            $.post('/service/public/Mechanism/HeaderSet', { Home_Setting: 1, Home_Html: Home_Html }, function (res) {
+                                if (res.SuccessResponse) {
+                                    layui.msg('保存成功');
+                                } else {
+                                    layui.msg('保存失败：' + res.Message);
+                                }
+                            });
+                        } else {
+                            $.post('/service/public/Mechanism/HeaderSet', { Home_Setting: 0 }, function (res) {
+                                if (res.SuccessResponse) {
+                                    layui.msg('保存成功');
+                                } else {
+                                    layui.msg('保存失败：' + res.Message);
+                                }
+                            });
+                        }
+                    },
+
+                    //获取首页自定义内容
+                    GetSetlist: function () {
+                        var self = this;
+                        $.get('/service/public/Mechanism/GetSetlist', function (res) {
+                            if (res.SuccessResponse) {
+                                self.chbSwitch = res.Data.Home_Setting == 1 ? true : false;
+                                layedit.setContent(index, res.Data.Home_Html); //赋值
+                            } else {
+                                layui.msg(res.Message);
+                            }
+                        });
+                    },
+
+                    //获取长度
+                    length: function (arr) {
+                        return (arr.length) + 1;
+                    },
+
+                    //获取所有学科信息
+                    GetAllDiscipline: function (parms) {
+                        console.log(parms);
+                        _this = this;
+                        $.get('/service/datastore/Discipline/GetAllDisciplineInfo', parms, function (res) {
+                            if (res.SuccessResponse) {
+                                _this.Discipline = res.Data;
+                            } else {
+                                layer.msg('网络请求出错')
+                            }
+
+                        })
+                    },
+
+                    //是否推荐学科
+                    SetDisciplineValid: function (item) {
+                        var self = this;
+                        if (item.IsRecommend == 1) {
+                            $.get("/service/datastore/Discipline/GetIsRecommend", { ID: item.ID, Recommend: 0 }, function (res) {
+                                if (res.SuccessResponse) {
+                                    item.IsRecommend = 0;
+                                    self.GetAllDiscipline(self.queryFormData);
+                                }
+                            })
+                        } else if (item.IsRecommend == 0) {
+                            $.get("/service/datastore/Discipline/GetIsRecommend", { ID: item.ID, Recommend: 1 }, function (res) {
+                                if (res.SuccessResponse) {
+                                    item.IsRecommend = 1;
+                                    self.GetAllDiscipline(self.queryFormData);
+                                }
+                            })
+                        }
+                    },
+                    //设置科目
+                    setInfo: function (item) {
+                        var self = this;
+                        this.modifyDiscipline = true;
+                        this.SaveDisciplineForm = item;
+
+                        fnr.openDialog({
+                            title: '修改学科',
+                            area: ['1000px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                            content: ['ViewModel.html?Name=' + item.Name + '&ID=' + item.ID + '&Description=' + item.Description + '&Picture=' + item.Picture],
+                            btn: ['确认修改'],
+                            events: {
+                                refresh: function (data) {
+                                    if (data.status) {
+                                        layer.msg(data.msg);
+                                        self.GetAllDiscipline();
+                                    } else {
+                                        layer.msg(data.msg);
+                                    }
+                                }
+                            }
+                        });
+                    },
+
+                    ////保存课次信息
+                    //saveDisciplineInfo: function () {
+                    //    var self=this;
+                    //    //var {ID,Name,Description,Picture} = this.SaveDisciplineForm
+                    //    this.saveRequst(self.SaveDisciplineForm)
+                    //},
+                    //saveRequst: function (params,cb) {
+                    //    var self=this;
+                    //    $.post("/service/Discipline/SaveDiscipline", params, function (res) {
+                    //        if (res.SuccessResponse) {
+                    //            if(cb && typeof cb=="function")
+                    //                cb(res);
+                    //            layer.msg("添加成功");
+                    //            //self.GetAllDiscipline();
+                    //        }else{
+                    //            layer.msg(res.Message);
+                    //            return;
+                    //        }
+                    //    })
+                    //},
+                    //添加一级学科
+                    //SaveDiscipline: function () {
+                    //    var self=this;
+                    //    var timetamp=new Date().getTime().toString();
+                    //    //var {CID,Name,Description,Picture}=this.emptyDiscipline;
+                    //    var item=this.emptyDiscipline;
+                    //    item.Name = "新增学科" + timetamp.substr(-4,4);
+                    //    item.CID = 0;
+                    //    this.modifyDiscipline = true;
+                    //    this.saveRequst(item,function(res){
+                    //        self.Discipline.push(res.ReturnData.Data);
+                    //        //self.Discipline.push(JSON.parse(JSON.stringify(item)));
+                    //        self.SaveDisciplineForm=self.Discipline[self.Discipline.length-1];
+                    //    });
+                    //},
+                    //条件筛选
+                    doSearch: function () {
+                        var params = this.queryFormData;
+                        this.GetAllDiscipline(params);
+                    },
+                    //查询学科集合
+                    GetAllDiscipline: function (params) {
+                        var self = this;
+                        $.get("/service/datastore/Discipline/GetAllDiscipline", params, function (res) {
+                            if (res.SuccessResponse) {
+                                self.Discipline = res.Data;
+                                self.$nextTick(function () {
+                                    $(".tree-wrap").mySortable({
+                                        "tree": ".tree-wrap",
+                                        "treeContent": ".tree-content",
+                                        "treeTitle": ".tree-tit",
+                                        "optionArea": ".option-area",
+                                        "stop": function (event, ui) {
+                                            var sortedIDs = $(".tree-wrap").sortable("toArray", { attribute: "data-id" });
+                                            $.post("/service/datastore/Discipline/SortDiscipline", { old_prev_order: 0, old_next_order: 0, new_prev_order: 0, new_next_order: 0, currDisciplineId: 0, currParentId: 0 }, function (res) {
+                                                if (res.SuccessResponse) {
+                                                    layer.msg('排序成功')
+                                                }
+                                            })
+                                        }
+                                    });
+
+                                });
+                            }
+
+                        })
+                    },
+                    edit: function (item, index) {
+                        layer.prompt(function (value, index, elem) {
+                            item.Name = value;
+                            layer.close(index);
+
+                        });
+                    },
+
+                    add: function (item, index, parentIndex) {
+                        var self = this;
+                        var timetamp = new Date().getTime().toString();
+                        var obj = this.emptyDiscipline;
+                        this.modifyDiscipline = true;
+                        if (typeof (parentIndex) == "undefined") {
+                            obj.CID = this.Discipline[index].ID
+                            obj.Name = "新增二级菜单" + timetamp.substr(-4, 4);
+                            this.saveRequst(obj, function (res) {
+                                //self.Discipline[index].ChildNodeList.push(JSON.parse(JSON.stringify(obj)));
+                                //self.SaveDisciplineForm=self.Discipline[index].ChildNodeList[this.Discipline[index].ChildNodeList.length-1];
+                                self.Discipline[index].ChildNodeList.push(res.ReturnData.Data);
+                                self.SaveDisciplineForm = res.ReturnData.Data;
+                            })
+                        } else {
+                            obj.CID = this.Discipline[parentIndex].ChildNodeList[index].ID;
+                            obj.Name = "新增三级菜单" + timetamp.substr(-4, 4);
+                            this.saveRequst(obj, function (res) {
+                                //this.Discipline[parentIndex].ChildNodeList[index].ChildNodeList.push(JSON.parse(JSON.stringify(obj)));
+                                //this.SaveDisciplineForm=this.Discipline[parentIndex].ChildNodeList[index].ChildNodeList[this.Discipline[parentIndex].ChildNodeList[index].ChildNodeList.length-1]
+                                self.Discipline[parentIndex].ChildNodeList[index].ChildNodeList.push(res.ReturnData.Data);
+                                self.SaveDisciplineForm = res.ReturnData.Data;
+                            })
+
+                        }
+
+                    },
+
+                    delete1: function (item, index) {
+                        var self = this;
+                        layer.confirm('是否删除？', {
+                            btn: ['确定', '取消'] //按钮
+                        }, function () {
+                            $.post("/service/datastore/Discipline/RemoveDiscipline", { ID: item.ID }, function (res) {
+                                if (res.SuccessResponse) {
+                                    self.Discipline.splice(index, 1);
+                                    self.modifyDiscipline = false;
+                                    layer.msg('删除成功', { icon: 1 });
+                                    self.GetAllDiscipline();
+                                } else {
+                                    layer.msg(res.Message);
+                                }
+                            })
+                        })
+                    }
+                }
+            });
+            //上传图片
+            var uploadInst = upload.render({
+                elem: '#upload'
+              , url: '/service/upload'
+              , accept: 'images' //普通文件
+              , done: function (res, index, upload) {
+                  if (!res.SuccessResponse) {
+                      return layer.msg('上传失败');
+                  } else {
+                      rootApp._data.SaveDisciplineForm.Picture = res.Message;
+                      return layer.msg('上传成功');
+                  }
+              }
+                , error: function () {
+                    //演示失败状态，并实现重传
+                    var demoText = $('#demoText');
+                    demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                    demoText.find('.demo-reload').on('click', function () {
+                        uploadInst.upload();
+                    });
+                }
+            });
+        });
+</script>

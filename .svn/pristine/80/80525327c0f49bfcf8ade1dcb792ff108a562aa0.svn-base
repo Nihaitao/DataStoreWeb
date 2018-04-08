@@ -1,0 +1,204 @@
+﻿<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+        <meta name="format-detection" content="telephone=no">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>我的课程首页</title>
+        <link href="../../Resources/css/all.css" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="../../Resources/css/ba.css" />
+        <link rel="stylesheet" type="text/css" href="../../Resources/css/path.css" />
+		<link rel="stylesheet" type="text/css" href="http://at.alicdn.com/t/font_415611_zzk4w6t6v7a54s4i.css" />
+        <style>
+            .iconfont.icon-down-trangle {
+                font-size: inherit;
+            }
+        </style>
+
+        <script src="../../script/jquery.js"></script>
+        <script src="../../js/listcont.js"></script>
+        <script src="../../js/comment.js"></script>
+        <script src="../../script/artTemplate.js"></script>
+        <script src="../../script/layer_mobile/layer.js"></script>
+        <script>
+            $(function () {
+                //顶部导航切换
+                $('.tip ul').on('click', 'li.notList', function () {
+                    var _thisFirstTxt = $(this).find('span').first().text();
+                    if (_thisFirstTxt == '点播课程') {
+                        MyCourseList(1);
+                    } else if (_thisFirstTxt == '直播课程') {
+                        MyCourseList(2);
+                    }
+                    var txt = $(this).children().first().text();
+                    var num = $('.international').length;
+                    $('.explain .choice').text(txt);
+                    $('.explain .num').text(num);
+                    if (!$(this).hasClass('active')) {
+                        $(this).addClass('active');
+                        $(this).siblings('.notList').removeClass('active');
+                    }
+                });
+
+                //我的课程列表
+                function MyCourseList(num) {
+                    $.get("/service/Order/GetOrderListByCourse", { TeachingMethod: num }, function (rsp) {
+                        $('.explain .num').text(rsp.ReturnData.Data.length);
+                        if (rsp.SuccessResponse) {
+                            var data = {
+                                list: rsp.ReturnData.Data
+                            }
+                            var html = template('CourseList', data);
+                            $('#myCourseList').html(html);
+                            var circleArr = $(".circle");
+                            for (j = 0; j < circleArr.length; j++) {
+                                var textNum = $(circleArr[j]).next('.percent').find("a").text();
+                                if (textNum <= 50 && textNum != 0) {
+                                    $(circleArr[j]).find('.pie_left').css('transform', 'rotate(' + (textNum * 3.6 + 180) + 'deg)');
+                                    $(circleArr[j]).find('.pie_right').css('background', '#0cc');
+                                    $(circleArr[j]).find('.pie_left').css('z-index', '11');
+                                } else if(textNum > 50 && textNum != 0) {
+                                    $(circleArr[j]).find('.pie_right').css('background', '#0cc');
+                                    $(circleArr[j]).find('.pie_left').css('background', '#0cc');
+                                    $(circleArr[j]).find('.pie_left').css('transform', 'rotate(' + ((textNum - 50) * 3.6 + 180) + 'deg)');
+                                }
+                            }
+                        }
+                    })
+                }
+                //点播列表
+                MyCourseList(1);
+            })
+        </script>
+
+        <!--获取课程列表数据-->
+        <script type="text/html" id="CourseList">
+            {{each list}}
+                <div class="international clearfix">
+                    <span class="inter_English flt">
+                        <img src="{{$value.CoverPath ? $value.CoverPath : '../../Resources/img/null.jpg'}}" />
+                    </span>
+                    <div class="inter_English_describe flt">
+                        <!--<h3>{{$value.Name}}</h3>-->
+                        <h3>
+                            {{if $value.CourseChaptersID == 0}}
+                            <a href="../Video/pathNav.html?ID={{$value.ID}}" target="_blank">{{$value.Name}}</a>
+                            {{else}}
+                            <a href="../Video/pathNav.html?ID={{$value.ID}}&Course_ID={{$value.ID}}&CourseChaptersID={{$value.CourseChaptersID}}" target="_blank">{{$value.Name}}</a>
+                            {{/if}}
+                        </h3>
+                        <div class="inter_English_describe_person ">
+                            <div class="circle">
+                                <div class="pie_left">
+                                    <div class="left"></div>
+                                </div>
+                                <div class="pie_right">
+                                    <div class="right"></div>
+                                </div>
+                            </div>
+                            <i class="percent">学习进度:<span><a>{{$value.StudyLength}}</a> %</span></i>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        </script>
+	</head>
+
+	<body>
+		<header>
+			<div class="ipt">
+				<span class="logo">
+                    <img src="../../Resources/img/logo.jpg" />
+				</span>
+				<input type="text" name="" id="" placeholder="搜索课程、专业" />
+				<i class="iconfont icon-sousuo"></i>
+			</div>
+		</header>
+
+		<main>
+			<nav class="tip">
+				<ul class="clearfix bz-bb">
+					<li class="notList">
+						<span>直播课程</span>
+					</li>
+                    <li class="notList active">
+                        <span>点播课程</span>
+                    </li>
+					<li class="">
+						<span>其他</span>
+						<i class="iconfont icon-down-trangle"></i>
+					</li>
+				</ul>
+				<div class="side clr_f" style="display: none;">
+					<div class="placeShow" >
+						<div class="side_p">
+					 	<div class="bz-bb">
+					 		地区
+					 	</div >
+					 	<div class="bz-bb">
+					 		层次
+					 	</div>
+					 	<div class="active bz-bb">
+					 		学科
+					 	</div>
+					 </div> 
+					 <div class="side_show clr_f">
+					 	<div class="side_p_show">
+					 		<div class="fl-r diqu clr_f">
+					 			<i>文史类</i>
+					 			<i>理工类</i>
+					 			<i>法学类</i>
+					 			<i>医学类</i>
+					 			<i>新闻类</i>
+					 			<i>经管类</i>
+					 			<i>艺术类</i>
+					 		</div>
+					 	</div>
+					 </div>
+					</div>
+				</div>
+			</nav>
+			<p class="explain">
+				在“<span class="choice">点播课程</span>”的分类下,找到了<span class="num"></span>门课程
+			</p>
+			<div class="firstCon clearfix" id="myCourseList"></div>
+				<div class="mask" style="display: none"></div>
+		</main>
+
+
+		<footer>
+			<nav>
+				<ul class="clearfix">
+                    <li>
+                        <a class="footerBtn" href="../../index.html">
+                            <i class="iconfont icon-shouye1"></i>
+                            <p>首页</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="footerBtn" href="../Course/list.html">
+                            <i class="iconfont icon-fenlei1"></i>
+                            <p>分类</p>
+                        </a>
+                    </li>
+                    <li class="footer_active">
+                        <a class="footerBtn" href="path.html">
+                            <i class="iconfont icon-wodekecheng"></i>
+                            <p>我的课程</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="footerBtn" href="personalIndex.html">
+                            <i class="iconfont icon-wode"></i>
+                            <p>我的</p>
+                        </a>
+                    </li>
+				</ul>
+			</nav>
+		</footer>
+	</body>
+	
+	
+	
+</html>

@@ -1,0 +1,102 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Nancy;
+using CT.Signature;
+using CT.Signature.Http;
+using Nancy.Cookies;
+using Nancy.Responses;
+using Nancy.Routing.Trie;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using NPOI.Util;
+
+namespace Common.Module
+{
+    public class UserModule : BaseModule
+    {
+        public UserModule()
+        {
+            Post["/user/login"] = _ => Login();
+            Post["/user/StudentLogin"] = _ => StudentLogin();
+        }
+
+
+        public dynamic Login()
+        {
+            string resourceUrl = null;
+           var clientProfile= ProfileManager.GetClientProfile(Request.Url, out resourceUrl);
+           var commonRequest = new CommonRequest(LoginServiceUrl, clientProfile);
+
+            if (Request.Method == "POST")
+            {
+                commonRequest.Method = MethodType.POST;
+                commonRequest.Content = new byte[Request.Body.Length];
+
+                Request.Body.Read(commonRequest.Content, 0, commonRequest.Content.Length);
+                commonRequest.ContentType = Request.Headers.ContentType;
+            }
+            var client = new eduClient();
+            var response = client.GetResponse(commonRequest);
+            var jToken = JToken.Parse(response.Data);
+
+            var nancyResponse = Response.AsText(response.Data, "application/json");
+            if (jToken["SuccessResponse"].Type == JTokenType.Boolean && jToken["SuccessResponse"].Value<bool>())
+            {
+                var accountId = jToken["ReturnData"]["Data"]["Account_ID"].Value<string>();
+                var accountName = jToken["ReturnData"]["Data"]["Name"].Value<string>();
+                var accountIdCookie = new NancyCookie("AccountID", accountId); //RspModel.ReturnData.Account_ID,32位字符串
+
+                var accountNameCookie = new NancyCookie("AccountName", accountName);
+                nancyResponse.Cookies.Add(accountIdCookie);
+                nancyResponse.Cookies.Add(accountNameCookie);
+            }
+
+            return nancyResponse;
+        }
+
+        /// <summary>
+        /// 学生登录(身份证+密码)
+        /// </summary>
+        /// <returns></returns>
+        public dynamic StudentLogin()
+        {
+            var url = StudentLoginServiceUrl1;
+            if ((int) Request.Form.LoginType == 2)
+            {
+                //学生登录(手机号码+验证码)
+                url = StudentLoginServiceUrl2;
+            }
+            string resourceUrl = null;
+            var clientProfile = ProfileManager.GetClientProfile(Request.Url, out resourceUrl);
+            var commonRequest = new CommonRequest(url, clientProfile);
+
+            if (Request.Method == "POST")
+            {
+                commonRequest.Method = MethodType.POST;
+                commonRequest.Content = new byte[Request.Body.Length];
+
+                Request.Body.Read(commonRequest.Content, 0, commonRequest.Content.Length);
+                commonRequest.ContentType = Request.Headers.ContentType;
+            }
+            var client = new eduClient();
+            var response = client.GetResponse(commonRequest);
+            var jToken = JToken.Parse(response.Data);
+
+            var nancyResponse = Response.AsText(response.Data, "application/json");
+            if (jToken["SuccessResponse"].Type == JTokenType.Boolean && jToken["SuccessResponse"].Value<bool>())
+            {
+                var StuId = jToken["ReturnData"]["Data"]["StuId"].Value<string>();
+                var StuName = jToken["ReturnData"]["Data"]["Name"].Value<string>();
+                var accountIdCookie = new NancyCookie("StuId", StuId);
+                var accountNameCookie = new NancyCookie("Name", StuName);
+                nancyResponse.Cookies.Add(accountIdCookie);
+                nancyResponse.Cookies.Add(accountNameCookie);
+            }
+
+            return nancyResponse;
+        }
+    }
+}

@@ -1,0 +1,261 @@
+﻿<div class="mainContainer" id="root">
+
+    <div class="totalContainer">
+        <div class="layui-form">
+            <ul class="infoNameBox" v-cloak>
+                <li v-for="item in FirstData" style="background-color: #d2d2d2;">{{item.Name}}</li>
+            </ul>
+            <div class="scrollItemBox">
+                <div class="itemTemp" v-cloak>
+                    <ul class="scrollItem" v-for="item in CustomerList">
+                        <li v-for="items in item.Children">
+                            <!--<div class="layui-form" style="display:inline">-->
+                            <input type="radio" name="{{items.FieldName}}" value="{{items.dataValue}}">
+                            <span title="{{items.Value}}">{{items.Value ? items.Value : ''}}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button class="layui-btn" @click="addCustomField">提交</button>
+</div>
+<style>
+    [v-cloak] {
+        display: none;
+    }
+
+    input[type="radio"] + label::before {
+        content: "\a0"; /*不换行空格*/
+        display: inline-block;
+        vertical-align: middle;
+        font-size: 18px;
+        width: 1em;
+        height: 1em;
+        margin-right: .4em;
+        border-radius: 50%;
+        border: 1px solid #01cd78;
+        text-indent: .15em;
+        line-height: 1;
+    }
+
+    input[type="radio"]:checked + label::before {
+        background-color: #01cd78;
+        background-clip: content-box;
+        padding: .2em;
+    }
+
+    input[type="radio"] {
+        position: absolute;
+        clip: rect(0, 0, 0, 0);
+    }
+
+    .infoNameBox, .scrollItemBox, .scrollItem {
+        display: inline-block;
+    }
+
+    div.layui-unselect {
+        line-height: 0;
+        margin: 0;
+        padding: 0;
+    }
+
+    .totalContainer .infoNameBox li,
+    .totalContainer .scrollItemBox li {
+        padding: 15px;
+        height: 10px;
+        border-bottom: 1px solid #ddd;
+        border-right: 1px solid #ddd;
+    }
+
+    .totalContainer {
+        font-size: 0;
+        line-height: 1;
+        height: 500px;
+        clear: both;
+    }
+
+    .totalContainer .infoNameBox {
+        float: left;
+        width: 15%;
+        font-size: 14px;
+        border: 1px solid #ddd;
+        border-right: none;
+        border-bottom: none;
+        box-sizing: border-box;
+    }
+
+    .totalContainer .scrollItemBox {
+        float: left;
+        font-size: 14px;
+        width: 85%;
+        overflow-x: scroll;
+        border-top: 1px solid #ddd;
+        box-sizing: border-box;
+    }
+
+    .totalContainer .scrollItemBox li span {
+        display: inline-block;
+        width: 190px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+
+    .totalContainer .scrollItemBox div.itemTemp {
+        white-space: nowrap;
+    }
+
+    .totalContainer .scrollItemBox .scrollItem {
+        width: 235px;
+    }
+</style>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet">
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/customUtil.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/Controls/Common.js"></script>
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'jqueryui', 'element'],
+    function (fnr) {
+        var $ = layui.$;
+        var jqueryui = layui.jqueryui;
+        var form = layui.form;
+        var element = layui.element;
+
+        var vm = new Vue({
+            el: "#root",
+            data:
+            {
+                CustomerList: [],
+                FirstData: [],
+                submitObj: {},
+                Merge_Client_ID_Arr: []
+            },
+            ready: function () {
+                var Phone = GetQueryString('Phone')
+                this.GetCustomerInformation(Phone);
+            },
+            methods: {
+                GetCustomerInformation: function (PhoneNumb) {
+                    var self = this;
+                    $.get("/service/crm/Client/GetListMergePhone", { ModelValue: PhoneNumb }, function (resp) {
+                        if (resp.SuccessResponse) {
+                            if (resp.Data.length > 0) {
+                                resp.Data.map(function (val, index) {
+                                    val['Children'] = [];
+                                    val.map(function (_val, _index) {
+                                        _val.Childs.map(function (__val, __index) {
+
+                                            __val.dataValue = '';
+                                            if (__val.Value != null && __val.Value != 'undefined') {
+
+                                                if (__val.Value.indexOf(',') == -1 && __val.Value.indexOf('|') == -1) {
+                                                    __val.dataValue = __val.Value;
+                                                }
+
+                                                //数据类型统一
+                                                if (__val.Value.indexOf(',') != -1 && __val.Value.indexOf('|') == -1) {
+                                                    var value1 = __val.Value.split(',')[0];
+                                                    var value2 = __val.Value.split(',')[1];
+                                                    __val.Value = value1;
+                                                    __val.dataValue = value2;
+                                                }
+
+                                                //省市区数据处理
+                                                if (__val.Value.indexOf(',') != -1 && __val.Value.indexOf('|') != -1) {
+                                                    var valueData = __val.Value.split('|');
+                                                    var newValue = '';
+                                                    var newDataValue = '';
+                                                    valueData.map(function (___val, ___index) {
+                                                        if (___val.indexOf(',') == -1) {
+                                                            newValue += ___val ? ___val : '';
+                                                            newDataValue += ___val;
+                                                        } else {
+                                                            if (___val.split(',')[1]) {
+                                                                newValue += ___val.split(',')[1] + ',' ? ___val.split(',')[1] + ',' : '';
+                                                                newDataValue += ___val.split(',')[0] + ',' ? ___val.split(',')[0] + ',' : '';
+                                                            } else {
+                                                                newValue += '';
+                                                                newDataValue += '';
+                                                            }
+                                                        }
+                                                    });
+                                                    __val.Value = newValue;
+                                                    __val.dataValue = newDataValue;
+                                                }
+                                            }
+                                            //目标客户处理
+                                            if (__val.FieldName == 'ID') {
+                                                self.Merge_Client_ID_Arr.push(__val.dataValue);
+                                                val['Children'].unshift(__val);
+                                            } else {
+                                                val['Children'].push(__val);
+                                            }
+                                        })
+                                    })
+                                });
+                                self.CustomerList = resp.Data;
+                                resp.Data[0].map(function (val, index) {
+                                    if (!!val.Childs) {
+                                        val.Childs.map(function (_val, _index) {
+                                            //目标客户处理
+                                            if (_val.FieldName == 'ID') {
+                                                self.FirstData.unshift(_val);
+                                            } else {
+                                                self.FirstData.push(_val);
+                                            }
+                                        })
+                                    }
+                                });
+                                self.$nextTick(function () {
+                                    form.render("radio");
+                                    $("ul.scrollItem").eq(0).find("li div.layui-unselect").click();
+                                    //var inputData = $("ul.scrollItem").find("input:checked");
+                                    //inputData.map(function (val, index) {
+                                    //    console.log(index.value);
+                                    //});
+                                });
+                            } else {
+                                layer.msg('返回值为空')
+                            }
+                            
+                        }
+                    })
+                },
+
+                addCustomField: function () {
+                    var self = this;
+                    self.$nextTick(function () {
+                        var inputData = $("ul.scrollItem").find("input:checked");
+                        self.submitObj['ListExtData'] = [];
+                        self.submitObj['NowCity'] = '';
+                        self.submitObj['NowArea'] = '';
+                        self.submitObj['NowAddress'] = '';
+                        inputData.map(function (val, index) {
+                            if (index.name.indexOf("customField_") != -1) {
+                                self.submitObj['ListExtData'].push({ ItemName: index.name, ItemValue: index.value });
+                            } else {
+                                if (index.name == 'NowProvince') {
+                                    self.submitObj[index.name] = index.value.split(',')[0] ? index.value.split(',')[0] : '';
+                                    self.submitObj['NowCity'] = index.value.split(',')[1] ? index.value.split(',')[1] : '';
+                                    self.submitObj['NowArea'] = index.value.split(',')[2] ? index.value.split(',')[2] : '';
+                                    self.submitObj['NowAddress'] = index.value.split(',')[3] ? index.value.split(',')[3] : '';
+                                } else {
+                                    self.submitObj[index.name] = index.value;
+                                }
+                            }
+                        });
+                        self.Merge_Client_ID_Arr.splice(self.Merge_Client_ID_Arr.indexOf(self.submitObj['ID']), 1);
+                        self.submitObj['Merge_Client_ID'] = self.Merge_Client_ID_Arr.join(',');
+                        $.post('/service/crm/Client/MergeCustomerInformation', self.submitObj, function (res) {
+                            layer.msg(res.Message ? res.Message : '操作成功');
+                        });
+                    });
+                }
+            }
+        });
+    });
+</script>

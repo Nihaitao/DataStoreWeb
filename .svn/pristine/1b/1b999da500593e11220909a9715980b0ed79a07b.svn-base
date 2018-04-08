@@ -1,0 +1,47 @@
+﻿666 -->
+<div class="masthead" id="header"  v-cloak>
+    <div class="w1200 clearfix">
+        <div class="nav-header pull-left">
+            <a href="/usercenter/index.shtml" v-if="layoutData.HeaderLogoOrName == 1" style="width: 232px; height: 60px; display: block; overflow:hidden;"><img v-bind:src="layoutData.HeaderLogo ? layoutData.HeaderLogo : '/Resources/images/WxLogo.png'" /></a>
+            <a href="/usercenter/index.shtml" v-else style="width: 232px; height: 60px; display: block; overflow:hidden; margin-top: 30px;text-decoration: none;">{{layoutData.HeaderName}}</a>
+        </div>
+        <div style="float:right;" v-if="IsStu">
+            <div class="layui-form">
+                <div class="layui-form-item" id="zy">
+                    <span style="position: relative;left: -80px;top: 28px;color:#000;">当前专业</span>
+                    <i class="iconfont icon-xuanzedangqianzhuanye1 top">&#xe631;</i>
+                    <remote-sel v-bind:setting.sync="GetStudentDetailRegisterSet" v-bind:value.sync="url" v-bind:change="RegisterSetChange" laytips="请选择"></remote-sel>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    require_js_file(['jquery',  'element', 'customUtil', 'linq','wxconfig'],
+        function (fnr) {
+            var wxconfig = layui.wxconfig;
+
+            var rootApp = new Vue({
+                el: '#header',
+                data: {
+                    layoutData: {
+                    }
+                },
+                ready: function () {
+                    var self = this;
+                    self.layoutData = wxconfig.GetSetting();
+                },
+                methods: {
+                    RegisterSetChange: function () {
+                        var value = this.url;
+                        var info = linq.from(this.GetStudentDetailRegisterSet.dataSource).firstOrDefault(function (x) { return x.Specialty_ID == value });
+                        if (info) {
+                            if (getCookie("Specialty_ID") != info.Specialty_ID) {
+                                window.open(info.Description);
+                            }
+                        }
+                    },
+                }
+            });
+        })
+</script>

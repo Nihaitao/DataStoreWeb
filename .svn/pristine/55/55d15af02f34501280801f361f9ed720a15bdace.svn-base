@@ -1,0 +1,840 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>查看客户</title>
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+
+        label.layui-form-label {
+            width: 90px;
+            text-align: left;
+            padding-right: 0;
+        }
+    </style>
+</head>
+<body id="root" v-cloak>
+    <div class="OpenContainer" id="ClientMsg">
+        <div class="layui-row layui-form" lay-filter="listSelect">
+            <div class="layui-input-inline" v-if="Assign">
+                <remote-sel layverify="required" v-bind:setting="PhaseTypeSetting" v-bind:value.sync="PhaseType_ID"
+                            initial="off"></remote-sel>
+            </div>
+            <button class="layui-btn layui-btn-primary" @click="transferClient" lay-filter="btn" v-if="Assign">
+                <i class="layui-icon">&#xe609;</i> 转移客户
+            </button>
+            <button class="layui-btn layui-btn-primary" @click="clientRe" lay-filter="btn" v-if="Assign">
+                <i class="layui-icon">&#xe609;</i> 转移至公海
+            </button>
+            <button class="layui-btn layui-btn-primary" @click="modifyC1" lay-filter="btn" v-if="Assign"><i class="layui-icon">&#xe642;</i> 编辑</button>
+            <button class="layui-btn layui-btn-primary" @click="deleteClient" lay-filter="btn" v-if="Assign"><i class=" layui-icon">&#xe640;</i> 删除</button>
+        </div>
+
+        <div class="layui-tab layui-tab-card" lay-filter="layuitab">
+            <ul class="layui-tab-title">
+                <li class="layui-this" lay-id="1">客户资料</li>
+                <li lay-id="2">联系人</li>
+                <li lay-id="5">商机</li>
+                <li lay-id="3">预约提醒</li>
+                <li lay-id="4">操作日志</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div v-cloak class="layui-tab-item layui-show">
+                    <!--客户基本信息-->
+                    <div class="layui-form" style="width:49%; float:left">
+                        <template v-for="(index,item) in NewInfoData">
+                            <hr v-show="index>0" style="margin-left: 15px;" />
+                            <div v-cloak class="layui-form-item layui-form-text" style=" margin-bottom:0px">
+                                <label class="layui-form-label" style="color:#808080">{{item.ShowName}}</label>
+                            </div>
+                            <div v-cloak class="layui-form-item layui-form-text" style=" margin-bottom:0px" v-for="items in item.list">
+                                <label class="layui-form-label"><b>{{items.ItemName}}：</b></label>
+                                <div class="layui-input-block" v-if="items.FieldType == 107" style="margin-bottom: 10px;">
+                                    <img class="layui-upload-img" v-bind:src="items.ItemValue" style="height:60px; width: 232px;">
+                                </div>
+                                <div class="layui-input-block" v-else>
+                                    <label>{{items.ItemValue}}</label>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                    <div style="width:49%; float:right;">
+                        <button class="layui-btn" @click="followStatus" v-if="Assign"><i class=" layui-icon">&#xe608;</i>写跟进</button>
+                        <ul class="layui-timeline" style=" margin-top:20px">
+                            <template v-for="item in GetContactRe">
+                                <li class="layui-timeline-item ">
+                                    <i class="layui-icon layui-timeline-axis">&#xe617;</i>
+                                    <div class="layui-timeline-content layui-text">
+                                        <h3 class="layui-timeline-title">{{item.date | format "MM-dd"}}<span></span></h3>
+                                    </div>
+                                </li>
+                                <template v-for="childItem in item.content">
+                                    <li class="layui-timeline-item">
+                                        <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+                                        <div class="layui-timeline-content layui-text">
+                                            <div>
+                                                <h3 class="layui-timeline-title" style="display: inline-block;"><span>{{childItem.AddPersonName}}&nbsp;-&nbsp;{{childItem.ContactTypeName == null ? '暂无' : childItem.ContactTypeName}}</span></h3>
+                                                <ul class="layui-nav TimeSelect" style="display: inline-block;vertical-align:top;padding:0;float:right;background-color:#fff;">
+                                                    <li class="layui-nav-item" style="margin-top: 0; line-height: 100%;">
+                                                        <a class="toggleBtn" @click="ContactBox($event.target)" href="javascript:;" style="text-decoration:none;color:#000;">
+                                                            {{childItem.ContactTime | format "HH:mm"}}
+                                                            &nbsp;
+                                                            <i class="layui-icon">&#xe61a;</i>
+                                                        </a>
+                                                        <dl class="layui-nav-child layui-anim layui-anim-unbit">
+                                                            <dd>
+                                                                <a href="javascript:;" @click="deleteThisContact(childItem.ID)" style="text-decoration: none">删除</a>
+                                                            </dd>
+
+                                                        </dl>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <p>
+                                                {{childItem.Content}}
+                                            </p>
+                                            <p>添加时间: {{childItem.AddTime | format "yyyy-MM-dd HH:mm"}}</p>
+                                        </div>
+                                    </li>
+                                </template>
+                            </template>
+                        </ul>
+                    </div>
+                    <div style="clear:both"></div>
+                </div>
+                <div class="layui-tab-item">
+                    <!--<button class="layui-btn">添加联系人</button>
+                    <table id="listContanctTable" lay-filter="listContanctTable"></table>-->
+                    <button class="layui-btn" @click="AddContanct" v-if="Assign">添加联系人</button>
+                    <table id="listContanctTable" lay-filter="listContanctTable"></table>
+                </div>
+                <div class="layui-tab-item">
+                    <table id="listBusinessOpportunityTable" lay-filter="listBusinessOpportunityTable"></table>
+                </div>
+                <div class="layui-tab-item">
+                    <button class="layui-btn" @click="addRemind" v-if="Assign">添加预约</button>
+                    <ul class="layui-timeline" style=" margin-top:20px">
+                        <template v-cloak v-for="item in GetRemindList">
+                            <li class="layui-timeline-item timeItem">
+                                <i class="layui-icon layui-timeline-axis">&#xe617;</i>
+                                <div class="layui-timeline-content layui-text">
+                                    <h3 class="layui-timeline-title">{{item.date | format "MM-dd"}}</h3>
+                                </div>
+                            </li>
+                            <template v-cloak v-for="childItem in item.content">
+                                <li class="layui-timeline-item" v-if="childItem.Valid == 0">
+                                    <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+                                    <div class="layui-timeline-content layui-text">
+                                        <div>
+                                            <h3 class="layui-timeline-title" style="display: inline-block;"><span>{{childItem.AddPersonName}}&nbsp;-&nbsp;{{childItem.AppointmentTypeName == null ? '暂无' : childItem.AppointmentTypeName}}</span></h3>
+                                            <ul class="layui-nav TimeSelect" style="display: inline-block;vertical-align:top;padding:0;float:right;background-color:#fff;">
+                                                <li class="layui-nav-item" style="margin-top: 0; line-height: 100%;">
+                                                    <a class="toggleBox" @click="ContactBox($event.target)" href="javascript:;" style="text-decoration:none;color:#000;">
+                                                        {{childItem.Date | format "HH:mm"}}
+                                                        &nbsp;
+                                                        <i class="layui-icon">&#xe61a;</i>
+                                                    </a>
+                                                    <dl class="layui-nav-child layui-anim layui-anim-unbit" v-if="Assign">
+                                                        <dd>
+                                                            <a href="javascript:;" @click="deleteThisRemind(childItem.ID)" style="text-decoration: none">删除</a>
+                                                        </dd>
+                                                        <dd v-if="childItem.Valid == 0">
+                                                            <a href="javascript:;" @click="UpdateValid(childItem.ID)" style="text-decoration: none">处理</a>
+                                                        </dd>
+                                                    </dl>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <p>
+                                            {{childItem.Content}}
+                                        </p>
+                                        <p>添加时间: {{childItem.AddTime | format "yyyy-MM-dd HH:mm"}}</p>
+                                    </div>
+                                </li>
+                            </template>
+                        </template>
+                    </ul>
+                </div>
+                <div class="layui-tab-item">
+                    <table id="listLogTable" lay-filter="listLogTable"></table>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
+
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/Controls/Common.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate", "element"],
+    function (fnr) {
+        var element = layui.element;
+        var laydate = layui.laydate;
+        var $ = layui.jquery;
+        var form = layui.form;
+        var tableExt = layui.tableExt;
+        var table = layui.table;
+
+        //获取hash来切换选项卡，假设当前地址的hash为lay-id对应的值
+        var layid = location.hash.replace(/^#layuitab=/, '');
+        element.tabChange('layuitab', layid);
+        //监听Tab切换，以改变地址hash值
+        element.on('tab(layuitab)', function () {
+            location.hash = 'layuitab=' + this.getAttribute('lay-id');
+        });
+
+        var ContactTableConfig =
+                [
+                    { field: 'Name', title: '姓名', width: 120 },
+                    { field: 'Department', title: '部门', width: 100 },
+                    { field: 'Position', title: '职务', width: 100 },
+                    { field: 'Tel', title: '电话', width: 100 },
+                    { field: 'Phone', title: '手机', sort: true, width: 100 },
+                    { field: 'Email', title: '邮箱', sort: true, width: 100 },
+                    { field: 'Remark', title: '备注', sort: true, width: 100 },
+                    {
+                        fixed: 'right',
+                        title: '操作',
+                        width: 330,
+                        toolbar: function () {
+                            var array = new Array();
+                            if (this.IsAssign != 1) {
+                                array.push("<button class='layui-btn layui-btn-normal layui-btn-small' href='javascript:;' lay-event='detail2'>修改</button><button class='layui-btn layui-btn-danger layui-btn-small' href='javascript:;' lay-event='deleteContacts'>删除</button>");
+                            }
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    }
+                ]
+
+        var BusinessOpportunit =
+               [
+                   { field: 'Name', title: '商机名称', width: 138 },
+                   { field: 'PredictMoney', title: '预计销售金额', width: 267 },
+                   {
+                       field: 'PredictTime', title: '预计签单日期', width: 333, templet: function () {
+                           var array = new Array();
+                           array.push("<span>" + fnr.format(this.AddTime, "yyyy-MM-dd HH:mm") + "</span>");
+                           return "<div>" + array.join("") + "</div>";
+                       }
+                   },
+                   { field: 'Description', title: '跟进阶段', width: 195 }
+               ]
+
+        var listContanctTable = table.render({
+            elem: '#listContanctTable',
+            even: true, //开启隔行背景
+            id: 'listContanctTable',
+            cols: [ContactTableConfig],
+            url: '/service/crm/Client/GetListContactPerson',
+            where: { ID: GetQueryString('ID') }
+        });
+
+        var listBusinessOpportunityTable = table.render({
+            elem: '#listBusinessOpportunityTable',
+            even: true, //开启隔行背景
+            page: true, //页分
+            id: 'listBusinessOpportunityTable',
+            cols: [BusinessOpportunit],
+            url: '/service/crm/Contact/GetBusinessOpportunity',
+            where: { ID: GetQueryString('ID') }
+        });
+
+        var LogTableConfig =
+                [
+                    {
+                        title: '操作时间', width: 160, sort: true, templet: function () {
+                            var array = new Array();
+                            array.push("<span>" + fnr.format(this.Time, "yyyy-MM-dd HH:mm") + "</span>");
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    },
+                    { field: 'AddPersonName', title: '操作人员', width: 120 },
+                    { field: 'OperationType', title: '操作类型', width: 150 },
+                    { field: 'FieldName', title: '字段名', width: 140 },
+                    { field: 'OldValue', title: '旧字段值', sort: true, width: 120 },
+                    { field: 'NewValue', title: '新字段值', sort: true, width: 80 },
+                    { field: 'Remark', title: '备注', sort: true, width: 200 }
+                ]
+
+
+        var listLogTable = table.render({
+            elem: '#listLogTable',
+            even: true, //开启隔行背景
+            id: 'listLogTable',
+            cols: [LogTableConfig],
+            url: '/service/crm/Log/GetClientListLog',
+            where: { BusID: GetQueryString('ID') }
+        });
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+                PhaseType_ID: '',
+                Valid: '',
+                GetContactRe: [],
+                GetRemindList: [],
+                RemindList: [],
+                Assign: true,
+                publicForm: {
+                    ID: '',
+                    PhaseType_ID: ''
+                },
+                submitForm: {
+                    ID: '',
+                    Name: '',
+                    Sex: '',
+                    Phone: '',
+                    Remark: '',
+                    EducationName: '',
+                    ImportanceName: '',
+                    SourceName: '',
+                    PhaseTypeName: '',
+                    ConnectionLevelName: '',
+                    SysGroupPath: ''
+                },
+                PhaseTypeSetting: {
+                    search: true,
+                    options: [],
+                    fields: { root: 'Data', key: 'ID', value: 'Description' },
+                    remote: { url: '/service/public/HDictionary/GetHDictionaryList', data: { Valid: 1, ColumnName: 'PhaseType_ID' } }
+                },
+                ModifyForm: {
+                    ID: '',
+                    Name: '',
+                    Sex: 1,
+                    Phone: '',
+                    Remark: '',
+                    Education_ID: '',
+                    Importance_ID: '',
+                    Source_ID: '',
+                    PhaseType_ID: '',
+                    ConnectionLevel_ID: '',
+                    SysGroupPath: '',
+                    SystemGroup_ID: ''
+                },
+                submitNewForm: {},
+                submitModify: {
+                    ID: GetQueryString('ID')
+                },
+                //下拉框参数列表
+                phaseTypeFormData: {},
+                //新的页面
+                NewInfoData: [],
+                NewFeildData: [],
+                InfoFormData: {}
+            },
+            filters: {
+                format: function (time, format) {
+                    if (time == undefined) {
+                        return '';
+                    }
+                    var finalTime;
+                    if (typeof (time) == 'string') {
+                        time = time.replace("T", " ");
+                        time = time.replace("Z", " ");
+                        var timeIOS = time.replace(/\-/g, "/");
+                        finalTime = new Date(timeIOS);
+                    } else {
+                        finalTime = time;
+                    }
+
+                    var t = new Date(finalTime);
+                    var tf = function (i) { return (i < 10 ? '0' : '') + i };
+                    return format.replace(/yyyy|MM|dd|HH|mm|ss/g,
+                        function (a) {
+                            switch (a) {
+                                case 'yyyy':
+                                    return tf(t.getFullYear());
+                                    break;
+                                case 'MM':
+                                    return tf(t.getMonth() + 1);
+                                    break;
+                                case 'mm':
+                                    return tf(t.getMinutes());
+                                    break;
+                                case 'dd':
+                                    return tf(t.getDate());
+                                    break;
+                                case 'HH':
+                                    return tf(t.getHours());
+                                    break;
+                                case 'ss':
+                                    return tf(t.getSeconds());
+                                    break;
+                            }
+                        });
+                }
+            },
+            ready: function () {
+                this.submitForm.ID = GetQueryString('ID');
+                this.publicForm.ID = GetQueryString('ID');
+                this.publicForm.PhaseType_ID = GetQueryString('PhaseType_ID');
+                this.modifyClients();
+                this.listSelect();
+                this.getContact();
+                this.getRemind();
+                this.GetClientListji();
+            },
+            methods: {
+                //分组设置
+                setGroup: function () {
+                    fnr.openDialog({
+                        title: '修改分组',
+                        area: ['750px', '500px'],
+                        content: ['SetGroup.html?ID=' + this.publicForm.ID],
+                        btn: ['确认修改'],
+                        events: {
+                            refresh: function (data) {
+                                if (data.status) {
+                                    layer.msg(data.msg);
+                                    fnr.callDialog('add');
+                                    setTimeout(function () { location.reload(); }, 500);
+                                } else {
+                                    layer.msg(data.msg);
+                                }
+                            }
+                        }
+                    });
+                },
+                //修改处理状态
+                UpdateValid: function (id) {
+                    var _id = id;
+                    layer.confirm('确定处理吗？', function () {
+                        $.ajax({
+                            url: '/service/crm/Appointment/UpdateAppointmentValid',
+                            type: 'POST',
+                            data: { Other: _id, Status: 1 },
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data.SuccessResponse) {
+                                    layer.msg(data.Message);
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 1000)
+                                } else {
+                                    layer.msg(data.Message);
+                                }
+                            }
+                        });
+                    })
+                },
+                //触发操作列表
+                ContactBox: function (e) {
+                    if (e.className == 'layui-icon') {
+                        $(e).parent('a').next('dl').toggle();
+                    } else {
+                        $(e).next('dl').toggle();
+                    }
+                },
+                //下拉框改变触发
+                listSelect: function () {
+                    var self = this;
+                    form.on('select', function (data) {
+                        if (data) {
+                            var val = data.value;
+                            $.ajax({
+                                url: '/service/crm/Client/UpdateClientPhaseType',
+                                type: 'post',
+                                data: { Client_ID: GetQueryString('ID'), PhaseType_ID: val },
+                                dataType: 'json',
+                                success: function (data) {
+                                    if (data.SuccessResponse) {
+                                        if (data.Data) {
+                                            layer.msg(data.Message);
+                                            fnr.callDialog('add');
+                                            setTimeout(function () { location.reload(); }, 500);
+                                        }
+                                    }
+                                    else {
+                                        layer.msg(data.Message);
+                                    }
+                                }
+                            });
+                        }
+                    });
+                },
+                //删除预约提醒
+                deleteThisRemind: function (id) {
+                    layer.confirm('确定删除吗，删除后将无法恢复', function () {
+                        $.ajax({
+                            url: '/service/crm/Appointment/DeleteAppointmentByID',
+                            type: 'POST',
+                            data: { Other: id },
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data.SuccessResponse) {
+                                    layer.msg(data.Message);
+                                    setTimeout(function () { location.reload() }, 500);
+                                } else {
+                                    layer.msg(data.Message);
+                                }
+                            }
+                        });
+                    })
+
+                },
+                //获取预约提醒
+                getRemind: function () {
+                    var self = this;
+                    $.ajax({
+                        url: '/service/crm/Appointment/GetClientListAppointmentGroupByDate',
+                        type: 'GET',
+                        data: { BusID: this.publicForm.ID, Other: 0, ModelIndex: 2, FeildType: 1 }, //升序ModelIndex: 3， 降序是ModelIndex: 2
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.SuccessResponse) {
+                                self.GetRemindList = [];
+                                var Datas = data.Data;
+                                var validArr = [];
+                                $.each(Datas, function (i, v) {
+                                    $.each(v, function (j, o) {
+                                        var date = j.split(' ')[0];
+                                        self.GetRemindList.push({ date: date, content: o });
+                                    })
+                                })
+                            }
+                        }
+                    });
+                },
+                //删除联系记录
+                deleteThisContact: function (id) {
+                    layer.confirm('确定删除吗，删除后将无法恢复', function () {
+                        $.ajax({
+                            url: '/service/crm/Contact/DeleteContact',
+                            type: 'POST',
+                            data: { Other: id },
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data.SuccessResponse) {
+                                    layer.msg(data.Message);
+                                    setTimeout(function () { location.reload() }, 500);
+                                } else {
+                                    layer.msg(data.Message);
+                                }
+                            }
+                        });
+                    })
+
+                },
+                //获取联系记录
+                getContact: function () {
+                    var self = this;
+                    $.ajax({
+                        url: '/service/crm/Contact/GetClientListContactGroupByDate',
+                        type: 'GET',
+                        data: { BusID: this.publicForm.ID, ModelIndex: 2, FeildType: 1 },
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.SuccessResponse) {
+                                self.GetContactRe = [];
+                                var Datas = data.Data;
+                                if (Datas != null) {
+                                    $.each(Datas, function (i, v) {
+                                        $.each(v, function (j, o) {
+                                            var date = j.split(' ')[0];
+                                            self.GetContactRe.push({ date: date, content: o });
+                                        })
+                                    })
+                                }
+                            }
+                        }
+                    });
+                },
+                //添加预约提醒
+                addRemind: function () {
+                    fnr.openDialog({
+                        title: '添加预约提醒',
+                        area: ['750px', '500px'],
+                        content: ['../Remind/Add.html?ID=' + this.publicForm.ID],
+                        btn: ['确认添加'],
+                        events: {
+                            refresh: function (data) {
+                                if (data.status) {
+                                    layer.msg(data.msg);
+                                    location.reload();
+                                } else {
+                                    layer.msg(data.msg);
+                                }
+                            }
+                        }
+                    });
+                },
+                //添加联系人
+                AddContanct: function () {
+                    fnr.openDialog({
+                        title: '添加联系人',
+                        area: ['750px', '500px'],
+                        content: ['../Client/AddContact.html?ID=' + this.publicForm.ID],
+                        btn: ['确认添加'],
+                        events: {
+                            refresh: function (data) {
+                                if (data.status) {
+                                    layer.msg(data.msg);
+                                    listContanctTable.refresh();
+                                } else {
+                                    layer.msg(data.msg);
+                                }
+                            }
+                        }
+                    });
+                },
+                //删除客户
+                deleteClient: function () {
+                    var id = this.publicForm.ID;
+                    layer.confirm('确定删除吗，删除后将无法恢复', function () {
+                        $.ajax({
+                            url: '/service/crm/Client/DeleteClient',
+                            type: 'POST',
+                            data: { Other: id },
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data.SuccessResponse) {
+                                    layer.msg(data.Message);
+                                    fnr.callDialog('add');
+                                    setTimeout(function () { fnr.closeDialog(); }, 500);
+                                } else {
+                                    layer.msg(data.Message)
+                                }
+                            }
+                        });
+                    })
+                },
+
+                UpdataContacts: function (data) {
+                    fnr.openDialog({
+                        title: '修改联系人',
+                        area: ['750px', '500px'],
+                        content: ['UpdataContacts.html?ID=' + data.ID],
+                        btn: ['确认修改'],
+                        events: {
+                            refresh: function (data) {
+                                if (data.status) {
+                                    layer.msg(data.msg);
+                                    listContanctTable.refresh();
+                                } else {
+                                    layer.msg(data.msg);
+                                }
+                            }
+                        }
+                    });
+                },
+                //测试修改
+                modifyC1: function () {
+                    fnr.openDialog({
+                        title: '修改客户信息',
+                        area: ['900px', '700px'],
+                        content: ['Modify.html?ID=' + this.publicForm.ID + '&SystemGroup_ID=' + GetQueryString('SystemGroup_ID')],
+                        btn: ['确认修改'],
+                        events: {
+                            refresh: function (data) {
+                                if (data.status) {
+                                    setTimeout(function () { location.reload(); }, 500);
+                                    fnr.callDialog('add');
+                                } else {
+                                }
+                            }
+                        }
+                    });
+                },
+
+                //交接客户
+                transferClient: function () {
+                    fnr.openDialog({
+                        title: '转移客户',
+                        area: ['500px', '450px'],
+                        content: ['Distribution.html?Other=' + this.submitForm.ID],
+                        btn: ['确认转移'],
+                        events: {
+                            refresh: function (data) {
+                                if (data.status) {
+                                    layer.msg(data.msg);
+                                    fnr.callDialog('add');
+                                } else {
+                                    layer.msg(data.msg);
+                                }
+                            }
+                        }
+                    });
+                },
+                //释放客户
+                clientRe: function () {
+                    var self = this;
+                    var id = this.publicForm.ID
+                    fnr.openDialog({
+                        title: '转移客户',
+                        area: ['400px', '400px'],
+                        content: ['HighSea.html?Other=' + id],
+                        btn: ['确认转移'],
+                        events: {
+                            refresh: function (data) {
+                                if (data.status) {
+                                    layer.msg(data.msg);
+                                    fnr.callDialog('add');
+                                    //listTable.refresh();
+                                } else {
+                                    layer.msg(data.msg);
+                                }
+                            }
+                        }
+                    });
+
+                    //var id = this.publicForm.ID
+                    //layer.confirm('真的释放吗', function (index) {
+                    //    $.ajax({
+                    //        url: "/service/crm/Client/ReleaseClient",
+                    //        data: { Other: id },
+                    //        type: 'POST',
+                    //        dataType: 'json',
+                    //        success: function (data) {
+                    //            if (data.SuccessResponse) {
+                    //                if (data.Data) {
+                    //                    layer.msg(data.Message);
+                    //                    fnr.callDialog('add');
+                    //                }
+                    //            } else {
+                    //                layer.msg(data.Message);
+                    //            }
+                    //        }
+                    //    });
+                    //})
+                },
+                //添加联系记录
+                followStatus: function (data) {
+                    fnr.openDialog({
+                        title: '添加联系记录',
+                        area: ['710px', '500px'],
+                        content: ['../Contact/Add.html?ID=' + this.publicForm.ID + '&PhaseType_ID=' + this.publicForm.PhaseType_ID, 'no'],
+                        btn: ['确认添加'],
+                        events: {
+                            refresh: function (data) {
+                                if (data.status) {
+                                    layer.msg(data.msg);
+                                    location.reload();
+                                } else {
+                                    layer.msg(data.msg);
+                                }
+                            }
+                        }
+                    });
+                },
+                GetClientListji: function () {
+                    var self = this;
+                    $.ajax({
+                        url: '/service/crm/Client/GetCustomerInfo',
+                        type: 'Get',
+                        data: { ID: GetQueryString('ID') },
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.SuccessResponse) {
+                                self.Assign = data.Data.IsAssign == 1 ? false : true;
+                            }
+                        }
+                    });
+                },
+                //获取客户详细信息
+                modifyClients: function () {
+                    var self = this;
+                    $.ajax({
+                        url: '/service/crm/Client/GetCustomerInfoSet',
+                        type: 'GET',
+                        dataType: 'json',
+                        data: { ID: GetQueryString('ID') },
+                        success: function (data) {
+                            var list = [];
+                            if (data.SuccessResponse) {
+                                var Datas = data.Data;
+                                $.each(Datas, function (k, v) {
+                                    self.NewInfoData.push({ ShowName: v.ShowName, list: [] });
+                                    var newArr = [];
+                                    if (v.Childs.length > 0) {
+                                        $.each(v.Childs, function (_k, _v) {
+                                            if (_v.FieldName == null) {
+                                                return;
+                                            }
+                                            if (_v.FieldName == 'Sex') {
+                                                newArr.push({ ItemName: _v.ShowName, ItemValue: _v.Value == 1 ? '男' : '女', SortID: _v.SortID, FieldType: _v.FieldType });
+                                                newArr.sort(function (a, b) {
+                                                    return a.SortID - b.SortID
+                                                });
+                                            } else if (_v.FieldName == 'NowProvince') {
+                                                var proVal = '';
+                                                var proValue1 = '';
+                                                if (_v.Value != null && _v.Value != "0") {
+                                                    var splitV = _v.Value.split('|');
+                                                    $.each(splitV, function (sk, sv) {
+                                                        if (sk < 3) {
+                                                            proVal += sv.split(',')[1] + ' ';
+                                                        } else {
+                                                            //proVal += " " + sv;
+                                                            proValue1 = sv;
+                                                        }
+                                                    });
+                                                }
+                                                //省市区
+                                                newArr.push({ ItemName: _v.ShowName, ItemValue: proVal, SortID: _v.SortID, FieldType: _v.FieldType });
+                                                //详细地址
+                                                newArr.push({ ItemName: '详细地址', ItemValue: proValue1, SortID: _v.SortID + 1, FieldType: _v.FieldType });
+                                                newArr.sort(function (a, b) {
+                                                    return a.SortID - b.SortID
+                                                });
+                                            } else if (_v.FieldName.split('_').length > 1 && _v.FieldName.toString().indexOf("customField_") != 0) {
+                                                newArr.push({ ItemName: _v.ShowName, ItemValue: _v.Value == 0 ? '' : _v.Value.split(',')[0], SortID: _v.SortID, FieldType: _v.FieldType });
+
+                                            } else {
+                                                newArr.push({ ItemName: _v.ShowName, ItemValue: _v.Value == 0 ? '' : _v.Value, SortID: _v.SortID, FieldType: _v.FieldType })
+                                                newArr.sort(function (a, b) {
+                                                    return a.SortID - b.SortID
+                                                });
+                                            }
+                                        });
+                                    }
+                                    self.NewInfoData[k]['list'] = newArr;
+                                });
+                                console.log(self.NewInfoData);
+                            }
+                        }
+                    });
+                },
+
+            }
+
+        });
+        //监听工具栏事件
+        tableExt.addEvent("tool(listContanctTable)",
+            {
+                "detail2": function (data, obj, e) {
+                    rootApp.UpdataContacts(data);
+                },
+                deleteContacts: function (data) {
+                    layer.confirm('确定删除吗，删除后将无法恢复', function () {
+                        $.ajax({
+                            url: '/service/crm/Client/DeleteContactPerson',
+                            type: 'POST',
+                            data: { ID: data.ID },
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data.SuccessResponse) {
+                                    layer.msg(data.Message);
+                                    setTimeout(function () { location.reload() }, 500);
+                                } else {
+                                    layer.msg(data.Message);
+                                }
+                            }
+                        });
+                    })
+                },
+
+                //修改一行
+                "modifyClient": function (data, obj) {
+                    rootApp.modifyC1(data);
+                }
+            });
+    });
+</script>

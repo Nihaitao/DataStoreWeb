@@ -1,0 +1,92 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        .isDisplay {
+            display: none;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width: 112px;">当前分组权限分配</label>
+                <div class="layui-input-block" style="margin-left: 160px;">
+                    <remote-sel v-bind:setting="ReceiveSetting" layverify="required" v-bind:value.sync="submitForm.Account_ID"
+                                initial="off"></remote-sel>
+                </div>
+            </div>  
+            <div class="layui-form-item">
+                <button class="layui-btn layui-hide " lay-submit @click="submit" style="float: right;">确认分配</button>
+            </div>
+        </div>
+
+        
+    </div>
+</body>
+</html>
+
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="/Resources/js/Controls/Common.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate"],
+    function (fnr) {
+
+        var laydate = layui.laydate;
+        var $ = layui.jquery;
+
+        var TransferOptions = [];
+
+        var ReceiveOptions = [];
+
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+                ReceiveSetting: {
+                    search: true,
+                    options: ReceiveOptions,
+                    fields: { root: "Data", key: 'Account_ID', value: 'Name' },
+                    remote: { url: '/service/hr/Station/GetListStationAccount' }
+                },
+                submitForm: {
+                    Other: '',
+                    Account_ID: ''
+                },
+            },
+            ready: function () {
+                if (GetQueryString('Other')) {
+                    this.submitForm.Other = GetQueryString('Other')
+                }
+            },
+            methods: {
+                submit: function (e) {
+                    if (!layui.form.checkInput(e)) {
+                        return false;
+                    }
+                    $.ajax({
+                        url: '/service/crm/Group/SetAccountGroupConfig',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: this.submitForm,
+                        success: function (data) {
+                            if (data.SuccessResponse) {
+                                fnr.callDialog('refresh', { status: data.SuccessResponse, msg: data.Message });
+                                fnr.closeDialog();
+                            }
+                            else {
+                                layer.msg(data.Message);
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    });
+</script>

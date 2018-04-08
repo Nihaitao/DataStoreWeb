@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <script src="https://player.polyv.net/script/polyvplayer.min.js"></script>
+    <style>
+        #CuPlayer {
+            height: 600px;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <div id="CuPlayer"></div>
+    </div>
+</body>
+</html>
+
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/Controls/Common.js"></script>
+<script>
+
+    require_js_file(["table", "form", "jquery", "tableExt"],
+    function (fnr) {
+        var player;
+        var $ = layui.$;
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+               
+            },
+            ready: function () {
+                var cwid = fnr.getQueryString('cwid');
+                var pid = fnr.getQueryString('pid');
+                if (pid) {
+                    this.previewFn(pid);
+                }
+                if (cwid) {
+                    this.coursewareToPid(cwid);
+                }
+            },
+            methods: {
+                previewFn: function (pid) {
+                    player = polyvObject('#CuPlayer').previewPlayer({
+                        'width': '100%',
+                        'height': '100%',
+                        'flashvars': { 'autoplay': 'true' },
+                        'vid': pid
+                    });
+                },
+
+                coursewareToPid: function (cwid) {
+                    var self = this;
+                    $.get('/service/Resource/GetCourseWareByID', { ID: cwid }, function (res) {
+                        if (res.SuccessResponse) {
+                            if (res.ReturnData.Data.PolyvVID) {
+                                self.previewFn(res.ReturnData.Data.PolyvVID);
+                            }
+                        } else {
+                            layer.msg(res.Message);
+                        }
+                    });
+                }
+            }
+        });
+    });
+</script>

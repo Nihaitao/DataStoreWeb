@@ -1,0 +1,312 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <div class="layui-col-xs12">
+            <blockquote class="layui-elem-quote">
+                <div class="layui-row layui-form">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">时间范围：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input" placeholder="开始时间" id="test1">
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input" placeholder="结束时间" id="test2">
+                        </div>
+                        <label class="layui-form-label">审批状态</label>
+                        <div class="layui-input-inline">
+                            <remote-sel v-bind:setting="TypeSetting" v-bind:value.sync="linkage.Type" laytips="审批状态" initial="off"></remote-sel>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">部门</label>
+                        <div class="layui-input-inline" style="width:390px">
+                            <remote-sel v-bind:setting="DoTypeSetting" v-bind:value.sync="linkage.DoType" laytips="部门" initial="off"></remote-sel>
+                        </div>
+                        <label class="layui-form-label">申请人</label>
+                        <div class="layui-input-inline">
+                            <remote-sel v-bind:setting="DoTypeSetting" v-bind:value.sync="linkage.DoType" laytips="申请人" initial="off"></remote-sel>
+                        </div>
+                        <button class="layui-btn layui-btn-primary" lay-submit lay-filter="btn" @click="doSearch">查询</button>
+                    </div>
+                </div>
+            </blockquote>
+            <!--操作模板-->
+            <table id="listTable" lay-filter="listTable"></table>
+        </div>
+    </div>
+</body>
+</html>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#test1' //指定元素
+        });
+        laydate.render({
+            elem: '#test2' //指定元素
+        });
+    });
+</script>
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'laydate'],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+
+
+            //搜索条件
+            window.rootApp = new Vue({
+                el: '#root',
+                data: {
+                    linkage: {
+                        Title: "",
+                        Type: -1,
+                        Province_ID: 0,
+                        Store: 0,
+                        DoType: -1
+                    },
+                    FirstSetting: { //联动
+                        search: true,
+                        options: [
+                        ],
+                        remote: {
+                            url: '/service/Discipline/GetDisciplineWithCID',
+                            data: { CID: 0 }
+                        },
+                        fields: { root: 'ReturnData.Data', key: 'ID', value: 'Name' }
+                    },
+                    SecondSetting: {
+                        options: [],
+                        remote: {
+                            url: '',
+                            data: {}
+                        },
+                        fields: { root: 'ReturnData.Data', key: 'ID', value: 'Name' }
+                    },
+                    ThreeSetting: {
+                        options: [],
+                        remote: {
+                            url: '',
+                            data: {}
+                        },
+                        fields: { root: 'ReturnData.Data', key: 'ID', value: 'Name' }
+                    },
+                    StoreSetting: {
+                        search: true,
+                        defaultValue: 0,
+                        fields: { root: 'Data', key: 'ID', value: 'Name' },
+                        options: [],
+                        remote: { url: "/service/datastore/Question/GetQuestionStoreList", data: { Valid: 1 } }
+                    },
+                    TypeSetting: {
+                        search: true,
+                        defaultValue: -1,
+                        options: [
+                            { key: '0', value: '模拟试卷' },
+                            { key: '1', value: '历年真题' }
+                        ]
+                    },
+                    DoTypeSetting: {
+                        search: true,
+                        defaultValue: -1,
+                        options: [
+                            { key: '0', value: '自动' },
+                            { key: '1', value: '手动' }
+                        ]
+                    },
+                    ProvinceSetting: {
+                        search: true,
+                        fields: { root: 'ReturnData.Data', key: 'ProvinceID', value: 'ProvinceName' },
+                        options: [],
+                        remote: { url: "/service/ProvinceCityDistrict/GetApprovallistcc" }
+                    },
+                },
+                ready: function () {
+                },
+
+                methods: {
+                    doSearch: function () {
+                        tableIns.reload({
+                            where: this.linkage
+                        });
+                    },
+                    //添加试卷
+                    addExamPaper: function () {
+                        fnr.openDialog({
+                            title: '添加试卷',
+                            area: ['800px', '700px'],
+                            content: ['/Html/ResourcesCenter/ExamPaper/Add.html'],
+                            btn: ['确认添加'],
+                            events: {
+                                refresh: function (data) {
+                                    if (data.status) {
+                                        layer.msg('添加成功');
+                                        tableIns.refresh();
+                                    } else {
+                                        layer.msg('添加失败');
+                                    }
+                                }
+                            }
+                        });
+                    },
+                    //修改试卷
+                    modifyData: function (data) {
+                        fnr.openDialog({
+                            title: '修改试卷',
+                            area: ['800px', '700px'],
+                            content: ['/Html/ResourcesCenter/ExamPaper/modify.html?ID=' + data.ID],
+                            btn: ['确认修改'],
+                            events: {
+                                refresh: function (data) {
+                                    if (data.status) {
+                                        layer.msg('修改成功');
+                                        tableIns.refresh();
+                                    } else {
+                                        layer.msg('修改失败');
+                                    }
+                                }
+                            }
+                        });
+                    },
+                    ///配置试题
+                    AddQuestions: function (data) {
+                        fnr.openDialog({
+                            title: '配置题型',
+                            area: ['1000px', '800px'],
+                            content: ['/Html/ResourcesCenter/ExamPaper/AddQuestions.html?ID=' + data.ID + "&QuestionStore_ID=" + data.QuestionStore_ID + "&ExamPaperDo=" + data.ExamPaperDo],
+                            btn: ['关闭'],
+                            yes: function (index, layero) {
+                                layer.close(index);
+                            },
+                            events: {
+                                refresh: function (data) {
+                                    if (data.status) {
+                                        layer.msg('配置成功');
+                                        tableIns.refresh();
+                                    } else {
+                                        layer.msg('配置失败');
+                                    }
+                                }
+                            }
+                        });
+                    },
+                    FirstChange: function () {
+                        if (this.linkage.Discipline_OneLevelID != '') {
+                            this.SecondSetting.remote.url = '/service/Discipline/GetDisciplineWithCID';
+                            this.SecondSetting.remote.data = { CID: this.linkage.Discipline_OneLevelID };
+                            //fnr.mergeJson(this.SecondBind(this.linkage.Discipline_OneLevelID), this.SecondSetting);
+                            this.$refs.second.reset();
+                        }
+                    },
+                    SecondChange: function () {
+                        if (this.linkage.Discipline_TwoLevelID != '') {
+                            this.ThreeSetting.remote.url = '/service/Discipline/GetDisciplineWithCID';
+                            this.ThreeSetting.remote.data = { CID: this.linkage.Discipline_TwoLevelID };
+                            //fnr.mergeJson(this.ThreeBind(this.linkage.Discipline_TwoLevelID), this.ThreeSetting);
+                            this.$refs.three.reset();
+                        }
+                    },
+                    ViewExamPaper: function (data) {
+                        fnr.openDialog({
+                            title: '浏览试卷',
+                            area: ['1000px', '750px'],
+                            content: ['/Html/ResourcesCenter/ExamPaper/ViewExamPaper.html?ID=' + data.ID],
+                            btn: ['关闭'],
+                            yes: function (index, layero) {
+                                layer.close(index);
+                            },
+                        });
+                    }
+                }
+
+            });
+
+            var tableIns = table.render({
+                elem: '#listTable',
+                even: true, //开启隔行背景
+                page: true, //页分
+                cols: [
+                    [
+                        { field: 'ID',  title: 'ID', width: 60 },
+                        {
+                            field: 'AddTime', title: '提交时间', width: 150, templet: function () {
+                                var array = new Array();
+                                array.push("<span>" + fnr.format(this.AddTime, "yyyy-MM-dd HH:mm") + "</span>");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        },
+                        {
+                            field: 'FinishTime', title: '结束时间', width: 150, templet: function () {
+                                var array = new Array();
+                                array.push("<span>" + fnr.format(this.FinishTime, "yyyy-MM-dd HH:mm") + "</span>");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        },
+                        { field: 'AddPersonName', title: '申请人', width: 100 },
+                        { field: 'DepartmentName', title: '部门名称', width: 120 },
+                        { field: 'ApprovalStatus', title: '状态', width: 100 },
+                        {
+                            fixed: 'right',
+                            field: '',
+                            title: '操作',
+                            width: 240,
+                            toolbar: function () {
+                                var array = new Array();
+                                    array.push("<button class=\"layui-btn layui-btn-small\" lay-event='select'>题型</button>");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        }
+                    ]
+                ],
+                url: '/service/datastore/Process/GetApprovallistcc',
+                response: {
+                    dataName: 'Data'
+                }
+            });
+            tableExt.addEvent("tool(listTable)",
+                {
+                    //工具栏编辑事件
+                    "edit": function (data, obj) {
+                        rootApp.modifyData(data)
+                    },
+                    //工具栏删除事件
+                    "delete": function (data, obj) {
+                        layer.confirm('确认要删除吗?', { icon: 3, title: '提示' }, function (index) {
+                            var params = { ID: data.ID }
+                            $.post("/service/datastore/ExamPaper/DeleteExamPaper", params, function (res) {
+                                if (res.SuccessResponse) {
+                                    tableIns.reload();
+                                }
+                            })
+                            layer.close(index);
+                        });
+
+                    },
+                    //工具栏配置题型
+                    "select": function (data, obj) {
+                        rootApp.AddQuestions(data)
+                    },
+
+                    //工具栏浏览试卷
+                    "look": function (data, obj) {
+                        rootApp.ViewExamPaper(data)
+                    },
+                    //工具栏审核
+                    "auditing": function (data, obj) {
+                        rootApp.ViewExamPaper(data)
+                    },
+                });
+        });
+</script>

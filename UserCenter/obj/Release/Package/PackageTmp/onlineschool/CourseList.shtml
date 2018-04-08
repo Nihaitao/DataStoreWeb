@@ -1,0 +1,350 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>专业筛选列表</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script src="../script/jquery.js"></script>
+    <link rel="shortcut icon" href="" type="image/x-icon" class="favIcon" />
+    <link href="../Resources/CSS/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../Resources/CSS/Font/css/font-awesome.css" rel="stylesheet" />
+    <script src="../Resources/CSS/bootstrap/js/bootstrap.min.js"></script>
+    <link href="../Resources/CSS/PC_css.css" rel="stylesheet" />
+    <style>
+    .Pro-showList{
+        min-height:510px;
+    }
+
+    .Pro-pageCount{
+        margin-bottom:50px;
+    }
+    .container{c
+        width:1240px;
+    }
+    [v-cloak]{
+        display:none;
+    }
+    .tmName {
+        position: absolute;
+        top: 111px;
+        right: 4px;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        padding: 2px 8px;
+         background-color: #fff;
+    }
+    .SectionA{
+        display: inline-block;
+        font-size: 12px;
+        border: 1px solid #fe9455;
+        vertical-align: baseline;
+        color:#fe9455 ;
+        margin-left: 5px;
+    }
+    </style>
+</head>
+<body id="root" v-cloak>
+    <!--#<!--#include file="UserControl/Header.html"-->
+    <!--专业筛选-->
+    <div class="Pro-screen">
+        <div class="container">
+            <div class="Pro-BreadcrumbNavigation">
+                <i class="icon_weizhi"></i>
+                <span>当前位置：</span>
+                <span>首页</span>
+                &gt;
+                <span>专业列表</span>
+            </div>
+            <div class="Pro-list" v-cloak>
+                <ul class="clearfix">
+                    <li>一级学科：</li>
+                    <li v-bind:class="{'active':one}" @click="allSelect(1, $event)">全部</li>
+                    <li v-for="(index,item) in Discipline" v-bind:class="{'active':item.selelted}" @click="oneClick(item, $event)"> {{item.Name}} </li>
+                </ul>
+                <ul class="clearfix secondCourseList" style="display: none;">
+                    <li>二级学科：</li>
+                    <li v-bind:class="{'active':second}" @click="allSelect(2, $event)">全部</li>
+                    <li v-for="item in secondDiscipline" v-bind:class="{'active':item.selelted}" @click="secondClick(item)"> {{item.Name}}</li>
+                </ul>
+
+                <ul class="clearfix categoryList">
+                    <li>视频分类：</li>
+                    <li class="active" @click="teacFn(0, $event)">全部</li>
+                    <li @click="teacFn(1, $event)"> 录播</li>
+                    <li @click="teacFn(2, $event)"> 直播</li>
+                    <li @click="teacFn(3, $event)"> 面授</li>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+    <!--显示列表-->
+    <div class="Pro-showList" v-cloak>
+        <div class="container" style="margin-top: 30px;">
+            <div class="Pro-list" v-if="courseList.length > 0">
+                <div style="position: relative;" v-for="(index,course) in courseList">
+                    <a href="../usercenter/onlinecourse/Detail.shtml?ID={{course.ID}}" class="p-text">
+                        <img v-bind:src="course.CoverPath?course.CoverPath:'../Resources/images/def.jpg'" style="height: 127px;width: 224px">
+                        <span style="display: inline-block; margin-top: 10px; margin-bottom: 10px;">{{course.Name}}</span>
+                    </a>
+                    <div>
+                        <span style="position: absolute; bottom: 0; left: 0; color: #72B727;" v-if="course.Price == 0">免费</span>
+                        <span class="text-red" style="position: absolute; bottom: 0; left: 0;" v-else>{{'￥' + course.Price}} <span class="SectionA" v-if="course.IsShiT > 0">可试学</span></span>
+                        <div class="pull-right" style="position: absolute; bottom: 0; right: 0;"><i class="fa fa-user-o"></i> <span>{{course.BuyBase}}</span>人</div>
+                    </div>
+                    <div class="tmName">{{course.TeachingMethod == 1 ? '录播' : course.TeachingMethod == 2 ? '直播' : '面授'}}</div>
+                </div>
+            </div>
+            <div v-else style="text-align: center;margin-top: 150px;">
+                <img src="../Resources/images/noneData.png" />
+            </div>
+        </div>
+    </div>
+    <!--分页-->
+    <div class="Pro-pageCount clearfix">
+        <div class="clearfix" style="margin: 0 auto;width: 680px" id="pages"></div>
+    </div>
+    <!--#<!--#include file="UserControl/Footer.html"-->
+</body>
+
+</html>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="../Resources/js/Page.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt"], 
+    function (fnr) {
+        function delAllCookie() {
+            var myDate = new Date();
+            myDate.setTime(-1000);//设置时间
+            var data = document.cookie;
+            var dataArray = data.split("; ");
+            for (var i = 0; i < dataArray.length; i++) {
+                var varName = dataArray[i].split("=");
+                document.cookie = varName[0] + "=''; expires=" + myDate.toGMTString();
+            }
+        }
+
+        var $ = layui.$;
+        rootApp = new Vue({
+            el: "#root",
+            data: {
+                loginState: false,
+                headPhoto: '',
+                Discipline: [],
+                secondDiscipline: [],
+                courseList: [],
+                one: true,
+                second: true,
+                pageCount: 0,
+                TotalCount: 0,
+                TeachingMethod: 0,
+                layoutData: {}
+            },
+            ready: function () {
+                _this = this;
+                _this.GetAllDiscipline(function () {
+                    var DES = fnr.getQueryString("Des");
+                    var index = fnr.getQueryString("index");
+                    if (!!DES && !!index) {
+                        console.log($('.secondCourseList'))
+                        _this.Discipline.map(function (a, b) {
+                            if (a.ID == DES) {
+                                //找到源数据
+                                _this.one = false;
+                                _this.second = false;
+                                _this.Discipline.map(function (a, b) {
+                                    if (a.ID == DES) {
+                                        Vue.set(a, 'selelted', true)
+                                        //查找二级源数据，并进行查询
+                                        _this.secondDiscipline = a.ChildNodeList;
+                                        _this.secondDiscipline.map(function (a, b) {
+                                            if (a.ID == index) {
+                                                Vue.set(a, 'selelted', true)
+                                                return;
+                                            }
+                                            Vue.set(a, 'selelted', false)
+                                        });
+                                        _this.changeCourse(index, 1, _this.TeachingMethod)
+                                        return;
+                                    }
+                                    //a.selelted = false;
+                                    Vue.set(a, 'selelted', false)
+                                });
+                            }
+                        })
+                        $('.secondCourseList').slideDown();
+                    } else {
+                        _this.changeCourse('', 1, _this.TeachingMethod);
+                    }
+                });
+                _this.checkLogin();
+            },
+            methods: {
+                //退出
+                exit: function () {
+                    delAllCookie();
+                    location.href = '../usercenter/login.shtml';
+                },
+
+                //查询stuID
+                checkLogin: function () {
+                    _this = this;
+                    if (fnr.Cookie.get('StuId') && fnr.Cookie.get('StuId') != 'undefined') {
+                        _this.loginState = true;
+                        $.get("/service/edu/Student/GetStudentInfo", function (res) {
+                            if (res.SuccessResponse) {
+                                _this.msg = 'hi，' + res.Data.Name;
+                                _this.headPhoto = res.Data.HeadImg ? res.Data.HeadImg : '../Resources/images/photo.png'
+                                _this.loginState = true;
+                            }
+                        });
+                    }
+                },
+
+                //获取所有学科信息
+                GetAllDiscipline: function (fn) {
+                    _this = this;
+                    $.get('/service/datastore/Discipline/GetAllDisciplineInfo', function (res) {
+                        if (res.SuccessResponse) {
+                            _this.Discipline = res.Data;
+                            _this.Discipline.map(function (a, b) {
+
+                                Vue.set(a, 'selelted', false)
+                            })
+                            //_this.secondDiscipline = res.ReturnData.Data[0].ChildNodeList;
+                            if (typeof fn == 'function') {
+                                fn();
+                            }
+                        } else {
+                            layer.msg('网络请求出错')
+                        }
+
+                    })
+                },
+
+                //分页
+                paging: function (id, totalPages, PageIndex) {
+                    var self = this;
+                    return $("#pages").Page({
+                        pageIndex: PageIndex,
+                        totalPages: Math.ceil(totalPages / 20),
+                        totalSize: totalPages,
+                        callback: function (num) {
+                            self.changeCourse(id, num, self.TeachingMethod);
+                        }
+                    })
+                },
+
+                //根据学科ID查询课程
+                changeCourse: function (ID, num, tmNum) {
+                    _this = this;
+                    $.get('/service/datastore/WebCourse/GetCourseList', { Discipline_ID: ID, PageIndex: num, PageSize: 20, PageStatus: 1, TeachingMethod: tmNum, IsPutaway: 1, IsRecommend: 1, Valid: 1 }, function (res) {
+                        if (res.SuccessResponse) {
+                            _this.courseList = res.Data;
+                            if (res.TotalCount > 0) {
+                                _this.pageCount = res.TotalCount;
+                                _this.TotalCount = _this.pageCount;
+                            }
+                            _this.paging(ID, _this.TotalCount, num)
+                        } else {
+                            layer.msg('网络请求出错')
+                        }
+                    });
+                },
+                oneClick: function (data, e) {
+                    var ev = e.target || e.srcElement || e.toElement;
+                    _this = this;
+                    _this.one = false;
+                    _this.second = true;
+                    _this.Discipline.map(function (a, b) {
+                        if (a.ID == data.ID) {
+                            //a.selelted = true;
+                            Vue.set(a, 'selelted', true)
+                            return;
+                        }
+                        //a.selelted = false;
+                        Vue.set(a, 'selelted', false)
+                    });
+                    _this.changeCourse(data.ID, 1, _this.TeachingMethod);
+                    _this.secondDiscipline = data.ChildNodeList;
+                    if (_this.secondDiscipline.length != 0) {
+                        $(ev).parent().next().slideDown();
+                    } else {
+                        $(ev).parent().next().slideUp();
+                    }
+                    _this.secondDiscipline.map(function (a, b) {
+                        Vue.set(_this.secondDiscipline[b], 'selelted', false)
+                    });
+
+                },
+                secondClick: function (data) {
+
+                    this.second = false;
+                    this.secondDiscipline.map(function (a, b) {
+                        if (a.ID == data.ID) {
+                            //a.selelted = true;
+                            Vue.set(a, 'selelted', true)
+                            return;
+                        }
+                        //a.selelted = false;
+                        Vue.set(a, 'selelted', false)
+                    });
+                    this.changeCourse(data.ID, 1, this.TeachingMethod);
+                },
+                allSelect: function (data, e) {
+                    var self = this;
+                    var ev = e.target || e.srcElement || e.toElement;
+                    if (data == 1) {
+                        self.changeCourse('', 1, self.TeachingMethod);
+                        self.Discipline.map(function (a, b) {
+                            Vue.set(a, 'selelted', false)
+                        });
+                        self.secondDiscipline = [];
+                        $(ev).parent().next().slideUp();
+                        self.one = true;
+                    } else if (data == 2) {
+                        var sendDataID;
+                        self.Discipline.map(function (a, b) {
+                            if (a.selelted == true) {
+                                return sendDataID = a.ID;
+                            }
+                        })
+                        self.changeCourse(sendDataID, 1, self.TeachingMethod);
+                        self.secondDiscipline.map(function (a, b) {
+                            Vue.set(a, 'selelted', false)
+                        });
+                        self.second = true;
+                    }
+                },
+                teacFn: function (n, e) {
+                    var ev = e.target || e.srcElement || e.toElement;
+                    var self = this;
+                    var teacID;
+                    self.TeachingMethod = n;
+                    self.secondDiscipline.map(function (a, b) {
+                        if (a.selelted == true) {
+                            return teacID = a.ID;
+                        }
+                    })
+                    if (teacID == undefined) {
+                        self.Discipline.map(function (a, b) {
+                            if (a.selelted == true) {
+                                return teacID = a.ID;
+                            }
+                        })
+                    }
+                    if (!$(ev).hasClass('active')) {
+                        $(ev).addClass('active').siblings().removeClass('active');
+                    }
+                    self.changeCourse(teacID, 1, n);
+                }
+            },
+        });
+    })
+</script>

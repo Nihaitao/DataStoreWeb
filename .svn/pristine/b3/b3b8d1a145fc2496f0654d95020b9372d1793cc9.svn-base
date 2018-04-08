@@ -1,0 +1,184 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>微信扫码初次登录</title>
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/CEdu/static/style.css" rel="stylesheet" />
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/CEdu/static/login.css" rel="stylesheet" />
+</head>
+<body id="root" class="layui-layout-admin">
+    <div id="particles-js"></div>
+
+    <div class="logo-div">
+        <!--<img src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/CEdu/static/logo.png" alt="">-->
+        <img class="layui-upload-img" id="BackstageP" v-bind:src="submitForm.Backstage_LoginLogo" style="height:96px; width: 212px;">
+    </div>
+
+    <div class="main">
+
+        <div class="logo-img">
+            <img class="bg_green" src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/CEdu/static/bg_green.png" alt="">
+            <img class="bg_white" src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/CEdu/static/bg_white.png" alt="">
+        </div>
+        <div class="content layui-form" style="width:265px; margin:0 auto">
+            <div class="layui-form-item">
+                <div class="layui-input-inline" style="width:265px">
+                    <img src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/CEdu/static/tel.png" class="imgicon" alt="">
+                    <input class="layui-input" style="padding-left:40px;" lay-verify="phone" placeholder="手机号码" v-model="submitForm.Phone" lay-verify-group="phone">
+                    <span class="tips" style="display:none">请输入正确的手机号码 <i class="icon erro"></i></span>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-inline">
+                    <img src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/CEdu/static/psd.png" class="imgicon" alt="">
+                    <input class="layui-input" style="padding-left:40px;" lay-verify="required" placeholder="验证码" v-model="submitForm.PhoneCode">
+                </div>
+                <div class="layui-input-inline" style="width:55px">
+                    <input class="layui-btn layui-btn-primary" style="width:65px" v-bind:class="{'layui-btn-disabled':status.disabled}" type="button" @click="SendPhoneCode" v-bind:disabled="status.disabled" v-model="status.tipText">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-inline" style="width:265px">
+                    <button class="layui-btn" style="width:265px" @click="saveUpdate">绑定</button>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-inline" style="width:330px; line-height:1;">
+                    <a href="javascript:;" style="color: #009688;cursor:default" @click="">
+                        <!--<img src="http://bbsresources.oss-cn-hangzhou.aliyuncs.com/images/iconRight.png" style="vertical-align: baseline;" />-->
+                        <u>微信扫码登录初次绑定</u>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="layui-footer" style="text-align:center; left:0px">
+            <!-- 底部固定区域 -->
+            <!--双元云科技 版权所有-->
+            {{submitForm.Backstage_FooterCopyright}}
+        </div>
+    </div>
+</body>
+</html>
+<link href="http://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/CEdu/static/js/particles.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/CEdu/static/js/app.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt"],
+    function (fnr) {
+        var $ = layui.$;
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+                submitForm: {
+                    Phone: "",
+                    PhoneCode: "",
+                    OpenId: '',
+                    Info_ID: 0
+                },
+                status: {
+                    disabled: false,
+                    tipText: '发送'
+                }
+            },
+            ready: function () {
+                this.submitForm.OpenId = fnr.getQueryString("OpenId");
+                this.submitForm.Info_ID = fnr.getQueryString("Info_ID");
+                var IsLogin = fnr.getQueryString("IsLogin");
+                if (this.submitForm.OpenId == null || this.submitForm.OpenId == "") {
+                    layer.msg("获取微信OpenId失败");
+                    return false;
+                }
+                if (IsLogin == 1) {
+                    this.ReLogin();
+                }
+                //显示页面标题
+                $.get("/service/edu/BaseSet/GetStationInfo", {}, function (resp) {
+                    if (resp.SuccessResponse)
+                        document.title = resp.Data.Name + "_登录";
+                }, "json");
+            },
+            methods: {
+                setCodeTime: function (Seconds, e) {
+                    var self = this;
+                    if (Seconds > 0) {
+                        self.status.disabled = true;
+                        self.status.tipText = Seconds + "秒";
+                        var timer = setInterval(function () {
+                            Seconds = Seconds - 1;
+                            if (Seconds > 0)
+                                self.status.tipText = Seconds + "秒";
+                            else {
+                                clearInterval(timer);
+                                self.status.tipText = "发送";
+                                self.status.disabled = false;
+                            }
+                        }, 1000);
+                    } else
+                        self.status.disabled = false;
+                    return false;
+                },
+                SendPhoneCode: function (e) {
+
+                    if (!layui.form.checkInput(e, "phone")) {
+                        return false;
+                    }
+                    var self = this;
+                    if (self.status.disabled) {
+                        return;
+                    }
+                    self.status.disabled = true;
+                    $.post("/service/hr/Station/SendPhoneCode", this.submitForm, function (rsp) {
+                        if (rsp.SuccessResponse) {
+                            window.rootApp.submitForm.PhoneCode = rsp.Data.Num;
+                            self.setCodeTime(rsp.Data.Seconds, e)
+                            layer.msg(rsp.Message, { icon: 1 });
+                        }
+                        else {
+
+                            self.setCodeTime(rsp.Data.Seconds, e)
+                            layer.msg(rsp.Message, { icon: 2 });
+                        }
+                    })
+                    return false;
+                },
+                saveUpdate: function (e) {
+                    if (!layui.form.checkInput(e)) {
+                        return false;
+                    }
+                    if (this.submitForm.OpenId == null || this.submitForm.OpenId == "") {
+                        layer.msg("获取微信OpenId失败");
+                        return false;
+                    }
+                    $.post("/service/hr/Station/ManagerWechatScanBind", this.submitForm, function (rsp) {
+                        if (rsp.SuccessResponse) {
+                            fnr.Cookie.set("AccountID", rsp.Data.Account_ID);
+                            fnr.Cookie.set("AccountName", rsp.Data.Name);
+                            //写入cookie ID
+                            location.href = "/Default.html";
+                        }
+                        else
+                            layer.msg(rsp.Message, { icon: 2 });
+                    })
+                    return false;
+                },
+                ReLogin: function () {
+                    var dataSend = { OpenId: this.submitForm.OpenId, Info_ID: this.submitForm.Info_ID, ReLogin: 1 };
+                    $.post("/service/hr/Station/ManagerWechatScanLogin", dataSend, function (rsp) {
+                        if (rsp.SuccessResponse) {
+                            fnr.Cookie.set("AccountID", rsp.Data.Account_ID);
+                            fnr.Cookie.set("AccountName", rsp.Data.Name);
+                            //写入cookie ID
+                            location.href = "/Default.html";
+                        }
+                        else
+                            layer.msg(rsp.Message, { icon: 2 });
+                    })
+                    return false;
+                }
+            }
+        });
+    });
+</script>

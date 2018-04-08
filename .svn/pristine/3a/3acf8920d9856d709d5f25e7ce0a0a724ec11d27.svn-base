@@ -1,0 +1,303 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我的教务</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="/Resources/fonts/iconfont.css" rel="stylesheet" />
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_514871_9czxk955wqy6i529.css">
+    <link rel="stylesheet" href="/Resources/CSS/bootstrap/css/bootstrap.min.css">
+    
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    
+    <script src="/Resources/js/headFootLayout.js"></script>
+    <link href="/Resources/CSS/PC_css.css" rel="stylesheet" />
+    <link href="/Resources/CSS/video-js.css" rel="stylesheet" />
+    <link href="/Resources/CSS/super.css" rel="stylesheet" />
+    <!--<link href="/Resources/CSS/question.css" rel="stylesheet" />-->
+</head>
+<body style="background-color: #f7f7f7;user-select: none;">
+    <!--#<!--#include file="/PublicControl/topmenu.html"-->
+    <div class="w1200 clearfix">
+        <!--#<!--#include file="/PublicControl/leftmenu.html"-->
+        <div class="main">
+            <!--<div class="order-top">
+                <ul class="orderTabs">
+                    <li><a href="myeducational.shtml">我的成绩</a></li>
+                    <li class="active"><a href="myexam.shtml">我的报考</a></li>
+                    <li ><a href="mybook.shtml">我的书籍</a></li>
+                    <li><a href="">联系记录</a></li>
+                </ul>
+            </div>-->
+            <div class="order-middle" id="myscore2" v-cloak>
+                <div class="middle-main" style="text-align: right;">
+                    <div class="tableContent exam">
+                        <div class="tableContent_main">
+                            <table class="myTableLay exam" lay-skin="line">
+                                <thead>
+                                    <tr>
+                                        <th width="130px">课程代码</th>
+                                        <th width="230px">课程名称</th>
+                                        <th v-for="item in tableThead"><span class="showMore" @click="showMore(item)">查看详情</span><br> {{item.DateName}}</th>
+                                        <!--<th>2012年10月</th>
+                                <th>2012年11月</th>
+                                <th>2012年12月</th>
+                                <th>2013年1月</th>-->
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="item in curList">
+                                        <td>{{item.CuCode}}</td>
+                                        <td>{{item.CuName}}</td>
+
+                                        <template v-for="item2 in item.curArr">
+                                            <td>
+                                                <i v-if="item2" class="iconfont icon-wodebaokao-gou"></i>
+                                                <template v-if="!item2">
+
+                                                </template>
+                                            </td>
+                                        </template>
+
+                                    </tr>
+
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="2">信息审核状态</td>
+                                        <td v-for="item in tableThead">
+
+                                            <div v-if="item.Valid==0">
+                                                <span style="color:#64C677" @click="inspection(item.ID,1)"><i class="iconfont icon-querenwuwu"></i></span>
+                                                <span style="color:#EE5454" @click="inspection(item.ID,2)"><i class="iconfont icon-youyiyi"></i></span>
+                                            </div>
+                                            <div v-if="item.Valid==1">已确认</div>
+                                            <div style="color:#EE5454" v-if="item.Valid==2">有异议</div>
+                                            <div v-if="item.Valid==3">
+                                                <span><i style="color:#f76500;vertical-align:middle" class="iconfont icon-goutongjilu" @click="Record(item.ID,item.Valid)"></i></span>
+                                                <span style="color:#64C677" @click="inspection(item.ID,1)"><i class="iconfont icon-querenwuwu"></i></span>
+                                            </div>
+                                        </td>
+
+
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <div class="fixed_left" v-show="overflow">
+                            <table class="myTableLay">
+                                <thead>
+                                    <tr>
+                                        <th width="130px">课程代码</th>
+                                        <th width="230px">课程名称</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="item in curList">
+                                        <td>{{item.CuCode}}</td>
+                                        <td>{{item.CuName}}</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="2">信息审核状态:</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
+                    </div>
+                    <p class="score_tips">
+                        温馨提示：请仔细查看自己的报考记录，如无误请点击
+                        "<span style="color:#64C677"><i class="iconfont icon-querenwuwu"></i>确认无误</span>" ,
+                        如不正确请点击"<span style="color:#EE5454"><i class="iconfont icon-youyiyi"></i>有异议</span>"，
+                        确认完毕显示“已确认”
+                    </p>
+                </div>
+                <div id="exam_Detail" style="display: none">
+                    <div class="tableContent" style="padding-top: 20px;">
+                        <table class="layui-table" lay-skin="line">
+                            <colgroup>
+                                <col width="150">
+                                <col width="200">
+                                <col>
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>课程ID</th>
+                                    <th>课程[代码]名称</th>
+                                    <th>考试开始时间</th>
+                                    <th>考试结束时间</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="item in deteilList">
+                                    <td>{{item.Curriculum_ID}}</td>
+                                    <td>{{item.CUName}}</td>
+                                    <td>{{item.StartTime}}</td>
+                                    <td>{{item.EndTime}}</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+                <div class="Pcard_Exam" style="display:none;background:#F8F8F8;height:100%">
+                    <div class="textareaContent">
+                        <textarea placeholder="请输入异议内容......." v-model="ObjectionContent"></textarea>
+                    </div>
+                    <div style="text-align:right;padding-right:20px;">
+                        <div class="layui-btn" style="background-color:#ed4242" @click="haveQ"> 提交</div>
+                    </div>
+                </div>
+            </div>
+           
+        </div>
+    </div>
+    <!--#<!--#include file="/PublicControl/bottommenu.html"-->
+</body>
+</html>
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil','wxconfig'],
+        function (fnr) {
+            var $ = layui.$;
+            var table = layui.table;
+            var tableExt = layui.tableExt;
+            var wxconfig = layui.wxconfig;
+            var vm = new Vue({
+                el: "#myscore2",
+                data: {
+                    curList: [],
+                    isBuy: [],
+                    tableThead: [],
+                    deteilList: [],
+                    userInfo: {}, //学生信息数据
+                    overflow: false,
+                },
+                ready: function () {
+                    this.userInfo = wxconfig.GetStudentInfo();
+                    this.getDataList();
+                },
+                watch: {
+                    'tableThead': {
+                        handler: function (val) {
+
+                            this.overflow = parseFloat($("#myscore2 .tableContent").width()) < parseFloat($("#myscore2 .myTableLay").width());
+                        },
+
+                    }
+                },
+                methods: {
+                    //报考信息详细
+                    showMore: function (data) {
+                        data.Data.List.map(function (a) {
+                            a.StartTime = fnr.format(a.StartTime, 'yyyy-MM-dd HH:mm:ss');
+                            a.EndTime = fnr.format(a.EndTime, 'yyyy-MM-dd HH:mm:ss');
+                        });
+
+                        this.deteilList = data.Data.List;
+                        console.log(data);
+                        layer.open({
+                            type: 1,
+                            area: ['800px', '500px'],
+                            title: "报考计划详情",
+                            content: $('#exam_Detail'),
+                        });
+                    },
+                    tabsToggle: function () {
+                        $('.orderTabs').on('click', 'li', function () {
+                            if (!$(this).hasClass('active')) {
+                                $(this).addClass('active').siblings().removeClass('active');
+                            }
+                        });
+                    },
+                    getDataList: function () {
+                        var _this = this;
+                        _this.tableThead = [];
+                        $.get("/service/edu/Specialty/GetSpecialtyCurriculumList", {
+                            Specialty_ID: _this.userInfo.Specialty_ID,
+                            SpecialtyVersion_ID: _this.userInfo.SpecialtyVersion_ID,
+                            Model_ID: _this.userInfo.Model_ID,
+                            StuID: _this.userInfo.StuID,
+                        }, function (res) {
+
+                            var tempCurList = [];
+                            if (res.Data !=null) {
+                                res.Data.map(function (a, b) {
+                                    a.curArr = [];
+                                    tempCurList.push(a);
+                                });
+                            }
+
+                            $.get("/service/edu/StudentExam/StudentExamList", { StuID: _this.userInfo.StuID, StuDetail_ID: _this.userInfo.StuDetail_ID }, function (res) {
+                                res.Data.map(function (a, b) {
+                                    _this.tableThead.push({ DateName: a.DateName, Valid: a.FirmValid, ID: a.FirmID, Data: a });
+                                    tempCurList.map(function (c, d) {
+                                        a.List.map(function (e, f) {
+                                            if (c.Curriculum_ID === e.Curriculum_ID) {
+                                                c.curArr.push(true);
+                                            }
+                                        });
+                                        if (c.curArr[b] === undefined) {
+                                            c.curArr.push(false);
+                                        }
+                                    });
+                                });
+                                _this.curList = tempCurList;
+
+                            });
+                        });
+                    },
+                    inspection: function (ID, Ste) {
+                        var _this = this;
+                        if (Ste === 1) {
+                            $.post("/service/edu/Confirm/GetConfirmhfStudatehf", { ID: ID, StuID: _this.userInfo.StuID }, function () {
+                                if (res.SuccessResponse) { layer.msg("操作成功")};
+                                _this.getDataList();
+                            });
+                        } else {
+                            layer.open({
+                                type: 1,
+                                area: ['600px', '350px'],
+                                title: '异议',
+                                content: $('.Pcard_Exam')
+                            });
+                            _this.ID = ID;
+                            _this.Ste = Ste;
+                        };
+
+                    },
+                    haveQ: function () {
+                        var _this = this;
+                        $.post('/service/edu/Confirm/GetConfirmhfStudateList',
+                          {
+                              StuID: _this.userInfo.StuID,
+                              StuDetail_ID: _this.userInfo.StuDetail_ID,
+                              ID: _this.ID,
+                              Valid: _this.Ste,
+                              BusType: 3,
+                              ObjectionContent: _this.ObjectionContent
+                          },
+                          function (res) {
+                              if (res.SuccessResponse) {
+                                  layer.closeAll()
+                                  _this.getDataList();
+                              }
+                          });
+                    },
+                    Record: function (ID, Ste) {
+                        location.href = '../usermanage/ObjectionMsgLst.shtml?ID=' + ID + "&Valid=" + Ste + "&url=" + location.href;
+                    },
+                }
+            });
+        })
+</script>

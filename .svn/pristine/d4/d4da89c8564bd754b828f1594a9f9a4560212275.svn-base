@@ -1,0 +1,193 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        .layui-layer-molv .layui-layer-btn .layui-layer-btn1 {
+            border-color: #009f95;
+            background: #009f95 !important;
+            color: #fff;
+        }
+        div.layui-table-cell {
+            height: 30px;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <div class="layui-col-xs12">
+            <!--操作模板-->
+            <table id="listTable" lay-filter="listTable"></table>
+        </div>
+    </div>
+</body>
+</html>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(['table', 'jquery', 'tableExt', 'laydate'],
+        function (fnr) {
+            var $ = layui.jquery;
+            var table = layui.table;
+            var tableExt = layui.tableExt;
+
+            window.rootApp = new Vue({
+                el: '#root',
+                data: {
+                    StoreSetting: {//题库
+                        search: true,
+                        defaultValue: 0,
+                        fields: { root: 'Data', key: 'ID', value: 'Name' },
+                        options: [],
+                        remote: { url: "/service/datastore/Question/GetQuestionStoreList", data: { Valid: 1 } }
+                    },
+                    ValidSetting: {
+                        search: true,
+                        defaultValue: -1,
+                        options: [
+                            { key: '1', value: '已处理' },
+                            { key: '0', value: '未处理' }
+                        ]
+                    },
+                    queryFormData: {
+                        Name: "",
+                        Valid:''
+                    },
+                },
+                ready: function () {
+                    console.log(fnr.getQueryString('ID'));
+                },
+                methods: {
+                    doSearch: function () {
+                        tableIns.reload({
+                            where: this.queryFormData
+                        });
+                    },
+                    //添加普通题
+                    addNormQuestion: function () {
+                        fnr.openDialog({
+                            title: '添加普通题',
+                            area: ['800px', '700px'],
+                            content: ['/Html/ResourcesCenter/Question/Add.html'],
+                            btn: ['保存', '保存并继续'],
+                            yes: function (index, layero) {
+                                layer.getChildFrame("*[lay-submit1]", index).click();
+                                return false
+                            },
+                            btn2: function (index, layero) {
+                                layer.getChildFrame("*[lay-submit2]", index).click();
+                                return false
+                            },
+                            events: {
+                                refresh: function (data) {
+                                    layer.msg(data.Message);
+                                    if (data.SuccessResponse) {
+                                        tableIns.refresh();
+                                    }
+                                }
+                            },
+                        });
+                    },
+                    //添加组合题
+                    addCombinationQuestion: function () {
+                        fnr.openDialog({
+                            title: '添加组合题',
+                            area: ['800px', '700px'],
+                            content: ['/Html/ResourcesCenter/Question/ModifyCombination.html'],
+                            btn: ['关闭'],
+                            yes: function (index, layero) {
+                                layer.close(index);
+                                tableIns.refresh();
+                            }
+                        });
+                    },
+                    //处理纠错
+                    modifyData: function (data) {
+                        var params = { ID: data.ID, Valid: data.Valid == 1 ? 0 : 1 }
+                        $.post("/service/datastore/Question/UpdateQuestionerrorCorrectionByID", params, function (res) {
+                            if (res.SuccessResponse) {
+                                tableIns.reload();
+                            }
+                            layer.msg(res.Message);
+                        })
+                    },
+                    //查看纠错汇总
+                    viewData: function (data) {
+                        var content = '/Html/ResourcesCenter/ErrorCorrection/SelectErrorList.html?ID=' + data.Question_ID;
+                        fnr.openDialog({
+                            title: '查看题目信息',
+                            area: ['800px', '700px'],
+                            content: [content],
+                            btn: ['关闭'],
+                            yes: function (index, layero) {
+                                layer.close(index);
+                            }
+                        });
+                    }
+                }
+            });
+
+            var tableIns = table.render({
+                elem: '#listTable',
+                even: true, //开启隔行背景
+                page: false, //页分
+                cols: [
+                    [
+                        { field: 'ID', fixed: true, title: 'ID', width: 40 },
+                        { field: 'Title', title: '题目', width: 300 },
+                        { field: 'TypeName', title: '题型', width: 100 },
+                        { field: 'StoreName', title: '所属题库', width: 100 },
+                        {
+                            field: 'ErrorType', title: '纠错类型', width: 100, templet: function () {
+                                if(this.ErrorType==1)
+                                    return "错别字";
+                                else if(this.ErrorType==2)
+                                    return "答案有误";
+                                else if(this.ErrorType==3)
+                                    return "题目不完整";
+                                else if(this.ErrorType==4)
+                                    return "图片模糊";
+                                else if(this.ErrorType==5)
+                                    return "解析不正确";
+                                else if(this.ErrorType==6)
+                                    return "其他错误";
+                            }
+                        },
+                         { field: 'Remart', title: '纠错内容', width: 220 },
+                         { field: 'StudentName', title: '学生姓名', width: 100 },
+                    ]
+                ],
+                url: '/service/datastore/Question/GetErrorcorrectionsummaryList',
+                where: { ID: fnr.getQueryString('ID') },
+                response: {
+                    dataName: 'Data'
+                }
+            });
+            tableExt.addEvent("tool(listTable)",
+                {
+                    //工具栏查看事件
+                    "view": function (data, obj) {
+                        rootApp.viewData(data)
+                    },
+                    //工具栏编辑事件
+                    "edit": function (data, obj) {
+                        rootApp.modifyData(data)
+                    },
+                    //工具栏删除事件
+                    "delete": function (data, obj) {
+                        layer.confirm('确认要删除吗?', { icon: 3, title: '提示' }, function (index) {
+                            $.post("/service/datastore/Question/DeleteQuestionerrorCorrection", { ID: data.ID }, function (res) {
+                                layer.msg(res.Message);
+                                if (res.SuccessResponse) {
+                                    tableIns.reload();
+                                }
+                            })
+                            layer.close(index);
+                        });
+                    }
+                });
+        });
+</script>

@@ -1,0 +1,343 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>我的预约</title>
+    <style>
+        div.layui-table-cell {
+            height: 30px;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <blockquote class="layui-elem-quote">
+            <div class="layui-form">
+                <div class="layui-input-inline">
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="BusTypeSetting" layverify="required" v-bind:value.sync="BusType" 
+                                    initial="off"></remote-sel>
+                    </div>
+                </div>
+                <div class="layui-input-inline">
+                    <div class="layui-inline">
+                        <remote-sel v-bind:setting="ValidSetting" laytips="处理状态" v-bind:value.sync="queryFormData.Other"
+                                    initial="off"></remote-sel>
+                    </div>
+                </div>
+                <div class="layui-input-inline">
+                    <input placeholder="客户名称" type="text" name="1" class="layui-input" v-model="queryFormData.SearchValue">
+                </div>
+                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="btn" @click="doSearch">查询</button>
+            </div>
+        </blockquote>
+         
+        <div>
+            <button class="layui-btn layui-btn-primary layui-btn-small" v-bind:class="{'layui-btn-disabled':deleteClients.length<=0}" v-bind:disabled="deleteClients.length<=0" @click="deleteAppointment">批量删除</button>
+            <button class="layui-btn layui-btn-primary layui-btn-small" v-bind:class="{'layui-btn-disabled':handleClientsID.length<=0}" v-bind:disabled="handleClientsID.length<=0" @click="handles">批量处理</button>
+        </div>
+
+        <!--操作模板-->
+        <table id="listTable" lay-filter="listTable"></table>
+    </div>
+</body>
+</html>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'laydate'],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var laydat
+            var $ = layui.$;
+            function trim(str) {
+                return str.replace(/(^\s*)|(\s*$)/g, "");
+            }
+            var tableColsConfig =
+                [
+                    { fixed: true, checkbox: true },
+                    { title: '提醒时间', width: 200, sort: true, templet: function () {
+                        return "<div>" + fnr.format(this.Date, "yyyy-MM-dd HH:mm") + "</div>";
+                        }
+                    },
+                    {
+                         title: '业务来源', width: 200, sort: true, templet: function () {
+                             var array = new Array();
+                             if (this.BusType == 1) {
+                                 array.push("来自客户");
+                             } else if (this.BusType == 2) {
+                                 array.push("来自线索");
+                             }
+                             return "<div>" + array.join("") + "</div>";
+                         }
+                     },
+                    {
+                        field: 'ClientName', title: '名称', width: 200, sort: true
+                    },
+                    {
+                        title: '提醒方式', width: 200, sort: true, templet: function () {
+                            var array = new Array();
+                            if (this.RemindType == 1) {
+                                array.push("<a href='javascript:;' style='color: red;'>短信提醒</a>");
+                            } else if (this.RemindType == 2) {
+                                array.push("<a href='javascript:;' style='color: green;'>冒泡提醒</a>");
+                            }
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    },
+                    {
+                        title: '预约类型', width: 200, sort: true, templet: function () {
+                            var array = new Array();
+                            array.push("<a href='javascript:;'>" + (this.AppointmentTypeName == null ? '-' : this.AppointmentTypeName) + "</a>");
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    },
+                    {
+                        field: 'AddPersonName', title: '创建人', width: 200, sort: true
+                    },
+                    {
+                        title: '处理状态', width: 200, sort: true, templet: function () {
+                            var array = new Array();
+                            if (this.Valid == 0) {
+                                array.push("<a href='javascript:;' color:'red;'>未处理</a>");
+                            } else if (this.Valid == 1) {
+                                array.push("<a href='javascript:;' color:'green;'>已处理</a>");
+                            }
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    },
+                    {
+                        fixed: 'right',
+                        title: '操作',
+                        width: 330,
+                        toolbar: function () {
+                            var array = new Array();
+                            array.push("<button class='layui-btn layui-btn-small layui-btn-primary' href='javascript:;' lay-event='ViewStudent'>查看</button><button class='layui-btn layui-btn-normal layui-btn-small' href='javascript:;' lay-event='ModifyMsg'>修改</button><button class='layui-btn layui-btn-danger layui-btn-small' href='javascript:;' lay-event='deleteRemind'>删除</button>");
+                            if (this.Valid == 0) {
+                                array.push("<button class='layui-btn layui-btn-warm layui-btn-small' href='javascript:;' lay-event='Handle'>处理</button>")
+                            }
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    }
+                ]
+
+            var ValidOptions = [
+                {
+                    id: '0',
+                    value: '未处理'
+                },
+                {
+                    id: '1',
+                    value: '已处理'
+                }
+            ];
+
+            //搜索条件
+            var rootApp = new Vue({
+                el: '#root',
+                data: {
+                    BusType: 0,
+                    BusTypeSetting: {
+                        options: [{ ID: 0, Value: '请选择' },{ ID: 1, Value: '客户' }, { ID: 2, Value: '线索' }],
+                        fields: { key: 'ID', value: 'Value' }
+                    },
+                    //搜索选择框 --- 跟进阶段
+                    ValidSetting: {
+                        search: true,
+                        options: ValidOptions,
+                        fields: { root: 'Data', key: 'id', value: 'value' }
+                    },
+                    queryFormData: {
+                        Other: '',
+                        SearchValue: '',
+                        FeildType: 0,
+                        BusType:0
+                    },
+                    //批量删除参数
+                    deleteClients: [],
+                    //批量处理参数
+                    handleClientsID: []
+                },
+                methods: {                    
+                    //搜索
+                    doSearch: function () {
+                        var self = this;
+                        self.queryFormData.SearchValue = trim(self.queryFormData.SearchValue);
+                        self.queryFormData.BusType = self.BusType
+                        listTable.reload({
+                            where: this.queryFormData
+                        })
+                    },
+                    //批量删除
+                    deleteAppointment: function () {
+                        if (this.deleteClients != "") {
+                            var deleteArr = this.deleteClients.join(',');
+                            layer.confirm('确定删除吗，删除后将不可恢复', function () {
+                                $.ajax({
+                                    url: '/service/crm/Appointment/DeleteAppointmentByID',
+                                    type: 'POST',
+                                    data: { Other: deleteArr },
+                                    dataType: 'json',
+                                    success: function (data) {
+                                        if (data.SuccessResponse) {
+                                            layer.msg(data.Message);
+                                            listTable.reload();
+                                        } else {
+                                            layer.msg(data.Message)
+                                        }
+                                    }
+                                });
+                            })
+                        } else {
+                            layer.msg("请选择要删除的提醒")
+                        }
+                    },
+                    //删除
+                    deleteReminds: function (data) {
+                        layer.confirm('确定删除吗，删除后将不可恢复', function () {
+                            $.ajax({
+                                url: '/service/crm/Appointment/DeleteAppointmentByID',
+                                type: 'POST',
+                                data: { Other: data.ID },
+                                dataType: 'json',
+                                success: function (data) {
+                                    if (data.SuccessResponse) {
+                                        layer.msg(data.Message)
+                                        listTable.reload();
+                                    } else {
+                                        layer.msg(data.Message)
+                                    }
+                                }
+                            });
+                        })
+                    },
+                    //处理客户 
+                    handleReminds: function (data) {
+                        var a;
+                        if (data.Valid == 1) {
+                            a = 0;
+                        } else {
+                            a = 1;
+                        }
+                        layer.confirm('是否处理？', function () {
+                            $.ajax({
+                                url: '/service/crm/Appointment/UpdateAppointmentValid',
+                                type: 'POST',
+                                dataType: 'json',
+                                data: { Other: data.ID, Status: a }, //Other: data.ID, Status: data.Valid 
+                                success: function (data) {
+                                    if (data.SuccessResponse) {
+                                        layer.msg(data.Message);
+                                        listTable.reload();
+                                    } else {
+                                        layer.msg(data.Message);
+                                    }
+                                }
+                            });
+                        })
+                    },
+                    //修改学生信息
+                    ModifyClient: function (data) {
+                        var self = this;
+                        fnr.openDialog({
+                            title: '修改预约提醒',
+                            area: ['750px', '500px'],
+                            content: ['Modify.html?ID=' + data.ID + "&BusType=" + data.BusType],
+                            btn: ['确认修改'],
+                            events: {
+                                refresh: function (data) {
+                                    if (data.status) {
+                                        layer.msg(data.msg);
+                                        listTable.reload();
+                                    } else {
+                                        layer.msg(data.msg);
+                                    }
+                                }
+                            }
+                        });
+                    },
+                    //批量处理客户
+                    handles: function () {
+                        if (this.handleClientsID != undefined) {
+                            var validStr = this.handleClientsID.join(',');
+                            layer.confirm('是否处理？', function () {
+                                $.ajax({
+                                    url: '/service/crm/Appointment/UpdateAppointmentValid',
+                                    type: 'POST',
+                                    dataType: 'json',
+                                    data: { Other: validStr, Status: '1' },
+                                    success: function (data) {
+                                        if (data.SuccessResponse) {
+                                            layer.msg(data.Message);
+                                            listTable.reload();
+                                        } else {
+                                            layer.msg(data.Message);
+                                        }
+                                    }
+                                });
+                            })
+                        } else {
+                            layer.msg("请选择要处理的提醒");
+                        }
+                    },
+                    //预约提醒详情
+                    studentMsg: function (data) {
+                        var self=this;
+                        fnr.openDialog({
+                            title: '预约提醒详情',
+                            area: ['750px', '500px'],
+                            content: ['Info.html?ID=' + data.ID ],
+                            yes: function (index, layero) {
+                                var iframeWin = window[layero.find('iframe')[0]['name']];
+                                $(iframeWin.document).find(".layui-btn").click();
+                            }
+                        });
+                    }
+                }
+            });
+
+            //绑定列表
+            var listTable = table.render({
+                elem: '#listTable',
+                even: true, //开启隔行背景
+                page: true, //页分
+                id: 'listTable',
+                cols: [tableColsConfig],
+                url: "/service/crm/Appointment/GetListAppointment",
+                where: {FeildType: 0,BusType:0}
+            });
+
+            //获取选中的行相关数据
+            table.on('checkbox(listTable)', function (obj) {
+                var checkStatus = table.checkStatus('listTable'); 
+                rootApp.deleteClients = [];
+                rootApp.handleClientsID = [];
+                $.each(checkStatus.data, function (k, v) {
+                    rootApp.deleteClients.push(v.ID);
+                    rootApp.handleClientsID.push(v.ID);
+                });
+            });
+
+            //监听工具栏事件
+            tableExt.addEvent("tool(listTable)",
+                {
+                    "ViewStudent": function (data, obj) {
+                        rootApp.studentMsg(data);
+                    },
+                    "deleteRemind": function (data, obj, e) {
+                        rootApp.deleteReminds(data);
+                    },
+                    "Handle": function (data, obj, e) {
+                        rootApp.handleReminds(data);
+                    },
+                    "ModifyMsg": function (data, obj) {
+                        rootApp.ModifyClient(data);
+                    }
+                });
+        });
+</script>

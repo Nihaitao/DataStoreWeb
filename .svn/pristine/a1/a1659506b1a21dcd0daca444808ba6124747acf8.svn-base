@@ -1,0 +1,323 @@
+﻿
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>所有商机</title>
+    <style>
+        div.layui-table-cell {
+            height: 30px;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <blockquote class="layui-elem-quote">
+            <div class="layui-row layui-form">
+                <div class="layui-col-xs8">
+                    <div class="layui-input-inline">
+                        <remote-sel class="" v-bind:setting="OpportunityKeySetting" laytips="跟进阶段" v-bind:value.sync="queryFormData.OpportunityPhase_ID" initial="off"></remote-sel>
+                    </div>
+                    <div class="layui-input-inline">
+                        <remote-sel class="" v-bind:setting="AccountSetting" laytips="所有者" v-bind:value.sync="queryFormData.Account_ID" initial="off"></remote-sel>
+                    </div>
+                    <div class="layui-input-inline">
+                        <input placeholder="商机名称" type="text" class="layui-input" v-model="queryFormData.ModelValue">
+                    </div>
+                    <button class="layui-btn layui-btn-primary" lay-submit lay-filter="btn" @click="doSearch">查询</button>
+                </div>
+                <div class="layui-col-xs4" style="text-align: right">
+                    <button class="layui-btn" @click="addClient1">添加商机</button>
+                    <button class="layui-btn layui-btn-primary" @click="ImportClient">导入商机</button>
+                </div>
+            </div>
+        </blockquote>
+        <div>
+            <button class="layui-btn layui-btn-primary layui-btn-small" v-bind:class="{'layui-btn-disabled':deleteClients.length<=0}" v-bind:disabled="deleteClients.length<=0" @click="deleteClientFn">批量删除</button>
+            <button class="layui-btn layui-btn-primary layui-btn-small" v-bind:class="{'layui-btn-disabled':deleteClients.length<=0}" v-bind:disabled="deleteClients.length<=0" @click="Distribution">批量转移</button>
+        </div>
+
+        <!--操作模板-->
+        <table id="listTable" lay-filter="listTable"></table>
+    </div>
+</body>
+</html>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'laydate', 'layer'],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+            var layer = layui.layer;
+            function trim(str) {
+                return str.replace(/(^\s*)|(\s*$)/g, "");
+            }
+            //表格基本配置参数
+            var tableColsConfig =
+                [
+
+                    { fixed: true, checkbox: true },
+                    { fixed: true, field: 'ID', title: 'ID', width: 80, sort: true },
+                    {
+                        title: '名称', width: 150, sort: true, templet: function () {
+                            var array = new Array();
+                            array.push("<a href='javascript:;' lay-event='detail1' style='color:#1e9fff;display: inline-block; width: 100%;white-space: nowrap; text-overflow: ellipsis;overflow: hidden;' title=" + (this.Name) + ">" + (this.Name) + "</a>");
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    },
+                    { field: 'ClientName', title: '客户名称', width: 120, sort: true },
+                    { field: 'AccountName', title: '所有者', width: 120, sort: true },
+                    { field: 'PredictMoney', title: '预计金额', width: 120, sort: true },
+                    { field: 'OpportunityPhaseName', title: '跟进阶段', width: 150, sort: true },
+                    {
+                        title: '预计合作时间', width: 160, sort: true, templet: function () {
+                            var array = new Array();
+                            array.push("<span>" + fnr.format(this.PredictTime, "yyyy-MM-dd HH:mm") + "</span>");
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    },
+                    {
+                        title: '最新跟进记录', templet: function () {
+                            var array = new Array();
+                            array.push("<span>" + (this.Content == null || this.Content == '' ? "-" : this.Content) + "</span>");
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    },
+                    {
+                        fixed: 'right',
+                        title: '操作',
+                        width: 200,
+                        toolbar: function () {
+                            var array = new Array();
+                            if (this.IsAssign != 1) {
+                                array.push("<button type='button' class='layui-btn layui-btn-small' lay-event='modifyClient'>修改</button><button type='button' class='layui-btn layui-btn-danger layui-btn-small' lay-event='delete'>删除</button>");
+                                return "<div>" + array.join("") + "</div>";
+                            } else {
+                                array.push("");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        }
+                    }
+                ];
+
+
+            //搜索条件
+            window.rootApp = new Vue({
+                el: '#root',
+                data: {
+                    //搜索选择框 --- 跟进阶段
+                    OpportunityKeySetting: {
+                        search: true,
+                        options: [],
+                        fields: { root: 'Data', key: 'ID', value: 'Description' },
+                        remote: { url: '/service/public/HDictionary/GetHDictionaryList', data: { Valid: 1, ColumnName: 'OpportunityPhase_ID' } }
+                    },
+                    //所有者
+                    AccountSetting: {
+                        search: true,
+                        options: [],
+                        fields: { root: 'Data', key: 'Account_ID', value: 'Name' },
+                        remote: { url: '/service/crm/Form/GetCustomerlist?Status=1'}
+                    },
+                    //搜索选择的参数列表
+                    queryFormData: {
+                        OpportunityPhase_ID: 0,
+                        Account_ID: 0,
+                        ModelValue: '',
+                        Status:0,
+                    },
+                 
+                    deleteClients: [],
+                },
+                ready: function () {
+                },
+                methods: {
+
+                    //按条件查询
+                    doSearch: function () {
+                        var self = this;
+                        self.queryFormData.ModelValue = trim(self.queryFormData.ModelValue);
+                        listTable.reload({
+                            where: this.queryFormData
+                        })
+                    },
+
+                    //添加商机
+                    addClient1: function () {
+                        fnr.openDialog({
+                            title: '添加商机',
+                            area: ['1500px', (parent.document.documentElement || parent.document.body).clientHeight - 120 + "px"],
+                            content: ['AddOpportunity.html'],
+                            btn: ['确认添加'],
+                            events: {
+                                refresh: function (data) {
+                                    if (data.status) {
+                                        layer.msg('添加成功');
+                                        listTable.refresh();
+                                    } else {
+                                        layer.msg('添加失败');
+                                    }
+                                }
+                            }
+                        });
+                    },
+                   
+                    ImportClient: function () {
+                        fnr.openDialog({
+                            title: '导入商机',
+                            area: ['1000px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                            content: ['Import.html'],
+                            //btn: ['确认添加'],
+                            events: {
+                                add: function () {
+                                    listTable.refresh();
+                                }
+                            }
+                        });
+                    },
+                    //商机信息
+                    OpportunityMsg1: function (data) {
+                        fnr.openDialog({
+                            title: '商机信息',
+                            area: ['1500px', (parent.document.documentElement || parent.document.body).clientHeight - 120 + "px"],
+                            content: ['/Html/Client/Opportunity/InfoOpportunity.html?ID=' + data.ID ],
+                            events: {
+                                add: function () {
+                                    listTable.refresh();
+                                }
+                            }
+                        });
+                    },
+
+                    //修改
+                    modifyC1: function (data) {
+                        fnr.openDialog({
+                            title: '修改商机',
+                            area: ['1500px', (parent.document.documentElement || parent.document.body).clientHeight - 120 + "px"],
+                            content: ['UpdateOpportunity.html?ID=' + data.ID],
+                            btn: ['确认修改'],
+                            events: {
+                                refresh: function (data) {
+                                    if (data.status) {
+                                        layer.msg(data.msg);
+                                        listTable.refresh();
+                                    } else {
+                                        layer.msg(data.msg ? '操作失败' : data.msg);
+                                    }
+                                }
+                            }
+                        });
+                    },
+
+                    //批量删除
+                    deleteClientFn: function () {
+                        var deleteArr = this.deleteClients.join(',');
+                        layer.confirm('确定删除吗，删除后将无法恢复', function (index) {
+                            $.ajax({
+                                url: '/service/crm/Opportunity/DeleteOpportunity',
+                                type: 'POST',
+                                data: { Other: deleteArr },
+                                dataType: 'json',
+                                success: function (data) {
+                                    if (data.SuccessResponse) {
+                                        layer.msg(data.Message);
+                                        listTable.refresh();
+                                    } else {
+                                        layer.msg(data.Message)
+                                    }
+                                }
+                            });
+                        })
+                    },
+                    //转移商机
+                    Distribution: function (data) {
+                        fnr.openDialog({
+                            title: '转移商机',
+                            area: ['400px', '400px'],
+                            content: ['UpdateAccount.html?Other=' + this.deleteClients.join(',')],
+                            btn: ['确认修改'],
+                            events: {
+                                refresh: function (data) {
+                                    if (data.status) {
+                                        layer.msg(data.msg);
+                                        listTable.refresh();
+                                    } else {
+                                        layer.msg(data.msg ? '操作失败' : data.msg);
+                                    }
+                                }
+                            }
+                        });
+                    },
+
+
+                }
+            });
+
+            //绑定列表
+            var listTable = table.render({
+                elem: '#listTable',
+                even: true, //开启隔行背景
+                page: true, //页分,
+                height: 'full-140',
+                id: 'listTable',
+                cols: [tableColsConfig],
+                url: "/service/crm/Opportunity/GetWholeOpportunityList"
+            });
+            //获取选中的行相关数据
+            table.on('checkbox(listTable)', function (obj) {
+                var checkStatus = table.checkStatus('listTable');
+                rootApp.deleteClients = [];
+                $.each(checkStatus.data, function (k, v) {
+                    if (v.IsAssign != 1) {
+                        rootApp.deleteClients.push(v.ID);
+                    }
+                });
+            });
+
+
+
+            //监听工具栏事件
+            tableExt.addEvent("tool(listTable)",
+                {
+                    "detail1": function (data, obj) {
+                        rootApp.OpportunityMsg1(data);
+                    },
+
+                    "detail2": function (data, obj, e) {
+                        rootApp.followStatus(data);
+                    },
+                  
+                    //删除一行
+                    "delete": function (data, obj) {
+                        layer.confirm('确定删除吗，删除后将无法恢复', function (index) {
+                            $.ajax({
+                                url: '/service/crm/Opportunity/DeleteOpportunity',
+                                type: 'POST',
+                                data: { Other: data.ID },
+                                dataType: 'json',
+                                success: function (data) {
+                                    if (data.SuccessResponse) {
+                                        obj.del();
+                                        layer.close(index);
+                                        layer.msg(data.Message)
+                                    } else {
+                                        layer.msg(data.Message)
+                                    }
+                                }
+                            });
+                        })
+                    },
+
+                    //修改一行
+                    "modifyClient": function (data, obj) {
+                        rootApp.modifyC1(data);
+                    }
+                });
+        });
+</script>

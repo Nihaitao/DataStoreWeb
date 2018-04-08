@@ -1,0 +1,92 @@
+﻿label {
+            color:#808080;
+        }
+        .main {
+            
+            text-align:center;
+        }
+        .user_content { 
+
+            margin-top: 20px;
+            background-color: #fff;
+            padding-top: 20px;
+        }
+        img.vatop {
+            vertical-align: top;
+        }
+
+        .content {
+        
+            width:80%;
+            display:inline-block;
+        }
+        .my-label{
+            padding:8px 25px !important;
+                position: relative;
+                float: left;
+                display: block;
+                width: 180px;
+                font-weight: normal;
+                line-height: 20px;
+                text-align: right;
+        }
+        a.edit {
+            text-decoration:underline!important;
+            color:#01aaed!important;
+            position: relative;
+            top: 8px;
+        }
+        .ipt_bg_color {
+            background-color:#f2f2f2!important;
+        }
+        .ipt_w380 {
+        
+            width:380px!important;
+        }
+        .footer {
+            text-align: center;
+            border-top: 1px solid #f2f2f2;
+            padding: 15px;
+        }
+        .footer span {
+            color:#FFB800;
+            font-size:12px;
+        }
+        .ipt_bg_color:focus {
+            background-color:#fff!important;
+        }
+        .layui-form-select input {
+            background-color:#f2f2f2;
+        }
+
+        .reg_tips{
+            text-align: left;
+            width: 80%;
+            display: inline-block;
+            position: relative;
+            left: 130px;
+            margin-top: 50px;
+        }
+        .layui-form-item-bk {
+            clear:none!important;
+            float:left;
+            width: 50%;
+        }
+        .bk-input { 
+
+            float: left;
+            color:#000;
+        }
+        .ta_cls {
+
+            resize: none;
+            min-height:300px!important;
+            background-color:#f2f2f2!important;
+        }
+        .ta_cls:focus {
+            background-color:#fff!important;
+        }
+.layui-layer-content {
+height:auto!important;
+}
+    .yy_ptips {padding-left: 5%;color: #ff0000;position: absolute;bottom: 110px;text-align: left;}

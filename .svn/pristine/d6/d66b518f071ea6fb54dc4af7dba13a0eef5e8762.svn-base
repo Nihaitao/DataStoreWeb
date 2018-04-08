@@ -1,0 +1,306 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <blockquote class="layui-elem-quote">
+            <div class="layui-row layui-form">
+                <div class="layui-col-xs6">
+                    <div class="layui-input-inline">
+                        <div class="layui-inline">
+                            <remote-sel v-bind:setting="ValidSetting" v-bind:value.sync="queryFormData.Valid" laytips="处理状态"
+                                        initial="off"></remote-sel>
+                        </div>
+                    </div>
+                    <div class="layui-input-inline">
+                        <input placeholder="学生关键字" type="text" name="1" class="layui-input" v-model="queryFormData.StudentInfo">
+                    </div>
+                    <button class="layui-btn layui-btn-primary" lay-submit lay-filter="btn" @click="doSearch">查询</button>
+                </div>
+                <div class="layui-col-xs6" style="text-align: right">
+                    <!--<button class="layui-btn" @click="addHandle"><i class="layui-icon"></i> 添加预约提醒</button>-->
+                </div>
+            </div>
+        </blockquote>
+
+        <div>
+            <button class="layui-btn layui-btn-primary layui-btn-small" @click="deleteAppointment">批量删除</button>
+            <button class="layui-btn layui-btn-primary layui-btn-small" @click="handles">批量处理</button>
+        </div>
+
+        <!--操作模板-->
+        <table id="listTable" lay-filter="listTable"></table>
+    </div>
+</body>
+</html>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'laydate'],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var laydat
+            var $ = layui.$;
+
+            var tableColsConfig =
+                [
+                    { fixed: true, checkbox: true },
+                    { title: '提醒时间', width: 200, sort: true, templet: function () {
+                        return "<div>" + fnr.format(this.Date, "yyyy-MM-dd HH:mm") + "</div>";
+                        }
+                    },
+                    {
+                        field: 'StudentName', title: '学生名称', width: 200, sort: true
+                    },
+                    {title: '提醒方式', width: 200, sort: true, templet: function () {
+                            var array = new Array();
+                            if (this.RemindType == 1) {
+                                array.push("<a href='javascript:;' >短信</a>");
+                            } else if (this.RemindType == 2) {
+                                array.push("<a href='javascript:;' >冒泡</a>");
+                            }
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    },
+                    {
+                        field: 'AppointmentTypeDesc', title: '预约类型', width: 200, sort: true
+                    },
+                    {
+                        field: 'AddPersonName', title: '创建人', width: 200, sort: true
+                    },
+                    {
+                        field: 'Valid', title: '处理情况', width: 200, sort: true, templet: function () {
+                            var array = new Array();
+                            if (this.Valid == 0) {
+                                array.push("<a href='javascript:;' color:'red;'>未处理</a>");
+                            } else if (this.Valid == 1) {
+                                array.push("<a href='javascript:;' color:'green;'>已处理</a>");
+                            }
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    },
+                    {
+                        fixed: 'right',
+                        title: '操作',
+                        width: 330,
+                        toolbar: function () {
+                            var array = new Array();
+                            array.push("<button class='layui-btn layui-btn-info layui-btn-small' href='javascript:;' lay-event='ViewStudent'>查看</button><button class='layui-btn layui-btn-primary layui-btn-small' href='javascript:;' lay-event='ModifyMsg'>修改</button><button class='layui-btn layui-btn-danger layui-btn-small' href='javascript:;' lay-event='deleteRemind'>删除</button>");
+                            if (this.Valid == 0) {
+                                array.push("<button class='layui-btn layui-btn-default layui-btn-small' href='javascript:;' lay-event='Handle'>处理</button>")
+                            }
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    }
+                ]
+
+            var ValidOptions = [
+                 {
+                     id: '',
+                     value: '全部'
+                 },
+                {
+                    id: '0',
+                    value: '未处理'
+                },
+                {
+                    id: '1',
+                    value: '已处理'
+                }
+            ];
+
+            //搜索选择框 --- 来源参数
+            var statusSettingOptions = [];
+
+            //搜索条件
+            var rootApp = new Vue({
+                el: '#root',
+                data: {
+                    //搜索选择框 --- 跟进状态
+                    ValidSetting: {
+                        search: true,
+                        options: ValidOptions,
+                        fields: { root: 'ReturnData.Data', key: 'id', value: 'value' }
+                    },
+                    queryFormData: {
+                        Valid: '123',
+                        StudentInfo: ''
+                    },
+                    deleteClients: [],
+                    handleClients: []
+                },
+                methods: {
+                    doSearch: function () {
+                        listTable.reload({
+                            where: this.queryFormData
+                        })
+                    },
+                   
+                    //批量删除
+                    deleteAppointment: function () {
+                        var deleteArr = this.deleteClients.join(',');
+                        layer.confirm('真的删除吗', function () {
+                            $.ajax({
+                                url: '/service/AppointmentReminder/DeleteAppointmentReminder',
+                                type: 'POST',
+                                data: { Ids: deleteArr },
+                                dataType: 'json',
+                                success: function (data) {
+                                    if (data.SuccessResponse) {
+                                        layer.msg('删除成功');
+                                        listTable.reload();
+                                    } else {
+                                        layer.msg('删除失败，请重试')
+                                    }
+                                }
+                            });
+                        })
+                    },
+                    //删除
+                    deleteReminds: function (data) {
+                        layer.confirm('真的删除吗', function (index) {
+                            $.ajax({
+                                url: '/service/AppointmentReminder/DeleteAppointmentReminder',
+                                type: 'POST',
+                                data: { Ids: data.ID },
+                                dataType: 'json',
+                                success: function (data) {
+                                    if (data.SuccessResponse) {
+                                        layer.msg('删除成功')
+                                        listTable.reload();
+                                    } else {
+                                        layer.msg('删除失败')
+                                    }
+                                }
+                            });
+                        })
+                    },
+                    //处理客户 
+                    handleReminds: function (data) {
+                        var a;
+                        if (data.Valid == 1) {
+                            a = 0;
+                        } else {
+                            a = 1;
+                        }
+                        layer.confirm('是否处理？', function () {
+                            $.ajax({
+                                url: '/service/AppointmentReminder/UpdateAppointmentReminderValid',
+                                type: 'POST',
+                                dataType: 'json',
+                                data: { ID: data.ID, Valid: a },
+                                success: function (data) {
+                                    if (data.SuccessResponse) {
+                                        layer.msg('处理成功');
+                                        listTable.reload();
+                                    } else {
+                                        layer.msg('处理失败');
+                                    }
+                                }
+                            });
+                        })
+                    },
+                    //修改学生信息
+                    ModifyClient: function (data) {
+                        fnr.openDialog({
+                            title: '修改预约',
+                            area: ['690px', '500px'],
+                            content: ['Modify.html'] + '?ID=' + data.ID + '&Name=' + data.StudentName,
+                            btn: ['确认修改'],
+                            yes: function (index, layero) {
+                                var iframeWin = window[layero.find('iframe')[0]['name']];
+                                $(iframeWin.document).find(".layui-btn").click();
+                            },
+                            events: {
+                                refresh: function (data) {
+                                    listTable.reload();
+                                    layer.msg("修改成功")
+                                }
+                            },
+                        });
+                    },
+                    //批量处理客户
+                    handles: function () {
+                        
+                        $.ajax({
+                            url: '/service/Client/UpdateAppointmentValid',
+                            type: 'POST',
+                            dataType: 'json',
+                            data: { Other: this.handleClientsID.join(','), Status: '1' },
+                            success: function (data) {
+                                if (data.SuccessResponse) {
+                                    layer.msg('处理成功');
+                                    listTable.reload();
+                                } else {
+                                    layer.msg('处理失败');
+                                }
+                            }
+                        });
+                    },
+                    //预约提醒详情
+                    studentMsg: function (data) {
+                        fnr.openDialog({
+                            title: '预约提醒详情',
+                            area: ['690px', '500px'],
+                            content: ['Info.html'] + "?ID=" + data.ID,
+                            yes: function (index, layero) {
+                                var iframeWin = window[layero.find('iframe')[0]['name']];
+                                $(iframeWin.document).find(".layui-btn").click();
+                            },
+                            events: {
+                                refresh: function (data) {
+                                   
+                                }
+                            },
+                        });
+                    }
+                }
+            });
+
+            //绑定列表
+            var listTable = table.render({
+                elem: '#listTable',
+                even: true, //开启隔行背景
+                page: true, //页分
+                id: 'listTable',
+                cols: [tableColsConfig],
+                url: "/service/AppointmentReminder/GetAppointmentReminderList"
+            });
+
+            //获取选中的行相关数据
+            table.on('checkbox(listTable)', function (obj) {
+                var checkStatus = table.checkStatus('listTable'); 
+                rootApp.deleteClients = [];
+                rootApp.handleClientsID = [];
+                $.each(checkStatus.data, function (k, v) {
+                    rootApp.deleteClients.push(v.ID);
+                    rootApp.handleClientsID.push(v.ID);
+                });
+            });
+
+            //监听工具栏事件
+            tableExt.addEvent("tool(listTable)",
+                {
+                    "ViewStudent": function (data, obj) {
+                        rootApp.studentMsg(data);
+                    },
+                    "deleteRemind": function (data, obj, e) {
+                        rootApp.deleteReminds(data);
+                    },
+                    "Handle": function (data, obj, e) {
+                        rootApp.handleReminds(data);
+                    },
+                    "ModifyMsg": function (data, obj) {
+                        rootApp.ModifyClient(data);
+                    }
+                });
+        });
+</script>

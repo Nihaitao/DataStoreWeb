@@ -1,0 +1,69 @@
+header {
+  position: relative;
+  line-height: 0.862068rem;
+  border-top: 0.017241rem solid #dddddd;
+  border-bottom: 0.017241rem solid #dddddd;
+}
+header .iconfont {
+  font-size: 0.310344rem;
+  position: absolute;
+  top: 0;
+  left: 0.344827rem;
+}
+header p {
+  text-align: center;
+  font-size: 0.275862rem;
+  font-weight: 600;
+  color: #333333;
+}
+.centerbox {
+  width: 100%;
+  height: 0.172413rem;
+  background: #f5f5f9;
+  border-bottom: 0.017241rem solid #dddddd;
+}
+main {
+  padding-left: 0.25862rem;
+  overflow: hidden;
+}
+main h4 {
+  line-height: 0.862068rem;
+  font-size: 0.275862rem;
+  color: #333333;
+}
+main h4 i {
+  font-style: normal;
+  color: #f10013;
+  font-size: 0.293103rem;
+}
+main .msgbox {
+  border-bottom: 0.017241rem solid #ccc;
+}
+main .msgbox .txt {
+  float: left;
+}
+main .msgbox .txt .line-normal-user-name {
+  line-height: 0.413793rem;
+  padding-top: 0.241379rem;
+  font-size: 0.241379rem;
+  color: #333333;
+}
+main .msgbox .txt .line-normal-msg {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 0.362068rem;
+  font-size: 0.189655rem;
+  color: #a1a1a1;
+}
+main .msgbox .btn {
+  float: left;
+}
+main .msgbox .btn button {
+  width: 1.206896rem;
+  line-height: 1.155172rem;
+  border: none;
+  background: #f10013;
+  color: #fff;
+  font-size: 0.241379rem;
+}

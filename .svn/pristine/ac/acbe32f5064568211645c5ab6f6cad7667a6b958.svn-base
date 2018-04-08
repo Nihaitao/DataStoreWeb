@@ -1,0 +1,542 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>专业筛选列表</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script src="../script/jquery.js"></script>
+    <script src="https://player.polyv.net/script/polyvplayer.min.js"></script>
+    <link rel="shortcut icon" href="" type="image/x-icon" class="favIcon" />
+    <link rel="stylesheet" href="../Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../Resources/CSS/Font/css/font-awesome.min.css">
+    <script src="../Resources/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../Resources/CSS/PC_css.css">
+    <style>
+        .Video-listButton {
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        jQuery.fn.slideLeftHide = function (speed, callback) {
+            this.animate({
+                width: "hide",
+                paddingLeft: "hide",
+                paddingRight: "hide",
+                marginLeft: "hide",
+                marginRight: "hide"
+            }, speed, callback);
+        };
+        jQuery.fn.slideLeftShow = function (speed, callback) {
+            this.animate({
+                width: "show",
+                paddingLeft: "show",
+                paddingRight: "show",
+                marginLeft: "show",
+                marginRight: "show"
+            }, speed, callback);
+        };
+    </script>
+
+</head>
+<body id="root" v-cloak>
+    <!--顶部-->
+    <div class="clearfix" style="height: 60px;background-color: #fff; padding: 0 30px;">
+        <a href="../index.html" class="Pro-logo pull-left">
+            <img style="margin: -11px 0;height: 54px;" src="../Resources/images/lhlogo.png" alt="" class="logo">
+        </a>
+        <div class="Pro-nav pull-right">
+            <ul>
+                <li><a href="#">课程中心</a></li>
+                <li><a href="#">问答</a></li>
+                <li><a href="#">专业</a></li>
+                <li><a href="#">题库</a></li>
+                <li><a href="#">名师</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="Video-top clearfix">
+        <div class="Video-listButton pull-left" @click.stop="toggleCatalog">
+            <i class="fa fa-bars"></i>
+            目录
+        </div>
+        <div class="Video-class pull-left" id="cName-chapter">
+            <p>{{list.Name}}</p>
+        </div>
+        <img src="../Resources/images/photo.png" width="30px" height="30px" style="border-radius: 50%" class="Video-photo">
+
+        <div class="pull-right Video-span">
+            <span data-toggle="modal" data-target="#Comment">评论</span>
+            <span data-toggle="modal" data-target="#Question">提问</span>
+        </div>
+    </div>
+    <!--迷之部分2-->
+    <div class="Video-body">
+        <div class="Video-Catalog leftC" style="background-color: #1D1D1D;">
+            <ul class="Video-chapter" id="Video-chapter">
+                <li v-for="(index, item) in cataLogData">
+                    <h5>{{item.Name}}</h5>
+                    <ul class="Video-Section" v-if="listData.isPay == 0 &&　item.ChildNodeList.length > 0">
+                        <li class="notFree" v-for="(i, items) in item.ChildNodeList" v-if="items.IsOpen == 3">
+                            <a href="javascript:;" v-if="items.IsOpen == 3">
+                                <i class="fa fa-unlock-alt iIcon"></i>
+                                <b class="Section-name">{{items.Name}}</b>
+                            </a>
+                        </li>
+                        <li class="elseFree" v-for="(i, items) in item.ChildNodeList" v-if="items.IsOpen != 3" v-bind:data-isopen="{{items.IsOpen}}" v-bind:data-id="{{items.ID}}" v-bind:data-pid="{{items.CID}}" v-bind:data-cid="{{items.CourseWare_ID}}">
+                            <a href="javascript:;" v-else>
+                                <i class="fa fa-video-camera iIcon"></i>
+                                <b class="Section-name">{{items.Name}}</b>
+                                <span class="Section-name"></span>
+                                <span class="SectionFree" v-if="items.IsOpen == 1">免费</span>
+                                <span class="SectionAudition" v-if="items.IsOpen == 2">试听</span>
+                                <i v-bind:class="{fa: true, fa-circle-o: true, dColor: true, hide: items.IsLook != 1}"></i>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <ul class="Video-Section" v-if="listData.isPay >= 1 &&　item.ChildNodeList.length > 0">
+                        <li class="elseFree" v-for="(i, items) in item.ChildNodeList" v-if="items.IsOpen != 3" v-bind:data-isopen="{{items.IsOpen}}" v-bind:data-id="{{items.ID}}" v-bind:data-pid="{{items.CID}}" v-bind:data-cid="{{items.CourseWare_ID}}">
+                            <a href="javascript:;" v-else>
+                                <i class="fa fa-video-camera iIcon"></i>
+                                <b class="Section-name">{{items.Name}}</b>
+                                <span class="Section-name"></span>
+                                <i v-bind:class="{fa: true, fa-circle-o: true, dColor: true, hide: items.IsLook != 1}"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
+        </div>
+        <div class="Video-Main">
+            <div id="CuPlayer"></div>
+        </div>
+        <div class="Video-memberAndTalk" style="display: none;">
+            <ul class="Video-memberAndTalk-top clearfix">
+                <li role="presentation" class=""> <a href="#discuss" role="tab" data-toggle="tab">讨论</a></li>
+                <li role="presentation" class="active"> <a href="#member" role="tab" data-toggle="tab"> 成员（201）</a></li>
+            </ul>
+            <div class="tab-content" style="height: calc(100% - 50px)">
+                <!--成员-->
+                <div role="tabpanel" class="tab-pane active" id="member">
+                    <div class="search-user">
+                        <input type="text" placeholder="搜索课堂成员">
+                        <i class="fa fa-search"></i>
+                    </div>
+                    <div class="Video-user-lise Video-sro" style="padding-right: 0">
+                        <div class="Video-user">
+                            <img src="" alt="" class="Video-teacher"><span>【主讲】张敏</span>
+                        </div>
+                        <div class="Video-user">
+                            <img src="" alt="" class="Video-teacher"><span>【助教】我去你爱神的箭离开时</span>
+                        </div>
+                    </div>
+                </div>
+                <!--讨论-->
+                <div role="tabpanel" class="tab-pane " id="discuss">
+                    <div class="Video-Notice">
+                        【公告】有问题咨询助教老师，小龙老师班级交流群：3623666666 <br>
+                    </div>
+                    <div class="discuss-list Video-sro" style="padding-right: 0;padding-bottom: 0">
+                        <div class="Stu-say">
+                            <div class="name">老白金</div>
+                            <div class="con">老师，没听到声音</div>
+                        </div>
+                    </div>
+                    <div class="discuss-send">
+                        <textarea name="sendMsg" id=""></textarea>
+                        <button class="">发送</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button type="button" class="btn btn-primary hide hideCommentBtn" data-toggle="modal" data-target=".bs-example-modal-sm">Small modal</button>
+
+    <!--弹出框-->
+    <!--评论-->
+    <div class="modal fade" id="Comment" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close CommentClose" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel1">评论</h4>
+                </div>
+                <div class="modal-body">
+                    <textarea class="commentTxt" placeholder="请输入问题标题" rows="10" cols="20" style="width: 100%;height: 100%; border: 1px solid #ddd; border-radius: 4px; resize : none; outline:none;"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button class="commentSubmit btn btn-primary" type="button">发布</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--提问-->
+    <div class="modal fade" id="Question" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close QuestionClose" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel2">提问</h4>
+                </div>
+                <div class="modal-body">
+                    <textarea class="questionTxt" placeholder="请输入讨论内容" rows="10" cols="20" style="width: 100%;height: 100%; border: 1px solid #ddd; border-radius: 4px; resize : none; outline:none;"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary questionSubmit">发布</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--确认弹框-->
+    <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body CommentMsg">
+                    <h5>删除成功</h5>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" data-dismiss="modal" type="button">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+<link href="../Resources/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="../Resources/js/modules/vue/vue.min.js"></script>
+<script src="../Resources/js/modules/layer/layui.js"></script>
+<script src="../Resources/js/require_config.js"></script>
+<script src="../Resources/js/Page.js"></script>
+<script src="../Resources/js/headFootLayout.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt"], function (fnr) {
+        var player;
+        //截取URL地址栏参数
+        function GetQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+        }
+        function IsPC() {
+            var userAgentInfo = navigator.userAgent;
+            var Agents = ["Android", "iPhone",
+                        "SymbianOS", "Windows Phone",
+                        "iPad", "iPod"];
+            var flag = true;
+            for (var v = 0; v < Agents.length; v++) {
+                if (userAgentInfo.indexOf(Agents[v]) > 0) {
+                    flag = false;
+                    break;
+                }
+            }
+            return flag;
+        }
+        function delAllCookie() {
+            var myDate = new Date();
+            myDate.setTime(-1000);//设置时间
+            var data = document.cookie;
+            var dataArray = data.split("; ");
+            for (var i = 0; i < dataArray.length; i++) {
+                var varName = dataArray[i].split("=");
+                document.cookie = varName[0] + "=''; expires=" + myDate.toGMTString();
+            }
+        }
+
+        var $ = layui.$;
+        rootApp = new Vue({
+            el: "#root",
+            data: {
+                loginState: false,
+                headPhoto: '',
+                layoutData: {},
+                C_ID: '',
+                P_ID: '',
+                listData: {
+                    courseName: '',
+                    isPay: ''
+                },
+                cataLogData: [],
+                miaoInt: 0,
+                oldInt: 0
+            },
+            ready: function () {
+                _this = this;
+                _this.checkLogin();
+                _this.cName();
+                _this.toggleCatalog();
+                _this.someQandC();
+            },
+            methods: {
+                //退出
+                exit: function () {
+                    delAllCookie();
+                    location.href = '../Login.shtml';
+                },
+
+                //查询stuID
+                checkLogin: function () {
+                   var _this = this;
+                    if (fnr.Cookie.get('StuId') && fnr.Cookie.get('StuId') != 'undefined') {
+                        _this.loginState = true;
+                        $.get("/service/Student/GetStudentInfo", function (res) {
+                            if (res.SuccessResponse) {
+                                _this.msg = 'hi，' + res.ReturnData.Data.Name;
+                                _this.headPhoto = res.ReturnData.Data.HeadImg ? res.ReturnData.Data.HeadImg : '../Resources/images/photo.png'
+                                _this.loginState = true;
+                            }
+                        });
+                    }
+                },
+
+                cName: function () {
+                    var self = this;
+                    $.get('/service/NoAuthority/GetCourseByID', { ID: GetQueryString('Course_ID') }, function (data) {
+                        if (data.SuccessResponse) {
+                            if (data.ReturnData.Data) {
+                                self.listData.isPay = data.ReturnData.Data.IsPay;
+                                self.listData.courseName = data.ReturnData.Data.Name;
+                                self.catalog();
+                            } else {
+                                layer.msg('返回值为空');
+                            }
+                        }
+                    })
+                },
+
+                catalog: function () {
+                    var self = this;
+                    var Course_ID = GetQueryString('Course_ID');
+                    $.get('/service/NoAuthority/GetCourse_ChaptersNodeList', { Course_ID: Course_ID }, function (data) {
+                        if (data.SuccessResponse) {
+                            var Datas = data.ReturnData.Data;
+                            if (Datas) {
+                                $.each(Datas, function (k, v) {
+                                    self.cataLogData.push(v);
+                                });
+                            } else {
+                                layer.msg('返回值为空')
+                            }
+                            setTimeout(function () {
+                                $(".Video-Catalog").mCustomScrollbar({
+                                    mouseWheel: true,
+                                });
+                                $(".tab-content .active .Video-sro").mCustomScrollbar({
+                                    mouseWheel: true,
+                                });
+                            }, 0);
+                            var liArr = $('.Video-Section li.elseFree');
+                            var ID = GetQueryString('ID');
+                            for (var s = 0; s < liArr.length; s++) {
+                                if ($(liArr[s]).data('id') == ID) {
+                                    $(liArr[s]).addClass('learning');
+                                    $(liArr[s]).find('span.Section-name').text('正在学习').next().css('display', 'none');
+                                    $(liArr[s]).find('i.iIcon').removeClass('fa-video-camera').addClass('fa-youtube-play');
+                                    self.courseWare($(liArr[s]).data('id'));
+                                }
+                            }
+                            //点击视频切换
+                            $('.Video-Section').on('click', 'li.elseFree', function () {
+                                var _thisId = $(this).data('id');
+                                location.href = 'Video.html?ID=' + _thisId + '&Course_ID=' + GetQueryString('Course_ID');
+                                var spanTxt = $(this).data('isopen');
+                                $(this).find('span.Section-name').text('正在学习');
+                                $(this).siblings('li').find('span.Section-name').text(' ');
+                                $(this).parents('li').siblings().find('span.Section-name').text(' ');
+                                if ($(this).find('i.iIcon').hasClass('fa-video-camera')) {
+                                    $(this).find('i.iIcon').removeClass('fa-video-camera').addClass('fa-youtube-play');
+                                    $(this).siblings().find('i.iIcon').addClass('fa-video-camera').removeClass('fa-youtube-play');
+                                    $(this).parents('li').siblings().find('i.iIcon').removeClass('fa-youtube-play').addClass('fa-video-camera');
+                                }
+                                if (!$(this).hasClass('learning')) {
+                                    $(this).addClass('learning').siblings('li').removeClass('learning');
+                                    $(this).parents('li').siblings().find('ul li').removeClass('learning');
+                                }
+                                C_ID = $(this).data('id');
+                                P_ID = $(this).data('pid');
+                                self.courseWare(C_ID);
+                            });
+                            $('.Video-Section').on('click', 'li.notFree', function () {
+                                layer.open({
+                                    content: '视频未购买，不能观看'
+                                })
+                            });
+                        } else {
+                            layer.msg(data.Message);
+                        }
+                    })
+                },
+
+                toggleCatalog: function () {
+                    var _this = $('.Video-Catalog');
+                    _this.slideToggle();
+                },
+
+                courseWare: function (cId) {
+                    var self = this;
+                    if (cId) {
+                        $.get('/service/Resource/GetCourseWByID', { id: cId, Course_ID: GetQueryString('Course_ID') }, function (data) {
+                            var Datas = data.ReturnData.Data;
+                            if (data.SuccessResponse) {
+                                if (Datas.IsOpen === 3) {
+                                    if (Datas.IsPay >= 1) {
+                                        var pId = Datas.PolyvVID;
+                                        var sId = Datas.StuId;
+                                        if (IsPC() == true) {
+                                            player = polyvObject('#CuPlayer').videoPlayer({
+                                                'width': '100%',
+                                                'height': '100%',
+                                                'vid': pId,
+                                                'session_id': sId
+                                            });
+                                        } else {
+                                            player = polyvObject('#CuPlayer').videoPlayer({
+                                                'width': '100%',
+                                                'height': '100%',
+                                                'vid': pId,
+                                                'df': 1,
+                                                'flashvars': { 'autoplay': 'true', 'param2': sId },
+                                                'params': { 'param2': sId },
+                                                'flashParams': { 'wmode': 'window', 'allowScriptAccess': 'always', 'allowFullScreen': 'false' }
+                                            });
+                                        }
+                                        //页面加载时调用
+                                        self.LookCourse(1);
+                                        //看视频的时候 用到
+                                        setInterval(self.LookCourse, 60000);//60秒执行一次
+                                    } else {
+                                        layer.msg('视频未购买，不予许观看')
+                                    }
+                                } else {
+                                    var pId = Datas.PolyvVID;
+                                    var sId = Datas.StuId;
+                                    if (IsPC() == true) {
+                                        player = polyvObject('#CuPlayer').videoPlayer({
+                                            'width': '100%',
+                                            'height': '100%',
+                                            'vid': pId,
+                                            'session_id': sId
+                                        });
+                                    } else {
+                                        player = polyvObject('#CuPlayer').videoPlayer({
+                                            'width': '100%',
+                                            'height': '100%',
+                                            'vid': pId,
+                                            'df': 1,
+                                            'flashvars': { 'autoplay': 'true', 'param2': sId },
+                                            'params': { 'param2': sId },
+                                            'flashParams': { 'wmode': 'window', 'allowScriptAccess': 'always', 'allowFullScreen': 'false' }
+                                        });
+                                    }
+                                    //页面加载时调用
+                                    self.LookCourse(1);
+                                    //看视频的时候 用到
+                                    setInterval(self.LookCourse, 60000);//60秒执行一次
+                                }
+
+                            } else {
+                                layer.msg(data.Message);
+                            }
+                        });
+                    } else {
+                        layer.msg('cId不能为0！')
+                    }
+                },
+
+                addComment: function (Course_ID, Chapter_ID, html) {
+                    var self = this;
+                    $.ajax({
+                        url: '/service/CourseComment/AddCourseComment',
+                        type: 'post',
+                        data: {
+                            Course_ID: Course_ID,
+                            Chapter_ID: Chapter_ID,
+                            Content: html
+                        },
+                        success: function (data) {
+                            if (data.SuccessResponse) {
+                                $('.CommentMsg h5').html(data.Message);
+                                $('.hideCommentBtn').click();
+                                $('.CommentClose').click();
+                                $('.commentTxt').val(' ')
+                            } else {
+                                $('.CommentMsg h5').html(data.Message);
+                                $('.hideCommentBtn').click();
+                            }
+                        }
+                    });
+                },
+
+                addQuestion: function (PID, Course_ID, Chapter_ID, html) {
+                    var self = this;
+                    $.ajax({
+                        url: '/service/CourseInterlocution/AddCourseInterlocution',
+                        type: 'post',
+                        data: {
+                            PID: PID,
+                            Course_ID: Course_ID,
+                            Chapter_ID: Chapter_ID,
+                            Content: html
+                        },
+                        success: function (data) {
+                            if (data.SuccessResponse) {
+                                $('.CommentMsg h5').html(data.Message);
+                                $('.hideCommentBtn').click();
+                                $('.QuestionClose').click();
+                                $('.questionTxt').val(' ')
+                            } else {
+                                $('.CommentMsg h5').html(data.Message);
+                                $('.hideCommentBtn').click();
+                            }
+                        }
+                    });
+                },
+
+                someQandC: function () {
+                    var self = this;
+                    $('.commentSubmit').on('click', function () {
+                        var html = $('.commentTxt').val();
+                        var Course_ID = GetQueryString('Course_ID');
+                        var Chapter_ID = self.C_ID;
+                        self.addComment(Course_ID, Chapter_ID, html);
+                    });
+                    $('.questionSubmit').on('click', function () {
+                        var html = $('.questionTxt').val();
+                        var Course_ID = GetQueryString('Course_ID');
+                        var Chapter_ID = self.C_ID;
+                        var PID = self.P_ID;
+                        self.addQuestion(PID, Course_ID, Chapter_ID, html);
+                    });
+                },
+
+                LookCourse: function (id) {
+                    var self = this;
+                    var CourseChapters_ID = GetQueryString('ID');
+                    var LookTime;
+                    if (id === 1) {
+                        LookTime = 0;
+                    } else {
+                        LookTime = player.j2s_realPlayVideoTime();//播放时间
+                    }
+                    //var Duration = player.j2s_getDuration();//视频时长
+                    self.maioInt = LookTime - self.oldInt;
+                    self.oldInt = LookTime;
+                    $.post('/service/WebCourse/SaveCourse_Look', { CourseChapters_ID: CourseChapters_ID, LookType: 0, LookTime: maioInt, IP: '' }, function (data) {
+                        if (!data.SuccessResponse) {
+                            layer.msg(data.Message);
+                        }
+                    })
+                }
+            },
+        });
+    })
+</script>

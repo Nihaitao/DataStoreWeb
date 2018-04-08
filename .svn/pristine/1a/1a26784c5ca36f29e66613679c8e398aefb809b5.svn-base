@@ -1,0 +1,206 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <meta charset="UTF-8">
+    <title>介绍</title>
+
+    <script src="../Resources/js/jquery.js"></script>
+    <link href="../Resources/CSS/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../Resources/CSS/Font/css/font-awesome.min.css" rel="stylesheet" />
+    <script src="../Resources/CSS/bootstrap/js/bootstrap.min.js"></script>
+    <link href="../Resources/CSS/PC_css.css" rel="stylesheet" />
+    <script src="../Resources/js/modules/vue/vue.min.js"></script>
+    <script src="../script/layer/layer.js"></script>
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body id="root" v-cloak>
+    <!--顶部-->
+    <div class="top_head clearfix">
+        <div class="container">
+            <div class="pull-left" style="margin-left: 15px">
+                <span>欢迎来到中国教育中心</span>
+            </div>
+            <div class="pull-right">
+                <a href="Login.html">登录</a>
+                <a href="Register.html">注册</a>
+                <a href="#">注册客服中心</a>
+            </div>
+        </div>
+    </div>
+    <!--顶部-->
+    <div class="clearfix" style="height: 60px">
+        <div class="container">
+            <div class="Pro-logo pull-left">
+                <img src="../Resources/images/logo.png"/>
+            </div>
+            <div class="Pro-nav pull-right">
+                <ul>
+                    <li><a href="#">课程中心</a></li>
+                    <li><a href="#">问答</a></li>
+                    <li><a href="#">专业</a></li>
+                    <li><a href="#">题库</a></li>
+                    <li><a href="#">名师</a></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    <!--详细介绍-->
+    <div class="Pro-screen">
+        <div class="container clearfix">
+            <div class="Pro-BreadcrumbNavigation">
+                <i class="icon_weizhi"></i>
+                <span>当前位置：</span>
+                <span>首页</span>
+                &gt;
+                <span>专业列表</span>
+                &gt;
+                <span>工商企业管理专业</span>
+            </div>
+            <div class="Pro-showDetail clearfix">
+                <div class="Pro_care pull-left">
+                    <img src="../Resources/images/课程图片.png" alt="" width="329" height="185">
+                </div>
+                <div class="Pro-info pull-right">
+                    <h3 class="Pro-title">
+                        {{CourseDetailData.Model_Name}}
+                        <span class="pull-right Pro-code">专业代码：{{CourseDetailData.Code}}</span>
+                    </h3>
+                    <p>{{CourseDetailData.Info}}</p>
+                    <div style="margin-top: 10px"><span style="font-weight: 600;">层次：</span><span>{{CourseDetailData.Leval_Name}}</span></div>
+                    <div style="margin-top: 10px"><span style="font-weight: 600;">类型：</span><span>{{CourseDetailData.Category_Name}}</span></div>
+                    <div style="margin-top: 10px">
+                        <span style="font-weight: 600;">主考院校：</span>
+                        <select class="selected" name="daxue" id="" style="padding-left: 3px;">
+                            <option value="1">湖南林业科技大学</option>
+                            <option value="2">湘潭大学</option>
+                            <option value="3">湖南师范大学</option>
+                            <option value="4">长沙理工大学</option>
+                            <option value="5">中南大学</option>
+                        </select>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--专业课程-->
+    <div class="Pro-course">
+        <div class="container">
+            <h3>专业课程</h3>
+            <div class="course-list clearfix">
+                <div class="Pro-course-care" v-for="(index, item) in CourseData" v-if="item.IsPay == 0" @click="ActiveStatus($event)">
+                    <h5>{{item.CuName}}</h5>
+                    <p><span>课程代码：</span><span>{{item.CuCode}}</span>    <span class="pull-right">学分：{{item.CuCredits}}</span></p>
+                    <p class="Pro-price">￥<span>{{item.Price.toFixed(2)}}</span></p>
+                    <!--<i class="fa fa-check"></i>-->
+                </div>
+                <!--<div class="Pro-course-care purchase">
+                    <h5>线性代数</h5>
+                    <p><span>课程代码：</span><span>04184</span>   <span class="pull-right">学分：4</span></p>
+                    <p class="Pro-price">￥<span>200.0</span></p>
+                    <i class="fa fa-check"></i>
+                </div>-->
+            </div>
+        </div>
+    </div>
+    <!--课程总计价格及其说明-->
+    <div class="Pro-detail">
+        <div class="container">
+            <div class="Pro-detail-price">
+                <span>选课费用：</span><span class="price">￥<b>0</b></span>
+                <div class="pull-right buyNow-button"> 立即购买</div>
+            </div>
+            <div class="Pro-detail-info">
+                <h5>选课说明</h5>
+                <p>根据皖招考函[2010]74号文件规定，该专业将于2013年调整为安徽财经大学主考,2012年年底前毕业的考生仍按中国科学技术大学颁发毕业证书。 1、经济管理类专业专科毕业生报考本专业不需加考； 2、其他专业需加考企业管理概论（00144，5学分）、生产与作业管理（00145，6学分）、市场营销学（00058，5学分）三门课程。</p>
+            </div>
+        </div>
+    </div>
+    <!--课程介绍-->
+    <div class="Pro-introduce">
+        <div class="container">
+            <div class="clearfix">
+
+                <h3>专业介绍</h3>
+            </div>
+            <div class="Pro-introduce-info clearfix">
+                <div>
+                    <p>
+                        工商企业管理专业是自学考试学科调整后产生的新专业。这一专业
+                        的设置是为了培养在社会主义市场经济条件下从事工商业及其他各类企业管理方
+                        面工作的专门人才。经过专业学习，成绩合格者应系统地掌握现代管理理论、有广泛的知识。熟
+                        悉各类管理的基本技能和科学方法，能够胜任企业管理工作。 工商管理是研究工商企业经济管理基本理论和一般
+                        方法的学科，主要包括企业的经营战略制定和内部行为管理两个方面。
+                    </p>
+                </div>
+                <div>
+                    <h5>培养目标</h5>
+                    <p>
+                        本专业主要培养德智体全面发展，掌握现代企业管理理论，具有较强企业管理能力，较强的语言文字表达能力、人际沟通能力，外语水平高，知识面广，能
+                        熟练利用计算机技术、网络技术等现代管理技术，能在工商企业从事各方面管理工作的高级应用性人才，同时具有较大的发展潜力，可以成为企事业单位的各级管理人才。
+                    </p>
+                </div>
+                <div>
+                    <h5>就业方向</h5>
+                    <p>
+                        各大、中型企业、外资企业及跨国企业从事生产管理、营销管理和一般业务管理工作，也可从事人力资源管理、财务管理、营销策划、商品调研、市场预测和经济数量分析等工作。从事的岗位如下：<br>
+                        &nbsp;&nbsp;&nbsp;一般传统管理类岗位<br>
+                        &nbsp;&nbsp;&nbsp;市场营销类岗位<br>
+                        &nbsp;&nbsp;&nbsp;人力资源管理类岗位<br>
+                        &nbsp;&nbsp;&nbsp; 物流管理类岗位<br>
+                    </p>
+                </div>
+                <div>
+                    <h5>就业方向</h5>
+                    <p>
+                        各大、中型企业、外资企业及跨国企业从事生产管理、营销管理和一般业务管理工作，也可从事人力资源管理、财务管理、营销策划、商品调研、市场预测和经济数量分析等工作。从事的岗位如下：<br>
+                        &nbsp;&nbsp;&nbsp;一般传统管理类岗位<br>
+                        &nbsp;&nbsp;&nbsp;市场营销类岗位<br>
+                        &nbsp;&nbsp;&nbsp;人力资源管理类岗位<br>
+                        &nbsp;&nbsp;&nbsp; 物流管理类岗位<br>
+                    </p>
+                </div>
+                <div>
+                    <h5>就业前景</h5>
+                    <p>
+                        工商企业管理专业具有复合性、应用性的特点，具有很广的适用性的、社会经济各领域有广泛需求。我国经济建设的快速发展和现代企业
+                        制度的建立使工商企业管理专业大有用武之地。该专业毕业生可以从事行政管理、人力资源管理、市场营销、生产管理、物流管理、质量管理、财务管理等岗位的工作。
+                    </p>
+                    <p>
+                        因为加入WTO和申奥成功将直接带动我国外经贸的大发展，所以，管理类专业人才社会需求大增将指日可待。在现代企业中，一个优秀企业家
+                        的作用超过了100名优秀工程师、1000名优秀工人目前我国越来越多的转换企业产权、机制以及企业法人实行招标制、年薪制，实际上就是将企业的管理大权
+                        交到职业企业家手中。而据我国近三年的统计资料显示，外方代理人正以每年500%以上的速度递增，在不少大城市已形成一个职业阶层。不管是外企还是国企，高层管理人员的价值越
+                        来越看涨。所以，尽管管理专业的学生刚毕业的时候可能做的并不是管理的工作，但是过几年之后，有管理专业背景的人将会成为抢手货。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--footer-->
+    <div class="foot">
+        <ul class="clearfix info">
+            <li>eol简介</li>
+            <li>联系方式</li>
+            <li>招聘信息</li>
+            <li>京IC证140769号</li>
+            <li>京IC备12045350号</li>
+            <li>京IC网文[2014]2106-306号</li>
+            <li>京公网安备&nbsp;11010802020236号</li>
+        </ul>
+        <p class="copyright">版权所有 赛尔互联（北京）教育科技有限公司 CERNET Corporation</p>
+    </div>
+    <script src="../Resources/js/Page.js"></script>
+    <script src="../Resources/js/Profession/IntrList.js"></script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
+    <script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery-1.4.4.min.js"></script>
+    <script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery.ztree.core.js"></script>
+    <script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery.ztree.excheck.js"></script>
+    <script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery.ztree.exedit.js"></script>
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <blockquote class="layui-elem-quote">
+            <div class="layui-row layui-form">
+                <div class="layui-inline">
+                    <div class="layui-input-inline">
+                        <input type="text" autocomplete="off" placeholder="课件名称" class="layui-input" v-model="queryFormData.Name">
+                    </div>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="CourseWareTypeSetting" laytips="课件类型" v-bind:value.sync="queryFormData.CourseWareType_ID" initial="off"></remote-sel>
+                    </div>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="StatusSetting" laytips="课件状态" v-bind:value.sync="queryFormData.Status" initial="off"></remote-sel>
+                    </div>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="ValidSetting" laytips="启用状态" v-bind:value.sync="queryFormData.Valid" initial="off"></remote-sel>
+                    </div>
+                </div>
+                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="btn" @click="doSearch">查询</button>
+            </div>
+        </blockquote>
+        <!--操作模板-->
+        <table id="listTable" lay-filter="listTable"></table>
+    </div>
+</body>
+</html>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(["table", 'tree', "form", "jquery", "tableExt"],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+
+            //搜索条件
+            var rootApp = new Vue({
+                el: '#root',
+                data: {
+                    ValidSetting: {
+                        search: true,
+                        options: [
+                            { key: '1', value: '启用' },
+                            { key: '0', value: '禁用' }
+                        ]
+                    },
+                    StatusSetting: {
+                        search: true,
+                        options: [
+                            //0.上传中。1上传失败，2.转码中，3.转码失败，4.审核中，5审核通过，6已删除，7正常
+                            { key: '0', value: '上传中' },
+                            { key: '1', value: '上传失败' },
+                            { key: '2', value: '转码中' },
+                            { key: '3', value: '转码失败' },
+                            { key: '4', value: '审核中' },
+                            { key: '5', value: '审核通过' },
+                            { key: '6', value: '已删除' },
+                            { key: '7', value: '正常' },
+                        ]
+                    },
+                    CourseWareTypeSetting: {
+                        search: true,
+                        options: [
+                            { key: '1', value: '视频' },
+                            { key: '2', value: 'PPT' }
+                        ]
+                    },
+                    queryFormData: {
+                        Status: '',
+                        Valid: '',
+                        Discipline_ID: 0,
+                        CourseWareType_ID: '',
+                        Name: ''
+                    },
+                    CourseInfoList: ''
+                },
+                ready: function () {
+                    this.queryFormData.Discipline_ID = fnr.getQueryString("Discipline_ID")
+                    //listTable.reload({
+                    //    where: this.queryFormData,
+                    //});
+                },
+                methods: {
+                    doSearch: function () {
+                        listTable.reload({
+                            where: this.queryFormData,
+                        });
+                    },
+                }
+            });
+
+            var listTable = table.render({
+                elem: '#listTable',
+                even: true, //开启隔行背景
+                page: true, //页分
+                cols: [
+                    [
+                        { field: 'ID', title: 'ID', width: 60 },
+                        { field: 'Name', title: '课件名称', width: 580 },
+                        { field: 'Discipline_Name', title: '学科', width:100 },
+                        {
+                            field: 'CourseWareType_ID', title: '类型', width: 80, templet: function () {
+                                var array = new Array();
+                                array.push(this.Valid == 1 ? "视频" : "PPT");
+                                return array.join("");
+                            }
+                        },
+                        { field: 'Status_Name', title: '状态', width: 120 },
+                        {
+                            fixed: 'right',
+                            title: '操作',
+                            width: 80,
+                            toolbar: function () {
+                                var array = new Array();
+                                array.push("<button class=\"layui-btn layui-btn-small\" lay-event='choice'>选择</button>");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        }
+                    ]
+                ],
+                url: '/service/Resource/GetCourseWareList?Discipline_ID=' + fnr.getQueryString("Discipline_ID"),
+                where: {
+                    Valid: 1
+                }
+            });
+            //监听工具条
+            tableExt.addEvent("tool(listTable)",
+                {
+                    "choice": function (data, obj) {
+                        var index = parent.layer.getFrameIndex(window.name);
+                        fnr.callDialog('getData', data);
+                        fnr.closeDialog();
+                    },
+                });
+        });
+</script>

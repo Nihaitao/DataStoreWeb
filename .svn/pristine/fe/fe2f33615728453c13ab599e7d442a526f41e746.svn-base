@@ -1,0 +1,289 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="/Resources/fonts/iconfont.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link href="/Resources/CSS/Font/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="/Resources/CSS/video-js.css" rel="stylesheet" />
+</head>
+<body style="background-color: #f7f7f7;user-select: none;" id="root">
+    <!--#<!--#include file="/PublicControl/topmenu.html"-->
+    <div class="w1200 clearfix">
+        <div class="main">
+            <div class="setting">
+                <div class="crumbs">
+                    <span class="current">您当前所在位置：</span>
+                    <ol>
+                        <li><a href="">学习中心首页</a></li>
+                        <li><a href="">我的课程</a></li>
+                    </ol>
+                </div>
+                <div class="setting-body bgwhite">
+                    <div class="leads text-center">
+                        <h1>会计学第一节 会计概述练习</h1>
+                    </div>
+                    <div class="setting-main">
+                        <div class="mode">
+                            <div class="media mode-item">
+                                <div class="media-left">
+                                    <h3>练习模式:</h3>
+                                </div>
+                                <div class="media-body">
+                                    <!--<a href="javascript:" class="check">
+                                        未做试题（{{Practice.YetCount || 0}}）
+                                    </a>
+                                    <a href="javascript:">
+                                        已做试题（{{Practice.AlreadyCount || 0}}）
+                                    </a>
+                                    <a href="javascript:">
+                                        错误试题（{{Practice.WrongCount || 0}}）
+                                    </a>-->
+                                    <switch-a v-bind:list="Practice" v-on:bordevent="childMsg1"></switch-a>
+                                </div>
+                            </div>
+                            <div class="media mode-item">
+                                <div class="media-left">
+                                    <h3>试题类型:</h3>
+                                </div>
+                                <div class="media-body">
+                                    <switch-mult v-bind:list="TypeList" v-on:bordevent="childMsg2"></switch-mult>
+                                    <!--<a href="javascript:" v-for="item in TypeList" v-bind:class="{'check':$index == 0}">
+                                        {{item.Name}}
+                                    </a>-->
+                                </div>
+                            </div>
+                            <div class="media mode-item">
+                                <div class="media-left">
+                                    <h3>试题数量:</h3>
+                                </div>
+                                <div class="media-body">
+                                    <!--<a href="javascript:" v-for="item in Question " v-bind:class="{'check':$index == 0}">
+                                        {{item}}
+                                    </a>-->
+                                    <switch-a v-bind:list="Question" v-on:bordevent="childMsg3"></switch-a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mode-btn-group" style="margin-left:140px;">
+                            <a href="javascript:;" class="lxms" @click="Practices">练习模式</a>
+                            <a href="javascript:;" class="ksms" @click="Exam">考试模式</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--footer-->
+    <!--#<!--#include file="/PublicControl/bottommenu.html"-->
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <script>
+            //拼接字符串到url
+            var urlEncode = function (param, key, encode) {  
+              if(param==null) return '';  
+              var paramStr = '';  
+              var t = typeof (param);  
+              if (t == 'string' || t == 'number' || t == 'boolean') {  
+                paramStr += '&' + key + '=' + ((encode==null||encode) ? encodeURIComponent(param) : param);  
+              } else {  
+                for (var i in param) {  
+                  var k = key == null ? i : key + (param instanceof Array ? '[' + i + ']' : '.' + i);  
+                  paramStr += urlEncode(param[i], k, encode);  
+                }  
+              }  
+              return paramStr;  
+            };  
+        Vue.component('switch-a',{
+            props:['list','Multiselect'],
+            template:'<a href="javascript:" v-bind:class=\'{"check":index === selceted}\' v-for="(index,item) in list" @click="choice(index,item)">{{item.Name}}{{item.Num}}</a>',
+            data:function(){
+                return {
+                    selceted:''
+                }
+            },
+            computed:{
+                itemCurrent:function(){
+                    return this.list[this.selceted]
+                }
+            },
+            methods:{
+                choice:function(index,item){
+                    this.selceted=index;
+                    this.$dispatch('bordevent', this.itemCurrent);
+                }
+            }
+        })
+        Vue.component('switch-mult',{
+            props:['list'],
+            template:'<a href="javascript:" v-bind:class=\'{"check":item.Active === true}\' v-for="(index,item) in dataList" @click="choice(index,item)">{{item.Name}}</a>',
+            data:function(){
+                return {
+                    selceted:'',
+                    dataList:[],
+                }
+            },
+            watch:{
+                'list':function(val){
+                    if(val){
+                        this.dataList=val.slice();
+                    }
+                }
+            },
+            computed:{
+                avtiveItem:function(){
+                    var aaa=[];
+                    this.dataList.map(function(item){
+                        if(item.Active){
+                            aaa.push(item)
+                        }
+                    })
+                    return aaa;
+                }
+            },
+            methods:{
+                choice:function(index,item){
+                   item.Active=!item.Active;
+                   var msg =this.dataList.filter(function(item){
+                        return item.Active
+                    })
+                    this.$dispatch('bordevent', msg);
+                }
+            }
+        })
+        require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil','layer'],
+            function (fnr) {
+                var $ = layui.$;
+                var table = layui.table;
+                var tableExt = layui.tableExt;
+                var layer = layui.layer;
+                var vm = new Vue({
+                    el: "#root",
+                    data: {
+                        Discipline: [],
+                        tip: [],
+                        Practice:'',
+                        TypeList:'',
+                        Question:[{Name:5},{Name:10},{Name:15},{Name:20},{Name:25},{Name:30}],
+                        questionType:'',
+                        questionCount:'',
+                        questionSource:'',
+                        chapterId:fnr.getQueryString('chapterId'),
+                        storeId:fnr.getQueryString('storeId')
+                    },
+                    ready: function () {
+                        this.GetStudentChapterPractice(this.chapterId);
+                        this.GetQuestionTypeList();
+
+
+                        //绑定事件
+                        //$('.media-body').on('click','a',function(){
+                        //    $(this).addClass('check').siblings().removeClass('check')
+                        //})
+                    },
+                    methods: {
+                    //根据章节ID获取学生章节做题情况
+                        GetStudentChapterPractice:function(chapterId){
+                            var that = this;
+                            $.get('/service/datastore/Chapter/GetStudentChapterPractice',{chapterId:chapterId},function (res) {
+                                if(res.SuccessResponse){
+                                    var arr=new Array();
+                                    var aaa=res.Data[0];
+                                    for(var i in aaa){
+                                        var num=aaa[i] ||0;
+                                        if(i == 'YetCount'){
+                                            arr.push({Num:'（'+num+'）',Name:'未做试题',Type:2})
+                                        }else if(i == 'AlreadyCount'){
+                                            arr.push({Num:'（'+num+'）',Name:'已做试题',Type:1})
+                                        }else if(i == 'WrongCount'){
+                                            arr.push({Num:'（'+num+'）',Name:'错误试题',Type:3})
+                                        }else if(i == 'TotalCount'){
+                                            arr.push({Num:'（'+num+'）',Name:'全部试题',Type:0})
+                                        }
+                                    }
+                                    that.Practice=arr;
+                                }
+                            })
+                        },
+                        //获取题目类型列表
+                        GetQuestionTypeList:function(){
+                            var that =this;
+                            $.get('/service/datastore/Question/GetQuestionTypeList',function (res) {
+                                if(res.SuccessResponse){
+                                    for(var i =0 ;i<res.Data.length;i++){
+                                        res.Data[i].Active=false;
+                                    }
+                                    that.TypeList=res.Data.filter(function(item){return item.ID<7});
+                                }
+                            })
+                        },
+                        //创建章节练习
+                        CreateChapterPractice:function(data,cb){
+                            $.post('/service/datastore/Chapter/CreateChapterPractice',data,function (res) {
+                                if(res.SuccessResponse){
+                                    cb && cb(res)
+                                }else{
+                                    layer.msg(res.Message)
+                                }
+                            })
+                        },
+                        childMsg1:function(msg){
+                           this.questionSource=msg.Type
+                        },
+                        childMsg2:function(msg){
+                           this.questionType=msg.map(function(item){return item.ID}).join();
+                        },
+                        childMsg3:function(msg){
+                            this.questionCount=msg.Name
+                        },
+
+                        //练习模式
+                        Practices:function(){
+                            var data={
+                                storeId:this.storeId,
+                                chapterId:this.chapterId,
+                                questionType:this.questionType,
+                                questionCount:this.questionCount,
+                                questionSource:this.questionSource,
+                            }
+                            this.CreateChapterPractice(data,function(res){
+                                console.log(res)
+                                if(res.SuccessResponse){
+                                    window.location.href='/usercenter/questionbank/tk/doAnswer.shtml?'+urlEncode(data)
+                                }else{
+                                    layer,msg(res.Message)
+                                }
+                            })
+                        },
+                        //考试模式
+                        Exam:function(){
+                            var data={
+                                storeId:this.storeId,
+                                chapterId:this.chapterId,
+                                questionType:this.questionType,
+                                questionCount:this.questionCount,
+                                questionSource:this.questionSource,
+                            }
+                            this.CreateChapterPractice(data,function(res){
+                                console.log(res)
+                                if(res.SuccessResponse){
+                                    window.location.href='/usercenter/questionbank/tk/doExam.shtml?'+urlEncode(data)
+                                }else{
+                                    layer,msg(res.Message)
+                                }
+                            })
+                        },
+                    }
+                });
+            })
+    </script>
+</body>
+
+</html>

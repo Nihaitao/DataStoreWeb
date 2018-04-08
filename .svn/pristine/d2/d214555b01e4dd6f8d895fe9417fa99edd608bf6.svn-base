@@ -1,0 +1,244 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>活动推广列表</title>
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <blockquote class="layui-elem-quote">
+            <div class="layui-row">
+                <div class="layui-col-xs12" style="text-align: right">
+                    <button class="layui-btn" @click="FormAddM"><i class="layui-icon"></i>添加活动</button>
+                </div>
+            </div>
+        </blockquote>
+        <div>
+            <!--<button class="layui-btn layui-btn-primary layui-btn-small" @click="deleteClientFn">启用</button>
+            <button class="layui-btn layui-btn-primary layui-btn-small" @click="deleteClientFn">禁用</button>
+        </div>-->
+
+        <!--操作模板-->
+        <table id="listTable" lay-filter="listTable"></table>
+    </div>
+</body>
+</html>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'laydate', 'layer'],
+        function (fnr) {
+            var table = layui.table;
+            var tableExt = layui.tableExt;
+            var $ = layui.jquery;
+            var tableColsConfig =
+                [
+                    { field: 'ID', title: 'ID', sort: true },
+                    {
+                        field: 'FormName', title: '表单名称', sort: true, templet: function () {
+                            var array = new Array();
+                            array.push("<a href='javascript:;' style='color: #1e9fff;' lay-event='LookForm'>" + this.FormName + "</a>");
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    },
+                    { field: 'CustomerName', title: '分配客服', sort: true },
+                    { field: 'AddPersonName', title: '添加人', sort: true },
+                    {
+                        title: '添加时间', sort: true, templet: function () {
+                            var array = new Array();
+                            array.push("<span>" + fnr.format(this.AddTime, "yyyy-MM-dd HH:mm") + "</span>");
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    },
+                    {
+                        fixed: 'right',
+                        title: '操作',
+                        toolbar: function () {
+                            var array = new Array();
+                            array.push("<button type='button' class='layui-btn layui-btn-small' lay-event='UpdateCustomer'>修改</button>");
+                            if (this.Status == 0) {
+                                array.push("<button type='button' class='layui-btn layui-btn-small layui-btn-normal' lay-event='Enable'>启用</button>");
+                            } else if (this.Status == 1) {
+                                array.push("<button type='button' class='layui-btn layui-btn-small layui-btn-warm' lay-event='Disable'>禁用</button>");
+                            }
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    }
+                ];
+            window.rootApp = new Vue({
+                el: '#root',
+                methods: {
+                    FormAddM: function () {
+                        fnr.openDialog({
+                            title: '添加活动',
+                            area: ['790px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                            content: ['FormAddM.html'],
+                            btn: ['确认添加'],
+                            events: {
+                                refresh: function (data) {
+                                    if (data.status) {
+                                        layer.msg('添加成功');
+                                        listTable.refresh();
+                                    } else {
+                                        layer.msg('添加失败');
+                                    }
+                                }
+                            }
+                        });
+                    },
+                    UpdateCustomer: function (data) {
+                        fnr.openDialog({
+                            title: '修改推广',
+                            area: ['790px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                            content: ['FormAddM.html?ID=' + data.ID],
+                            btn: ['确认修改'],
+                            events: {
+                                refresh: function (data) {
+                                    if (data.status) {
+                                        layer.msg('修改成功');
+                                        listTable.refresh();
+                                    } else {
+                                        layer.msg('修改失败');
+                                    }
+                                }
+                            }
+                        });
+                    },
+                    LookForm: function (data) {
+                        fnr.openDialog({
+                            title: '查看活动推广',
+                            area: ['1400px', (parent.document.documentElement || parent.document.body).clientHeight - 130 + "px"],
+                            content: ['FormInfoM.html?FormID=' + data.ID],
+                            //btn: ['保存进入下一步'],
+                            events: {
+                                //refresh: function (data) {
+                                //    if (data.status) {
+                                //        layer.msg('修改成功');
+                                //        listTable.refresh();
+                                //    } else {
+                                //        layer.msg('修改失败');
+                                //    }
+                                //}
+                            }
+                        });
+                    },
+                    Disable: function (data) {
+                        layer.confirm('是否禁用？', function () {
+                            $.ajax({
+                                url: '/service/crm/Form/UpdateStatus',
+                                type: 'POST',
+                                dataType: 'json',
+                                data: { ID: data.ID, Status: 0 },
+                                success: function (data) {
+                                    if (data.SuccessResponse) {
+                                        layer.msg(data.Message);
+                                        listTable.reload();
+                                    } else {
+                                        layer.msg(data.Message);
+                                    }
+                                }
+                            });
+                        })
+                    },
+                    Enable: function (data) {
+                        $.ajax({
+                            url: '/service/crm/Form/UpdateStatus',
+                            type: 'POST',
+                            dataType: 'json',
+                            data: { ID: data.ID, Status: 1 },
+                            success: function (data) {
+                                if (data.SuccessResponse) {
+                                    layer.msg(data.Message);
+                                    listTable.reload();
+                                } else {
+                                    layer.msg(data.Message);
+                                }
+                            }
+                        });
+                    },
+                    DeleteCustomer: function (data) {
+                        layer.confirm('是否删除？', function () {
+                            $.ajax({
+                                url: '/service/crm/Form/DeleteCustomer',
+                                type: 'POST',
+                                dataType: 'json',
+                                data: { Other: data.ID },
+                                success: function (data) {
+                                    if (data.SuccessResponse) {
+                                        layer.msg(data.Message);
+                                        listTable.reload();
+                                    } else {
+                                        layer.msg(data.Message);
+                                    }
+                                }
+                            });
+                        })
+                    },
+                    //批量删除
+                    deleteClientFn: function () {
+                        if (this.deleteCustomer != undefined) {
+                            var deleteArr = this.deleteCustomer.join(',');
+                            layer.confirm('确定删除吗，删除后将无法恢复', function (index) {
+                                $.ajax({
+                                    url: '/service/crm/Form/DeleteCustomer',
+                                    type: 'POST',
+                                    data: { Other: deleteArr },
+                                    dataType: 'json',
+                                    success: function (data) {
+                                        if (data.SuccessResponse) {
+                                            layer.msg(data.Message);
+                                            listTable.refresh();
+                                        } else {
+                                            layer.msg(data.Message)
+                                        }
+                                    }
+                                });
+                            })
+
+                        } else {
+                            layer.msg('请选择要操作的数据');
+                        }
+                    }
+                }
+            })
+            //绑定列表
+            var listTable = table.render({
+                elem: '#listTable',
+                even: true, //开启隔行背景
+                page: true, //页分,
+                id: 'listTable',
+                height: 'full-110',
+                cols: [tableColsConfig],
+                url: "/service/crm/Form/GetFormSignList?Status=1"
+            });
+            //获取选中的行相关数据
+            table.on('checkbox(listTable)', function (obj) {
+                var checkStatus = table.checkStatus('listTable');
+                rootApp.deleteCustomer = [];
+                $.each(checkStatus.data, function (k, v) {
+                    rootApp.deleteCustomer.push(v.ID);
+                });
+            });
+            //监听工具栏事件
+            tableExt.addEvent("tool(listTable)",
+                {
+                    "UpdateCustomer": function (data, obj) {
+                        rootApp.UpdateCustomer(data);
+                    },
+                    "LookForm": function (data, obj) {
+                        rootApp.LookForm(data);
+                    },
+                    "Disable": function (data, obj) {
+                        rootApp.Disable(data);
+                    },
+                    "Enable": function (data, obj) {
+                        rootApp.Enable(data);
+                    },
+                    "DeleteCustomer": function (data, obj) {
+                        rootApp.DeleteCustomer(data);
+                    }
+                });
+        })
+</script>

@@ -1,0 +1,154 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <meta charset="UTF-8">
+    <title>专业筛选列表</title>
+
+    <script src="../Resources/js/jquery.js"></script>
+    <link href="../Resources/CSS/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../Resources/CSS/Font/css/font-awesome.min.css" rel="stylesheet" />
+    <script src="../Resources/CSS/bootstrap/js/bootstrap.min.js"></script>
+    <link href="../Resources/CSS/PC_css.css" rel="stylesheet" />
+    <script src="../Resources/js/modules/vue/vue.min.js"></script>
+    <script src="../script/layer/layer.js"></script>
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+        .CategoryList li:not(.CatText) {
+            display: none;
+        }
+    </style>
+</head>
+<body id="root" v-cloak>
+    <!--顶部-->
+    <div class="top_head clearfix">
+        <div class="container">
+            <div class="pull-left" style="margin-left: 15px">
+                <span>欢迎来到中国教育中心</span>
+            </div>
+            <div class="pull-right">
+                <a href="Login.html">登录</a>
+                <a href="Register.html">注册</a>
+                <a href="#">注册客服中心</a>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix" style="height: 60px">
+        <div class="container">
+            <div class="Pro-logo pull-left">
+                <img src="../Resources/images/logo.png" />
+            </div>
+            <div class="Pro-nav pull-right">
+                <ul>
+                    <li><a href="../Course/CourseList.html">课程中心</a></li>
+                    <li><a href="#">问答</a></li>
+                    <li><a href="#">专业</a></li>
+                    <li><a href="#">题库</a></li>
+                    <li><a href="#">名师</a></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    <!--专业筛选-->
+    <div class="Pro-screen">
+        <div class="container">
+            <div class="Pro-BreadcrumbNavigation">
+                <i class="icon_weizhi"></i>
+                <span>当前位置：</span>
+                <span>首页</span>
+                &gt;
+                <span>专业列表</span>
+            </div>
+            <div class="Pro-list">
+                <ul class="clearfix ProvinceList">
+                    <li class="ProText">地区：</li>
+                    <li class=" active" @click="ProvinceClear">全部</li>
+                    <li v-for="(index, item) in ProvinceData" @click="ClickProvince(item.ProvinceID)">
+                        <a style="text-decoration: none;" href="javascript:;">{{item.ProvinceName}}</a>
+                    </li>
+                </ul>
+                <ul class="clearfix LevelList">
+                    <li class="LevText">层次：</li>
+                    <li class=" active" @click="LevelClear">全部</li>
+                    <li v-for="(index, item) in LevelData" @click="ClickLeval(item.ID)">
+                        <a style="text-decoration: none;" href="javascript:;">{{item.Name}}</a>
+                    </li>
+                </ul>
+                <ul class="clearfix CategoryList">
+                    <li class="CatText">分类：</li>
+                    <li class=" active" @click="CategoryClear">全部</li>
+                    <li v-for="(index, item) in CategoryData" @click="ClickCategory(item.ID)">
+                        <a style="text-decoration: none;" href="javascript:;">{{item.Name}}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--显示列表-->
+    <div class="Pro-showList">
+        <div class="container">
+            <div class="Pro-chose">
+                <a href="#" class="choseIndex active">最热</a>
+                <a href="#" class="choseIndex">最新</a>
+            </div>
+            <div class="Pro-list">
+                <div class="poC" v-if="rspListData.length > 0" v-for="(index, item) in rspListData">
+                    <a style="text-decoration: none;" href="IntrList.html?id={{item.ID}}">
+                        <img src="../Resources/images/picture.png" style="height: 127px;width: 224px">
+                        <span class="p-text">{{item.Name}}</span>
+                    </a>
+                    <!--<div>
+                            <div class="poA userNum"><i class="fa fa-user-o"></i> <span>{{item.Number}}</span>人</div>
+                        </div>-->
+                </div>
+                <div class="poC" v-if="rspListData.length == 0">
+                    <h4>暂无专业</h4>
+                    <!--<div>
+                <div class="poA userNum"><i class="fa fa-user-o"></i> <span>{{item.Number}}</span>人</div>
+            </div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--分页-->
+    <div class="Pro-pageCount clearfix">
+        <div class="clearfix" style="margin: 0 auto;width: 680px">
+            <span>首页</span>
+            <span>上一页</span>
+            <ul>
+                <li class="active">1</li>
+                <li>2</li>
+                <li>3</li>
+                <li>4</li>
+                <li>5</li>
+                <li>6</li>
+                <li>7</li>
+            </ul>
+            <span>下一页</span>
+            <span>尾页</span>
+        </div>
+
+    </div>
+    <!--footer-->
+    <div class="foot">
+        <ul class="clearfix info">
+            <li>eol简介</li>
+            <li>联系方式</li>
+            <li>招聘信息</li>
+            <li>京IC证140769号</li>
+            <li>京IC备12045350号</li>
+            <li>京IC网文[2014]2106-306号</li>
+            <li>京公网安备&nbsp;11010802020236号</li>
+        </ul>
+        <p class="copyright">版权所有 赛尔互联（北京）教育科技有限公司 CERNET Corporation</p>
+    </div>
+    <script src="../Resources/js/Profession/ScreenList.js"></script>
+</body>
+</html>

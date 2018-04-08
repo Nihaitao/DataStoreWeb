@@ -1,0 +1,404 @@
+﻿666 -->
+
+<link href="/Resources/CSS/usercenter.css" rel="stylesheet" />
+
+<div class="user_content" id="userdetail">
+    <img src="/Resources/images/head.png" class="vatop" />
+    <div class="layui-form content">
+        <div v-for="(index,item) in StuInfo">
+
+            <div class="layui-form-item" v-if="(item.FieldName=='Sex')">
+                <label class="my-label">{{item.ShowName}}</label>
+                <div class="layui-input-inline bk-input">
+                    <div class="text_tip layui-form-mid">{{item.Value==1?"男":"女"}}</div>
+                </div>
+            </div>
+            <div v-if="item.FieldName == 'NowProvinceID'">
+                <div class="layui-form-item">
+                    <label class="my-label">{{item.ShowName}}</label>
+                    <!--省份-->
+                    <div class="layui-input-inline bk-input">
+                        <remote-sel v-bind:setting.sync="SelectProvinceBind" v-bind:tag="'Province' + item.ID" v-bind:layverify="item.Required == 1 ? 'required' : ''" v-bind:value.sync="queryFormData.Province_ID" initial="off" v-bind:change="provinceChange"></remote-sel>
+                    </div>
+                    <!-- 市 -->
+                    <div class="layui-input-inline bk-input">
+                        <remote-sel v-bind:setting.sync="SelectCityBind" v-bind:tag="'City' + item.ID" v-bind:layverify="item.Required == 1 ? 'required' : ''" v-bind:value.sync="queryFormData.City_ID" v-bind:change="cityChange" initial="off" v-ref:city></remote-sel>
+                    </div>
+                    <!-- 区 -->
+                    <div class="layui-input-inline bk-input">
+                        <remote-sel v-bind:setting.sync="SelectDistrictBind" v-bind:tag="'Area' + item.ID" v-bind:layverify="item.Required == 1 ? 'required' : ''" v-bind:value.sync="queryFormData.District_ID" v-bind:change="districtChange" initial="off" v-ref:district></remote-sel>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item" v-if="item.FieldName=='Name'">
+                <label class="my-label">{{item.ShowName}}</label>
+                <div class="layui-input-inline ipt_w380 bk-input">
+
+                    <div class="text_tip layui-form-mid">{{item.Value}}</div>
+                </div>
+            </div>
+            <div class="layui-form-item" v-if="item.FieldName=='CardNumber'">
+                <label class="my-label">{{item.ShowName}}</label>
+                <div class="layui-input-inline ipt_w380 bk-input">
+
+                    <div class="text_tip layui-form-mid">{{item.Value}}</div>
+                </div>
+            </div>
+            <div class="layui-form-item" v-if="item.FieldName=='Education_ID'">
+                <label class="my-label">{{item.ShowName}}</label>
+                <div class="layui-input-inline bk-input">
+                    <remote-sel v-bind:setting.sync="SelectEducationSetting" v-bind:value.sync="item.Value" v-bind:change="educationChange" laytips="请选择" v-ref:education initial="off"></remote-sel>
+                </div>
+            </div>
+            <div class="layui-form-item" v-if="item.FieldName=='Phone'">
+                <label class="my-label">{{item.ShowName}}</label>
+                <div class="layui-input-inline bk-input">
+
+                    <div class="text_tip layui-form-mid">{{item.Value.substring(0,3)+"****"+item.Value.substring(7,11)}}</div>
+                    <a href="#?name=bindPhone" class="edit" @click="editphone">修改绑定号码</a>
+                </div>
+            </div>
+            <div class="layui-form-item" v-if="item.FieldName=='Phone2'">
+                <label class="my-label">{{item.ShowName}}</label>
+                <div class="layui-input-inline ipt_w380 bk-input">
+
+                    <input type="text" name="title" required lay-verify="required" v-model="item.Value" v-bind:value="item.Value" placeholder="请输入联系电话" autocomplete="off" class="layui-input ipt_bg_color">
+                </div>
+            </div>
+
+            <div class="layui-form-item" v-if="item.FieldName=='QQ'">
+                <label class="my-label">{{item.ShowName}}</label>
+                <div class="layui-input-inline bk-input">
+                    <input type="text" name="title" required lay-verify="required" v-model="item.Value" v-bind:value="item.Value" placeholder="请输入QQ" autocomplete="off" class="layui-input ipt_bg_color">
+                </div>
+            </div>
+            <div class="layui-form-item" v-if="(item.FieldName=='NowAddress')">
+                <label class="my-label">{{item.ShowName}}</label>
+                <div class="layui-input-inline ipt_w380 bk-input">
+                    <input type="text" name="title" required lay-verify="required" v-model="item.Value" v-bind:value="item.Value" placeholder="请输入详细地址" autocomplete="off" class="layui-input ipt_bg_color">
+                </div>
+            </div>
+            <div class="layui-form-item" v-if="item.FieldName=='Email'">
+                <label class="my-label">{{item.ShowName}}</label>
+                <div class="layui-input-inline ipt_w380 bk-input">
+                    <input type="text" lay-verify="{{item.Required == 1 ? 'email' : 'empty|email'}}" autocomplete="off" placeholder="{{item.Tips}}" class="layui-input ipt_bg_color" v-model="item.Value" v-bind:value="item.Value">
+                </div>
+            </div>
+            <div class="layui-form-item" v-if="item.FieldName=='Nation'">
+                <label class="my-label">{{item.ShowName}}</label>
+                <div class="layui-input-inline bk-input">
+                    <remote-sel v-bind:layverify="item.Required == 1 ? 'required' : ''" v-bind:setting.sync="NationSetting" v-bind:value.sync="item.Value"
+                                initial="off"></remote-sel>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item" v-if="!(objection.Valid == '1' || queryFormData.InfoValid =='1')">
+            <label class="my-label"></label>
+            <div class="layui-input-inline ipt_w380" style="text-align:left">
+                <p class="layui-btn layui-btn-danger" style="background-color:#ff0000" @click="saveInfo">保存</p>
+            </div>
+        </div>
+    </div>
+    <div class="footer" v-if="queryFormData.InfoValid =='1'|| objection.Valid == '1'">已确认<i class="iconfont icon-wodeshuji-gou" style="color:#5fb878;"></i></div>
+   
+    <div class="footer" v-if="objection.Valid >1">
+        已提交,处理中...<span></span>
+        <div>
+            <i class="iconfont icon-kechengguanli" style="color:#FFB800;cursor:pointer;" @click="objMsgList"></i><span style="color:#FFB800;cursor:pointer;font-size:14px;" @click="objMsgList">查看</span>
+            <i class="iconfont icon-wodeshuji-gou" style="color:#5fb878;"></i><span href="#" style="color:#5fb878;cursor:pointer;font-size:14px;" @click="comfirmObjection">确认无误</span>
+        </div>
+    </div>
+    <div class="footer" v-if="queryFormData.InfoValid =='0'&& objection.Valid == '0'">
+        <p href="#" class="layui-btn  layui-btn-danger" style="background-color:#ff0000;" @click="showShadow">有异议</p>
+        <p href="#" class="layui-btn" @click="comfirmObjection">确认无误</p>
+    </div>
+    <div id="shadow" style="display:none;">
+        <div class="layui-form-item layui-form-text">
+            <div class="layui-input-inline ta_cls" style="width: 100%;padding: 10px;">
+                <textarea name="desc" placeholder="请在输入框提出你的异议吧" v-model="objcontent" style="height:185px;resize: none;" class="layui-textarea "></textarea>
+            </div>
+        </div>
+        <p href="#" class="layui-btn layui-btn-danger subp" style="background-color:#ff0000;position: relative;bottom: 80px;" @click="subObjection">提交</p>
+    </div>
+</div>
+<script>
+    require_js_file(['table', 'tree', 'form', 'jquery', 'tableExt', "customUtil", 'laydate'],
+    function (fnr) {
+        var table = layui.table;
+        var form = layui.form;
+        var laydate = layui.laydate;
+        var tableExt = layui.tableExt;
+        var $ = layui.$;
+        //搜索条件
+        window.rootApp = new Vue({
+            el: '#userdetail',
+            data: {
+                SelectProvinceBind: SelectProvinceBind(), //省份
+                disableSetting: disableSetting(), //启用禁用
+                LevelListSetting: LevelListSetting(), //层次
+                SelectCityBind: SelectCityBind(), //市
+                SelectDistrictBind: SelectDistrictBind(),//区
+                SelectEducationSetting: SelectEducation(),//学历
+                SpecialtyList: SpecialtyList(), //专业
+                SpecialtyVersion: SpecialtyVersion(), //专业版本
+                BatchSetting: BatchSetting(1), //批次
+                RegistList: RegistList(), //注册点
+                StationList: StationList(), //渠道
+                ModelData: ModelData(),
+                NationSetting: NationSetting(),
+                StuInfoSetting: {
+                    options: [
+                        { key: "1", value: "姓名" },
+                        { key: "2", value: "身份证" },
+                        { key: "3", value: "手机号" }
+
+                    ]
+                },
+                queryFormData: {
+                    Model_ID: "",
+                    Batch_ID: "",
+                    Specialty_ID: "",
+                    SpecialtyVersionID: "",
+                    StationProxy_ID: "",
+                    Province_ID: "",
+                    School_ID: "",
+                    Level_ID: "",
+                    Register_ID: "",
+                    elixs: "",
+                    Name: "",
+                    City_ID: "",
+                    District_ID: "",
+                    Education_ID: "254",
+                    Nation: "",
+                    InfoValid:"0"
+                },
+                StuInfo: [],//学生信息
+
+                objection: {
+                    Valid: "",
+                    ID: "",
+                },
+                objcontent: ""
+            },
+            ready: function () {
+                this.GetStudentInfo();
+                this.getObjection();
+            },
+            methods: {
+                //获取是否有异议
+                getObjection: function () {
+                    var _this = this;
+                    $.ajax({
+                        url: '/service/edu/Confirm/GetConfirmStudesList',
+                        data: { isID: 0 },
+                        success: function (res) {
+                            if (res.SuccessResponse) {
+                                if (res.Data) {
+                                    var objection = res.Data;
+                                    _this.objection = objection;
+                                }
+                            }
+                        }
+                    })
+                },
+
+                //获取个人信息
+                GetStudentInfo: function () {
+                    var _this = this;
+                    $.ajax({
+                        url: '/service/edu/Student/GetStudentInfoSet',
+                        success: function (res) {
+                            if (res.SuccessResponse) {
+                                var cols = res.Data[0].Childs;
+                                cols.map(function (item, index) {
+                                    if (item.FieldName == "NowProvinceID") {
+                                        var obj = JSON.parse(item.Value);
+                                        console.log(obj)
+                                        _this.queryFormData.Province_ID = parseInt(obj.NowProvince_ID)
+                                        _this.queryFormData.City_ID = parseInt(obj.NowCity_ID)
+                                        _this.queryFormData.District_ID = parseInt(obj.NowArea_ID)
+                                      
+                                        fnr.mergeJson(SelectCityBind(_this.queryFormData.Province_ID), _this.SelectCityBind);
+                                        fnr.mergeJson(SelectDistrictBind(_this.queryFormData.City_ID), _this.SelectDistrictBind);
+                                    } else if (item.FieldName == "Nation") {
+                                        _this.queryFormData.Nation = item.Value
+                                    } else if (item.FieldName == "Education_ID") {
+                                        //fnr.mergeJson(SelectEducation(), _this.SelectEducationSetting);
+
+                                        //_this.$refs.education.reset();
+                                        _this.queryFormData.Education_ID = (item.Value)
+                                    }
+                                    if (item.FieldName == "InfoValid") {
+                                      
+                                        _this.queryFormData.InfoValid = item.Value;
+                                    }
+                                    _this.StuInfo.push(item);
+                                   
+                                 
+                                });
+                            }
+                        },
+                        fail: function (err) {
+
+                        }
+                    })
+                },
+
+                //保存学生信息
+                saveInfo: function () {
+                    //rootApp.StuInfo.NowProvince_ID = rootApp.queryFormData.Province_ID
+                    //rootApp.StuInfo.NowCity_ID = rootApp.queryFormData.City_ID
+                    //rootApp.StuInfo.NowArea_ID = rootApp.queryFormData.District_ID
+                    var obj = {};
+                    console.log(this.queryFormData)
+                    var _this = this;
+                    this.StuInfo.map(function (item, index) {
+                        if (item.FieldName == "NowProvinceID") {
+                            obj.NowProvince_ID = _this.queryFormData.Province_ID
+                            obj.NowCity_ID = _this.queryFormData.City_ID
+                            obj.NowArea_ID = _this.queryFormData.District_ID
+                        } else {
+
+                            console.log(item.FieldName + "==" + item.Value)
+                            obj[item.FieldName] = item.Value;
+                        }
+                    });
+                    $.ajax({
+                        url: '/service/edu/Student/EditStudentInfoByStuId',
+                        data: obj,
+                        type: "POST",
+                        success: function (res) {
+                            if (res.SuccessResponse) {
+                                layer.msg("保存成功!")
+                                //location.href = "personalInfo.html";
+                            } else {
+
+                                layer.msg(res.Message)
+
+                            }
+                        }
+                    })
+
+
+                },
+                //模型改变
+                modelChange: function () {
+                    fnr.mergeJson(SpecialtyProvince(this.queryFormData.Model_ID), this.SelectProvinceBind);
+                    this.$refs.pid.reset();
+                },
+                //省份改变
+                provinceChange: function (o) {
+                    var index = o.tag.replace('Province', '');
+                    var cityTag = 'City' + index;
+                    var areaTag = 'Area' + index;
+                    var self = this;
+                    if (self.queryFormData.NowProvince_ID == "") {
+                        self.SelectCityBind.remote = {};
+                        self.SelectCityBind.remote.url = "";
+                        self.SelectCityBind.remote.data = {};
+                    } else {
+                        fnr.mergeJson(SelectCityBind(this.queryFormData.Province_ID), this.SelectCityBind);
+                    }
+                    self.queryFormData.NowCity_ID = "";
+                    self.queryFormData.NowArea_ID = "";
+                    fnr.findComponent(self, cityTag).reset();
+                },
+                cityChange: function (o) {
+                    var index = o.tag.replace('City', '');
+                    var areaTag = 'Area' + index;
+                    var self = this;
+                    if (self.queryFormData.NowCity_ID == "") {
+                        self.SelectDistrictBind.remote = {};
+                        self.SelectDistrictBind.remote.url = "";
+                        self.SelectDistrictBind.remote.data = {};
+                    } else {
+                        fnr.mergeJson(SelectDistrictBind(this.queryFormData.City_ID), this.SelectDistrictBind);
+                    }
+                    self.queryFormData.NowArea_ID = "";
+                    fnr.findComponent(self, areaTag).reset();
+                },
+                query: function (e) {
+                    if (!layui.form.checkInput(e)) {
+                        return false;
+                    }
+                    var obj = {};
+                    var _this = this;
+                    for (key in _this.queryFormData) {
+                        if (_this.queryFormData[key] != '') {
+                            obj[key] = _this.queryFormData[key]
+                        }
+                    }
+                    var str = $.param(obj);
+                    location.href = "ExamLst.html?" + str;
+                },
+                //弹出异议弹框
+                showShadow: function () {
+
+                    layer.open({
+                        type: 1,
+                        title: false,
+                        resize: false,
+                        area: ['420px', '240px'], //宽高
+                        content: $('#shadow')
+                    });
+
+                },
+                //提交异议
+                subObjection: function () {
+
+                    var val = this.objcontent;
+                    var objection = this.objection;
+                    var _this = this;
+                    if (val == "") {
+                        layer.msg("异议内容不能为空喔！");
+                        return false;
+                    }
+                    if ($("p.subp").hasClass("layui-disabled")) {
+
+                        return false;
+                    }
+                    $("p.subp").addClass("layui-disabled")
+                    $.ajax({
+                        url: '/service/edu/Confirm/GetConfirmhfStudateList',
+                        data: { ObjectionContent: val, ID: objection.ID, Valid: objection.Valid },
+                        type: "post",
+                        success: function (res) {
+                            if (res.SuccessResponse) {
+                                _this.getObjection();//提交异议成功后,重新加载学生信息
+                                _this.objcontent = "";
+                                $("p.subp").removeClass("layui-disabled");
+                                $("#shadow").hide();
+                                layer.closeAll();
+                            } else {
+                                $("p.subp").removeClass("layui-disabled");
+                                layer.msg(res.Message)
+                            }
+                        }
+                    })
+                },
+                objMsgList: function () {
+                    location.href = "ObjectionMsgLst.shtml?ID=" + this.objection.ID + "&Valid=" + this.objection.Valid;
+                },
+                comfirmObjection: function () {
+                    var _this = this;
+                    $.ajax({
+                        url: '/service/edu/Confirm/GetConfirmhfStudatehf',
+                        data: { ID: _this.objection.ID },
+                        type: "POST",
+                        success: function (res) {
+                            if (res.SuccessResponse) {
+                                if (fnr.getQueryString('url')) {
+                                    location.href = fnr.getQueryString('url');
+                                } else {
+                                    location.href = "accountsettings.shtml";
+                                }
+
+                            }
+                        }
+                    })
+                },
+            }
+        });
+    });
+</script>
+

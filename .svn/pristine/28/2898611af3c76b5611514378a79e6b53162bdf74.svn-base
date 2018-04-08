@@ -1,0 +1,346 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>介绍</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script src="../Resources/js/jquery.js"></script>
+    <link rel="stylesheet" href="../Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../Resources/CSS/Font/css/font-awesome.min.css">
+    <script src="../Resources/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../Resources/CSS/PC_css.css">
+    <script src="../script/artTemplate.js"></script>
+</head>
+<body style="background-color: #F0F2F5">
+<!--顶部-->
+<div class="clearfix" style="height: 60px;background-color: #fff">
+    <div class="container">
+        <div class="Pro-logo pull-left">
+            <img src="../Resources/images/logo.png" alt="">
+        </div>
+        <div class="Pro-nav pull-right">
+            <ul>
+                <li><a href="#">课程中心</a></li>
+                <li><a href="#">问答</a></li>
+                <li><a href="#">专业</a></li>
+                <li><a href="#">题库</a></li>
+                <li><a href="#">名师</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!--详细介绍-->
+<div class="Pro-screen" style="box-shadow: none">
+    <div class="container clearfix">
+        <div class="Pro-BreadcrumbNavigation">
+            <i class="icon_weizhi"></i>
+            <span>当前位置：</span>
+            <a>首页</a>
+            &gt;
+            <a>专业列表</a>
+            &gt;
+            <a>工商企业管理专业</a>
+        </div>
+        <div id="showDetail" class="Pro-showDetail clearfix">
+        </div>
+        <script id="showDetail_txt" type="text/html">
+            <div class="Pro_care pull-left">
+                <img src="{{CoverPath}}" alt="" width="329" height="185">
+            </div>
+            <div class="Pro-info pull-right">
+                <h3 class="Pro-title">
+                    {{Name}}
+                </h3>
+                <p>{{Description}}</p>
+                <div style="margin-top: 10px"><span style="font-weight: 600;">主讲老师：</span><span>{{TeacherDetail_Name}}</span></div>
+                <div style="margin-top: 10px"><span style="font-weight: 600;">价格：</span><span class="price">￥{{Price}}</span></div>
+                <div style="margin-top: 10px">
+                    <div class=" buyNow-button" style="display: inline-block;margin: 0"> 立即购买</div>
+                </div>
+            </div>
+        </script>
+    </div>
+</div>
+
+<!--课程导师及介绍-->
+<div class="Cur-introduce">
+    <div class="container">
+        <div class="pull-left Cur-introduce-info ">
+            <ul class="Cur-nav-tap clearfix">
+                <li class="active"><a href="#courseIntroduce" role="tab" data-toggle="tab">课程介绍</a></li>
+                <li  class=""><a href="#courseList" data-toggle="tab">课程目录</a></li>
+                <li  class=""><a href="#dataDowm" data-toggle="tab">资料下载</a></li>
+                <li  class=""><a href="#studentTalk" data-toggle="tab">学员评论</a></li>
+            </ul>
+            <div class="tab-content">
+                <!--课程介绍-->
+                <div role="tabpanel" class="tab-pane active" id="courseIntroduce">
+                    <div class="Pro-introduce">
+                        <div id="Pro-introduce-info" class="Pro-introduce-info clearfix">
+                        </div>
+                        <script id="Pro-introduce-info_txt" type="text/html">
+                            <div>{{Particulars}}</div>
+                        </script>
+                    </div>
+                </div>
+                <!--课程目录-->
+                <div role="tabpanel" class="tab-pane " id="courseList">
+                </div>
+
+                <script id="courseList_txt" type="text/html">
+                    <ul class="chapter-list">
+                        {{each courseList}}
+                        <li id="accordion">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#{{$value.Name}}"><i class="chapter-icon"></i><span>{{$value.Name}}</span> <i class="pull-right fa fa-caret-down"></i></a>
+                            <ul id="{{$value.Name}}" class="course-list panel-collapse collapse "> 
+                                 <!--循环嵌套 include  -->
+                                {{include 'courseList_txt_path' $value}}
+                            </ul>
+                        </li>
+                        {{/each}}
+                    </ul>
+                </script>
+                <script id="courseList_txt_path" type="text/html">
+                        {{each ChildNodeList}}
+                        <li><a href="Video.html?ID={{$value.ID}}&Course_ID={{$value.Course_ID}}">{{$value.Name}}</a></li>
+                        {{/each}}
+                </script>
+
+                <!--资料下载-->
+                <div role="tabpenl" class="tab-pane " id="dataDowm">
+                </div>
+
+                <script id="dataDowm_txt" type="text/html">
+                    <ul class="file-list">
+                        {{each fileList}}
+                        <li class="clearfix">
+                            <div class="file-name pull-left">
+                                <h5><i class="file-icon img"></i>{{$value.Name}}</h5>
+                                <p>上传时间：<span>{{$value.AddTime | fn:'shear'}}</span> 
+                                <!--提供者：<span>{{$value.AddPersonName}}</span>-->
+                                </p>
+                            </div>
+                            <div class="file-dowmNum pull-left">
+                                <span>{{$value.DownCount}}</span>人下载
+                            </div>
+                            <a onclick="saveDownNum(this)" href="{{$value.Path}}" class="pull-right file-dowmButtom">下载</a>
+                        </li>
+                        {{/each}}
+                     </ul>
+                </script>
+
+                <!--学员评论-->
+                <div role="tabpenl" class="tab-pane " id="studentTalk">
+                </div>
+                <script id="studentTalk_txt" type="text/html">
+                    <ul class="talk-list">
+                        {{each talkList}}
+                        <li class="clearfix">
+                            <!--<img src="{{url}}" class="user-photo pull-left" alt="" width="40" height="40">-->
+                            <div class="pull-left" style="margin-left: 20px">
+                                <div class="user-name">{{$value.StudentName}}</div>
+                                <div class="user-say">{{$value.Content}}</div>
+                                <div class="user-say-date">{{$value.AddTime | fn: 'timeChange'}}</div>
+                            </div>
+                            <!--<div class="like_status">
+                                <img src="{{url}}" alt="404" width="19" height="19"><span>(<span>{{FabulousNum}}</span>)</span>
+                            </div>-->
+                        </li>
+                        {{/each}}
+                    </ul>
+                </script>
+            </div>
+        </div>
+        <!--主讲老师-->
+        <div id="Cur-introduce-Tinfo" class="pull-right Cur-introduce-Tinfo">
+            <!--<h3>授课老师</h3>
+        <div class="teacher-photo">
+            <img src="../Resources/images/teacher.png" alt="">
+        </div>
+        <div class="teacher-name">张敏</div>
+        <div class="teacher-info">
+            张敏，湖南邵阳人，1963年生，教授，博士生导师。1986年于湖南师范大学获理学学士学位，1
+            989年与1995年于湖南农业大学分别获理学硕士和博士学位，1998年与2000年分别在湖南
+            农业大学和中国科学院北京植物研究所完成博士后研究和高级访问研究。工
+            作以来先后到美国加州大学洛杉矶分校和菲律宾国际水稻研究所进行高级访问研究和学习。
+        </div>
+        <h4>研究方向</h4>
+        <div class="teacher-info">
+            植物功能基因组学、植物发育分子生物学、生化分析、细胞与基因工程技术、生物质再生能源等
+        </div>-->
+        </div>
+        <script id="Cur-introduce-Tinfo_txt" type="text/html">
+            <h3>授课老师</h3>
+            <div class="teacher-photo">
+                <img src="{{HeadImage}}" alt="" style="width:100px;height:100px;border-radius:50%;">
+            </div>
+            <div class="teacher-name">{{Name}}</div>
+            <div class="teacher-info">
+                {{Introduction}}
+            </div>
+            <!--<h4>研究方向</h4>
+            <div class="teacher-info">
+                {{direction}}
+            </div>-->
+        </script>
+    </div>
+
+</div>
+<!--footer-->
+<div class="foot">
+    <ul class="clearfix info">
+        <li>eol简介</li>
+        <li>联系方式</li>
+        <li>招聘信息</li>
+        <li>京IC证140769号</li>
+        <li>京IC备12045350号</li>
+        <li>京IC网文[2014]2106-306号</li>
+        <li>京公网安备&nbsp;11010802020236号</li>
+    </ul>
+    <p class="copyright">Copyright @2017　励弘在线　湖南八方科技有限公司　版权所有　湘ICP备10201076号-1</p>
+</div>
+    <script>
+        $(function () {
+
+            //头部的详情介绍和课程介绍部分
+            $.ajax({
+                type: 'GET',
+                url: '/service/WebCourse/GetCourseByID',
+                data: { ID: 95 },
+                success: function (res) {
+                   // console.log(res)
+                    var list = res.ReturnData.Data
+                    var data = list
+                    var html = template('showDetail_txt', data);
+                    document.getElementById('showDetail').innerHTML = html; //顶部
+                    var html2 = template('Pro-introduce-info_txt', data);
+                    document.getElementById('Pro-introduce-info').innerHTML = html2; //课程介绍部分
+                    console.log(data);
+                }
+            })
+            //课程目录
+            pathnav = function () {
+                $.ajax({
+                    type: 'GET',
+                    url: '/service/WebCourse/GetCourse_ChaptersNodeList',
+                    data: { TeacherDetail_ID: 63 },
+                    success: function (res) {
+                        if (res.SuccessResponse) {
+                            //console.log(res)
+                            var list = res.ReturnData.Data
+                            var data = {
+                                courseList: list
+                            }
+                            var html = template('courseList_txt', data);
+                            document.getElementById('courseList').innerHTML = html;
+                        }
+                    }
+                })
+            }
+
+        
+            //资料下载
+            download = function () {
+                $.ajax({
+                    type: 'GET',
+                    url: '/service/WebCourse/GetDataInfoList',
+                    success: function (res) {
+                       // console.log(res)
+                        if (res.SuccessResponse) {
+                            var list = res.ReturnData.Data
+                            var data = {
+                                fileList: list
+                            }
+                            template.helper('fn', function (a, b) {
+                                if (b == 'shear') {
+                                    return a = a.split('T')[0] //剪切字符串  2017-09-28T17:00D 变成2017-09-28
+                                }
+                            })
+                            var html = template('dataDowm_txt', data);
+                            document.getElementById('dataDowm').innerHTML = html;
+                        }
+                    }
+                })
+            }
+        
+        
+            //右侧栏的老师介绍
+            $.ajax({
+                type: 'get',
+                url: '/service/Teacher/GetTeacherByID',
+                data: { TeacherDetail_ID: 13 },
+                success: function (res) {
+                   //console.log(res)
+                    var list = res.ReturnData.Data
+                    var data = list
+                    var html = template('Cur-introduce-Tinfo_txt', data);
+                    document.getElementById('Cur-introduce-Tinfo').innerHTML = html;
+                }
+            })
+            //学员评论
+            stutalk = function () {
+                $.ajax({
+                    type: 'get',
+                    url: '/service/CourseComment/GetCourseCommentList',
+                    data: { Discipline_ID: 615, Course_ID: 95 },
+                    success: function (res) {
+                        //console.log(res)
+                        var list = res.ReturnData.Data
+                        var data = {
+                            talkList: list
+                        }
+                        template.helper('fn', function (a, b) {
+                            if (b == 'timeChange') {
+                                return a = a.replace(/(\/)/g,"-")//把数据库中的时间的  /  转化成 -  2017/09/28 变成2017-09-28 
+                            }
+                        })
+                        var html = template('studentTalk_txt', data);
+                        document.getElementById('studentTalk').innerHTML = html;
+                    }
+                })
+            }
+        
+        })
+    </script>
+</body>
+<script type="text/javascript">
+    //每个数据只加载一次
+    var p = 0, d = 0, s = 0;
+    $(".Cur-nav-tap").find("li").bind('click', function () {
+        var txt = $(this).find('a').html()
+        if (txt == '课程目录') {
+            if (p < 1) {
+                p++
+                pathnav()
+            }
+        } else if (txt == '资料下载') {
+            if (d < 1) {
+                d++
+                download()
+            }
+            
+        } else if (txt == '学员评论') {
+            if (s < 1) {
+                s++
+                stutalk()
+            }
+        }
+    })
+    //资料下载页面`下载次数的更新
+    function saveDownNum(a) {
+        var n = $(a).prev().find("span").html() //获取当前页面上下载次数
+        $(a).prev().find("span").html(n * 1 + 1) //页面上的下载次数数据加一
+        $.ajax({
+            type : 'POST',
+            url: '/service/WebCourse/UpdateDataInfoDownCount',
+            data: { ID: 14 },
+
+        })
+    }
+
+</script>
+</html>

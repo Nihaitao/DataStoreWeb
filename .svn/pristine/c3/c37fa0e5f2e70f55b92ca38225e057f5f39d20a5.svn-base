@@ -1,0 +1,202 @@
+.headerBox{
+    height: 0.96rem;
+    border-bottom: 0.01rem solid #e5e5e5;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    z-index: 999;
+}
+.mainBox{
+    margin-top: 0.96rem;
+}
+.leftBox{
+    float: left;
+    margin-left: 0.26rem;
+}
+.rightBox{
+    float: right;
+    margin-right: 0.26rem;
+    height: 100%;
+}
+.userName,
+.headImg{
+    display: inline-block;
+}
+.userName{
+    margin-left: 0.12rem;
+    vertical-align: middle;
+}
+.headImg img{
+    height: 0.6rem;
+    width: 0.6rem;
+    padding: 0.18rem 0;
+}
+.userName .userText,
+.timeSelect .timeText{
+    font-size: 0.28rem;
+    margin-right: 0.12rem;
+    color: #333;
+}
+.timeSelect{
+    display: inline-block;
+    height: 100%;
+    line-height: 0.96rem;
+}
+
+.mainTitle{
+    height: 0.8rem;
+    text-align: center;
+    box-sizing: border-box;
+    border-bottom:0.01rem solid #ededed;
+}
+.mainTitle p{
+    display: inline-block;
+    font-size: 0.32rem;
+    color: #333;
+    height: 100%;
+    line-height: 0.8rem;
+}
+.chartBox{
+    height: 1.96rem;
+    border-bottom: 0.01rem solid #ededed;
+}
+.newNum span{
+    color: #ffbe00;
+}
+.leftSection{
+    margin: 0.5rem 0;
+    padding-left: 0.3rem;
+}
+.leftSection p{
+    font-size: 0.3rem;
+    color: #666;
+}
+.leftSection p .sucNum{
+    color: #333;
+}
+.leftSection p:nth-child(1){
+    padding-bottom: 0.16rem;
+}
+.sucText{
+    display: inline-block;
+    height: 100%;
+    line-height: 1.920000004rem;
+}
+.sucText{
+    margin-right: 0.14rem;
+    float:right;
+}
+.sucText span{
+    height: 100%;
+    display: inline-block;
+    color: #333;
+    font-size: 0.24rem;
+}
+.chartData{
+    display: inline-block;
+    height: 100%;
+}
+.circle{
+    float:right;
+    height: 1.28rem;
+    width: 1.28rem;
+    border-radius: 50%;
+    background-color: #1E9FFF;
+    margin: 0.34rem 0;
+}
+.itemIcon{
+    font-size: 0.52rem;
+    color: #FFBE00;
+}
+.items{
+    text-align: center;
+}
+.items p{
+    font-size: 0.24rem;
+    color: #666;
+    margin-top: 0.18rem;
+}
+
+.honorHead{
+    margin: 0 0.3rem;
+}
+.honorHead .leftText{
+    display: inline-block;
+    margin: 0.3rem 0;
+    font-size: 0.3rem;
+    color: #333;
+}
+.honorHead .more{
+    display: inline-block;
+    float: right;
+    margin-top: 0.36rem;
+    color: #333;
+    font-size: 0.24rem;
+}
+.honorMain{
+    margin: 0 0.86rem 0.3rem 0.86rem;
+}
+.honorMain .no1 .circleBox{
+    box-sizing: border-box;
+    width: 1.30rem;
+    height: 1.30rem;
+    border-radius: 50%;
+    border: 0.05rem solid #DEEDFF;
+}
+.honorMain .no2 .circleBox,
+.honorMain .no3 .circleBox{
+    box-sizing: border-box;
+    width: 1.13rem;
+    height: 1.13rem;
+    border-radius: 50%;
+    border: 0.05rem solid #DEEDFF;
+}
+.circleBox img{
+    width: 100%;
+    height: 100%;
+}
+.no1,
+.no2,
+.no3{
+    display: inline-block;
+    text-align: center;
+}
+.no2,
+.no3{
+    position: relative;
+    top: 0.30rem;
+}
+.no1{
+    margin: 0 1.02rem;
+    position: relative;
+}
+.ranking img{
+    width: 0.730rem;
+    height: 0.730rem;
+}
+.ranking p{
+    font-size: 0.26rem;
+    color: #333;
+}
+.ranking p .nameNum{
+    color: #ffbe00;
+}
+.king{
+    position: absolute;
+    width: 0.35rem;
+    height: 0.35rem;
+    right: -0.12rem;
+}
+.no1 .king{
+    top: -0.12rem;
+}
+.no2 .king,
+.no3 .king{
+    top: -0.15rem;
+}
+
+
+
+

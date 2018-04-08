@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>充值</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="//at.alicdn.com/t/font_514871_9czxk955wqy6i529.css" rel="stylesheet" />
+    <script src="//at.alicdn.com/t/font_514871_z6ne30o81t3mcxr.js"></script>
+    <link rel="stylesheet" href="/Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link href="../../Resources/CSS/financelist.css" rel="stylesheet" />
+    <link href="/Resources/CSS/question.css" rel="stylesheet" />
+    <link href="/Resources/CSS/PC_css.css" rel="stylesheet" />
+    <link href="/Resources/CSS/video-js.css" rel="stylesheet" />
+    <link href="../../Resources/CSS/super.css" rel="stylesheet" />
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+</head>
+<body id="recharge" class="chongzhiBg">
+    <!--充值页面-->
+    <div class="w1200 clearfix">
+        <p class="icoDitui"><i class="iconfont icon-ditu"></i> 我的学费&gt;&gt;立即缴费&gt;&gt;余额充值</p>
+        <div class="chongzhi">
+            <h3>充值</h3>
+            <div class="chongzhiList clearfix_1">
+                <div class="chongzhiTime"><time>2017-11-30</time><time>18:49</time></div>
+
+
+                <table class="paytable" border="1" cellspacing="" cellpadding="">
+                    <tr>
+                        <th>缴费项目</th>
+                        <th style="border-left: 1px solid #D0D0D0;width:200px">欠缴金额</th>
+                        <th class="thTd">缴费金额</th>
+                    </tr>
+                    <tr class="trpayList">
+                        <td>余额充值</td>
+                        <td style="border-left: 1px solid #D0D0D0;width:200px">{{rechargeCount.QianJiao}}</td>
+                        <td class="thTd cssTd">
+                            <div><input style="vertical-align: sub;" type="radio" name="s" id="" value="在线支付" />在线支付 <input type="text" value="100" /></div>
+                            <div><input type="radio" name="s" id="" value="在线支付" />余额支付(余额100元)</div>
+                        </td>
+                    </tr>
+                </table>
+                <div class="cztishi"><span>温馨提示</span>：选择余额支付或在线支付，余额支付金额自动计算，无法修改</div>
+            </div>
+            <div class="money marginsx">
+                <div>支付金额:<span class="num">￥100</span></div>
+                <div><span class="pay">立即支付</span></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil'], function (fnr) {
+            var $ = layui.$;
+            var table = layui.table;
+            var tableExt = layui.tableExt;
+
+
+            var cc = new Vue({
+                el: "#recharge",
+                data: {
+                    rechargeCount: {
+                        QianJiao: 0
+                    }
+                },
+                ready:function(){
+                    this.getRecharge();
+                },
+                methods:{
+                    getRecharge : function(){
+                        var recharge = this; 
+                        $.get("/service/edu/StuFinance/GetStudentFinanceIndex", {
+                            Studetail_ID: fnr.Cookie.get("StuDetail_ID"), FType: 2
+                        }, function (xhr) { recharge.rechargeCount = xhr.Data })
+                    }
+                } 
+                
+            })
+        })
+
+    </script>
+</body>
+</html>

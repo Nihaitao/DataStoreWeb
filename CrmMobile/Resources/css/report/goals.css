@@ -1,0 +1,61 @@
+.leftDiv{
+    box-sizing: border-box;
+}
+.chartBox{
+    height: 4rem;
+    border-top: 0.01rem solid #f2f2f2;
+}
+.numBox{
+    height: 0.98rem;
+    box-sizing: border-box;
+    border-top: 0.01rem solid #d9d9d9;
+    border-bottom: 0.01rem solid #d9d9d9;
+}
+.enrolmentNum{
+    border-right: 0.01rem solid #d9d9d9;
+    text-align: center;
+    padding: 0.15rem 0;
+}
+.enrolmentNum .enNum,
+.enrolmentNum .sucNum{
+    font-size: 0.26rem;
+    display: inline-block;
+}
+.enrolmentNum .enNum{
+    color: #F76967;
+}
+.enrolmentNum .sucNum{
+    color: #10aeff;
+}
+.enrolmentNum p{
+    font-size: 0.24rem;
+}
+table{
+    width: 100%;
+}
+table thead{
+    background-color: #EFEFEF;
+}
+table thead tr{
+    border-bottom: 0.01rem solid #d9d9d9;
+}
+table thead td{
+    height: 0.8rem;
+    font-size: 0.26rem;
+    text-align: center;
+    color: #333;
+}
+table tbody tr{
+    height: 0.8rem;
+}
+table tbody tr td{
+    font-size: 0.26rem;
+    text-align: center;
+    color: #666;
+}
+table tbody tr td:first-child{
+    color: #ff8201;
+}
+.selectMainBox{
+    margin-top: 0.96rem;
+}

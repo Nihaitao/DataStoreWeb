@@ -1,0 +1,364 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>添加活动推广</title>
+    <style>
+        .labelleft { font-weight: bold; width: 100px; }
+        .layui-form-label { padding: 3px 7px; }
+        .layui-form-item div.layui-input-inline { width: 500px; }
+    </style>
+
+</head>
+
+<body id="root">
+    <div class="mainContainer">
+        <div class="layui-form" v-cloak>
+            <div class="layui-form-item">
+                <label class="layui-form-label labelleft">活动名称：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="FormName" lay-verify="required" autocomplete="off"
+                           class="layui-input" v-model="SubmitCustomForm.FormName">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">分配方式：</label>
+                <div class="layui-input-block">
+                    <remote-rad v-bind:setting="FormAllotSetting" layverify="required" v-bind:value.sync="SubmitCustomForm.FormAllot" initial="off"></remote-rad>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">客服人员：</label>
+                <div class="layui-input-block">
+                    <remote-sel2 v-bind:setting="CustomerSetting" laytips="请选择客服人员" layverify="required" v-bind:value.sync="CustomerList" initial="off"></remote-sel2>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label labelleft">H5页面链接：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="FormName" lay-verify="required" autocomplete="off"
+                           class="layui-input" v-model="SubmitCustomForm.H5Url">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label labelleft">分享图片：</label>
+                <input type="hidden" v-model="SubmitCustomForm.SharePictures" lay-verify="required" />
+                <img class="layui-upload-img" v-bind:src.sync="SubmitCustomForm.SharePictures" style="height:60px; width: 232px;">&nbsp;
+                <button type="button" class="layui-btn layui-btn-normal uploadBtn" style="margin:15px 0;"><i class="layui-icon">&#xe67c;</i>选择图片</button><span style="padding-left:10px; color:red;"></span>
+                <p v-bind:id="upLoadText" style="margin-left:-15px;margin-top:5px;"></p>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label labelleft">分享摘要：</label>
+                <div class="layui-input-block">
+                    <textarea placeholder="请输入内容" class="layui-textarea" v-model="SubmitCustomForm.ShareSummary"></textarea>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label labelleft">报名介绍：</label>
+                <div class="layui-input-block">
+                    <textarea placeholder="请输入内容" class="layui-textarea" v-model="SubmitCustomForm.Remart"></textarea>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">报名信息：</label>
+                <div class="layui-input-block">
+                    <remote-rad v-bind:setting="FormSetting" v-bind:value.sync="SubmitCustomForm.FormType" initial="off"></remote-rad>
+                </div>
+            </div>
+
+            <div class="layui-form-item" v-if="LayoutConfigList.length>0">
+                <div class="layui-input-block">
+                    <span v-data:self="elementItem" v-bind:index="elementIndex" v-for="(elementIndex,elementItem) in LayoutConfigList">
+                        <span v-if="elementItem.Editable == 2">
+                            <input type="checkbox" lay-skin="primary" title="{{elementItem.ShowName}}" name="{{elementItem.ID}}" checked="" disabled="" lay-filter="ssss">
+                        </span>
+                        <span v-else>
+                            <input type="checkbox" lay-skin="primary" title="{{elementItem.ShowName}}" name="{{elementItem.ID}}" lay-filter="ssss">
+                        </span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <button class="layui-btn layui-hide" lay-submit @click="addField">提交</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/select2.min.css" rel="stylesheet" />
+
+<style>
+    [v-cloak]{
+        display: none;
+    }
+    .select2-container--default.select2-container--focus .select2-selection--multiple {
+        border-color: #C9C9C9 !important;
+    }
+
+    .select2-container--default .select2-selection--multiple {
+        border: 1px solid #e6e6e6 !important;
+        line-height: 27px;
+    }
+    label.layui-form-label{
+        width: 90px;
+    }
+    div.layui-input-block{
+        margin-left: 120px;
+    }
+</style>
+
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "select2", "upload"],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+            var upload = layui.upload;
+            var TransferOptions = [];
+
+            window.rootApp = new Vue({
+                el: "#root",
+                data: {
+                    LayoutConfigList: [],
+                    CustomerList: [],
+                    SubmitCustomForm: {
+                        FormName: '',
+                        H5Url: '',           //H5地址
+                        SharePictures: '',   //分享图片
+                        ShareSummary: '', //分享摘要
+                        Remart: '',         //报名介绍
+                        FormTypeID: 0,
+                        FormAllot: 0,
+                        FormType: 1,
+                        CustomerData: [],
+                        FieldData: [],
+                        Type: 1
+                    },
+                    TotalFieldData: [],
+                    FormAllotSetting: {
+                        tags: { name: "FormAllot" },
+                        options: [
+                        { key: "0", value: "随机分配 " },
+                        { key: "1", value: "循环分配" }
+                        ]
+                    },
+                    CustomerSetting: {
+                        search: true,
+                        options: [],
+                        fields: { root: 'Data', key: 'ID', value: 'Name' },
+                        remote: { url: "/service/crm/Form/GetCustomerlist", options: { method: 'get' } },
+                        sel2Opts: {
+                            width: "100%",
+                            multiple: true
+                        }
+                    },
+                    FormSetting: {
+                        tags: { name: "FormType" },
+                        options: [
+                        { key: "1", value: "客户" },
+                        { key: "2", value: "线索" }
+                        ]
+                    },
+                    FormTypeSetting: {
+                        search: true,
+                        options: TransferOptions,
+                        fields: { root: "Data", key: 'ID', value: 'TypeName' },
+                        remote: { url: '/service/crm/Form/GetFormTypeGroupList' }
+                    },
+                },
+                watch: {
+                    "SubmitCustomForm.FormType": function (val) {
+                        var self = this;
+                        self.reload(val);
+                    },
+                    "CustomerList": function (val) {
+                        var self = this;
+                        self.SubmitCustomForm.CustomerData = [];
+                        self.CustomerList.map(function (val, index) {
+                            self.SubmitCustomForm.CustomerData.push({ Customer_ID: val });
+                        });
+                    },
+                },
+                ready: function () {
+                    var self = this;
+                    self.reload(self.SubmitCustomForm.FormType);
+                    if (!!fnr.getQueryString('ID')) {
+                        self.GetFormDetailInfo();
+                    }
+                    self.$nextTick(function () {
+                        self.uploadRender();
+                    });
+                },
+                methods: {
+                    //修改表单
+                    GetFormDetailInfo: function () {
+                        var self = this;
+                        $.get('/service/crm/Form/GetFormDetailInfo', { ID: fnr.getQueryString('ID'), Status: -1 }, function (res) {
+                            if (res.SuccessResponse) {
+                                if (res.Data) {
+                                    self.SubmitCustomForm.FormName = res.Data.FormName;
+                                    self.SubmitCustomForm.H5Url = res.Data.H5Url;
+                                    self.SubmitCustomForm.SharePictures = res.Data.SharePictures;   // ???
+                                    self.SubmitCustomForm.ShareSummary = res.Data.ShareSummary;
+                                    self.SubmitCustomForm.Remart = res.Data.Remart;
+                                    self.SubmitCustomForm.FormTypeID = res.Data.FormTypeID;
+                                    self.SubmitCustomForm.FormAllot = res.Data.FormAllot;
+                                    self.SubmitCustomForm.FormType = res.Data.FormType;
+                                    if (res.Data.CustomerData) {
+                                        res.Data.CustomerData.map(function (ind, val) {
+                                            self.CustomerList.push(ind.Customer_ID);
+                                        });
+                                    }
+                                    if (res.Data.FieldData) {
+                                        self.TotalFieldData = res.Data.FieldData;
+                                        setTimeout(function () {
+                                            var checkboxData = $('input:checkbox');
+                                            res.Data.FieldData.map(function (ind, val) {
+                                                checkboxData.map(function (_ind, _val) {
+                                                    if (ind.Field_ID == _val.name) {
+                                                        if (!_val.checked) {
+                                                            _val.checked = true;
+                                                        }
+                                                    }
+                                                });
+                                            });
+                                            self.$nextTick(function () {
+                                                form.render("checkbox");
+                                            });
+                                        }, 500);
+                                    }
+                                } else {
+                                    layer.msg('')
+                                }
+                            }
+                        });
+                    },
+
+                    //添加表单
+                    reload: function (val) {
+                        var self = this;
+                        self.LayoutConfigList = [];
+                        $.get("/service/public/CustomSettings/GetLayoutConfig", { BusType: val, Other: 1 }, function (resp) {
+                            if (resp.SuccessResponse) {
+                                resp.Data.map(function (val, index) {
+                                    val.Childs.map(function (_val, _index) {
+                                        if (_val.FieldType == 100 && _val.Required == 1) {
+                                            self.LayoutConfigList.push(_val);
+                                        }
+                                    })
+                                });
+                                self.$nextTick(function () {
+                                    setTimeout(function () {
+                                        var reloadCustomForm = $('input:checkbox');
+                                        self.TotalFieldData.map(function (ind, val) {
+                                            reloadCustomForm.map(function (_ind, _val) {
+                                                if (ind.Field_ID == _val.name) {
+                                                    if (!_val.checked) {
+                                                        _val.checked = true;
+                                                    }
+                                                }
+                                            });
+                                        });
+                                        form.render("checkbox");
+                                    }, 500);
+                                })
+                            }
+                        }, "json");
+                    },
+                    getCheckedList: function () {
+                        var self = this;
+                        $('input:checkbox:checked').map(function (index, val) {
+                            self.SubmitCustomForm.FieldData.push({ Field_ID: val.name });
+                        });
+                    },
+                    uploadRender: function () {
+                        var self = this;
+                        var UploadInst = upload.render({
+                            elem: '.uploadBtn'
+                            , url: '/service/public/Upload/File/2'
+                            , before: function (obj) {
+                                //预读本地文件示例，不支持ie8
+                                obj.preview(function (index, file, result) {
+                                    $('.uploadBtn').prev().attr('src', result); //图片链接（base64
+                                });
+                            }
+                            , done: function (res) {
+                                //如果上传失败
+                                if (res.code > 0) {
+                                    return layer.msg('上传失败');
+                                }
+                                self.SubmitCustomForm.SharePictures = res.Message;
+                                //上传成功
+                                $('.uploadBtn').prev().prev().val(res.Message);
+                                layer.msg('上传成功')
+                            }
+                            , error: function () {
+                                //演示失败状态，并实现重传
+                                var demoText = $('#upLoadText' + id);
+                                $('.uploadBtn').next().html('<span style="color: #FF5722;">上传失败</span> <a class=" favicon-reload" style="cursor:pointer;">重试</a>');
+                                $('.uploadBtn').next().find('.favicon-reload').on('click', function () {
+                                    UploadInst.upload();
+                                });
+                            }
+                        });
+                    },
+                    //确认添加
+                    addField: function (e) {
+                        var self = this;
+                        if (!layui.form.checkInput(e)) {
+                            return false;
+                        }
+                        self.getCheckedList();
+                        if (!!fnr.getQueryString('ID')) {
+                            var obj = $.extend(self.SubmitCustomForm, { ID: fnr.getQueryString('ID') });
+                            $.ajax({
+                                url: '/service/crm/Form/UpdateFormSignUp',
+                                type: 'post',
+                                data: obj,
+                                dataType: 'json',
+                                success: function (res) {
+                                    if (res.SuccessResponse) {
+                                        fnr.callDialog('refresh', { status: res.SuccessResponse, Message: res.Message });
+                                        fnr.closeDialog();
+                                    } else {
+                                        layer.msg(res.Message);
+                                    }
+                                }
+                            });
+                        } else {
+                            $.ajax({
+                                url: '/service/crm/Form/AddFormSignUp',
+                                type: 'post',
+                                data: self.SubmitCustomForm,
+                                dataType: 'json',
+                                success: function (res) {
+                                    if (res.SuccessResponse) {
+                                        fnr.callDialog('refresh', { status: res.SuccessResponse, Message: res.Message });
+                                        fnr.closeDialog();
+                                    } else {
+                                        layer.msg(res.Message);
+                                    }
+                                }
+                            });
+                        }
+                    },
+                }
+            });
+        });
+</script>

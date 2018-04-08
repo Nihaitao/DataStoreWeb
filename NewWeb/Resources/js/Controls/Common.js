@@ -1,0 +1,191 @@
+﻿
+///绑定学生来源下拉数据
+var SelectSourceBind = function () {
+    var data = {
+        search: true,
+        fields: { key: 'ID', value: 'Description' },
+        options: [],
+        remote: { url: "/service/public/HDictionary/GetHDictionaryList", data: { Valid: 1, ColumnName: 'Source_ID' } }
+    }
+    return data;
+}
+
+///绑定学历下拉数据
+var SelectEducation = function () {
+    var data = {
+        search: true,
+        fields: { key: 'ID', value: 'Description' },
+        options: [],
+        remote: { url: "/service/public/HDictionary/GetHDictionaryList", data: { Valid: 1, ColumnName: 'Education_ID' } }
+    }
+    return data;
+}
+///绑定民族下拉数据
+var NationSetting = function () {
+    var data = {
+        search: true,
+        fields: { key: 'ID', value: 'Name' },
+        options: [],
+        remote: { url: "/service/Public/ProvinceCityDistrict/GetHNationList", data: { } }
+    }
+    return data;
+}
+///绑定性别下拉数据
+var SelectSex = function () {
+    var data = {
+        tags: { name: "Sex" },
+        options: [
+        { key: "1", value: "男" },
+        { key: "0", value: "女" }
+        ]
+    }
+    return data;
+}
+
+
+///绑定省份列表数据
+var SelectProvinceBind = function () {
+    var data = {
+        search: true, 
+        fields: { root: "Data", key: 'ProvinceID', value: 'ProvinceName' },
+        options: [],
+        remote: { url: "/service/public/ProvinceCityDistrict/GetProvinceList", data: {} }
+    }
+    return data;
+}
+///绑定城市列表数据
+var SelectCityBind = function (ProvinceID) {
+    var data;
+    if (ProvinceID > 0) {
+        data = {
+            search: true,
+            fields: { root: "Data", key: 'CityID', value: 'CityName' },
+            options: [],
+            remote: { url: "/service/public/ProvinceCityDistrict/GetCityList", data: { ID: ProvinceID } }
+        }
+    } else {
+        data = {
+            search: true,
+            fields: { root: "Data", key: 'CityID', value: 'CityName' },
+            options: [],
+            remote: { url: "", data: {} }
+        }
+    }
+    return data;
+}
+///绑定地区列表数据
+var SelectDistrictBind = function (CityID) {
+    var data
+    if (CityID > 0) {
+        data = {
+            search: true,
+            fields: { root: "Data", key: 'DistrictID', value: 'DistrictName' },
+            options: [],
+            remote: { url: "/service/public/ProvinceCityDistrict/GetDistrictList", data: { ID: CityID } }
+        }
+    } else {
+        data = {
+            search: true,
+            fields: { key: 'DistrictID', value: 'DistrictName' },
+            options: [],
+            remote: { url: "", data: {} }
+        }
+    }
+    return data;
+}
+///报考模型
+var SelectModelBind = function()
+{
+    var data = {
+        search: true,
+        fields: {root: "Data", key: 'ID', value: 'Name' },
+        options: [],
+        remote: { url: "/service/edu/BaseSet/GetStudentModelList", data: { IsCurStation: 1 } }
+    }
+    return data;
+}
+///绑定学校
+var SelectSchool = function (ProvinceID, Model)
+{
+    var data;
+    if (ProvinceID > 0) {
+        data = {
+            search: true,
+            fields: { root: "Data", key: 'ID', value: 'Name' },
+            options: [],
+            remote: { url: "/service/edu/School/GetSchoolList", data: { Province_ID: ProvinceID, IsCurStation: 1, Model_ID: Model } }
+        }
+    } else {
+        data = {
+            search: true,
+            fields: { key: 'ID', value: 'Name' },
+            options: [],
+            remote: { url: "", data: {} }
+        }
+    }
+    return data;
+}
+///层次列表
+var SelectLevelID = function () {
+    var data = {
+        search: true,
+        fields: { root: "Data", key: 'ID', value: 'Description' },
+        options: [],
+        remote: { url: "/service/crm/Form/GetSpecialtyLevellist", data: {ColumnName: 'SpecialtyLevel_ID' } }
+    }
+    return data;
+}
+///绑定专业
+var SelectSpecialty = function (NowProvinceShool, Model, Shool, Level) {
+    if (NowProvinceShool > 0 && Model > 0 && Shool > 0 && Level > 0) {
+        data = {
+            search: true,
+            fields: { root: "Data", key: 'ID', value: 'Name' },
+            options: [],
+            remote: { url: "/service/edu/Specialty/GetSpecialtyList", data: { Province_ID: NowProvinceShool, Model_ID: Model, School_ID: Shool, Level_ID: Level, IsCurStation: 1 } }
+        }
+    } else {
+        data = {
+            search: true,
+            fields: { root: "Data", key: 'ID', value: 'Name' },
+            options: [],
+            remote: { url: "", data: {} }
+        }
+    }
+    return data;
+}
+
+///参数获取
+function GetQueryString(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+    var r = window.location.search.substr(1).match(reg);
+    if (r != null) return unescape(r[2]); return null;
+}
+
+function newAjax(options, params) {
+    return new Promise(function (resolve, reject) {
+        $.ajax(Object.assign({}, options, { successs: resolve, fail: reject }), params)
+    })
+}
+
+
+
+///绑定二级学科
+var SelectDisciplineBind = function (CID) {
+    var data;
+    if (CID != null) {
+        data = {
+            search: true,
+            fields: { root: 'Data', key: 'ID', value: 'Name' },
+            options: [],
+            remote: { url: "/service/datastore/Discipline/GetDisciplineWithCID", data: { CID: CID } }
+        }
+    } else {
+        data = {
+            search: true,
+            fields: { key: 'ID', value: 'Name' },
+            options: [],
+        }
+    }
+    return data;
+}

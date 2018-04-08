@@ -1,0 +1,93 @@
+header {
+  border-bottom: 0.017241rem solid #ddd;
+  position: relative;
+}
+header .redBg {
+  width: 100%;
+  height: 2.775862rem;
+  background: #d43c33;
+}
+header .whiteBg {
+  width: 100%;
+  height: 1.982758rem;
+  background: #fff;
+}
+header .mine {
+  position: absolute;
+  top: 1.310344rem;
+  left: 0.25862rem;
+  width: 5.948275rem;
+  height: 2.931034rem;
+  background: #fff;
+  border-radius: 0.206896rem;
+  box-shadow: 0 0 3px 2px  #ddd;
+}
+header .mine .pic {
+  position: absolute;
+  top: -0.637931rem;
+  left: 2.327586rem;
+  width: 1.293103rem;
+  height: 1.293103rem;
+}
+header .mine .pic img {
+  width: 100%;
+  height: 100%;
+  border-radius:50%;
+}
+header .mine .name {
+  padding-top: 0.534482rem;
+  font-weight: 600;
+  color: #000;
+  font-size: 0.344827rem;
+  line-height: 1.189655rem;
+  text-align: center;
+}
+header .mine .order {
+  line-height: 0.862068rem;
+  font-size: 0.25862rem;
+  color: #333333;
+}
+header .mine .order .dindan {
+  display: inline-block;
+  width: 49%;
+  text-align: center;
+  border-right: 0.017241rem solid #ddd;
+      font-size: 0.3rem;
+    font-weight: 600;
+}
+header .mine .order .dindan i {
+  color: #feb8b4;
+}
+header .mine .order .personSet {
+  display: inline-block;
+  width: 49%;
+  text-align: center;
+      font-size: 0.3rem;
+    font-weight: 600;
+}
+header .mine .order .personSet i {
+  color: #feb8b4;
+}
+main {
+  padding-left: 0.25862rem;
+}
+main .txt {
+  line-height: 0.741379rem;
+  border-bottom: 1px solid #ddd;
+  padding-right: 0.25862rem;
+  font-size: 0.25862rem;
+  color: #333;
+  display: block;
+}
+main .txt span {
+  float: right;
+  padding-right: 0.189655rem;
+  color: #b6b6b6;
+}
+main .txt i {
+  float: right;
+  color: #cccccc;
+}
+/*i.iconfont {
+  font-size: 18px!important;
+}*/

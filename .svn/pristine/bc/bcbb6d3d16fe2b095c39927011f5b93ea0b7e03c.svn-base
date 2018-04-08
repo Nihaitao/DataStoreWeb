@@ -1,0 +1,60 @@
+﻿-->
+<div class="nav-left">
+    <div class="nav-title">
+        <h3>首页</h3>
+    </div>
+    <div class="nav-item">
+        <div class="nav-item-title">我的网课</div>
+        <ul class="sub-nav">
+            <li><a href="../onlinecourse/coursemanage.html"><i class="iconfont icon-kechengguanli"></i>课程管理</a></li>
+            <li><a href="../onlinecourse//courserecord.html"><i class="iconfont icon-tingkejilu"></i>听课记录</a></li>
+        </ul>
+    </div>
+    <div class="nav-item">
+        <div class="nav-item-title">我的题库</div>
+        <ul class="sub-nav">
+            <li><a href="/usercenter/questionbank/tk/doCharter.shtml"><i class="iconfont icon-kaishizuoti"></i>开始做题</a></li>
+            <li><a href="#"><i class="iconfont icon-zuotijilu"></i>做题记录</a></li>
+        </ul>
+    </div>
+    <div class="nav-item">
+        <div class="nav-item-title">我的学费</div>
+        <ul class="sub-nav">
+            <li><a href="#"><i class="iconfont icon-lijijiaofei"></i>立即缴费</a></li>
+        </ul>
+    </div>
+    <div class="nav-item">
+        <div class="nav-item-title">我的教务</div>
+        <ul class="sub-nav">
+            <li><a href="#"><i class="iconfont icon-wodechengji"></i>我的成绩</a></li>
+            <li><a href="#"><i class="iconfont icon-wodebaokao"></i>我的报考</a></li>
+            <li><a href="#"><i class="iconfont icon-wodeshuji"></i>我的书籍</a></li>
+            <li><a href="#"><i class="iconfont icon-lianxijilu"></i>联系记录</a></li>
+        </ul>
+    </div>
+    <div class="nav-item">
+        <div class="nav-item-title">我要毕业</div>
+        <ul class="sub-nav">
+            <li><a href="#"><i class="iconfont icon-xuexijindu"></i>学习进度</a></li>
+            <li><a href="#"><i class="iconfont icon-lunwendabian"></i>论文答辩</a></li>
+        </ul>
+    </div>
+    <div class="nav-item">
+        <div class="nav-item-title">个人管理</div>
+        <ul class="sub-nav">
+            <li><a href="../order/myorder.html"><i class="iconfont icon-wodedingdan"></i>我的订单</a></li>
+            <li><a href="#"><i class="iconfont icon-zhanghaoshezhi"></i>账号设置</a></li>
+            <li><a href="#"><i class="iconfont icon-tousuyutiwen"></i>投诉提问</a></li>
+            <li><a href="#"><i class="iconfont icon-xiaoxizhongxin"></i>消息中心</a></li>
+        </ul>
+    </div>
+    <div class="nav-item">
+        <div class="nav-item-title">过程性考核</div>
+        <ul class="sub-nav">
+            <li><a href="#"><i class="iconfont icon-kaishixuexi"></i>开始学习</a></li>
+            <li><a href="#"><i class="iconfont icon-peiyangjihua"></i>培养计划</a></li>
+            <li><a href="#"><i class="iconfont icon-xuankeguanli"></i>选课管理</a></li>
+            <li><a href="#"><i class="iconfont icon-chengjichaxun"></i>成绩查询</a></li>
+        </ul>
+    </div>
+</div>

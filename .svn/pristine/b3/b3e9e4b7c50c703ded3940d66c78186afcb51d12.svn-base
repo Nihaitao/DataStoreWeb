@@ -1,0 +1,115 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">网课单元课次表</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="ID" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" v-model="submitForm.ID">
+                </div>
+                <label class="layui-form-label">课次名称</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="Name" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" v-model="submitForm.Name">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">单元ID</label>
+                <div class="layui-input-block">
+                    <input type="text" name="Unit_ID" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" v-model="submitForm.Unit_ID">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">开始时间</label>
+                <div class="layui-input-block">
+                    <input type="text" name="BegInTime" lay-verify="Discipline_ID" placeholder="请输入" autocomplete="off" class="layui-input" v-model="submitForm.BegInTime">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">结束时间</label>
+                <div class="layui-input-block">
+                    <input type="text" name="EndTime" placeholder="请输入" autocomplete="off" class="layui-input" v-model="submitForm.EndTime">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">教师明细id</label>
+                <div class="layui-input-block">
+                    <input type="text" name="TeacherDetail_ID" placeholder="请输入" autocomplete="off" class="layui-input" v-model="submitForm.TeacherDetail_ID">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">教室ID</label>
+                <div class="layui-input-block">
+                    <input type="text" name="ClassRoom_ID" placeholder="请输入" autocomplete="off" class="layui-input" v-model="submitForm.ClassRoom_ID">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">Orders</label>
+                <div class="layui-input-block">
+                    <input type="text" name="排序" placeholder="请输入" autocomplete="off" class="layui-input" v-model="submitForm.排序">
+                </div>
+            </div>
+            <div class="layui-form-item layui-hide">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-filter="demo1" @click="saveUpdate">立即提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/Controls/Common.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt"],
+    function (fnr) {
+        var $ = layui.$;
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+                submitForm: {
+                    ID: 0,
+                    Unit_ID: '',
+                    BegInTime: '',
+                    EndTime: '',
+                    TeacherDetail_ID: '',
+                    ClassRoom_ID: '',
+                    Orders: '',
+                }
+            },
+            ready: function () {
+                if (!!GetQueryString('ID')) {
+                    var ID = GetQueryString('ID')
+                    var param = { 'ID': ID }
+                    this.GetCourseInfoByID(param);
+                }
+            },
+            methods: {
+                //根据id查询课件资源
+                GetCourseInfoByID: function (params) {
+                    $.get("/service/Resource/SaveCourseInfo", params, function (res) {
+                        this.CourseInfoList = res.ReturnData.Data;
+                    })
+
+                },
+                //提交表单
+                saveUpdate: function (e) {
+                    if (!layui.form.checkInput(e)) {
+                        return false;
+                    }
+                    $.post("/service/Resource/SaveCourseInfo", this.submitForm, function (res) {
+                        console.log(res)
+                    });
+                }
+            }
+        });
+    });
+</script>

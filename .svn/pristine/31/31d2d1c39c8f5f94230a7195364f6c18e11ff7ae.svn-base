@@ -1,0 +1,336 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery-1.4.4.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery.ztree.core.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery.ztree.excheck.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery.ztree.exedit.js"></script>
+
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+
+    <script>
+        require_js_file(['table', 'form', 'jquery', 'tableExt', 'laydate', 'layer', 'tree'],
+            function (fnr) {
+                var table = layui.table;
+                var form = layui.form;
+                var tableExt = layui.tableExt;
+                var layer = layui.layer;
+                var treeList = [];
+                var childrenArr = []; 
+
+                var zTreeObj;
+                var StrGroupId;
+
+                var setting = {
+                    async: {
+                        enable: true,
+                        autoParam: ["ID=Group_ID"],
+                        type: "get",
+                        dataFilter: ajaxDataFilter,
+                        url: "/service/crm/Group/GetListGroupData"
+                    },
+                    data: {
+                        key: {
+                            name: "Name"
+                        },
+                        simpleData: {
+                            enable: true,
+                            idKey: "ID",
+                            pIdKey: "C_ID"
+                        }
+                    },
+                    edit: {
+                        enable: true,
+                        editNameSelectAll: true,
+                        showRenameBtn: showRenameBtn,
+                        showRemoveBtn: showRemoveBtn
+                    },
+                    view: {
+                        selectedMulti: false,
+                        addHoverDom: addHoverDom,  //添加事件
+                        removeHoverDom: removeHoverDom, //鼠标移开移除添加按钮
+                        nameIsHTML: true,
+                        showTitle: false
+                    },
+                    callback: {
+                        beforeEditName: beforeEditName,//修改
+                        beforeRemove: beforeRemove,//删除
+                        beforeClick: beforeClick, //点击事件
+                    }
+                }
+
+                function ajaxDataFilter(treeId, parentNode, rsp) {
+                    if (rsp.Data.length > 0) {
+                        var arrA = [];
+                        rsp.Data.map(function (a, b) {
+                            a.open = a.IsExistChild;
+                            arrA.push(a);
+                        });
+                        window.rootApp.treeIds = arrA[0].ID;
+                        StrGroupId = arrA[0].ID;
+                        if (StrGroupId != null) {
+                            listTable = table.render({
+                                elem: '#listTable',
+                                even: true, //开启隔行背景
+                                page: true, //页分,
+                                id: 'listTable',
+                                cols: [tableColsConfig],
+                                where: { Group_ID: StrGroupId },
+                                url: "/service/crm/Group/GetConfigAccountByGroupID"
+                            });
+                        }
+                    }
+                    if (parentNode == null) {
+                        rsp.Data.push({ ID: 0, Name: '全局分组', open: 1 })
+                    } else {
+                        rsp.Data
+                    }
+                    return rsp.Data;
+                };
+
+                $(document).ready(function () {
+                    zTreeObj = $.fn.zTree.init($("#treeDemo"), setting);
+                    
+                });
+
+                //公司节点去掉删除
+                function showRemoveBtn(treeId, treeNode) {
+                    return treeNode.ID;
+                }
+                //公司节点去掉修改
+                function showRenameBtn(treeId, treeNode) {
+                    return treeNode.ID;
+                }
+                //修改
+                function beforeEditName(treeId, treeNode) {
+                    zTreeObj.selectNode(treeNode);
+                    fnr.openDialog({
+                        title: '修改分组',
+                        area: ['470px', '200px'],
+                        content: ['GroupEdit.html?ID=' + treeNode.ID + '&CID=' + treeNode.C_ID],
+                        btn: ['确认修改'],
+                        events: {
+                            refresh: function (data) {
+                                layer.msg('修改成功')
+                                var nodes = zTreeObj.getSelectedNodes();
+                                nodes[0].Name = data.Name;
+                                zTreeObj.updateNode(nodes[0]);
+                            }
+                        }
+                    });
+                    return false;
+                }
+
+                //删除节点事件
+                function beforeRemove(treeId, treeNode) {
+                    layer.confirm('确定删除吗？删除后不可恢复！', function () {
+                        $.ajax({
+                            url: '/service/crm/Group/DeleteGroup',
+                            type: 'POST',
+                            data: {
+                                Other: treeNode.ID,
+                            },
+                            success: function (data) {
+                                if (data.SuccessResponse) {
+                                    var nodes = zTreeObj.getNodesByParam("ID", treeNode.C_ID, null);
+                                    zTreeObj.selectNode(nodes[0]);
+                                    layer.msg(data.Message == null ? '删除成功' : data.Message)
+                                    zTreeObj.removeNode(treeNode);
+                                } else {
+                                    layer.msg(data.Message == null ? '删除成功' : data.Message)
+                                }
+                            }
+                        });
+                    })
+                    return false;
+                }
+                //添加部门
+                function addHoverDom(treeId, treeNode) {
+                    var sObj = $("#" + treeNode.tId + "_span");
+                    if (treeNode.editNameFlag || $("#addBtn_" + treeNode.tId).length > 0) return;
+                    var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
+                        + "' title='add node' onfocus='this.blur();'></span>";
+                    sObj.after(addStr);
+                    var btn = $("#addBtn_" + treeNode.tId);
+                    if (btn)
+                        btn.bind("click", function () {
+                            zTreeObj.selectNode(treeNode);
+                            fnr.openDialog({
+                                title: '添加分组',
+                                area: ['470px', '200px'],
+                                content: ['GroupAdd.html?CID=' + treeNode.ID],
+                                btn: ['确认添加'],
+                                events: {
+                                    refresh: function (data) {
+                                        var nodes = zTreeObj.getSelectedNodes();
+                                        console.log(nodes[0]);
+                                        debugger;
+                                        if (!nodes[0].isParent) {
+                                            nodes[0].isParent = true;
+                                            zTreeObj.updateNode(nodes[0]);
+                                        }
+                                        zTreeObj.reAsyncChildNodes(null, "refresh");
+                                        //if (treeNode.ID == 0) {
+                                        //    zTreeObj.reAsyncChildNodes(null, "refresh");
+                                        //} else {
+                                        //    zTreeObj.reAsyncChildNodes(nodes[0], "refresh");
+                                        //}
+                                    }
+                                }
+                            });
+                            return false;
+                        });
+                    
+                };
+                function removeHoverDom(treeId, treeNode) {
+                    $("#addBtn_" + treeNode.tId).unbind().remove();
+                };
+                function beforeClick(treeId, treeNode, clickFlag) {
+                    window.rootApp.treeIds = treeNode.ID;
+                    listTable.reload({
+                        where: { Group_ID: treeNode.ID }
+                    });
+                }
+                //表格基本配置参数
+                var tableColsConfig =
+                    [
+                        { fixed: true, checkbox: true },
+                        { fixed: true, field: 'Account_ID', title: '账号ID', width: 80, sort: true },
+                        {
+                            title: '姓名', width: 150, sort: true, templet: function () {
+                                var array = new Array();
+                                array.push("<a style='color: #000;' href='javascript:;' lay-event='detail1'>" + (this.Name) + "</a>");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        },
+                        {
+                            fixed: 'right',
+                            title: '操作',
+                            width: 200,
+                            toolbar: function () {
+                                var array = new Array();
+                                array.push("<button type='button' class='layui-btn layui-btn-danger layui-btn-small' lay-event='deleteClient'>删除</button>");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        }
+                    ];
+                //绑定列表
+                var listTable = null;
+
+                //监听工具栏事件
+                tableExt.addEvent("tool(listTable)",
+                    {
+                        //删除一行
+                        "deleteClient": function (data, obj) {
+                            layer.confirm('确定删除吗，删除后将无法恢复', function (index) {
+                                $.ajax({
+                                    url: '/service/crm/Group/DeleteAccountGroupConfig',
+                                    type: 'POST',
+                                    data: { Account_ID: data.Account_ID, Group_ID: window.rootApp.treeIds },
+                                    dataType: 'json',
+                                    success: function (data) {                                       
+                                        if (data.SuccessResponse) {
+                                            obj.del();
+                                            layer.close(index);
+                                            layer.msg(data.Message)
+                                        } else {
+                                            layer.msg(data.Message)
+                                        }                                      
+                                    }
+                                });
+                            })
+                        }
+                    });
+
+                var addTreeList = [];
+
+                //搜索条件
+                window.rootApp = new Vue({
+                    el: '#root',
+                    data: {
+                        //搜索选择框 --- 跟进阶段
+                        searchKeySetting: {
+                            search: true,
+                            options: [],
+                            fields: { root: 'ReturnData.Data', key: 'ID', value: 'Description' },
+                            remote: { url: '/service/HDictionary/GetHDictionaryList', data: { Valid: 1, ColumnName: 'PhaseType_ID' } }
+                        },
+                        //搜索选择框 --- 来源
+                        statusSetting: {
+                            search: true,
+                            options: [],
+                            fields: { root: 'ReturnData.Data', key: 'ID', value: 'Description' },
+                            remote: { url: '/service/HDictionary/GetHDictionaryList', data: { Valid: 1, ColumnName: 'Source_ID' } }
+                        },
+                        //搜索选择的参数列表
+                        queryFormData: {
+                            PhaseTypeID: 0,
+                            SourceID: 0,
+                            ModelValue: ''
+                        },
+                        treeIds: '',
+                        arr: [],
+                        GroupData: {
+                            status: 0,
+                            CID: 0,
+                            Name: ''
+                        },
+                    },
+                    ready: function () {
+
+                    },
+                    methods: {
+                        addClient: function () {
+                            var _this = this;
+                            fnr.openDialog({
+                                title: '添加分组',
+                                area: ['470px', '400px'],
+                                content: ['GroupAccount.html?Other=' + _this.treeIds],
+                                btn: ['确认添加'],
+                                events: {
+                                    refresh: function (data) {
+                                        if (data.status) {
+                                            layer.msg(data.msg);
+                                            listTable.refresh();
+                                        } else {
+                                            layer.msg(data.msg);
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+
+
+            });
+    </script>
+
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <div class="layui-col-xs2">
+            <ul id="treeDemo" class="ztree"></ul>
+        </div>
+
+        <div class="layui-col-xs10">
+            <blockquote class="layui-elem-quote">
+                <div class="layui-row layui-form">
+                    <div class="layui-col-xs2" style="text-align: right;float: right;">
+                        <button v-bind:class="treeIds !== ''?'layui-btn':'layui-btn layui-btn-disabled'" @click="addClient"><i class="layui-icon"></i> 添加客户</button>
+                    </div>
+                </div>
+            </blockquote>
+            <!--操作模板-->
+            <table id="listTable" lay-filter="listTable"></table>
+        </div>
+    </div>
+</body>
+</html>

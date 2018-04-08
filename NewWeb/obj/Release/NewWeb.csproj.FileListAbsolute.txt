@@ -1,0 +1,15 @@
+D:\公司项目-资源\Web\NewWeb\bin\NewWeb.dll.config
+D:\公司项目-资源\Web\NewWeb\bin\NewWeb.dll
+D:\公司项目-资源\Web\NewWeb\bin\NewWeb.pdb
+D:\公司项目-资源\Web\NewWeb\bin\Aliyun.OSS.dll
+D:\公司项目-资源\Web\NewWeb\bin\Antlr3.Runtime.dll
+D:\公司项目-资源\Web\NewWeb\bin\CT.HttpProxy.dll
+D:\公司项目-资源\Web\NewWeb\bin\Nancy.dll
+D:\公司项目-资源\Web\NewWeb\bin\Nancy.Hosting.Aspnet.dll
+D:\公司项目-资源\Web\NewWeb\bin\Newtonsoft.Json.dll
+D:\公司项目-资源\Web\NewWeb\bin\WebGrease.dll
+D:\公司项目-资源\Web\NewWeb\bin\Antlr3.Runtime.pdb
+D:\公司项目-资源\Web\NewWeb\bin\Nancy.xml
+D:\公司项目-资源\Web\NewWeb\bin\Newtonsoft.Json.xml
+D:\公司项目-资源\Web\NewWeb\obj\Release\NewWeb.dll
+D:\公司项目-资源\Web\NewWeb\obj\Release\NewWeb.pdb

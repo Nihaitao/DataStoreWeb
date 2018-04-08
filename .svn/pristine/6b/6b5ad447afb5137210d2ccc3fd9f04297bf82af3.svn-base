@@ -1,0 +1,379 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{9B03AF67-4E35-4FE6-A536-03D07B92E47D}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>NewWeb</RootNamespace>
+    <AssemblyName>NewWeb</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <Use64BitIISExpress />
+    <UseGlobalApplicationHostFile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Aliyun.OSS">
+      <HintPath>..\lib\Aliyun.OSS.dll</HintPath>
+    </Reference>
+    <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="CT.HttpProxy, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CT.HttpProxy.1.146.0\lib\net40\CT.HttpProxy.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Nancy, Version=1.4.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nancy.1.4.4\lib\net40\Nancy.dll</HintPath>
+    </Reference>
+    <Reference Include="Nancy.Hosting.Aspnet">
+      <HintPath>..\lib\Nancy.Hosting.Aspnet.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="WebGrease, Version=1.6.5135.21930, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\bootstrap-theme.css" />
+    <Content Include="Content\bootstrap-theme.min.css" />
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Default.html" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Html\Client\Client\Add.html" />
+    <Content Include="Html\Client\Client\AddContact.html" />
+    <Content Include="Html\Client\Client\AllList.html" />
+    <Content Include="Html\Client\Client\Distribution.html" />
+    <Content Include="Html\Client\Client\Group.html" />
+    <Content Include="Html\Client\Client\Import.html" />
+    <Content Include="Html\Client\Client\Info.html" />
+    <Content Include="Html\Client\Client\Modify.html" />
+    <Content Include="Html\Client\Client\MyList.html" />
+    <Content Include="Html\Client\Client\PublicList.html" />
+    <Content Include="Html\Client\Client\Transfer.html" />
+    <Content Include="Html\Client\Client\UpdataContacts.html" />
+    <Content Include="Html\Client\Clue\AddClue.html" />
+    <Content Include="Html\Client\Clue\CustomerClue.html" />
+    <Content Include="Html\Client\Clue\Distribution.html" />
+    <Content Include="Html\Client\Clue\Import.html" />
+    <Content Include="Html\Client\Clue\Info.html" />
+    <Content Include="Html\Client\Clue\ModifyClue.html" />
+    <Content Include="Html\Client\Clue\MyClueList.html" />
+    <Content Include="Html\Client\Clue\PublicClueList.html" />
+    <Content Include="Html\Client\Clue\WholeClue.html" />
+    <Content Include="Html\Client\Contact\Add.html" />
+    <Content Include="Html\Client\Contact\AddContact.html" />
+    <Content Include="Html\Client\Contact\info.html" />
+    <Content Include="Html\Client\Contact\List.html" />
+    <Content Include="Html\Client\Remind\Add.html" />
+    <Content Include="Html\Client\Remind\AddRemind.html" />
+    <Content Include="Html\Client\Remind\Info.html" />
+    <Content Include="Html\Client\Remind\List.html" />
+    <Content Include="Html\Client\Remind\Modify.html" />
+    <Content Include="Html\Client\SystemSet\AddField.html" />
+    <Content Include="Html\Client\SystemSet\Dictionaries.html" />
+    <Content Include="Html\Client\SystemSet\GroupAccount.html" />
+    <Content Include="Html\Client\SystemSet\GroupAdd.html" />
+    <Content Include="Html\Client\SystemSet\GroupEdit.html" />
+    <Content Include="Html\Client\SystemSet\Index.html" />
+    <Content Include="Html\Client\SystemSet\SetGroup.html" />
+    <Content Include="Html\Educational\comment\comment.html" />
+    <Content Include="Html\Educational\ContactReminder\addContact.html" />
+    <Content Include="Html\Educational\ContactReminder\ContactReminder.html" />
+    <Content Include="Html\Educational\CourseQA\Details.html" />
+    <Content Include="Html\Educational\CourseQA\QAndA.html" />
+    <Content Include="Html\Educational\Order\Course.html" />
+    <Content Include="Html\Educational\Order\Detail.html" />
+    <Content Include="Html\Educational\Order\List.html" />
+    <Content Include="Html\Educational\Order\StudentOrderList.html" />
+    <Content Include="Html\Educational\Remind\AddAppointmentReminder.html" />
+    <Content Include="Html\Educational\Remind\Info.html" />
+    <Content Include="Html\Educational\Remind\List.html" />
+    <Content Include="Html\Educational\Remind\Modify.html" />
+    <Content Include="Html\HR\addCompay.html" />
+    <Content Include="Html\HR\CompanyList.html" />
+    <Content Include="Html\HR\DepartmentEdit.html" />
+    <Content Include="Html\HR\DepartmentSelect.html" />
+    <Content Include="Html\HR\UserEdit.html" />
+    <Content Include="Html\HR\UserList.html" />
+    <Content Include="Html\personnelManage\addCompay.html" />
+    <Content Include="Html\personnelManage\addDepartment.html" />
+    <Content Include="Html\personnelManage\addStudent.html" />
+    <Content Include="Html\personnelManage\CompanyList.html" />
+    <Content Include="Html\personnelManage\personnerlList.html" />
+    <Content Include="Html\ResourcesCenter\addClassType\step1.html" />
+    <Content Include="Html\ResourcesCenter\addClassType\step2.html" />
+    <Content Include="Html\ResourcesCenter\addClassType\step3.html" />
+    <Content Include="Html\ResourcesCenter\campus\add.html" />
+    <Content Include="Html\ResourcesCenter\campus\campus.html" />
+    <Content Include="Html\ResourcesCenter\Chapters\Add.html" />
+    <Content Include="Html\ResourcesCenter\Chapters\AddQuestionList.html" />
+    <Content Include="Html\ResourcesCenter\Chapters\Index.html" />
+    <Content Include="Html\ResourcesCenter\Chapters\List.html" />
+    <Content Include="Html\ResourcesCenter\Chapters\modify.html" />
+    <Content Include="Html\ResourcesCenter\Chapters\QuestionList.html" />
+    <Content Include="Html\ResourcesCenter\Classinfo\Add.html" />
+    <Content Include="Html\ResourcesCenter\Classinfo\List.html" />
+    <Content Include="Html\ResourcesCenter\Classinfo\List1.html" />
+    <Content Include="Html\ResourcesCenter\Classinfo\modify.html" />
+    <Content Include="Html\ResourcesCenter\classroom\add.html" />
+    <Content Include="Html\ResourcesCenter\classroom\classroom.html" />
+    <Content Include="Html\ResourcesCenter\classroom\Sortable.js" />
+    <Content Include="Html\ResourcesCenter\classroom\tree.html" />
+    <Content Include="Html\ResourcesCenter\Courseinfo\Add.html" />
+    <Content Include="Html\ResourcesCenter\Courseinfo\List.html" />
+    <Content Include="Html\ResourcesCenter\Courseinfo\modify.html" />
+    <Content Include="Html\ResourcesCenter\Course\Edit.html" />
+    <Content Include="Html\ResourcesCenter\Course\List.html" />
+    <Content Include="Html\ResourcesCenter\Course\OffsetUploadCouser.html" />
+    <Content Include="Html\ResourcesCenter\Course\Preview.html" />
+    <Content Include="Html\ResourcesCenter\Course\UpdateCouser.html" />
+    <Content Include="Html\ResourcesCenter\Course\UploadCouser.html" />
+    <Content Include="Html\ResourcesCenter\Course\upload_frombreakpoint.html" />
+    <Content Include="Html\ResourcesCenter\datainfo\Add.html" />
+    <Content Include="Html\ResourcesCenter\datainfo\List.html" />
+    <Content Include="Html\ResourcesCenter\datainfo\modify.html" />
+    <Content Include="Html\ResourcesCenter\Discipline\Add.html" />
+    <Content Include="Html\ResourcesCenter\Discipline\List.html" />
+    <Content Include="Html\ResourcesCenter\Discipline\ListCopy.html" />
+    <Content Include="Html\ResourcesCenter\Discipline\modify.html" />
+    <Content Include="Html\ResourcesCenter\editSimpleCourse\addCourse.html" />
+    <Content Include="Html\ResourcesCenter\editSimpleCourse\addResource.html" />
+    <Content Include="Html\ResourcesCenter\editSimpleCourse\choiceCourse.html" />
+    <Content Include="Html\ResourcesCenter\editSimpleCourse\classesResource.html" />
+    <Content Include="Html\ResourcesCenter\editSimpleCourse\editClassBaseInfo.html" />
+    <Content Include="Html\ResourcesCenter\editSimpleCourse\editClassTypeVideo.html" />
+    <Content Include="Html\ResourcesCenter\editSimpleCourse\editCourseDetail.html" />
+    <Content Include="Html\ResourcesCenter\editSimpleCourse\editliveOrface.html" />
+    <Content Include="Html\ResourcesCenter\editSimpleCourse\editSimpleCourse.html" />
+    <Content Include="Html\ResourcesCenter\editSimpleCourse\modifyCourse.html" />
+    <Content Include="Html\ResourcesCenter\ExamPaper\Add.html" />
+    <Content Include="Html\ResourcesCenter\ExamPaper\addExamPaperType.html" />
+    <Content Include="Html\ResourcesCenter\ExamPaper\AddQuestionList.html" />
+    <Content Include="Html\ResourcesCenter\ExamPaper\AddQuestions.html" />
+    <Content Include="Html\ResourcesCenter\ExamPaper\List.html" />
+    <Content Include="Html\ResourcesCenter\ExamPaper\modify.html" />
+    <Content Include="Html\ResourcesCenter\ExamPaper\modifyExamPaperType.html" />
+    <Content Include="Html\ResourcesCenter\ExamPaper\QuestionList.html" />
+    <Content Include="Html\ResourcesCenter\ExamPaper\ViewExamPaper.html" />
+    <Content Include="Html\ResourcesCenter\QuestionStore\Add.html" />
+    <Content Include="Html\ResourcesCenter\QuestionStore\List.html" />
+    <Content Include="Html\ResourcesCenter\QuestionStore\modify.html" />
+    <Content Include="Html\ResourcesCenter\QuestionType\List.html" />
+    <Content Include="Html\ResourcesCenter\Question\Add.html" />
+    <Content Include="Html\ResourcesCenter\Question\AddCombinationQuestion.html" />
+    <Content Include="Html\ResourcesCenter\Question\List.html" />
+    <Content Include="Html\ResourcesCenter\Question\Modify.html" />
+    <Content Include="Html\ResourcesCenter\Question\ModifyCombination.html" />
+    <Content Include="Html\ResourcesCenter\Question\ModifyCombinationQuestion.html" />
+    <Content Include="Html\ResourcesCenter\Question\View.html" />
+    <Content Include="Html\ResourcesCenter\Question\ViewCombination.html" />
+    <Content Include="Html\ResourcesCenter\SystemSet\SetPolyvInfo.html" />
+    <Content Include="Html\ResourcesCenter\Teacher\Add.html" />
+    <Content Include="Html\ResourcesCenter\Teacher\List.html" />
+    <Content Include="Html\ResourcesCenter\Teacher\modify.html" />
+    <Content Include="Html\ResourcesCenter\Unit\Add.html" />
+    <Content Include="Html\ResourcesCenter\Unit\List.html" />
+    <Content Include="Html\ResourcesCenter\Unit\modify.html" />
+    <Content Include="Html\ResourcesCenter\Unit_classtime\Add.html" />
+    <Content Include="Html\ResourcesCenter\Unit_classtime\List.html" />
+    <Content Include="Html\ResourcesCenter\Unit_classtime\modify.html" />
+    <Content Include="Html\Set\BackstageSetUp\AddBanner.html" />
+    <Content Include="Html\Set\BackstageSetUp\BaseSet.html" />
+    <Content Include="Html\Set\BackstageSetUp\CarouselFigure.html" />
+    <Content Include="Html\Set\BackstageSetUp\HeaderSet.html" />
+    <Content Include="Html\Set\BackstageSetUp\MarketingSet.html" />
+    <Content Include="Html\Set\BackstageSetUp\TailSet.html" />
+    <Content Include="Html\Set\ClientSet.html" />
+    <Content Include="Html\Set\Curriculum\CurriculumSet.html" />
+    <Content Include="Html\Set\MenuSet\Index.html" />
+    <Content Include="Html\Set\MenuSet\SetMenuUrl.html" />
+    <Content Include="Html\Set\PaySet\ApayForm.html" />
+    <Content Include="Html\Set\PaySet\PayLayout.html" />
+    <Content Include="Html\Set\PaySet\ApaySetForm.html" />
+    <Content Include="Html\Set\PaySet\WpayForm.html" />
+    <Content Include="Html\Set\PaySet\WpaySetForm.html" />
+    <Content Include="Html\Set\Preview\DisciplineView.html" />
+    <Content Include="Html\Set\Preview\ViewModel.html" />
+    <Content Include="Html\Set\SystemSet\AddField.html" />
+    <Content Include="Html\Set\SystemSet\DepartmentEdit.html" />
+    <Content Include="Html\Set\SystemSet\DepartmentSelect.html" />
+    <Content Include="Html\Set\SystemSet\Dictionaries.html" />
+    <Content Include="Html\Set\SystemSet\UserEdit.html" />
+    <Content Include="Html\Set\SystemSet\UserList.html" />
+    <Content Include="Html\Set\User\LogAndResSet.html" />
+    <Content Include="Html\Student\WX\Add.html" />
+    <Content Include="Html\Student\WX\demo.html" />
+    <Content Include="Html\Student\WX\Edit.html" />
+    <Content Include="Html\Student\WX\editStudent.html" />
+    <Content Include="Html\Student\WX\Import.html" />
+    <Content Include="Html\Student\WX\List.html" />
+    <Content Include="Html\Student\WX\listStudent.html" />
+    <Content Include="Login.html" />
+    <Content Include="Resources\css\iconfont.css" />
+    <Content Include="Resources\css\iconfont.js" />
+    <Content Include="Resources\css\iconfont.svg" />
+    <Content Include="Resources\css\index.css" />
+    <Content Include="Resources\css\indexType2.css" />
+    <Content Include="Resources\css\layui.css" />
+    <Content Include="Resources\css\uploadify.css" />
+    <Content Include="Resources\images\AliPay01.png" />
+    <Content Include="Resources\images\AliPay02.png" />
+    <Content Include="Resources\images\backgroundImage.png" />
+    <Content Include="Resources\images\banner33.jpg" />
+    <Content Include="Resources\images\WeChat01.png" />
+    <Content Include="Resources\images\WeChatPay02.png" />
+    <Content Include="Resources\images\wxHead.png" />
+    <Content Include="Resources\indexLogo.png" />
+    <Content Include="Resources\js\Controls\Client\Client.js" />
+    <Content Include="Resources\js\Controls\Client\dataSource.js" />
+    <Content Include="Resources\js\Controls\Clue.js" />
+    <Content Include="Resources\js\Controls\Common.js" />
+    <Content Include="Resources\js\Controls\Order\DetailList.js" />
+    <Content Include="Resources\js\Controls\Order\OrderList.js" />
+    <Content Include="Resources\js\Controls\Student\AddStudent.js" />
+    <Content Include="Resources\js\Controls\Student\Contact.js" />
+    <Content Include="Resources\js\Controls\Student\EditStudent.js" />
+    <Content Include="Resources\js\Controls\Student\StudentExcelAdd.js" />
+    <Content Include="Resources\js\Controls\Student\StudentList.js" />
+    <Content Include="Resources\js\Controls\UploadResource\UploadResource.js" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\bootstrap.min.css.map" />
+    <Content Include="Content\bootstrap.css.map" />
+    <Content Include="Content\bootstrap-theme.min.css.map" />
+    <Content Include="Content\bootstrap-theme.css.map" />
+    <None Include="Scripts\jquery-3.2.1.intellisense.js" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\jquery-3.2.1.js" />
+    <Content Include="Scripts\jquery-3.2.1.min.js" />
+    <Content Include="Scripts\jquery-3.2.1.slim.js" />
+    <Content Include="Scripts\jquery-3.2.1.slim.min.js" />
+    <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <None Include="Properties\PublishProfiles\1111.pubxml" />
+    <Content Include="Resources\css\iconfont.eot" />
+    <Content Include="Resources\css\iconfont.ttf" />
+    <Content Include="Resources\css\iconfont.woff" />
+    <Content Include="Scripts\jquery-3.2.1.slim.min.map" />
+    <Content Include="Scripts\jquery-3.2.1.min.map" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Code\" />
+    <Folder Include="Html\Educational\Contact\" />
+    <Folder Include="Html\SystemSet\" />
+    <Folder Include="Resources\js\modules\vue\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>17772</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:17772/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>这台计算机上缺少此项目引用的 NuGet 程序包。启用“NuGet 程序包还原”可下载这些程序包。有关详细信息，请参阅 http://go.microsoft.com/fwlink/?LinkID=322105。缺少的文件是 {0}。</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

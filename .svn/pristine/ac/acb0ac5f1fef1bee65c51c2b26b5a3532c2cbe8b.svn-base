@@ -1,0 +1,190 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>自定义工作台</title>
+    <style>
+        .divClass {
+            border-right: 1px solid #d2d2d2;
+            text-align: center;
+        }
+
+        .divLeft {
+            border-left: 1px solid #d2d2d2;
+            border-collapse: collapse;
+            min-width:600px !important;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="mainContainer divLeft" v-cloak>
+        <div class="layui-tab-content">
+            <form class="layui-form">
+                <div class="layui-row custom-title divLeft">
+                    <div class="layui-col-md4 divClass">模块名称</div>
+                    <div class="layui-col-md4 divClass">启用</div>
+                    <div class="layui-col-md4 divClass">排序</div>
+                </div>
+                <div class="custom-field divLeft">
+                    <div class="tree" v-data :self="item" v-for="(index,item) in formList">
+                        <div class="tree-content">
+                            <div class="layui-row custom-ele">
+                                <div class="layui-col-md4 divClass">
+                                    {{item.Name}}
+                                </div>
+                                <div class="layui-col-md4 divClass">
+                                    <input type="checkbox" name="Valid" v-bind:checked="item.Valid==1" v-model="queryForm" value="{{item.ID}}" lay-ignore />
+                                </div>
+                                <div class="layui-col-md4 divClass">
+                                    <a href="javascript:;" class="handle">
+                                        <i class="layui-icon">&#xe647;</i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="layui-form-item">
+                <button class="layui-btn layui-hide" @click="AddSave">保存</button>
+                <button class="layui-btn2 layui-hide" @click="ResetMe">重置</button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+
+    <style>
+        .custom-title {
+            line-height: 45px;
+            background: #f5f5f5;
+            padding-left: 10px;
+        }
+
+        .custom-ele, .custom-empty {
+            line-height: 45px;
+            height: 45px;
+            border-bottom: 1px solid #ebebeb;
+            padding-left: 10px;
+        }
+
+            .custom-ele:hover {
+                line-height: 45px;
+                height: 45px;
+                background: #f5f5f5;
+            }
+
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+    <script>
+        require_js_file(['table', 'form', 'jquery', 'tableExt', 'jqueryui'],
+            function (fnr) {
+                var $ = layui.jquery;
+                var jqueryui = layui.jqueryui;
+                var vm = new Vue({
+                    el: "#root",
+                    data: {
+                        formList: [],
+                        queryForm: []
+                    },
+                    directives: {
+                        "data":
+                        {
+                            params: ["self", "parent", "index"],
+                            bind: function () {
+                                $(this.el).data("self", this.params.self);
+                                $(this.el).data("parent", this.params.parent);
+                            }
+                        }
+                    },
+                    ready: function () {
+                        this.reload();
+                    },
+                    methods: {
+                        saveLayout: function () {
+                            var self = this;
+                            var list = '';
+                            $("div.tree").each(function (i) {
+                                list += $(this).data("self").ID + ',';
+                            });
+                            list = list.substr(list.length, 1);
+                            console.log(list);
+                            //$.ajax({
+                            //    url: "/service/public/CustomSettings/ReSortLayout",
+                            //    method: "post",
+                            //    contentType: "application/json",
+                            //    data: JSON.stringify(list),
+                            //    success: function (resp) {
+                            //        if (resp.SuccessResponse) {
+                            //            self.reload(self.selected + 1);
+                            //            layer.msg(resp.Message);
+                            //        } else {
+                            //            layer.msg(resp.Message ? resp.Message : '');
+                            //        }
+                            //    }
+                            //});
+                        },
+
+                        //加载
+                        reload: function () {
+                            var self = this;
+                            //查询所有工作台数据
+                            $.get("/service/crm/Workbench/GetWorkbenchInfo", function (rsp) {
+                                if (rsp.SuccessResponse) {
+                                    self.formList = rsp.Data;
+                                    //拖动排序
+                                    self.$nextTick(function () {
+                                        $("div.custom-field").sortable({
+                                            connectWith: "div.tree",
+                                            //cancel: "div.custom-title",
+                                            handle: "a.handle",
+                                            stop: function (e, ui) {
+                                                vm.saveLayout();
+                                            }
+                                        }).disableSelection();
+                                    });
+                                }
+                            })
+                        },
+                        //重置
+                        ResetMe: function () {
+                            var self = this;
+                            self.queryForm = [];
+                            $.each(self.formList, function () {
+                                if (this.Valid == 1)
+                                    self.queryForm.push(this.ID.toString());
+                            })
+                            //重新渲染checkbox
+                            this.$nextTick(function () {
+                                layui.form.render("checkbox");
+                            });
+                        },
+                        //保存crm工作台明细
+                        AddSave: function () {
+                            $.post("/service/crm/Workbench/AddWorkbenchDetial", { IdArray: this.queryForm.join(',') }, function (rsp) {
+                                if (rsp.SuccessResponse) {
+                                    parent.layer.msg("操作成功");
+                                    fnr.callDialog('refresh', {});
+                                    fnr.closeDialog();
+                                } else {
+                                    layer.msg("操作失败");
+                                }
+                            })
+                        }
+                    }
+                });
+            });
+    </script>
+</body>
+</html>

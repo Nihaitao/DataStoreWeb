@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title></title>
+</head>
+<body id="root">
+<div class="layui-upload">
+    <button type="button" class="layui-btn" id="test3"><i class="layui-icon"></i>上传文件</button>
+    <div class="layui-upload-list">
+        <img class="layui-upload-img" id="demo1">
+        <p id="demoText"></p>
+    </div>
+</div>
+<input type="button" value="点我哟" @click="openDialog"/>
+</body>
+</html>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet"/>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'laydate', 'layer','upload'],
+        function (fnr) {
+            var $ = layui.jquery
+                ,upload = layui.upload;
+  
+            upload.render({
+                elem: '#test3'
+                , url: '/excel/test'
+                ,accept: 'file' //普通文件
+                ,done: function(res) {
+                    console.log(JSON.stringify(res));
+                }
+            });
+            var rootApp = new Vue({
+                el: "#root",
+                methods: {
+                    openDialog: function() {
+                        fnr.openDialog({
+                            content: ['dialog.html'],
+                            btn: ['确认'],
+                            events: {
+                                refresh: function(data) {
+                                    if (data) {
+                                        alert("这是一个带参数的回调" + JSON.stringify(data));
+                                    } else {
+
+                                        alert("开始刷新数据");
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        });
+</script>

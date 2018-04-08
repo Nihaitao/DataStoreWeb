@@ -1,0 +1,121 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body id="root">
+    <div class="OpenContainer" style="padding-top:30px">
+        <form class="layui-form" action="" onsubmit="return false">
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:120px">菜单名称：</label>
+                <div class="layui-input-inline" style="width:300px">
+                    <input type="text" name="title" v-model="queryFormData.Name" lay-verify="required" placeholder="菜单名称最长20个中文字符"
+                           autofocus="autofocus" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label" style="width:120px">权限级别：</label>
+                    <div class="layui-input-inline" style="width:300px">
+                        <remote-sel v-bind:setting="SafetyLevelSetting" laytips="" v-bind:value.sync="queryFormData.SafetyLevel"
+                                    initial="off"></remote-sel>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:120px">菜单排序：</label>
+                <div class="layui-input-inline" style="width:300px">
+                    <input type="number" name="title" v-model="queryFormData.Order" placeholder="菜单排序"
+                           autofocus="autofocus" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item layui-hide">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit @click="formDemo">立即提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="/Resources/js/Controls/Common.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate"],
+        function (fnr) {
+            var laydate = layui.laydate;
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+
+            window.rootApp = new Vue({
+                el: "#root",
+                data: {
+                    queryFormData: {
+                        Name: '', //名称
+                        SafetyLevel: 0, //权限级别
+                        Order:0
+                    },
+                    _menuId: 0,
+                    SafetyLevelSetting: {
+                        search: true,
+                        options: [
+                            { key: "1", value: "一级" },
+                            { key: "2", value: "二级" },
+                            { key: "3", value: "三级" }
+                        ],
+                    }
+                },
+                ready: function () {
+                    _this = this;
+                    _this._menuId = fnr.getQueryString("ID");
+                    _this.queryFormData.Name = fnr.getQueryString("Name");
+                    //请求接口填充数据
+                    if (_this._menuId) {
+                        $.get("/service/hr/Menu/GetMenuCustomizeByMenuID", { ID: _this._menuId }, function (rsp) {
+                            if (rsp.SuccessResponse) {
+                                if (rsp.Data) {
+                                    _this.queryFormData.Name = rsp.Data.Name;
+                                    _this.queryFormData.SafetyLevel = rsp.Data.SafetyLevel;
+                                    _this.queryFormData.Order = rsp.Data.Order;
+                                }
+                            } else {
+                                layer.msg(rsp.Message)
+                            }
+                        });
+                    }
+                },
+                methods: {
+                    //保存数据关闭弹窗
+                    formDemo: function (e) {
+                        _this = this;
+                        if (!layui.form.checkInput(e)) {
+                            return false;
+                        }
+
+                        if (_this.queryFormData.Name.length > 20) {
+                            layer.msg("自定义菜单名最长20个中文字符！")
+                            return false;
+                        }
+
+                        if (_this._menuId) {
+                            $.post("/service/hr/Menu/MenuCustomizeModify", { Memu_ID: _this._menuId, Name: _this.queryFormData.Name, SafetyLevel: _this.queryFormData.SafetyLevel, Order: _this.queryFormData.Order }, function (rsp) {
+                                if (rsp.SuccessResponse) {
+                                    fnr.callDialog('refresh', _this.queryFormData.Name); //回调打开窗口events中的refresh
+                                    fnr.closeDialog(); //关闭当前的对话框
+                                } else {
+                                    layer.msg(rsp.Message)
+                                }
+                            });
+                            return false;
+                        }
+                    },
+                }
+            });
+        });
+</script>

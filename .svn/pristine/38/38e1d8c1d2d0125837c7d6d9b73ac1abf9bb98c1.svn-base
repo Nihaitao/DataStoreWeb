@@ -1,0 +1,162 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>课程-课程资料</title>
+    <style>
+        .left-side { float: left; width: 18%; min-height: 576px; border: 1px solid #e9edee; background-color: #f6f6f6; }
+        .left-sides-title { height: 28px; line-height: 28px; color: #fdfdfd; background-color: #cccccc; text-align: center; font-size: 14px; border-bottom: 1px solid #f6f6f6; cursor: pointer; }
+        .subentry { height: 34px; line-height: 34px; /* text-align: center; */ font-size: 14px; color: #666; cursor: pointer; border-top: 1px solid #F6F6F6; padding-left: 38%; }
+        li.subentry { position: relative; }
+        .left-side li.subentry.active { background-color: #00aaff; color: #fff; }
+        .left-side li.subentry.active a { color: #fff; }
+        li.subentry span { position: absolute; left: 64px; font-size: 16px; margin-right: 5px; }
+        .right-side { float: right; width: 81%; min-height: 576px; border: 1px solid #e9edee; background-color: #f6f6f6; }
+        div.u-wrap { width: 98%; }
+        .right-side .classes { margin: 0; }
+        .u-wrap .mainbackground { position: relative; padding: 50px 100px 10px; background-color: #f6f6f6; }
+        .right-side .u-wrap .mainbackground.nopadding { padding: 0 25px; }
+        .heading { position: relative; margin: 15px 0; padding: 3px 8px; border-left: 3px solid #fa6900; }
+        .right-side .heading { position: relative; }
+        .company .heading { border-width: 4px; }
+        .right-side div.mainbackground .heading { border-left: 3px solid #0af; height: 18px; font-size: 14px; }
+        .left-side li.lines {height: 1px;background: #ccc;}
+        [v-cloak] { display:none;}
+    </style>
+
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <div class="left-side">
+            <ul class="menuList_choose">
+                <li class="subentry" data-local="/Html/ResourcesCenter/editSimpleCourse/editClassBaseInfo.html?ID={{ID}}">基本信息</li>
+                <li class="subentry" v-cloak v-if="TeachingMethod != 2" data-local="/Html/ResourcesCenter/editSimpleCourse/editClassTypeVideo.html?ID={{ID}}">视频课</li>
+                <li class="subentry" data-local="/Html/ResourcesCenter/editSimpleCourse/editCourseDetail.html?ID={{ID}}">课程详情</li>
+                <li class="lines"></li>
+                <li class="subentry active" data-local="/Html/ResourcesCenter/editSimpleCourse/classesResource.html?ID={{ID}}">课程资料</li>
+                <li class="subentry" v-cloak v-if="TeachingMethod == 2" data-local="/Html/ResourcesCenter/editSimpleCourse/editliveOrface.html?ID={{ID}}">排课表</li>
+            </ul>
+        </div>
+        <div class="right-side">
+            <div class="u-wrap classes">
+                <div class="mainbackground nopadding">
+                    <blockquote class="layui-elem-quote">
+                        课程资料
+                        <button class="layui-btn" style="float:right;" @click="uploadResource"><i class="layui-icon">&#xe654;</i> 上传资料</button>
+                    </blockquote>
+                    <table id="listTable" lay-filter="listTable"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="https://cdn.bootcss.com/jquery/1.10.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.js"></script>
+<script src="/Resources/js/Controls/Common.js"></script>
+<script src="../Classroom/Sortable.js?v1.0.1"></script>
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'laydate', 'upload'],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+            var upload = layui.upload;
+
+            //搜索条件
+            var rootApp = new Vue({
+                el: '#root',
+                data: {
+                    ID: '',
+                    TeachingMethod:''
+                },
+                computed: {
+
+                },
+                ready: function () {
+                    if (GetQueryString('ID')) {
+                        this.ID=ID = GetQueryString('ID');
+                        this.TeachingMethod = GetQueryString('TeachingMethod');
+                        this.GetCourseByID({ID:ID})
+                    }
+                    $(".menuList_choose").on('click', 'li.subentry', function () {
+                        var href = $(this).attr("data-local");
+                        window.location.href = href;
+                    });
+                },
+                methods: {
+                    GetCourseByID: function (params) {
+                        var self = this;
+                        $.get("/service/WebCourse/GetCourseByID", params, function (res) {
+                            if (res.SuccessResponse) {
+                                self.TeachingMethod = res.ReturnData.Data.TeachingMethod;
+                            }
+                        })
+                    },
+                    uploadResource: function () {
+                        fnr.openDialog({
+                            title: '上传资料',
+                            area: ['470px', '500px'],
+                            content: ['./addResource.html'], //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+                            btn: ['确认添加'],
+                            yes: function (index, layero) {
+
+                                var iframeWin = window[layero.find('iframe')[0]['name']];
+                                $(iframeWin.document).find(".layui-btn").click();
+
+                            },
+                            cancel: function () {
+                                //paging.Refresh(); //重新加载当前页面
+                                //location.href = location.href;
+                            },
+                            end: function () {
+                                tableIns.reload();
+                            }
+                        });
+                    }
+                }
+            });
+            var tableIns = table.render({
+                elem: '#listTable',
+                even: true, //开启隔行背景
+                page: true, //页分
+                cols: [
+                    [
+                        { field: 'ID', title: '课程名称', width: 120 },
+                        { field: 'Name', title: '资料名称', width: 120 },
+                        { field: 'CourseSize', title: '资料大小', width: 120 },
+                        { field: 'PlayAddress', title: '上传人', width: 120 },
+                        { field: 'PolyvVID', title: '上传时间', width: 120 },
+                        {
+                            field: 'Valid',
+                            title: '操作',
+                            width: 180,
+                            toolbar: function () {
+                                var array = new Array();
+                                array.push("<button class=\"layui-btn layui-btn-small\" lay-event='edit'>编辑</button>");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        }
+                    ]
+                ],
+                url: '/service/WebCourse/GetDataInfoList',
+                response: {
+                    dataName: 'ReturnData.Data'
+                }
+            });
+            //指定允许上传的文件类型
+            upload.render({
+                elem: '#test3'
+              , url: '/service/upload'
+              , accept: 'file' //普通文件
+              , done: function (res) {
+                  console.log(res)
+              }
+            });
+        });
+</script>

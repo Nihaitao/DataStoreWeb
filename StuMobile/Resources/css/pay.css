@@ -1,0 +1,257 @@
+body {
+  background: #f5f5f9;
+}
+main .tip {
+  border-bottom: 0.017241rem solid #ddd;
+  background: #fff;
+}
+main .tip span {
+  display: inline-block;
+  width: 49%;
+  line-height: 0.75862rem;
+  text-align: center;
+}
+main .tip span.active {
+  border-bottom: 0.034482rem solid #f10013;
+}
+main .centerbox {
+  display: inline-block;
+  background: #f5f5f9;
+  width: 100%;
+  height: 0.603448rem;
+}
+main .centerbox .all-check {
+  position: relative;
+}
+main .centerbox .all-check input {
+  text-align: center;
+  display: inline-block;
+  line-height: 1.448275rem;
+  width: 0.25862rem;
+  height: 0.25862rem;
+  padding-left: 0.068965rem;
+  margin: 0;
+  position: absolute;
+  top: 0.172413rem;
+  left: 0.241379rem;
+}
+main .centerbox .all-check a {
+  line-height: 0.603448rem;
+  padding-left: 0.672413rem;
+  font-size: 0.25862rem;
+  color: #c4c4c5;
+}
+main .contentbox {
+  display: inline-block;
+  background: #f5f5f9;
+  width: 100%;
+  height: 0.189655rem;
+}
+main .firstCon {
+  border-top: 0.017241rem solid #ddd;
+  border-bottom: 0.017241rem solid #ddd;
+  margin-bottom: 0.172413rem;
+  background: #fff;
+}
+main .firstCon .num {
+  line-height: 0.431034rem;
+  border-bottom: 0.017241rem solid #ddd;
+  color: #b6b6b6;
+  text-indent: 0.372413rem;
+  position: relative;
+}
+main .firstCon .num .day {
+  position: absolute;
+  top: 0;
+  right: 0.3rem;
+}
+main .firstCon .num .time {
+  position: absolute;
+  top: 0;
+  right: 0.241379rem;
+}
+main .firstCon .commodity {
+  position: relative;
+}
+main .firstCon .commodity .check {
+  width: 0.25862rem;
+  height: 0.25862rem;
+  padding-left: 0.068965rem;
+  margin: 0;
+  position: absolute;
+  top: 0.586206rem;
+  left: 0.241379rem;
+}
+main .firstCon .commodity .pic {
+  width: 1.37931rem;
+  height: 0.775862rem;
+  display: inline-block;
+  position: absolute;
+  top: 0.344827rem;
+  left: 0.672413rem;
+}
+main .firstCon .commodity .pic img {
+  width: 100%;
+  height: 100%;
+}
+main .firstCon .commodity .txt {
+  display: inline-block;
+  margin-left: 2.310344rem;
+}
+main .firstCon .commodity .txt .explain {
+  padding-top: 0.327586rem;
+  line-height: 0.413793rem;
+  font-size: 0.224137rem;
+  color: #333;
+}
+main .firstCon .commodity .txt .price {
+  line-height: 0.327586rem;
+  color: #f10013;
+  padding-bottom: 0.37931rem;
+}
+main .firstCon .commodity .del {
+  border: none;
+  border: 1px solid #ddd;
+  background: #fff;
+  position: absolute;
+  top: 0.931034rem;
+  right: 0.25862rem;
+  line-height: 0.327586rem;
+  font-size: 0.206896rem;
+  border-radius: 0.051724rem;
+}
+main .firstCon .commodity .payOk {
+  border: none;
+  background: #fff;
+  position: absolute;
+  top: 0.931034rem;
+  right: 0;
+  width: 1.189655rem;
+  line-height: 0.327586rem;
+  font-size: 0.206896rem;
+  border-radius: 0.051724rem;
+}
+.determineDelMask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding-left: 0.896551rem ;
+  padding-top: 3.706896rem;
+  background: rgba(0, 0, 0, 0.3);
+}
+.determineDelMask .determineDel {
+  width: 4.672413rem;
+  height: 1.896551rem ;
+  background: #fff;
+  border-radius: 0.224137rem;
+  border: 0.017241rem solid #dcdadb;
+}
+.determineDelMask .determineDel .areYouSure {
+  line-height: 1.034482rem;
+  padding-bottom: 0.068965rem;
+  text-align: center;
+  border-bottom: 0.017241rem solid #dcdadb;
+  font-size: 0.275862rem;
+  color: #000;
+}
+.determineDelMask .determineDel .btn {
+  font-size: 0.275862rem;
+}
+.determineDelMask .determineDel .btn span {
+  width: 50%;
+  display: inline-block;
+  text-align: center;
+  line-height: 0.775862rem;
+  color: #0281f1;
+}
+.determineDelMask .determineDel .btn span.no {
+  border-right: 0.017241rem solid #dcdadb;
+}
+.payForMoneyMask {
+  background: rgba(0, 0, 0, 0.3);
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  padding-top: 3.413793rem;
+  padding-left: 0.241379rem;
+}
+.payForMoneyMask .payForMoney {
+  width: 5.948275rem;
+  height: 4.310344rem;
+  background: #fff;
+  border-radius: 0.068965rem;
+}
+.payForMoneyMask .payForMoney .payForWhat {
+  line-height: 0.844827rem;
+  text-align: center;
+  position: relative;
+}
+.payForMoneyMask .payForMoney .payForWhat i {
+  position: absolute;
+  top: 0;
+  left: 0.431034rem;
+}
+.payForMoneyMask .payForMoney .nameAndPrice {
+  background: #f9f9f9;
+  text-align: center;
+}
+.payForMoneyMask .payForMoney .nameAndPrice .name {
+  line-height: 0.431034rem;
+  font-size: 0.189655rem;
+  border-top: 0.017241rem solid #f2f2f6;
+}
+.payForMoneyMask .payForMoney .nameAndPrice .price {
+  line-height: 0.482758rem;
+  font-size: 0.25862rem;
+  font-weight: 700;
+  color: #000;
+  border-bottom: 0.017241rem solid #f2f2f6;
+}
+.payForMoneyMask .payForMoney .mode {
+  padding-top: 0.603448rem;
+}
+.payForMoneyMask .payForMoney .mode div {
+  text-align: center;
+  float: left;
+  width: 50%;
+}
+.payForMoneyMask .payForMoney .mode div img {
+  width: 0.775862rem;
+  height: 0.775862rem;
+  display: block;
+  margin: 0 auto;
+}
+.payForMoneyMask .payForMoney .mode div.zfb {
+  border-right: 0.017241rem solid #f2f2f6;
+}
+.payForMoneyMask .payForMoney .mode div p {
+  line-height: 0.551724rem;
+  font-size: 0.189655rem;
+}
+.bottom {
+  width: 100%;
+  line-height: 0.844827rem;
+  background: #fff;
+  position: fixed;
+  bottom: 0;
+}
+.bottom .money {
+  text-indent: 0.241379rem;
+  font-size: 0.241379rem;
+  display: inline-block;
+  color: #b6b6b6;
+}
+.bottom .money span {
+  color: #f10013;
+}
+.bottom button {
+  float: right;
+  border: none;
+  line-height: 0.844827rem;
+  background: #f10013;
+  color: #fff;
+}

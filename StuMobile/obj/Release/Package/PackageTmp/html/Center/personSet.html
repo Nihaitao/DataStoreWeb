@@ -1,0 +1,163 @@
+﻿<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+        <meta name="format-detection" content="telephone=no">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>个人设置页</title>
+        <link href="../../Resources/css/ba.css" rel="stylesheet" />
+        <link href="../../Resources/css/personSet.css" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="http:////at.alicdn.com/t/font_420109_1vkqzax4qngn9udi.css" />
+
+        <script src="../../script/jquery.js"></script>
+        <script src="../../js/comment.js"></script>
+        <script src="../../script/artTemplate.js"></script>
+        <script src="../../script/layer_mobile/layer.js"></script>
+        <script>
+            var UserPhone;
+            $(function () {
+                //获取用户手机号码
+                function GetMobliePhone() {
+                    $.get("/service/Student/GetStudentInfo", function (datas) {
+                        var PhoneString = datas.ReturnData.Data.Phone.substring(0, 3) + "****" + datas.ReturnData.Data.Phone.substring(7, 11)
+                        $(".phoneNum").html(PhoneString)
+                    });
+                }
+                GetMobliePhone();
+
+                //修改用户手机号码
+                $(".getnum").on("click", function () {
+                    _this = $(this)
+                    var time;
+                    var old = $("input[name=oldPhone]").val();
+                    var New = $("input[name=newPhone]").val();
+                    if (!New || !(/^1[34578]\d{9}$/.test(New)) || !old || !(/^1[34578]\d{9}$/.test(old))) {
+                        layer.open({
+                            content: '请输入正确手机格式'
+                        })
+                    }
+                    if (_this.data("sending") == 'true') {
+                        return false;
+                    } else {
+                        _this.data("sending", 'true');
+                        $.post("/service/Student/SendStudentInfoPhone", { Phone: New }, function (res) {
+                            var cont = res.ReturnData.Data.Seconds;
+                            time = setInterval(function () {
+                                if (cont > 0) {
+                                    _this.html(cont-- + "s后重发")
+                                } else {
+                                    clearInterval(time);
+                                    _this.html("发送验证码")
+                                    _this.data("sending", 'false');
+                                }
+                            }, 1000)
+                        })
+                    }
+                });
+
+                $(".phoneConfirm").on("click", function () {
+                    var _this = $(this);
+                    var old = $("input[name=oldPhone]").val();
+                    var New = $("input[name=newPhone]").val();
+                    var PhoneCode = $("input[name=proving]").val();
+                    if (!(/^1[34578]\d{9}$/.test(New)) || !(/^1[34578]\d{9}$/.test(old)) || !old || !New) {
+                        layer.open({
+                            content: '请输入正确手机格式'
+                        })
+                    } else if (New == old) {
+                        console.log('相同')
+                        layer.open({
+                            content: '手机号码不能相同'
+                        })
+                    }
+                    if (!old && !!New && !PhoneCode) { return }
+                    $.post("/service/Student/EditStudentInfoPhone", { OldPhone: old, NewPhone: New, PhoneCode: PhoneCode }, function (res) {
+                        if (res.SuccessResponse) {
+                            layer.open({
+                                content: res.Message ? res.Message : '修改成功'
+                            })
+                            _this.parent().parent().hide();
+                            $("input[name=newPhone]").val('');
+                            $("input[name=oldPhone]").val('');
+                            $("input[name=proving]").val('');
+                            GetMobliePhone();
+                        } else {
+                            layer.open({
+                                content: res.Message
+                            });
+                            $("input[name=proving]").val('');
+                        }
+                    })
+                });
+
+                $('.icon-cha').bind('click', function () {
+                    $(this).parent().parent().hide();
+                    $("input[name=newPhone]").val('');
+                    $("input[name=oldPhone]").val('');
+                    $("input[name=proving]").val('');
+                })
+            })
+        </script>
+	</head>
+
+	<body>
+		<header>
+			<i class="iconfont icon-sanjiao-copy"></i>
+			<p class="perSet">个人设置</p>
+			<!--<span class="changePassword">密码修改</span>-->
+		</header>
+		<span class="centerbox"></span>
+		<main>
+			<h4>
+				<i class="down">|</i>
+				帐号信息
+			</h4>
+			<div class="phonenum">
+				<i class="iconfont icon-shouji"></i>
+				<div class="txt">
+					<p class="phone">手机号&nbsp;<span class="phoneNum"></span> &nbsp;已绑定</p>
+					<p class="findBack">可用手机号加密登录在线网校,可用手机号找回密码</p>
+				</div>
+				<button class="changeNum">更改</button>
+			</div>
+			<!--<div class="msgBox">
+				<i class="iconfont icon-youxiang"></i>
+				<div class="txt">
+					<p class="youxiang">邮箱<span class="emailNum"></span>&nbsp;未绑定</p>
+					<p class="findBack">可用邮箱加密登录在线网校</p>
+				</div>
+				<button class="bindEM">绑定</button>
+			</div>-->
+		</main>
+		<!--绑定手机号-->
+		<div class="phoneBindMask" style="display: none;">
+			<div class="phoneBind-T bz-bb" >
+				<i class="iconfont icon-cha"></i>
+                <p class="phonenum">
+                    原手机号<input class="phone" type="text" name="oldPhone" placeholder="请输入原号码" />
+                </p>
+				<p class="phonenum">
+					新手机号<input class="phone" type="text" name="newPhone" placeholder="请输入新号码" />
+				</p>
+				<p class="verificationCode">
+					验证码<input class="num" name="proving" type="text" /><button class="getnum" data-sending="false">发送验证码</button>
+				</p>
+				<h4>一个手机只能作为一个帐号的登录名,一个手机号最多可以被一个帐号绑定</h4>
+				<button class="phoneConfirm confirm">确认</button>
+			</div>
+		</div>
+		<!--绑定邮箱-->
+		<div class="emailBindMask" style="display: none;">
+			<div class="emailBind-T bz-bb">
+				<i class="iconfont icon-cha"></i>
+				<p class="emailnum">
+					邮箱号<input class="email" type="text" placeholder="请输入邮箱号" />
+				</p>
+				<h4>一个手机只能作为一个帐号的登录名,一个手机号最多可以被一个帐号绑定</h4>
+				<button class="confirm">确认</button>
+			</div>
+		</div>
+	</body>
+
+</html>

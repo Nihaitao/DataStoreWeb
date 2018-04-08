@@ -1,0 +1,25 @@
+//console.log($(".tip").find("li"))
+//头部导航栏的点击效果
+$(".tip").find("li").on("click",function(){
+	console.log($(this).attr("class"))
+	if($(this).attr("class")==''){
+		$(this).addClass("click")
+		$(this).find("i").removeClass("icon-down-trangle")
+		$(this).find("i").addClass("icon-xiangxia")
+		$(this).find(".down").show()
+		$(".side").show()//对应的内容
+		$(".mask").show()//遮罩层
+	}else{
+		$(this).removeClass("click")
+		$(this).find("i").addClass("icon-down-trangle")
+		$(this).find("i").removeClass("icon-xiangxia")
+		$(this).find(".down").hide()
+		$(".side").hide()
+		$(".mask").hide()
+	}
+})
+
+//底部加载更多按钮
+$(".more").bind('click',function(){
+	$('.firstCon').append($('.international').clone())
+})

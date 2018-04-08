@@ -1,0 +1,111 @@
+﻿require_js_file(["table", "form", "jquery", "tableExt", "laydate"],
+function (fnr) {
+    var $ = layui.jquery;
+
+    window.rootApp = new Vue({
+        el: "#root",
+        data: {
+            SelectEducation: SelectEducation(), //学历
+            NationSetting: NationSetting(), //民族
+            SelectSex: SelectSex(), //性别
+            provinceSetting: SelectProvinceBind(),//省份
+            citySetting: SelectCityBind(),//城市
+            areaSetting: SelectDistrictBind(),//区域
+            submitForm: {
+                CardNumber: "",
+                Name: "",
+                HeadImg: '',
+                Sex: 1,
+                Phone: "",
+                Email: "",
+                Education_ID: "",
+                QQ: "",
+                Phone2: "",
+                NowProvince_ID: "",
+                NowCity_ID: "",
+                NowArea_ID: "",
+                NowAddress: "",
+                Remark: "",
+                HomeAddress: "",
+                Nation: "",
+                Police: "",
+                EffDate: "",
+                ExpDate: ""
+            },
+            setting: {
+                tags: {}
+            }
+        },
+        ready: function () {
+            var self = this;
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: "#EffDate",
+                type: "date"
+                , done: function (value) {
+                    self.submitForm.EffDate = value;
+                }
+            });
+            laydate.render({
+                elem: "#ExpDate",
+                type: "date"
+                 , done: function (value) {
+                     self.submitForm.ExpDate = value;
+                 }
+            });
+        },
+        methods: {
+            //事件监听
+            //省份联动
+            provinceChange: function () {
+                var self = this;
+                debugger;
+                if (self.submitForm.NowProvince_ID == "") {
+                    self.citySetting.remote.url = "";
+                    self.citySetting.remote.data = {};
+                    self.$refs.city.reset();  //重置select
+                } else {
+                    fnr.mergeJson(SelectCityBind(self.submitForm.NowProvince_ID), self.citySetting);//合并ajax值 
+                    self.$refs.city.reset();
+                }
+                if (self.areaSetting.remote != undefined) {
+                    self.areaSetting.remote.url = "";
+                    self.areaSetting.remote.data = {};
+                    self.$refs.area.reset();
+                }
+            },
+            cityChange: function () {
+                var self = this;
+                if (self.submitForm.NowCity_ID == "") {
+                    self.areaSetting.remote.url = "";
+                    self.areaSetting.remote.data = {};
+                } else {
+                    fnr.mergeJson(SelectDistrictBind(self.submitForm.NowCity_ID), self.areaSetting);//合并ajax值
+                }
+                self.$refs.area.reset();
+            },
+            saveUpdate: function (e) {
+                var self = this;
+                if (!layui.form.checkInput(e)) {
+                    return false;
+                }
+                if (this.submitForm.CardNumber || this.submitForm.Phone) {
+                    $.post("/service/Student/InsertStudentInfo", this.submitForm, function (result) {
+                    if (result.SuccessResponse) {
+                        layer.msg(result.Message, { time: 2000, icon: 1 }, function () {
+                            window.parent.layer.close(parent.layer.getFrameIndex(window.name));
+                                                  
+                        });
+                    }
+                    else {
+                        layer.msg(result.Message, { icon: 2 });
+                    }
+                })
+                } else {
+                    layer.msg("请输入身份证号码或者手机号码")
+                }
+                return false;
+            }
+        }
+    });
+});

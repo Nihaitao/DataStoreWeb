@@ -1,0 +1,715 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="/Resources/fonts/iconfont.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link href="/Resources/CSS/Font/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="/Resources/CSS/video-js.css" rel="stylesheet" />
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <script src="/Resources/js/moment.js"></script>
+    <style>
+        a { text-decoration: none !important; }
+        a:hover { text-decoration: none; }
+    </style>
+</head>
+<body style="background-color: #f7f7f7" id="root" v-cloak>
+    <!--顶部-->
+    <!--#<!--#include file="/PublicControl/topmenu.html"-->
+    <div class="w1200 clearfix">
+        <div class="content">
+            <div class="containers" id="container1" style="width: 1200px;">
+                <!-- 试卷头部 开始 -->
+                <div class="m-examHead bor ">
+                    <!--试卷头信息-->
+                    <h2 class="h2" id="title">{{PaperInfo.Title}}</h2>
+                    <div class="info" id="info"><p>◇ 本卷共分为{{bigNum}}大题{{questionNum}}小题，作答时间为{{PaperInfo.Time}}分钟，总分{{TotalScore}}分， {{PaperInfo.PassScore}}分及格。</p> <p>◇ 试卷来源：出头教育 </p> </div>
+                    <div class="info-two"> 本套试卷含有主观题，针对主观题请自行参考解析评分 </div>
+                </div>
+                <div class="ui-progress f-shadow clearfix" style="position:relative;z-index:10;">
+                    <div id="m__ruleInfo" class="ui-progress-sub" style="z-index: 1001; position: static; top: auto; bottom: auto; left: auto;">
+                        <div class="navBox" id="page-rules">
+                            <a class="btn" v-for="item in QuestionType">{{item.QuestionType_ID | filterType}}</a>
+                        </div>
+                    </div>
+                </div>
+                <!--试卷头部 结束-->
+                <!--题型 开始-->
+                <div class="dopra-con clearfix">
+                    <div class="pra-left-con pra-right-font16">
+
+                        <!-- 练习模式做题-->
+                        <style>
+                            #questionModule { width: 100%; min-height: 300px; background: none; overflow: hidden; position: relative; }
+
+                            #questionModule > ul { width: 100%; height: auto; }
+
+                            #questionModule.cross-range { margin-bottom: 20px; }
+
+                            #questionModule.cross-range > ul { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
+
+                            #questionModule.cross-range > ul > li { float: left; width: 100%; overflow: hidden; }
+                        </style>
+
+                        <!---->
+                        <div id="RulesTab" class="" style="min-height: 905px;">
+                            <!--单选题-->
+                            <template v-for="(index,item) in QuestionType">
+                                <div class="m__ruleTitle">
+                                    <div class="m-secpart f-f14 linheight180">{{item.stem}}</div>
+                                </div>
+                                <!--单选-->
+                                <div class="Rulesclass" v-if="item.QuestionType_ID==1">
+                                    <ul class="m__ruleQuest">
+                                        <li v-for="(idx,item2) in item.QuestionList" v-bind:id="item2.ID">
+                                            <div class="subject-con bor clearfix m-question">
+                                                <div class="subject-con">
+                                                    <div class="sub-content2 sub-conanswer">
+                                                        <div class="sub-dotitle"> <em>{{idx+1}}、</em><span v-html="item2.Title"></span></div>
+                                                        <answer-singles v-bind:list="item2.Body" v-bind:value.sync="item2.MyAnswer" v-bind:answer="item2.Answer" v-bind:showanswer="item2.ShowAnswer"></answer-singles>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <!--多选-->
+                                <div class="Rulesclass" v-if="item.QuestionType_ID==2">
+                                    <ul class="m__ruleQuest">
+                                        <li v-for="(idx,item2) in item.QuestionList" v-bind:id="item2.ID">
+                                            <div class="subject-con bor clearfix m-question">
+                                                <div class="subject-con">
+                                                    <div class="sub-content2 sub-conanswer">
+                                                        <div class="sub-dotitle"> <em>{{idx+1}}、</em><span v-html="item2.Title"></span></div>
+                                                        <answer-mult v-bind:list="item2.Body" v-bind:value.sync="item2.MyAnswer" v-bind:answer="item2.Answer" v-bind:showanswer="item2.ShowAnswer"></answer-mult>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <!--判断-->
+                                <div class="Rulesclass" v-if="item.QuestionType_ID==4">
+                                    <ul class="m__ruleQuest">
+                                        <li v-for="(idx,item2) in item.QuestionList" v-bind:id="item2.ID">
+                                            <div class="subject-con bor clearfix m-question">
+                                                <div class="subject-con">
+                                                    <div class="sub-content2 sub-conanswer">
+                                                        <div class="sub-dotitle"> <em>{{idx+1}}、</em><span v-html="item2.Title"></span></div>
+                                                        <answer-judge v-bind:list="item2.Body" v-bind:value.sync="item2.MyAnswer" v-bind:answer="item2.Answer" v-bind:showanswer="item2.ShowAnswer"></answer-judge>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <!--填空-->
+                                <div class="Rulesclass" v-if="item.QuestionType_ID==3 || item.QuestionType_ID==6">
+                                    <ul class="m__ruleQuest">
+                                        <li v-for="(idx,item2) in item.QuestionList" v-bind:id="item2.ID">
+                                            <div class="subject-con bor clearfix m-question">
+                                                <div class="subject-con">
+                                                    <div class="sub-content2 sub-conanswer">
+                                                        <div class="sub-dotitle"> <em>{{idx+1}}、</em><span class="nimade" v-html="item2.Title"></span></div>
+                                                        <div class="mater-respond">
+                                                            <input type="text" v-model="item2.MyAnswer" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <!--问答-->
+                                <div class="Rulesclass" v-if="item.QuestionType_ID==5">
+                                    <ul class="m__ruleQuest">
+                                        <li v-for="(idx,item2) in item.QuestionList" v-bind:id="item2.ID">
+                                            <div class="subject-con bor clearfix m-question">
+                                                <div class="subject-con">
+                                                    <div class="sub-content2 sub-conanswer">
+                                                        <div class="sub-dotitle"> <em>{{idx+1}}、</em><span v-html="item2.Title"></span></div>
+                                                        <div class="mater-respond">
+                                                            <textarea placeholder="请在此输入您的答案" v-model="item2.MyAnswer"></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <!--组合题-->
+                                <div class="Rulesclass" v-if="item.QuestionType_ID==7">
+                                    <ul class="m__ruleQuest">
+                                        <li v-for="(idx,item2) in item.QuestionList" v-bind:id="item2.ID">
+                                            <div class="subject-con bor clearfix m-question">
+                                                <div class="subject-con">
+                                                    <div class="sub-content2 sub-conanswer">
+                                                        <div class="sub-dotitle"> <em>{{idx+1}}、</em><span v-html="item2.QuestionData"></span></div>
+                                                        <!--<div class="mater-respond">
+                                                            <input type="text" v-model="item.MyAnswer" />
+                                                        </div>-->
+                                                        <ul class="m__ruleQuest">
+                                                            <li v-for="(idx3,item3) in item2.data" v-bind:id="item3.ID">
+                                                                <!--单选-->
+                                                                <div class="subject-con bor clearfix m-question" v-if="item3.QuestionType_ID==1">
+                                                                    <div class="subject-con">
+                                                                        <div class="sub-content2 sub-conanswer">
+                                                                            <div class="sub-dotitle"> <em>{{idx3+1}}、</em><span v-html="item3.Title"></span></div>
+                                                                            <answer-singles v-bind:list="item3.Body" v-bind:value.sync="item3.MyAnswer" v-bind:answer="item3.Answer" v-bind:showanswer="item3.ShowAnswer"></answer-singles>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <!--多选-->
+                                                                <div class="subject-con bor clearfix m-question" v-if="item3.QuestionType_ID==2">
+                                                                    <div class="subject-con">
+                                                                        <div class="sub-content2 sub-conanswer">
+                                                                            <div class="sub-dotitle"> <em>{{idx3+1}}、</em><span v-html="item3.Title"></span></div>
+                                                                            <answer-mult v-bind:list="item3.Body" v-bind:value.sync="item3.MyAnswer" v-bind:answer="item3.Answer" v-bind:showanswer="item3.ShowAnswer"></answer-mult>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <!--判断-->
+                                                                <div class="subject-con bor clearfix m-question" v-if="item3.QuestionType_ID==4">
+                                                                    <div class="subject-con">
+                                                                        <div class="sub-content2 sub-conanswer">
+                                                                            <div class="sub-dotitle"> <em>{{idx3+1}}、</em><span v-html="item3.Title"></span></div>
+                                                                            <answer-judge v-bind:list="item3.Body" v-bind:value.sync="item3.MyAnswer" v-bind:answer="item3.Answer" v-bind:showanswer="item3.ShowAnswer"></answer-judge>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <!--填空-->
+                                                                <div class="subject-con bor clearfix m-question" v-if="item3.QuestionType_ID==3 || item3.QuestionType_ID==6">
+                                                                    <div class="subject-con">
+                                                                        <div class="sub-content2 sub-conanswer">
+                                                                            <div class="sub-dotitle"> <em>{{idx3+1}}、</em><span v-html="item3.Title"></span></div>
+                                                                            <div class="mater-respond">
+                                                                                <input type="text" v-model="item3.MyAnswer" />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <!--问答-->
+                                                                <div class="subject-con bor clearfix m-question" v-if="item3.QuestionType_ID==5">
+                                                                    <div class="subject-con">
+                                                                        <div class="sub-content2 sub-conanswer">
+                                                                            <div class="sub-dotitle"> <em>{{idx3+1}}、</em><span v-html="item3.Title"></span></div>
+                                                                            <div class="mater-respond">
+                                                                                <textarea placeholder="请在此输入您的答案" v-model="item3.MyAnswer"></textarea>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- 题目切换栏 -->
+                    </div>
+                    <!--右侧设置-->
+                    <div class="pra-right-con">
+                        <div id="m_rightPart" class="pra-right-con-sub" style="z-index: 1001; position: static; top: auto; bottom: auto; left: auto;">
+                            <div id="m_rightBtnLine" class="pra-r-set bor clearfix">
+                                <ul class="f-f14">
+                                    <li @click="returnList">
+                                        <a class="btn_backList fhlb" id="retUrl" href="/usercenter/questionbank/tk/courseList.shtml?disciplineId={{disciplineId}}&index={{index}}">
+                                            <i></i>
+                                            <p>返回列表</p>
+                                        </a>
+                                    </li>
+                                    <li @click="jisuanqi">
+                                        <a class="btn_jsq jsq">
+                                            <i></i>
+                                            <p>计算器</p>
+                                        </a>
+                                    </li>
+                                    <li @click="fontSetting=!fontSetting">
+                                        <a class="btn_fontsize font" data-type="0">
+                                            <i></i> <!--选择时添加 this-->
+                                            <p>字体</p>
+                                        </a>
+                                        <!-- 字体设置-->
+                                        <div class="m_fontsize pop" v-show="fontSetting">
+                                            <i></i>
+                                            <div class="txt-size clearfix">
+                                                <a href="javascript:;" class="f-f18" @click="chociceFont(18,0)" v-bind:class="{'this':fontSizeIndex==0}">大</a>
+                                                <a href="javascript:;" class="f-f16" @click="chociceFont(16,1)" v-bind:class="{'this':fontSizeIndex==1}">中</a>
+                                                <a href="javascript:;" class="f-f14" @click="chociceFont(14,2)" v-bind:class="{'this':fontSizeIndex==2}">小</a>
+                                            </div>
+                                        </div>
+                                        <!-- 字体设置 end-->
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="time-card bor mt20" style="width:265px" id="datika">
+                                <div class="y-time"> <span class="f-fl"><i></i>剩余时间：<em id="e_timer">{{time | formatSeconds}}</em></span></div>
+                                <!--答题卡区域-->
+                                <div class="rightArea-answer clear">
+                                    <div id="answerCard">
+                                        <div class="hd clearfix"> <span class="title f-fl">答题卡 <span class="e_doneCount card-count" style="font-size: 12px;color: #F06000;margin-left: 10px">{{rightCounts}}/{{questionNum}}</span></span> </div>
+
+
+                                        <div class="bd clear" style="min-height:350px; max-height: 8px;" id="page_card">
+                                            <div v-for="(index,item) in QuestionType">
+                                                <dl class="panel-item">
+                                                    <dt>{{item.QuestionType_ID | filterType}}<span style="font-weight: normal; margin-left: 5px"></span></dt>
+                                                    <dd class="panel-order">
+                                                        <template v-if="item.QuestionType_ID==7" v-for="(idx,cur) in item.QuestionList">
+                                                            <a v-for="(zindex,zitem) in cur.data" href="#{{zitem.ID}}" class="e_answerCard page-card-item" v-bind:class="{'this':zitem.MyAnswer.length!=0}">{{idx+1}}-{{zindex+1}}</a>
+                                                        </template>
+                                                        <a v-if="item.QuestionType_ID!=7" href="#{{cur.ID}}" v-for="(idx,cur) in item.QuestionList" class="e_answerCard page-card-item" v-bind:class="{'this':cur.MyAnswer.length!=0}">{{idx+1}}</a>
+                                                    </dd>
+                                                </dl>
+                                                <br>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="cad-color clear">
+                                        <div class="panel-order-notice panel-notice-t"> <em>已做</em><i class="a doit"></i> <em>未做</em><i class="a normal"></i> </div>
+                                    </div>
+                                    <div class="ft">
+                                        <!--<div class="btn2 btn-one"><a class="btn_nextGoon" onclick="SaveAnswer()">保存进度，下次继续</a></div>-->
+                                        <div class="btn2"><a class="btn_submit" @click="tijiao">交卷</a></div>
+                                    </div>
+                                </div>
+                                <!--答题卡区域 end-->
+                            </div>
+                        </div>
+                    </div>
+                    <!--答题卡区域 end-->
+                </div>
+            </div>
+        </div>
+        <!--右侧设置 end-->
+    </div>
+    <!--footer-->
+    <!--#<!--#include file="/PublicControl/bottommenu.html"-->
+    <script>
+        Vue.filter('filterType', function (val) {
+            switch (val) {
+                case 1:
+                    return '单选题'
+                    break;
+                case 2:
+                    return '多选题'
+                    break;
+                case 3:
+                    return '填空题'
+                    break;
+                case 4:
+                    return '判断题'
+                    break;
+                case 5:
+                    return '问答题'
+                    break;
+                case 6:
+                    return '计算题'
+                    break;
+                case 7:
+                    return '组合题'
+                    break;
+            }
+        })
+        //单选
+        Vue.component('answer-singles', {
+            props: ['list', 'value', 'answer', 'showanswer'],
+            template: '<dl class="sub-answer sub-answer-no"><dd class="m-question-option" v-bind:class="{\'cho-this\':key==value,\'right-this\':isRigght(key)}" v-for="(key,val) in list" @click="choice(key,val)"><i></i><span>{{key}}.</span>{{val}}</dd></dl>',
+            data: function () {
+
+            },
+            methods: {
+                isRigght: function (key) {
+                    return this.answer.indexOf(key) > -1 && this.showanswer
+                },
+                choice: function (key, val) {
+                    this.value.splice(0, 1, key)
+                    this.value.sort();
+                }
+            }
+        })
+        //判断
+        Vue.component('answer-judge', {
+            props: ['list', 'value', 'answer', 'showanswer'],
+            template: '<dl class="sub-answer"><dd class="m-question-option" @click=handleClick(1) v-bind:class="{\'cho-this\':1===value}"> <i></i><span>对</span> </dd><dd class="m-question-option" @click=handleClick(0) v-bind:class="{\'cho-this\':0===value}"><i></i><span>错</span></dd></dl>',
+            methods: {
+                handleClick: function (val) {
+                    this.value = val;
+                }
+            }
+        })
+        //多选
+        Vue.component('answer-mult', {
+            props: ['list', 'value', 'answer', 'showanswer'],
+            template: '<dl class="sub-answer sub-answer-double"><dd class="m-question-option" v-bind:class="{\'cho-this\':idx(key),\'right-this\':isRigght(key)}" v-for="(key,val) in list" @click="choice(key,val)"><i></i><span>{{key}}.</span>{{val}}</dd></dl>',
+            data: function () {
+                return {
+                }
+            },
+            methods: {
+                isRigght: function (key) {
+                    return this.answer.indexOf(key) > -1 && this.showanswer
+                },
+                idx: function (key) {
+                    return this.value.indexOf(key) > -1
+                },
+                choice: function (key, val) {
+                    if (this.value.indexOf(key) > -1) {
+                        this.value.splice(this.value.indexOf(key), 1)
+                    } else {
+                        this.value.push(key)
+                    }
+                    this.value.sort();
+                }
+            }
+        })
+        Vue.filter('formatSeconds',function(s){
+            var t;
+            if(s > -1){
+                var hour = Math.floor(s/3600);
+                var min = Math.floor(s/60) % 60;
+                var sec = s % 60;
+                if(hour < 10) {
+                    t = '0'+ hour + ":";
+                } else {
+                    t = hour + ":";
+                }
+
+                if(min < 10){t += "0";}
+                t += min + ":";
+                if(sec < 10){t += "0";}
+                t += sec.toFixed(0);
+            }
+            return t;
+        });
+        //判断是否为空
+        var isEmpty=function(v) {
+            switch (typeof v) {
+                case 'undefined':
+                    return true;
+                case 'string':
+                    if (v.replace(/(^[ \t\n\r]*)|([ \t\n\r]*$)/g, '').length == 0) return true;
+                    break;
+                case 'boolean':
+                    if (!v) return true;
+                    break;
+                case 'number':
+                    if (0 === v || isNaN(v)) return true;
+                    break;
+                case 'object':
+                    if (null === v || v.length === 0) return true;
+                    for (var i in v) {
+                        return false;
+                    }
+                    return true;
+            }
+            return false;
+        }
+        require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil'],
+            function (fnr) {
+                var $ = layui.$;
+                var table = layui.table;
+                var tableExt = layui.tableExt;
+                var vm = new Vue({
+                    el: "#root",
+                    data: {
+                        ID: fnr.getQueryString('ID'),
+                        PaperInfo: '',
+                        QuestionType: '',
+                        ResultId: '',
+                        time:0,
+                        count: '',
+                        fontSetting:false,
+                        fontSizeIndex:1,
+                        disciplineId:fnr.getQueryString('disciplineId'),
+                        TotalScore:'',
+                        bigNum:'',
+                        detailNum:'',
+                        questionNum:'',
+                        rightCounts:0,
+                        index:fnr.getQueryString('index'),
+                    },
+                    ready: function () {
+                        $(document).scroll(function(){
+                            if($(document).scrollTop()>480){
+                                $("#datika").css('position', 'fixed');
+                                $("#datika").stop().animate({
+                                    top: 0
+                                },0)
+                            }else{
+                                $("#datika").css('position', 'static');
+                                $("#datika").stop().animate({
+                                    top: 0
+                                },0)
+                            }
+                        });
+                        var that = this;
+                        this.CombinationExamPaper(this.ID);
+                        if (this.PaperInfo.time) {
+                            this.timer = setInterval(function () {
+                                if (this.count <= 0) {
+                                    //执行交卷方法
+                                    clearInterval(that.timer)
+                                } else {
+                                    that.count--;
+                                    console.log(that.count)
+                                }
+                            }, 1000)
+                        }
+                    },
+                    watch:{
+                        time:function(val){
+                            var that=this;
+                            if(val==0){
+                                 layer.msg('倒计时结束，3S即将自动交卷');
+                                setTimeout(function(){
+                                    that.jiaojuan();
+                                },3000)
+                            }
+                        },
+                        QuestionType:{
+                            handler:function(val){
+                                if(val){
+                                    this.rightCounts=$("#answerCard .this").length;
+                                }
+                            },
+                            deep:true
+                        }
+                    },
+                    destroyed:function(){
+                        clearInterval(this.timer)
+                    },
+                    methods: {
+                        //做题
+                        CombinationExamPaper: function (examPaperId) {
+                            var that = this;
+                            $.get('/service/datastore/ExamPaper/GetExamPaperQuestions', { examPaperId: examPaperId }, function (res) {
+                                if (res.SuccessResponse) {
+                                    that.time=res.Data.PaperInfo.Time*60;
+                                    that.cutdown();
+                                    that.TotalScore=res.Data.TotalScore;
+                                    that.ResultId = res.Data.ResultId;
+                                    var DataList = res.Data.QuestionType;
+                                    that.bigNum=DataList.length;
+                                    that.questionNum=DataList.map(function(item){
+                                                        return item.Question.length
+                                                    }).reduce(function(per,cur){return per+cur})
+                                    for (var i = 0; i < DataList.length; i++) {
+                                        //过滤显示题型
+                                        switch(DataList[i].TypeInfo.QuestionType_ID){
+                                            case 1:
+                                                DataList[i].TypeInfo.stem=(i+1)+'、(单选题)本题共'+DataList[i].Question.length+'小题，每小题'+DataList[i].TypeInfo.Sorce+'分，共'+DataList[i].TypeInfo.Sorce*DataList[i].TypeInfo.Num+'分，在每小题给出的几个选项中，只有一项是符合题目要求的。';
+                                                break;
+                                            case 2:
+                                                DataList[i].TypeInfo.stem=(i+1)+'、(多选题)本题共'+DataList[i].Question.length+'小题，每小题'+DataList[i].TypeInfo.Sorce+'分，共'+DataList[i].TypeInfo.Sorce*DataList[i].TypeInfo.Num+'分，多选、少选、错选、不选均不得分。';
+                                                break;
+                                            case 3:
+                                                DataList[i].TypeInfo.stem=(i+1)+'、(填空题)本题共'+DataList[i].Question.length+'小题，每小题'+DataList[i].TypeInfo.Sorce+'分，共'+DataList[i].TypeInfo.Sorce*DataList[i].TypeInfo.Num+'分';
+                                                break;
+                                            case 4:
+                                                DataList[i].TypeInfo.stem=(i+1)+'、(判断题)本题共'+DataList[i].Question.length+'小题，每小题'+DataList[i].TypeInfo.Sorce+'分，共'+DataList[i].TypeInfo.Sorce*DataList[i].TypeInfo.Num+'分';
+                                                break;
+                                            case 5:
+                                                DataList[i].TypeInfo.stem=(i+1)+'、(问答题)本题共'+DataList[i].Question.length+'小题，每小题'+DataList[i].TypeInfo.Sorce+'分，共'+DataList[i].TypeInfo.Sorce*DataList[i].TypeInfo.Num+'分';
+                                                break;
+                                            case 6:
+                                                DataList[i].TypeInfo.stem=(i+1)+'、(计算题)本题共'+DataList[i].Question.length+'小题，每小题'+DataList[i].TypeInfo.Sorce+'分，共'+DataList[i].TypeInfo.Sorce*DataList[i].TypeInfo.Num+'分';
+                                                break;
+                                            case 7:
+                                                DataList[i].TypeInfo.stem=(i+1)+'、(组合题)本题共'+DataList[i].Question.length+'小题，每小题'+DataList[i].TypeInfo.Sorce+'分，共'+DataList[i].TypeInfo.Sorce*DataList[i].TypeInfo.Num+'分';
+                                                break;
+                                        }
+                                        var Question = DataList[i].Question;
+                                        for (var j = 0; j < Question.length; j++) {
+                                            if (Question[j].Body) {
+                                                Question[j].Body = JSON.parse(Question[j].Body)
+                                            }
+                                            if (Question[j].AnswerCount) {
+                                                Question[j].AnswerList = []
+                                                for (var k = 0; k < Question[j].AnswerCount; k++) {
+                                                    Question[j].AnswerList.push({ key: j, val: String.fromCharCode(k + 65) });
+                                                    if (/^<img/ig.test(Question[j].Title)) {
+                                                        Question[j].TitleImg = Question[j].Title;
+                                                    };
+                                                }
+                                            }
+                                            if (Question[j].QuestionType_ID == 3 || Question[j].QuestionType_ID == 4 || Question[j].QuestionType_ID == 5 || Question[j].QuestionType_ID == 6) {
+                                                Question[j].MyAnswer = '';
+                                            } else {
+                                                Question[j].MyAnswer = [];
+                                            }
+                                            Question[j].Answer = Question[j].Answer.split(',').sort();
+                                            if (Question[j] == 7) {
+
+                                            }
+                                        }
+                                        DataList[i].TypeInfo.QuestionList = Question;
+                                        DataList[i] = DataList[i].TypeInfo
+                                        delete DataList[i].Question
+                                        if (DataList[i].QuestionType_ID == 7) {
+                                            var aaa = that.GroupBy(DataList[i].QuestionList);
+                                            DataList[i].QuestionList = aaa;
+                                        }
+                                    }
+                                    that.QuestionType = DataList;
+                                    that.ResultId = res.Data.ResultId;
+                                    that.PaperInfo = res.Data.PaperInfo;
+                                    that.count = that.PaperInfo.time * 60
+                                    console.log(that.QuestionType)
+                                }else{
+                                    layer.msg(res.Message)
+                                }
+                            })
+                        },
+                        //倒计时
+                            cutdown:function(){
+                                var that=this;
+                                var time=this.time;
+                                var timer=setInterval(function(){
+                                    if(time<=0){
+                                        this.time=0;
+                                        clearInterval(timer);
+                                    }else{
+                                        time--;
+                                        that.time=time;
+                                    }
+                                },1000)
+                            },
+                        //组合题分组
+                        GroupBy: function (arr) {
+                            var map = {},
+                                dest = [];
+                            for (var i = 0; i < arr.length; i++) {
+                                var ai = arr[i];
+                                if (!map[ai.QuestionData_ID]) {
+                                    dest.push({
+                                        QuestionData_ID: ai.QuestionData_ID,
+                                        QuestionData: ai.QuestionData,
+                                        QuestionStore_ID: ai.QuestionStore_ID,
+                                        QuestionType_ID: ai.QuestionType_ID,
+                                        data: [ai]
+                                    });
+                                    map[ai.QuestionData_ID] = ai;
+                                } else {
+                                    for (var j = 0; j < dest.length; j++) {
+                                        var dj = dest[j];
+                                        if (dj.QuestionData_ID == ai.QuestionData_ID) {
+                                            dj.data.push(ai);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            return dest
+                        },
+                        //判断试题是否正确
+                        Judge: function (Answer, MyAnswer) {
+                            if (!MyAnswer) {
+                                return false;
+                            }
+                            if (typeof MyAnswer == "number") {
+                                return Answer.toString() == MyAnswer;
+                            } else {
+                                return Number(Answer.sort().toString() == MyAnswer.sort().toString());
+                            }
+                        },
+                        //交卷
+                        tijiao: function () {
+                            var that = this;
+                            var arr = new Array();
+                            this.QuestionType.map(function (item) {
+                                if (item.QuestionType_ID == 7) {
+                                    item.QuestionList.map(function (cur) {
+                                        cur.data.map(function (a) {
+                                            arr.push(a)
+                                        })
+                                    })
+                                } else {
+                                    item.QuestionList.map(function (item) {
+                                        arr.push(item)
+                                    })
+                                }
+                            })
+                            var list = arr.map(function (item,index) {
+                                var ID = item.ID;
+                                var MyAnswer;
+                                var Judge;
+                                if (item.QuestionType_ID == 3 || item.QuestionType_ID == 4 || item.QuestionType_ID == 5 || item.QuestionType_ID == 6) {
+                                    MyAnswer = item.MyAnswer;
+                                } else {
+                                    MyAnswer = item.MyAnswer.join();
+                                }
+                                if (item.QuestionType_ID == 3 || item.QuestionType_ID == 5 || item.QuestionType_ID == 6 || item.QuestionType_ID == 7) {
+                                    Judge = 0;
+                                } else {
+                                    Judge = that.Judge(item.Answer, item.MyAnswer);
+                                }
+                                return { ID: ID, MyAnswer: MyAnswer, Judge: Judge }
+                            })
+                            layer.confirm('是否确定交卷', {
+                                btn: ['确定交卷', '暂不交卷，我还要做'] //按钮
+                            }, function () {
+                                that.jiaojuan(that.ResultId, list);
+                            }, function () {
+
+                            });
+
+                        },
+                        //计算器
+                        jisuanqi:function () {
+                            fnr.openDialog({
+                                type: 2,
+                                title: "计算器",
+                                area: ['710px', "400px"],
+                                scrollbar: true,
+                                content: ['/usercenter/questionbank/Counter.html']
+                            })
+                        },
+                        //改变字体
+                        chociceFont:function(font,num){
+                            this.fontSizeIndex=num;
+                             $('.sub-content2').css("fontSize",font);
+                        },
+                        //交卷
+                        jiaojuan: function (resultId, list) {
+                            var that = this;
+                            $.post('/service/datastore/Chapter/SubmitPractice',
+                                {
+                                    resultId: resultId,
+                                    list: list,
+                                },
+                                function (res) {
+                                    if (res.SuccessResponse) {
+                                        layer.confirm("交卷成功！是否查看解析", {
+                                            btn: ['确定', '取消'] //按钮
+                                        }, function () {
+                                            location.href = "/usercenter/questionbank/tk/Exam/ExamAnalysis.shtml?ID=" + that.ID + '&ResultId=' + that.ResultId+'&disciplineId='+that.disciplineId;
+                                        }, function () {
+                                            location.href = '/usercenter/index.shtml';
+                                        });
+                                    }else{
+                                        layer.msg(res.Message)
+                                    }
+                                })
+                        }
+                    }
+                });
+            })
+    </script>
+</body>
+
+</html>

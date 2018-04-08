@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>二维码</title>
+    <style>
+        .qrcode-text{
+            margin-top:10px;
+            text-align:center
+        }
+        .qrcode-text .title{
+            font-size:16px;
+            margin-bottom:10px
+            
+        }
+
+        .qrcode-text .text{
+            color:#cccccc
+        }
+       
+        #qrcode{
+           margin:20px auto;
+           width: 200px;
+           height:200px;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="qrcode-text">
+        <div class="title">邀请同事加入企业</div>
+        <div class="text">分享二维码给成员，成员识别二维码加入</div>
+    </div>
+    <div id="qrcode"></div>
+</body>
+</html>
+
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery-1.4.4.min.js"></script>
+<link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/1.1.2/weui.min.css">
+<script type="text/javascript" src="https://res.wx.qq.com/open/libs/weuijs/1.1.3/weui.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/Controls/Common.js"></script>
+<script src="https://cdn.bootcss.com/jquery.qrcode/1.0/jquery.qrcode.min.js"></script><!--生成二维码插件-->
+<script>
+    let host = window.location.host
+    let url = "https://" + host + "/Html/HR/SweepInvitation/sweepinfo.html";
+    
+    $("#qrcode").qrcode({
+        render: "table", //table方式
+        width: 200, //宽度
+        height: 200, //高度
+        text: url //跳转地址
+    });
+
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate", "customUtil", "upload"],
+        function (fnr) {
+
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: "#EffDate"
+            });
+            var $ = layui.jquery;
+            var form = layui.form;
+            var upload = layui.upload;
+         
+         
+
+            window.rootApp = new Vue({
+                el: "#root",
+                data: {
+                  
+                },
+
+              
+            });
+        });
+</script>

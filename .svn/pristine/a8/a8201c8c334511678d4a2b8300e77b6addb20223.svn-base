@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>账号设置</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" href="/Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link href="//at.alicdn.com/t/font_514871_onted37ioggjsjor.css" rel="stylesheet" />
+    <link href="/Resources/CSS/PC_css.css" rel="stylesheet" />
+    <link href="/Resources/CSS/video-js.css" rel="stylesheet" />
+    <link href="/Resources/CSS/question.css" rel="stylesheet" />
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/CEdu/static/js/Comon.js"></script>
+
+</head>
+<body style="background-color: #f7f7f7;user-select: none;">
+    <!--头部导航 Start-->
+    <!--#<!--#include file="/PublicControl/topmenu.html"-->
+    <!--头部导航 End-->
+    <div class="w1200 clearfix">
+        <!--左侧导航 Start-->
+        <!--#<!--#include file="/PublicControl/leftmenu.html"-->
+        <!--左侧导航 End-->
+        <div class="main">
+            <div class="order-top">
+                <ul class="orderTabs" style="text-align: left;">
+                    <li class="active" name="bindMsg">基本信息</li>
+                    <li name="bindBKMsg">报考信息</li>
+                    <li name="modifyPassword">修改密码</li>
+                    <li name="bindPhone">绑定手机</li>
+                    <li name="thirdAccountBind">第三方账号绑定</li>
+                </ul>
+            </div>
+            <div class="bind-middle">
+                <div class="bindMsg" name="usermsg">
+                    <!--#<!--#include file="/usercenter/usermanage/userdetail.html"-->
+                </div>
+                <div class="bindBKMsg" name="usermsg" style="text-align: center; display: none;">
+                    <!--#<!--#include file="/usercenter/usermanage/userbkdetail.html"-->
+                </div>
+                <div class="modifyPassword" name="usermsg" style="text-align: center; display: none;">
+                    <!--#<!--#include file="/usercenter/usermanage/editpassword.html"-->
+                </div>
+                <div class="bindPhone" name="usermsg" style="text-align: center; display: none;">
+                    <!--#<!--#include file="/usercenter/usermanage/editphone.html"-->
+                </div>
+                <div class="thirdAccountBind" name="usermsg" style="text-align: center; display: none;">
+                    <div class="AccountBindTips">
+                        <p>绑定第三方账号,可以使用第三方账号直接登录</p>
+                    </div>
+                    <div class="bindBox">
+                        <div class="bindTemp">
+                            <div class="weChatBox">
+                                <img src="/Resources/images/weChatIcon.png" />
+                                <p style="color: #333; margin: 20px 0;">未绑定</p>
+                                <p class="bindAccount">绑定账号</p>
+                            </div>
+                            <div class="QQBox">
+                                <img src="/Resources/images/QQIcon.png" />
+                                <p style="color: #333; margin: 20px 0;">已绑定</p>
+                                <p class="noBindAccount">取消绑定</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--footer-->
+    <!--#<!--#include file="/PublicControl/bottommenu.html"-->
+    <script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil'],
+        function (fnr) {
+        function hashChangeFire(){
+        if(window.location.href.indexOf("=")==-1){
+
+        return;
+        }
+        var name = window.location.href.substr(window.location.href.indexOf("=")+1);
+        $("div[name='usermsg']").hide();
+        $("div[class='"+name+"']").show();
+        $("li[name='bindPhone']").addClass('active').siblings().removeClass('active');
+}
+            var $ = layui.$;
+            var table = layui.table;
+            var tableExt = layui.tableExt;
+            $('.orderTabs').on('click', 'li', function () {
+                if(window.location.href.indexOf("=")!=-1){
+                var name = window.location.href.substr(0,window.location.href.indexOf("=")-6);
+                    history.replaceState({}, "", name);
+                    var name1=  $(this).attr("name");
+                    $("div[name='usermsg']").hide();
+                    $("div[class='"+name1+"']").show();
+                    $(this).addClass('active').siblings().removeClass('active');
+                }
+
+                if (!$(this).hasClass('active')) {
+                    var name =  $(this).attr("name");
+                        $("div[name='usermsg']").hide();
+                        $("div[class='"+name+"']").show();
+                    $(this).addClass('active').siblings().removeClass('active');
+                }
+
+            });
+           //url变化监听器
+            if( ('onhashchange' in window) && ((typeof document.documentMode==='undefined') || document.documentMode==8)) {
+                // 浏览器支持onhashchange事件
+                window.onhashchange = hashChangeFire;  // TODO，对应新的hash执行的操作函数
+            } else {
+                // 不支持则用定时器检测的办法
+                setInterval(function() {
+                    // 检测hash值或其中某一段是否更改的函数， 在低版本的iE浏览器中通过window.location.hash取出的指和其它的浏览器不同，要注意
+                    var ischanged = isHashChanged();
+                    if(ischanged) {
+                        hashChangeFire();  // TODO，对应新的hash执行的操作函数
+                    }
+                }, 150);
+            }
+        })
+    </script>
+</body>
+</html>

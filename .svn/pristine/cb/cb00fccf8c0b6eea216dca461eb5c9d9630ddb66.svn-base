@@ -1,0 +1,176 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        .isDisplay {
+            display: none;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">新浪微博:</label>
+                <div class="layui-input-block">
+                    <local-switch v-bind:value.sync="submitForm.SinaOpen" text="开|关"
+                                  initial="off"></local-switch>
+
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">链接地址:</label>
+                    <div class="layui-input-inline">
+                        <input type="text" lay-verify="empty|SinaNo" autocomplete="off" placeholder="请输入链接地址" class="layui-input" v-model="submitForm.SinaNo" id="id">
+                    </div>
+                    <div class="layui-input-inline">
+                        <button class="layui-btn" @click="bianji" lay-submit>编辑</button>
+                    </div>
+                    <div class="layui-input-inline" style="display:none;" id="ID1">
+                        <button class="layui-btn " @click="saveAdd">保存</button>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+               
+                <label class="layui-form-label"> 腾讯营销:</label>
+                <div class="layui-input-block">
+                    <local-switch v-bind:value.sync="submitForm.TecentOpen" text="开|关"
+                                  initial="off"></local-switch>
+
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">链接地址:</label>
+                    <div class="layui-input-inline">
+                        <input type="text" lay-verify="empty|TecentMark" autocomplete="off" placeholder="请输入链接地址" class="layui-input" v-model="submitForm.TecentMark" id="id1">
+                    </div>
+                    <div class="layui-input-inline" style="display:inline">
+                        <button class="layui-btn" @click="bianji1" lay-submit>编辑</button>
+                    </div>
+                    <div style="display:none;" id="ID2" >
+                        <button class="layui-btn ">保存</button>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">是否启用:</label>
+                <div class="layui-input-block">
+                    <local-switch v-bind:value.sync="submitForm.WxPicOpen" text="开|关"
+                                  initial="off"></local-switch>
+
+                </div>
+                <div class="layui-form-item">
+                    <label>图片:</label> &nbsp;
+                    <img class="layui-upload-img" id="StuP">&nbsp;
+                    <button type="button" class="layui-btn" id="upStudP" style="margin:15px 0">上传图片</button>&nbsp;&nbsp;&nbsp;<button class="layui-btn" @click="saveAdd">保存</button>
+                    <p id="StuText" style="margin-left:-15px;margin-top:5px;"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/Controls/Common.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate"],
+    function (fnr) {
+        var laydate = layui.laydate;
+        var $ = layui.jquery;
+        var form = layui.form;
+        form.on('switch(switchTest)', function (data) {
+            var Vaild = this.checked ? '1' : '0'; 
+        });
+        $('#id').attr('disabled', true);
+        $('#id1').attr('disabled', true);   
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+                chbSwitch: false,
+                submitForm: {
+                    WxPic_Mark: '', //微信
+                    SinaNo: '',     //新浪网址
+                    TecentMark: '', //腾讯营销
+                    WxPicOpen: '',  //微信开关  1开启  0关闭
+                    TecentOpen: '', //腾讯营销开关
+                    SinaOpen: ''  //新浪网址 开关
+                },  
+            },
+            methods: {
+                saveAdd: function (e) 
+                {
+                    this.submitForm.Content = (this.submitForm.Content);
+                    if (!layui.form.checkInput(e)) {
+                        return false;
+                    }
+                    this.submitForm.WxPicOpen = Number(this.submitForm.WxPicOpen);
+                    this.submitForm.TecentOpen = Number(this.submitForm.TecentOpen);
+                    this.submitForm.SinaOpen = Number(this.submitForm.SinaOpen);
+                    $.ajax({
+                        url: '/service/public/Mechanism/HeaderSet',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: this.submitForm,
+                        success: function (data) {
+                            if (data.ReturnData.Data) {
+                                if (data.SuccessResponse) {
+                                    fnr.callDialog('refresh', { status: data.SuccessResponse, msg: data.Message });
+                                    fnr.closeDialog();
+                                }
+                            } else {
+                                layer.msg('data为空');
+                            }
+                        }
+                    });
+                },
+                bianji:function(){
+                    $("#ID1").css('display', 'block');
+                    $('#id').attr('disabled', false);
+                },
+                bianji1: function () {
+                    //document.getElementById("Button1").style.display = "block";
+                    $("#ID2").css('display', 'block');
+                    $('#id1').attr('disabled', false);
+                }
+            }
+        });
+    });
+    layui.use('upload', function () {
+        var $ = layui.jquery
+        , upload = layui.upload;
+
+        //普通图片上传
+        var uploadInst = upload.render({
+            elem: '#upStudP'
+          , url: '/service/public/Upload/File/2'
+          , before: function (obj) {
+              //预读本地文件示例，不支持ie8
+              obj.preview(function (index, file, result) {
+                  $('#StuP').attr('src', result); //图片链接（base64）
+              });
+          }
+          , done: function (res) {
+              //如果上传失败
+              if (res.code > 0) {
+                  return layer.msg('上传失败');
+              }
+              //上传成功
+              rootApp.submitForm.WxPic_Mark = res.Message
+              layer.msg('上传成功')
+          }
+          , error: function () {
+              //演示失败状态，并实现重传
+              var demoText = $('#StuText');
+              demoText.html('<span style="color: #FF5722;">上传失败</span> <a class=" demo-reload" style="cursor:pointer;">重试</a>');
+              demoText.find('.demo-reload').on('click', function () {
+                  uploadInst.upload();
+              });
+          }
+        })
+    })
+</script>

@@ -1,0 +1,272 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>修改产品</title>
+    <style>
+        .addTable .price-input {
+            display: inline-block;
+            width: 70px;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+            input[type=number]::-webkit-inner-spin-button,
+            input[type=number]::-webkit-outer-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+    </style>
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <table id="listTable" lay-filter="listTable"></table>
+        <div class="layui-form">
+            <table class="layui-table addTable">
+                <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>&nbsp;</th>
+                        <th>产品名称</th>
+                        <th>产品标号</th>
+                        <th>标准单价</th>
+                        <th>销售单位</th>
+                        <th>产品分类</th>
+                        <th>售价</th>
+                        <th>数量</th>
+                        <th>总价</th>
+                        <th>备注</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(index,item) in tableData">
+                        <td>{{index+1}}</td>
+                        <td @click="del(index)" style="cursor:pointer"><i class="layui-icon">&#xe640;</i></td>
+                        <td>{{item.Name}}</td>
+                        <td>{{item.ProductNumber}}</td>
+                        <td>{{item.NormalPrice}}</td>
+                        <td>{{item.SaleUnit}}</td>
+                        <td>{{item.ProductTypeName}}</td>
+                        <td>¥ <input type="number" class="layui-input price-input" lay-verify="money" v-model="item.SalePrice" @keydown="DownData('dot',$event)" /></td>
+                        <td><input type="number" class="layui-input price-input" lay-verify="number" v-model="item.Amount" number @keydown="DownData(null,$event)" /></td>
+                        <td>¥ <input type="number" class="layui-input price-input" v-model="item.TotalPrice" number disabled /></td>
+                        <td><input type="text" class="layui-input remark-input" v-model="item.Remark"></td>
+                    </tr>
+                    <tr v-if="tableData.length>0">
+                        <td>{{tableData.length+1}}</td>
+                        <td @click="delAll(index)" style="cursor:pointer"><i class="layui-icon">&#xe640;</i></td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>{{allCount}}</td>
+                        <td>¥ {{allPrice}}</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!--<button class="layui-hide" @click="tijiao" lay-submit></button>-->
+            <div class="layui-form-item layui-hide">
+                <button class="layui-btn" lay-submit @click="tijiao">提交</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'laydate', 'layer'],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+            var layer = layui.layer;
+            function trim(str) {
+                return str.replace(/(^\s*)|(\s*$)/g, "");
+            }
+            form.verify({
+                money: function (value, item) {
+                    if (!new RegExp("^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$").test(value)) {
+                        return '请输入正确的金额';
+                    }
+                }
+            });
+
+            //搜索条件
+            vm = new Vue({
+                el: '#root',
+                data: {
+                    //搜索选择的参数列表
+                    queryFormData: {
+
+                    },
+                    tableData: '',
+                    releaseClient: [],
+                    OpportunityProductDate: [],
+                    allCount: '',
+                    allPrice: '',
+                    where: [],
+
+                },
+                ready: function () {
+                    var self = this;
+                    var Other = fnr.getQueryString('Other');
+                
+                    
+                    var Opportunity_ID = fnr.getQueryString('ID');
+                    //var list = fnr.getQueryString('listDate');
+                    this.GetProductModelList(Other, Opportunity_ID)
+                    if (window.parent["searchConditon"] != undefined) {
+                        self.where = window.parent["searchConditon"];
+                        delete window.parent["searchConditon"];
+                    }
+
+                },
+                watch: {
+                    tableData: {
+                        handler: function (val, oldval) {
+                            this.tableData.map(function (item) {
+                                item.TotalPrice = item.SalePrice * item.Amount;
+                            })
+                            this.allCount = this.tableData.reduce(function (previousValue, currentValue, currentIndex, arr) { return previousValue + Number(currentValue.Amount) }, 0);
+                            this.allPrice = this.tableData.reduce(function (previousValue, currentValue, currentIndex, arr) { return previousValue + Number(currentValue.TotalPrice) }, 0);
+                        },
+                        deep: true
+                    }
+                },
+                methods: {
+                  
+                    DownData: function (dot, $event) {
+                        if (dot) {
+                            this.OnlyNumberDot($event)
+                        } else {
+                            this.OnlyNumber($event)
+                        }
+                    },
+                    //屏蔽除数字外的按键
+                    OnlyNumber: function ($event) {
+                        var k = $event.keyCode;
+                        if ((k <= 57 && k >= 48) || (k <= 105 && k >= 96) || k == 8 || k == 46 || k == 37 || k == 39) {
+                            return true
+                        } else {
+                            $event.preventDefault()
+                            return false;
+                        }
+                    },
+                    //屏蔽除数字和小数点外的按键
+                    OnlyNumberDot: function ($event) {
+                        var k = $event.keyCode;
+                        if ((k <= 57 && k >= 48) || (k <= 105 && k >= 96) || k == 8 || k == 46 || k == 37 || k == 39 || k == 110) {
+                            return true
+                        } else {
+                            $event.preventDefault()
+                            return false;
+                        }
+                    },
+                    GetProductModelList: function (Other, Opportunity_ID) {
+                        var that = this;
+                        var data = { Other: Other, ID: Opportunity_ID };
+                        $.get('/service/crm/Product/GetProductModelList', data, function (res) {
+                            if (res.SuccessResponse) {
+
+                                if (that.where.length != 0) {
+
+                                    var item = that.where
+                                    item.map(function (item) {
+                                        item.Amount = item.Amount > 0 ? item.Amount : 1;
+                                        item.SalePrice = item.SalePrice > 0 ? item.SalePrice : item.NormalPrice;
+                                        item.TotalPrice = item.SalePrice * item.Amount;
+                                    })
+                                    that.tableData = that.where;
+                                }
+                                else {
+                                    var item = res.Data
+                                    item.map(function (item) {
+                                        item.Amount = item.Amount > 0 ? item.Amount : 1;
+                                        item.SalePrice = item.SalePrice > 0 ? item.SalePrice : item.NormalPrice;
+                                        item.TotalPrice = item.SalePrice * item.Amount;
+                                    })
+                                    that.tableData = res.Data;
+                                }
+
+
+                                that.allCount = res.Data.reduce(function (previousValue, currentValue, currentIndex, arr) { return previousValue + currentValue.Amount }, 0);
+                                that.allPrice = res.Data.reduce(function (previousValue, currentValue, currentIndex, arr) { return previousValue + currentValue.SalePrice }, 0);
+                            }
+                        })
+                    },
+                    del: function (index) {
+                        this.tableData.splice(index, 1)
+                    },
+                    delAll: function (index) {
+                        this.tableData.splice(0, this.tableData.length)
+                    },
+                    //添加
+                    tijiao: function (e) {
+                        if (!layui.form.checkInput(e)) {
+                            return false;
+                        }
+                        list = {};
+                        list.OpportunityProductDate = this.tableData;
+                        if (fnr.getQueryString('Value') == 1) {
+                            fnr.callDialog("refresh", list);
+                            fnr.closeDialog();
+                        } else if (fnr.getQueryString('Value1') == 1) {
+
+                            fnr.callDialog("refresh", list);
+                            fnr.closeDialog();
+                        } else if (fnr.getQueryString('Value2') == 1) {
+                            fnr.closeDialog();
+                        }
+                        else {
+                            list.Opportunity_ID = fnr.getQueryString('ID');
+                            if (list.OpportunityProductDate.length == 0) {
+                                layer.msg("你没有选择产品");
+                                return false;
+                            }
+                            $.ajax({
+                                url: '/service/crm/Opportunity/AddOpportunityRelationProductData',
+                                type: 'post',
+                                data: list,
+                                dataType: 'json',
+                                success: function (data) {
+                                    if (data.SuccessResponse) {
+                                        fnr.callDialog('refresh', { status: data.SuccessResponse, msg: data.Message });
+                                        fnr.closeDialog();
+                                    }
+                                }
+                            });
+                        }
+                    },
+
+                }
+            });
+            //获取选中的行相关数据
+            table.on('checkbox(listTable)', function (obj) {
+                var checkStatus = table.checkStatus('listTable');
+                rootApp.releaseClient = [];
+                $.each(checkStatus.data, function (k, v) {
+                    if (v.IsAssign != 1) {
+                        rootApp.releaseClient.push(v.ID);
+                    }
+                });
+            });
+
+
+
+            //监听工具栏事件
+            tableExt.addEvent("tool(listTable)",
+                {
+
+                });
+        });
+</script>

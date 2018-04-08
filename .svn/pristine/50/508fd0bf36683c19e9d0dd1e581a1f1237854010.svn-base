@@ -1,0 +1,84 @@
+﻿666 -->
+
+<style>
+    .Z_btn { padding: 8px 15px; background-color: #F66401; color: #fff; font-size: 12px; border-radius: 6px; }
+    .tdw { width: 300px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
+</style>
+<div class="order-middle" id="mycontact" v-cloak>
+    <div class="middle-main" style="text-align: right;">
+        <table class="layui-table tdCenter" lay-skin="line">
+            <colgroup>
+                <col width="150">
+                <col width="150">
+                <col>
+                <col width="120">
+                <col width="120">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>联系时间</th>
+                    <th>联系方式</th>
+                    <th>记录内容</th>
+                    <th>记录人</th>
+                    <th>查询</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!--<tr>
+                    <td>2017-11-11</td>
+                    <td>QQ</td>
+                    <td><div class="tdw">请问发票怎开，我今天查询了还是不知道怎么查询</div></td>
+                    <td>脏兮兮</td>
+                    <td><span class="Z_btn">查看</span></td>
+                </tr>-->
+                <tr v-for="item in contactList">
+                    <td>{{item.ContactTime}}</td>
+                    <td>{{item.ContactTypeName}}</td>
+                    <td><div class="tdw">{{item.Content}}</div></td>
+                    <td>{{item.AcName}}</td>
+                    <td><span class="Z_btn" @click="showDetail(item)">查看</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil'],
+        function (fnr) {
+            var $ = layui.$;
+            var table = layui.table;
+            var tableExt = layui.tableExt;
+            var vm = new Vue({
+                el: "#mycontact",
+                data: {
+                    contactList: []
+                },
+                ready: function () {
+                    var _this = this;
+                    $.get("/service/edu/StudentContact/GetStudentContactList", {}, function (res) {
+                        if (res.SuccessResponse) {
+                            res.Data.map(function (a, b) {
+                                a.ContactTime = fnr.format(a.ContactTime, 'yyyy-MM-dd')
+                            })
+                            _this.contactList = res.Data;
+                        }
+                    })
+                },
+                methods: {
+                    showDetail: function (data) {
+                        layer.open({
+                            type: 2,
+                            title: "联系记录详情",
+                            content: ["contactdetail.html?ID=" + data.ID + '&StuID=' + data.StuID + '&StuDetail_ID=' + data.StuDetail_ID],
+                            area: ["1000px", "663px"],
+                            events: {
+                                refresh: function (data) {
+                                }
+                            }
+                        })
+                    }
+                }
+            });
+        })
+</script>

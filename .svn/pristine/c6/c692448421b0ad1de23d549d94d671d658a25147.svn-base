@@ -1,0 +1,207 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script src="/script/jquery.js"></script>
+    <link href="/Resources/CSS/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/Resources/CSS/Font/css/font-awesome.css" rel="stylesheet" />
+    <script src="/Resources/CSS/bootstrap/js/bootstrap.min.js"></script>
+    <link href="/Resources/CSS/PC_css.css" rel="stylesheet" />
+    <link href="/Resources/CSS/login.css" rel="stylesheet" />
+    <style>
+        .login-tabs li {
+            list-style: none;
+            float: left;
+            width: 50%;
+        }
+    </style>
+
+</head>
+<body id="root">
+    <div class="" v-cloak>
+        <div class="login-Block">
+            <div class="login-form">
+                <ul class="login-tabs clearfix" role="tablist">
+                    <li role="presentation" @click="submitForm.LoginType=1" class="active"><a href="#passwrod" role="tab" data-toggle="tab">密码登录</a></li>
+                    <li role="presentation" @click="submitForm.LoginType=2"><a href="#phone" role="tab" data-toggle="tab">验证码登录</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="passwrod">
+                        <input type="text" lay-verify="required" name="CardNumber" v-model="submitForm.CardNumber" class="form-control" placeholder="身份证号码">
+                        <input type="password" lay-verify="required" name="Password" v-model="submitForm.Password" class="form-control" placeholder="密码">
+
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="phone">
+                        <input type="text" class="form-control" placeholder="手机号码" v-model="submitForm.Phone">
+                        <div class="form-code">
+                            <input type="text" class="form-control" placeholder="验证码" v-model="submitForm.PhoneCode">
+                            <span @click="SendPhoneCode" v-bind:disabled="status.disabled">{{status.tipText}}</span>
+                        </div>
+
+                    </div>
+                </div>
+                <button class="loginButton" @click="saveUpdate">登录</button>
+                <div class="clearfix" style="text-align: left;margin-bottom: 40px">
+                    <input type="checkbox" class="chk_1" id="seven"><label for="seven"></label> 记住账号
+                    <div class="pull-right"><a href="javascript:void(layer.msg('正在拼命开发中...'));">忘记密码</a><span style="margin: 0 5px">|</span><a href="register_model.html" @click="resigterFn">注册</a></div>
+                </div>
+                <div class="other">
+                    <div class="slot">第三方账号登录</div>
+                    <div class="other-list">
+                        <a href="javascript:void(layer.msg('正在拼命开发中...'));"><img src="../Resources/images/微信.png" alt=""></a>
+                        <a href="javascript:void(layer.msg('正在拼命开发中...'));"><img src="../Resources/images/qq.png" alt=""></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+</body>
+</html>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt"],
+    function (fnr) {
+        function delAllCookie() {
+            var myDate = new Date();
+            myDate.setTime(myDate.getTime() - 10000);//设置时间
+            var data = document.cookie;
+            var dataArray = data.split("; ");
+            for (var i = 0; i < dataArray.length; i++) {
+                var varName = dataArray[i].split("=");
+                document.cookie = varName[0] + "=''; expires=" + myDate.toGMTString() + ";path=/";
+            }
+        }
+
+        var $ = layui.$;
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+                submitForm: {
+                    CardNumber: "",
+                    Password: "",
+                    Phone: "",
+                    PhoneCode: "",
+                    LoginType: 1,//登录方式  1账号密码  2手机验证码
+                    LoginSource: 1//登录形式（1-PC端 2-移动端）
+                },
+                status: {
+                    disabled: false,
+                    tipText: '获取验证码'
+                },
+                index: ''
+            },
+            ready: function () {
+                delAllCookie();
+                this.index = parent.layer.getFrameIndex(window.name);
+            },
+            methods: {
+                resigterFn: function () {
+                    window.parent.document.getElementsByClassName('layui-layer-title')[0].innerText = '欢迎注册';
+                },
+                setCookie: function (name, value) {
+                    var Days = 30;
+                    var exp = new Date();
+                    exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
+                    document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString() + ";path=/";
+                },
+                delAllCookie: function () {
+                    var myDate = new Date();
+                    myDate.setTime(myDate.getTime() - 10000);//设置时间
+                    var data = document.cookie;
+                    var dataArray = data.split("; ");
+                    for (var i = 0; i < dataArray.length; i++) {
+                        var varName = dataArray[i].split("=");
+                        document.cookie = varName[0] + "=''; expires=" + myDate.toGMTString() + ";path=/";
+                    }
+                },
+                setCodeTime: function (Seconds, e) {
+                    var self = this;
+                    if (Seconds > 0) {
+                        self.status.disabled = true;
+                        self.status.tipText = Seconds + "秒";
+                        var timer = setInterval(function () {
+                            Seconds = Seconds - 1;
+                            if (Seconds > 0)
+                                self.status.tipText = Seconds + "秒";
+                            else {
+                                clearInterval(timer);
+                                self.status.tipText = "获取验证码";
+                                self.status.disabled = false;
+                            }
+                        }, 1000);
+                    } else
+                        self.status.disabled = false;
+                    return false;
+                },
+                SendPhoneCode: function (e) {
+                    if (!layui.form.checkInput(e, "phone")) {
+                        return false;
+                    }
+                    var self = this;
+                    if (self.status.disabled) {
+                        return;
+                    }
+                    self.status.disabled = true;
+                    $.post("/service/edu/Student/SendPhoneCodeBYLogin", this.submitForm, function (rsp) {
+                        if (rsp.SuccessResponse) {
+                            window.rootApp.submitForm.PhoneCode = rsp.Data.Code;
+                            self.setCodeTime(rsp.Data.Seconds, e)
+                            layer.msg(rsp.Message, { icon: 1 });
+                        }
+                        else {
+                            self.setCodeTime(rsp.Data.Seconds, e)
+                            layer.msg(rsp.Message, { icon: 2 });
+                        }
+                    })
+                    return false;
+                },
+                saveUpdate: function (e) {
+                    var _this = this;
+                    var url = '';
+                    if (!layui.form.checkInput(e)) {
+                        return false;
+                    }
+                    _this.submitForm.LoginType == '1' ? url = '/service/edu/Student/BindStudentLoginByCardNumber' : url = '/service/edu/Student/BindStudentLoginByPhone'
+                    $.post(url, this.submitForm, function (rsp) {
+                        if (rsp.SuccessResponse) {
+                            //写入cookie ID
+                            _this.setCookie('StuId', rsp.Data.StuID)
+                            if (!!rsp.Data.StuDetail_ID) {
+                                _this.setCookie('StuDetail_ID', rsp.Data.StuDetail_ID);
+                                _this.setCookie('SchoolRoll_ID', rsp.Data.SchoolRoll_ID);
+                                _this.setCookie('Specialty_ID', rsp.Data.Specialty_ID);
+                                _this.setCookie('SpecialtyVersion_ID', rsp.Data.SpecialtyVersion_ID);
+                                _this.setCookie('Model_ID', rsp.Data.Model_ID);
+                                _this.setCookie('Batch_ID', rsp.Data.Batch_ID);
+                                _this.setCookie('School_ID', rsp.Data.School_ID);
+                            }
+                            //快聊cookie
+                            _this.setCookie('UseKey', rsp.Data.StuID);
+                            _this.setCookie('UserPhoneKey', rsp.Data.Phone);
+
+                            layer.msg("登陆成功")
+                            parent.layer.close(_this.index);
+                            if (sessionStorage.getItem("thisUrl") == null || sessionStorage.getItem("thisUrl") == 'null') {
+                                parent.location.href = !!rsp.Data.StuDetail_ID ? '/usercenter/indexStu.shtml' : '/usercenter/index.shtml';
+                            } else {
+                                parent.location.href = sessionStorage.getItem("thisUrl");
+                            }
+                        }
+                        else {
+                            layer.msg(rsp.Message, { icon: 2 });
+                        }
+                    })
+                    return false;
+                }
+            }
+        });
+    });
+</script>

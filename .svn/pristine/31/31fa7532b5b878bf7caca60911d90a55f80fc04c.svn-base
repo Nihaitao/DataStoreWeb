@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <title>业绩目标报表</title>
+    <link rel="stylesheet" href="../css/iconfont.css">
+    <link rel="stylesheet" href="../js/modules/layer/css/layui.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/client/followList.css">
+    <script src="../js/jquery.js"></script>
+    <script src="../js/modules/vue/vue.min.js"></script>
+    <script src="../js/modules/layer/layui.js"></script>
+    <script>
+        (function () {
+            document.documentElement.style.fontSize = document.documentElement.clientWidth / 7.5 + 'px';
+            window.onresize = function () {
+                document.documentElement.style.fontSize = document.documentElement.clientWidth / 7.5 + 'px';
+            };
+        })()
+    </script>
+</head>
+<body>
+    <div class="appContainer">
+        <div class="selectBtnBox">
+            <div class="layui-row heightMax">
+                <div class="layui-col-xs4 leftDiv">
+                    <span class="btnText">全部跟进</span>
+                    <i class="iconfont resetIcon icon-xiajiantou"></i>
+                </div>
+                <div class="layui-col-xs4 leftDiv">
+                    <span class="btnText">跟进对象</span>
+                    <i class="iconfont resetIcon icon-xiajiantou"></i>
+                </div>
+                <div class="layui-col-xs4 rightDiv">
+                    <span class="btnText">时间</span>
+                    <i class="iconfont resetIcon icon-xiajiantou"></i>
+                </div>
+            </div>
+        </div>
+        <div class="main">
+            <div class="itemBox">
+                <div class="item">
+                    <div>
+                        <p>王丽 > <span>电话</span></p>
+                        <p class="rightTime">15:28</p>
+                    </div>
+                    <p>
+                        打电话给刘总，约明天下午见面。
+                    </p>
+                    <p class="time">
+                        实际跟进时间：2107-11-28 15:28
+                    </p>
+                    <p class="client">
+                        来自客户：
+                        <span>湖南双元云教育</span>
+                    </p>
+                </div>
+                <div class="item">
+                    <div>
+                        <p>王丽 > <span>电话</span></p>
+                        <p class="rightTime">15:28</p>
+                    </div>
+                    <p>
+                        打电话给刘总，约明天下午见面。
+                    </p>
+                    <p class="time">
+                        实际跟进时间：2107-11-28 15:28
+                    </p>
+                    <p class="client">
+                        来自客户：
+                        <span>湖南双元云教育</span>
+                    </p>
+                </div>
+            </div>
+            <div class="footerBtnBox">
+                <p>写跟进</p>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

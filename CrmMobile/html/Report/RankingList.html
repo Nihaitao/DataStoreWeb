@@ -1,0 +1,149 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <title>排行榜</title>
+    <link rel="stylesheet" href="../css/iconfont.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../js/modules/layer/css/layui.css">
+    <link rel="stylesheet" href="../css/report/rankingList.css">
+    <script src="../js/jquery.js"></script>
+    <script src="../js/modules/vue/vue.min.js"></script>
+    <script src="../js/modules/layer/layui.js"></script>
+    <script>
+        (function(){
+            document.documentElement.style.fontSize = document.documentElement.clientWidth / 7.5 + 'px';
+            window.onresize=function(){
+                document.documentElement.style.fontSize = document.documentElement.clientWidth / 7.5 + 'px';
+            };
+        })()
+    </script>
+</head>
+<body>
+    <div class="appContainer">
+        <div class="selectBtnBox">
+            <div class="layui-row heightMax">
+                <div class="layui-col-xs6 leftDiv">
+                    <span class="btnText">本月</span>
+                    <i class="iconfont resetIcon icon-xiajiantou"></i>
+                </div>
+                <div class="layui-col-xs6 rightDiv">
+                    <span class="btnText">跟进次数</span>
+                    <i class="iconfont resetIcon icon-xiajiantou"></i>
+                </div>
+            </div>
+        </div>
+        <div class="selectMain">
+            <!--分割线-->
+            <div class="lines"></div>
+
+            <ul class="rankList">
+                <!--第一名-->
+                <li class="rankItems">
+                    <div class="leftImgBox">
+                        <img src="../images/jinpai.png" />
+                    </div>
+                    <div class="middleBox">
+                        <div class="borderBox">
+                            <img src="../images/header.png" />
+                        </div>
+                        <span class="leftName">蒋旺</span>
+                    </div>
+                    <div class="rightBox">
+                        <span class="rightNum">30</span>
+                    </div>
+                </li>
+                <!--第二名-->
+                <li class="rankItems">
+                    <div class="leftImgBox">
+                        <img src="../images/yinpai.png" />
+                    </div>
+                    <div class="middleBox">
+                        <div class="borderBox">
+                            <img src="../images/header.png" />
+                        </div>
+                        <span class="leftName">蒋旺2</span>
+                    </div>
+                    <div class="rightBox">
+                        <span class="rightNum">15</span>
+                    </div>
+                </li>
+                <!--第三名-->
+                <li class="rankItems">
+                    <div class="leftImgBox">
+                        <img src="../images/tongpaii.png" />
+                    </div>
+                    <div class="middleBox">
+                        <div class="borderBox">
+                            <img src="../images/header.png" />
+                        </div>
+                        <span class="leftName">蒋旺3</span>
+                    </div>
+                    <div class="rightBox">
+                        <span class="rightNum">8</span>
+                    </div>
+                </li>
+
+                <!--第四名以后-->
+                <li class="rankItems">
+                    <div class="leftTextBox">
+                        <span>4</span>
+                    </div>
+                    <div class="middleBox">
+                        <div class="borderBox">
+                            <img src="../images/header.png" />
+                        </div>
+                        <span class="leftName">蒋旺4</span>
+                    </div>
+                    <div class="rightBox">
+                        <span class="rightNum">5</span>
+                    </div>
+                </li>
+                <li class="rankItems">
+                    <div class="leftTextBox">
+                        <span>5</span>
+                    </div>
+                    <div class="middleBox">
+                        <div class="borderBox">
+                            <img src="../images/header.png" />
+                        </div>
+                        <span class="leftName">蒋旺5</span>
+                    </div>
+                    <div class="rightBox">
+                        <span class="rightNum">3</span>
+                    </div>
+                </li>
+                <li class="rankItems">
+                    <div class="leftTextBox">
+                        <span>6</span>
+                    </div>
+                    <div class="middleBox">
+                        <div class="borderBox">
+                            <img src="../images/header.png" />
+                        </div>
+                        <span class="leftName">蒋旺6</span>
+                    </div>
+                    <div class="rightBox">
+                        <span class="rightNum">1</span>
+                    </div>
+                </li>
+                <li class="rankItems">
+                    <div class="leftTextBox">
+                        <span>7</span>
+                    </div>
+                    <div class="middleBox">
+                        <div class="borderBox">
+                            <img src="../images/header.png" />
+                        </div>
+                        <span class="leftName">蒋旺7</span>
+                    </div>
+                    <div class="rightBox">
+                        <span class="rightNum">0</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

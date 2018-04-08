@@ -1,0 +1,113 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style>
+        .addCourse, .delCourse { position: relative; float: left; display: block; padding: 9px 0px; font-weight: normal; line-height: 20px; text-align: right; }
+        .delCourse .layui-icon { color: #666; border: 1px solid #666; border-radius: 50%; padding: 2px; }
+        .layui-upload-img { width: 92px; height: 92px; margin: 0 10px 10px 0; border: 1px solid #ccc; }
+    </style>
+    <title></title>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">描述</label>
+                <div class="layui-input-block">
+                    <input type="text" name="title" required="" lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input" v-model="form.Description">
+                </div>
+            </div>
+            <div class="layui-form-item layui-hide">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit lay-filter="formDemo" @click="submitForm">立即提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="/Resources/js/Controls/Common.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate",'upload'],
+    function (fnr) {
+        var form = layui.form;
+        var $ = layui.$;
+        var laydate = layui.laydate;
+        var upload=layui.upload;
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+                form:{
+                    Description:'',
+                    ColumnName:fnr.getQueryString('ColumnName'),
+                    ID:fnr.getQueryString('ID'),
+
+                }
+            },
+            ready: function () {
+                if(fnr.getQueryString('ID')){
+                    var ID=fnr.getQueryString('ID');
+                    this.GetHDictionaryByID(ID)
+                }else{
+                    return;
+                }
+            },
+            methods: {
+                submitForm:function(){
+                    if(!!this.ID){
+                        this.UpdateHDictionary(this.form,function(res){
+                            if(res.SuccessResponse){
+                                fnr.callDialog("refresh",res.ReturnData.Data);
+                                fnr.closeDialog();
+                            }
+                        })
+                    }else{
+                        this.InsertHDictionary(this.form,function(res){
+                            if(res.SuccessResponse){
+                                fnr.callDialog("refresh",res.ReturnData.Data);
+                                fnr.closeDialog();
+                            }
+                        })
+                    }
+
+                },
+                //根据ID查找字典数据
+                GetHDictionaryByID:function(ID){
+                    var that =this;
+                    $.get("/service/HDictionary/GetHDictionaryByID",{ID:ID },function (res) {
+                        if(res.SuccessResponse){
+                            that.ID=res.ReturnData.Data.ID;
+                            that.form.ColumnName=res.ReturnData.Data.ColumnName;
+                            that.form.Description=res.ReturnData.Data.Description;
+                        }
+                    });
+                },
+                //修改数据字典
+                UpdateHDictionary:function(query,cb){
+                    var that=this;
+                    $.post("/service/HDictionary/UpdateHDictionary",query,function (res) {
+                        if(res.SuccessResponse){
+                            cb && cb(res)
+                        }
+                    });
+                },
+                //添加数据字典
+                InsertHDictionary:function(query,cb){
+                    var that=this;
+                    $.post("/service/HDictionary/InsertHDictionary",query,function (res) {
+                        if(res.SuccessResponse){
+                            cb && cb(res)
+                        }
+                    });
+                },
+            }
+        });
+    });
+
+</script>

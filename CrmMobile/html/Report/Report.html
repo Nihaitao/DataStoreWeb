@@ -1,0 +1,329 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <title>报表</title>
+    <link rel="stylesheet" href="../css/iconfont.css">
+    <link rel="stylesheet" href="../js/modules/layer/css/layui.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/report/reportForm.css">
+    <script src="../js/jquery.js"></script>
+    <script src="../js/modules/vue/vue.min.js"></script>
+    <script src="../js/modules/layer/layui.js"></script>
+    <script>
+        (function () {
+            document.documentElement.style.fontSize = document.documentElement.clientWidth / 7.5 + 'px';
+            window.onresize = function () {
+                document.documentElement.style.fontSize = document.documentElement.clientWidth / 7.5 + 'px';
+            };
+        })()
+    </script>
+</head>
+<body>
+    <div class="appContainer">
+        <!--头部-->
+        <div class="headerBox">
+            <div class="leftBox">
+                <div class="headImg">
+                    <img src="../images/header.png" />
+                </div>
+                <div class="userName">
+                    <span class="userText">自己</span>
+                    <i class="iconfont resetIcon icon-xiajiantou"></i>
+                </div>
+            </div>
+            <div class="rightBox">
+                <div class="timeSelect">
+                    <span class="timeText">本月</span>
+                    <i class="iconfont resetIcon icon-xiajiantou"></i>
+                </div>
+            </div>
+        </div>
+
+        <!--主体-->
+        <div class="mainBox" style="margin-bottom: 0.98rem;">
+            <!--分割线-->
+            <div class="lines"></div>
+            <!--主体标题-->
+            <div class="mainTitle">
+                <p>业绩目标（本月）</p>
+            </div>
+            <!--业绩表现图-->
+            <div class="chartBox">
+                <div class="layui-row" style="height: 100%;">
+                    <div class="layui-col-xs7 leftSection">
+                        <p>
+                            新建客户目标数：
+                            <span class="newNum">
+                                <span>50</span>（个）
+                            </span>
+                        </p>
+                        <p>
+                            新建客户完成数：
+                            <span>
+                                <span class="sucNum">25</span>（个）
+                            </span>
+                        </p>
+                    </div>
+                    <div class="layui-col-xs5 heightMax" style="padding-right: 30px;">
+                        <div class="circle"></div>
+                        <div class="sucText">
+                            <span>完成率</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--业绩表现图-->
+            <div class="chartBox">
+                <div class="layui-row" style="height: 100%;">
+                    <div class="layui-col-xs7 leftSection">
+                        <p>
+                            新建客户目标数：
+                            <span class="newNum">
+                                <span>50</span>（个）
+                            </span>
+                        </p>
+                        <p>
+                            新建客户完成数：
+                            <span>
+                                <span class="sucNum">25</span>（个）
+                            </span>
+                        </p>
+                    </div>
+                    <div class="layui-col-xs5 heightMax" style="padding-right: 30px;">
+                        <div class="circle"></div>
+                        <div class="sucText">
+                            <span>完成率</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--分割线-->
+            <div class="lines"></div>
+
+            <!--主体标题-->
+            <div class="mainTitle">
+                <p>荣誉榜（本月）</p>
+            </div>
+            <!--新建线索-->
+            <div style="height: 3.74rem; border-bottom: 0.01rem solid #ededed;">
+                <div class="honorHead">
+                    <span class="leftText">新建线索排行</span>
+                    <span class="more">更多</span>
+                </div>
+                <div class="honorMain">
+                    <div class="no2">
+                        <img src="../images/K2.png" class="king" />
+                        <div class="circleBox">
+                            <img src="../images/header.png" />
+                        </div>
+                        <div class="ranking">
+                            <img src="../images/2.png" />
+                            <p>蒋旺<span class="nameNum">18</span></p>
+                        </div>
+                    </div>
+                    <div class="no1">
+                        <img src="../images/K1.png" class="king" />
+                        <div class="circleBox">
+                            <img src="../images/header.png" />
+                        </div>
+                        <div class="ranking">
+                            <img src="../images/1.png" />
+                            <p>蒋旺<span class="nameNum">18</span></p>
+                        </div>
+                    </div>
+                    <div class="no3">
+                        <img src="../images/K3.png" class="king" />
+                        <div class="circleBox">
+                            <img src="../images/header.png" />
+                        </div>
+                        <div class="ranking">
+                            <img src="../images/3.png" />
+                            <p>蒋旺<span class="nameNum">18</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--新建客户-->
+            <div style="height: 3.74rem; border-bottom: 0.01rem solid #ededed;">
+                <div class="honorHead">
+                    <span class="leftText">新建客户排行</span>
+                    <span class="more">更多</span>
+                </div>
+                <div class="honorMain">
+                    <div class="no2">
+                        <img src="../images/K2.png" class="king" />
+                        <div class="circleBox">
+                            <img src="../images/header.png" />
+                        </div>
+                        <div class="ranking">
+                            <img src="../images/2.png" />
+                            <p>蒋旺<span class="nameNum">18</span></p>
+                        </div>
+                    </div>
+                    <div class="no1">
+                        <img src="../images/K1.png" class="king" />
+                        <div class="circleBox">
+                            <img src="../images/header.png" />
+                        </div>
+                        <div class="ranking">
+                            <img src="../images/1.png" />
+                            <p>蒋旺<span class="nameNum">18</span></p>
+                        </div>
+                    </div>
+                    <div class="no3">
+                        <img src="../images/K3.png" class="king" />
+                        <div class="circleBox">
+                            <img src="../images/header.png" />
+                        </div>
+                        <div class="ranking">
+                            <img src="../images/3.png" />
+                            <p>蒋旺<span class="nameNum">18</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--跟进次数-->
+            <div style="height: 3.74rem; border-bottom: 0.01rem solid #ededed;">
+                <div class="honorHead">
+                    <span class="leftText">跟进次数排行</span>
+                    <span class="more">更多</span>
+                </div>
+                <div class="honorMain">
+                    <div class="no2">
+                        <img src="../images/K2.png" class="king" />
+                        <div class="circleBox">
+                            <img src="../images/header.png" />
+                        </div>
+                        <div class="ranking">
+                            <img src="../images/2.png" />
+                            <p>蒋旺<span class="nameNum">18</span></p>
+                        </div>
+                    </div>
+                    <div class="no1">
+                        <img src="../images/K1.png" class="king" />
+                        <div class="circleBox">
+                            <img src="../images/header.png" />
+                        </div>
+                        <div class="ranking">
+                            <img src="../images/1.png" />
+                            <p>蒋旺<span class="nameNum">18</span></p>
+                        </div>
+                    </div>
+                    <div class="no3">
+                        <img src="../images/K3.png" class="king" />
+                        <div class="circleBox">
+                            <img src="../images/header.png" />
+                        </div>
+                        <div class="ranking">
+                            <img src="../images/3.png" />
+                            <p>蒋旺<span class="nameNum">18</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--分割线-->
+            <div class="lines"></div>
+            <div class="mainTitle">
+                <p>销售过程（本月）</p>
+            </div>
+            <div class="layui-row" style="margin: 0.43rem 0 0.42rem 0;">
+                <div class="layui-col-xs3">
+                    <div class="items">
+                        <i class="iconfont icon-gongneng-kehu itemIcon"></i>
+                        <p>总客户</p>
+                    </div>
+                </div>
+                <div class="layui-col-xs3">
+                    <div class="items">
+                        <i class="iconfont icon-xiansuo itemIcon"></i>
+                        <p>总线索</p>
+                    </div>
+                </div>
+                <div class="layui-col-xs3">
+                    <div class="items">
+                        <i class="iconfont icon-jilu itemIcon"></i>
+                        <p>总跟进</p>
+                    </div>
+                </div>
+                <div class="layui-col-xs3">
+                    <div class="items">
+                        <i class="iconfont icon-qiandaobaifang1 itemIcon"></i>
+                        <p>拜访签到</p>
+                    </div>
+                </div>
+            </div>
+            <!--空着-->
+            <!--分割线-->
+            <div class="lines"></div>
+            <!--线索转换-->
+            <div class="mainTitle">
+                <p>线索转化率（本月）</p>
+            </div>
+            <div class="chartBox">
+                <div class="layui-row" style="height: 100%;">
+                    <div class="layui-col-xs7 leftSection">
+                        <p>
+                            新建线索数：
+                            <span class="newNum">
+                                <span>50</span>（个）
+                            </span>
+                        </p>
+                        <p>
+                            已转客户数：
+                            <span>
+                                <span class="sucNum">25</span>（个）
+                            </span>
+                        </p>
+                    </div>
+                    <div class="layui-col-xs5 heightMax" style="padding-right: 30px;">
+                        <div class="circle"></div>
+                        <div class="sucText">
+                            <span>转化率</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--尾部-->
+        <div class="bottomBox">
+            <div class="layui-row heightMax">
+                <div class="layui-col-xs22 heightMax">
+                    <div class="iconBox heightMax active">
+                        <i class="iconfont reportIcon icon-baobiao-hover"></i>
+                        <p class="reportText">报表</p>
+                    </div>
+                </div>
+                <div class="layui-col-xs22 heightMax">
+                    <div class="iconBox heightMax">
+                        <i class="iconfont fnIcon icon-gongneng"></i>
+                        <p class="reportText">功能</p>
+                    </div>
+                </div>
+                <div class="layui-col-xs44 heightMax">
+                    <div class="heightMax" style="text-align: center;">
+                        <i class="iconfont middleIcon icon-kuaijiegongnengjian"></i>
+                    </div>
+                </div>
+                <div class="layui-col-xs22 heightMax">
+                    <div class="iconBox heightMax">
+                        <i class="iconfont needToIcon icon-daiban"></i>
+                        <p class="reportText">待办</p>
+                    </div>
+                </div>
+                <div class="layui-col-xs22 heightMax">
+                    <div class="iconBox heightMax">
+                        <i class="iconfont helpIcon icon-bangzhu"></i>
+                        <p class="reportText">帮助</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

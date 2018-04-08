@@ -1,0 +1,200 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">课件名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="Name" lay-verify="required" placeholder="视频课件名称" autocomplete="off" class="layui-input" v-model="submitForm.Name">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">学科</label>
+                <div class="layui-input-inline">
+                    <remote-sel v-bind:setting="FirstSetting" laytips="一级学科" v-bind:value.sync="Discipline_OneLevelID" v-bind:change="FirstChange" layverify="required"></remote-sel>
+                </div>
+                <div class="layui-input-inline">
+                    <remote-sel v-bind:setting="SecondSetting" laytips="二级学科" v-bind:value.sync="Discipline_TwoLevelID" v-bind:change="SecondChange" v-ref:second></remote-sel>
+                </div>
+                <div class="layui-input-inline">
+                    <remote-sel v-bind:setting="ThreeSetting" laytips="三级学科" v-bind:value.sync="Discipline_ThreeLevelID" v-ref:three></remote-sel>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">课件类型 </label>
+                <div class="layui-input-block">
+                    <remote-rad v-bind:setting="CourseWareTypeSetting" v-bind:value.sync="submitForm.CourseWareType_ID"
+                                initial="off"></remote-rad>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">课件大小</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="CourseSize" placeholder="课件大小" lay-verify="required" autocomplete="off" class="layui-input" v-model="submitForm.CourseSize">
+                </div>
+                <div class="layui-form-mid layui-word-aux">MB</div>
+                <label class="layui-form-label">视频时长</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="Duration" placeholder="请输入" lay-verify="required" autocomplete="off" class="layui-input" v-model="submitForm.Duration">
+                </div>
+                <div class="layui-form-mid layui-word-aux">秒</div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">课件来源 </label>
+                <div class="layui-input-block">
+                    <remote-rad v-bind:setting="VideoType" v-bind:value.sync="submitForm.VideoType"
+                                initial="off"></remote-rad>
+                </div>
+            </div>
+            <div class="layui-form-item" v-show="submitForm.VideoType==0">
+                <label class="layui-form-label">保利威视值</label>
+                <div class="layui-input-block">
+                    <input type="text" name="PolyvVID" placeholder="请输入" autocomplete="off" class="layui-input" v-model="submitForm.PolyvVID" lay-verify="required">
+                </div>
+            </div>
+            <div class="layui-form-item" v-show="submitForm.VideoType==1">
+                <label class="layui-form-label">播放地址</label>
+                <div class="layui-input-block">
+                    <input type="text" name="PlayAddress" placeholder="请输入" autocomplete="off" class="layui-input" v-model="submitForm.PlayAddress">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">标签</label>
+                <div class="layui-input-block">
+                    <input type="text" name="Tag" placeholder="请输入" autocomplete="off" class="layui-input" v-model="submitForm.Tag">
+                </div>
+            </div>
+            <div class="layui-form-item layui-hide">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit @click="saveUpdate">立即提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/Controls/Common.js"></script>
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'laydate'],
+    function (fnr) {
+        var table = layui.table;
+        var form = layui.form;
+        var tableExt = layui.tableExt;
+        var $ = layui.$;
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+                CourseWareTypeSetting: {
+                    tags: { name: "CourseWareType" },
+                    options: [
+                        { key: '1', value: '视频' },
+                        { key: '2', value: 'PPT' }
+                    ]
+                },
+                VideoType: {
+                    tags: { name: "VideoType" },
+                    options: [
+                        { key: '0', value: '保利威视' },
+                        { key: '1', value: '网络视频' }
+                    ]
+                },
+                validSetting: {
+                    options: [
+                        { key: '1', value: '启用' },
+                        { key: '0', value: '禁用' }
+                    ]
+                },
+                FirstSetting: SelectDisciplineBind(0),
+                SecondSetting: SelectDisciplineBind(null),
+                ThreeSetting: SelectDisciplineBind(null),
+                submitForm: {
+                    ID: 0,
+                    Name: '',
+                    Discipline_ID: '',
+                    CourseWareType_ID: 1,
+                    CourseSize: '',
+                    PlayAddress: '',
+                    PolyvVID: '',
+                    Tag: '',
+                    Duration: '',
+                    AddPerson: '',
+                    VideoType: 0
+                },
+                Discipline_OneLevelID: '',
+                Discipline_TwoLevelID: '',
+                Discipline_ThreeLevelID: ''
+            },
+            ready: function () {
+                var self = this;
+                if (!!GetQueryString('ID')) {
+                    var ID = GetQueryString('ID')
+                    var param = { 'ID': ID }
+                    $.get("/service/Resource/GetCourseWareByID", param, function (rsp) {
+                        fnr.mergeJson(rsp.ReturnData.Data, self.submitForm);//合并ajax值
+                        if (rsp.ReturnData.Data.Discipline_OneLevelID > 0)
+                            self.Discipline_OneLevelID = rsp.ReturnData.Data.Discipline_OneLevelID;
+                        if (rsp.ReturnData.Data.Discipline_TwoLevelID > 0)
+                            self.Discipline_TwoLevelID = rsp.ReturnData.Data.Discipline_TwoLevelID;
+                        if (rsp.ReturnData.Data.Discipline_ThreeLevelID > 0)
+                            self.Discipline_ThreeLevelID = rsp.ReturnData.Data.Discipline_ThreeLevelID;
+                    })
+                }
+            },
+            methods: {
+                FirstChange: function () {
+                    var self = this;
+                    if (self.Discipline_OneLevelID == '') {
+                        self.SecondSetting.remote = {};
+                        self.SecondSetting.remote.url = "";
+                        self.SecondSetting.remote.data = {};
+                        self.$refs.second.reset();  //重置select
+                    } else {
+                        fnr.mergeJson(SelectDisciplineBind(self.Discipline_OneLevelID), self.SecondSetting);//合并ajax值
+                        self.$refs.second.reset();
+                    }
+                    if (self.ThreeSetting.remote != undefined) {
+                        self.ThreeSetting.remote = {};
+                        self.ThreeSetting.remote.url = "";
+                        self.ThreeSetting.remote.data = {};
+                        self.$refs.three.reset();
+                    }
+                },
+                SecondChange: function () {
+                    var self = this;
+                    if (self.Discipline_TwoLevelID == '') {
+                        self.ThreeSetting.remote.url = "";
+                        self.ThreeSetting.remote.data = {};
+                    } else {
+                        fnr.mergeJson(SelectDisciplineBind(self.Discipline_TwoLevelID), self.ThreeSetting);//合并ajax值
+                    }
+                    self.$refs.three.reset();
+                },
+                //提交表单
+                saveUpdate: function (e) {
+                    if (!layui.form.checkInput(e)) {
+                        return false;
+                    }
+                    this.submitForm.Discipline_ID = this.Discipline_ThreeLevelID || this.Discipline_TwoLevelID || this.Discipline_OneLevelID;
+                    $.post("/service/Resource/SaveCourseWare", this.submitForm, function (rsp) {
+                        if (rsp.SuccessResponse) {
+                            fnr.callDialog('refresh');
+                            fnr.closeDialog();
+                        }
+                        parent.layer.msg(rsp.Message);
+                    });
+                }
+            }
+        });
+    });
+</script>

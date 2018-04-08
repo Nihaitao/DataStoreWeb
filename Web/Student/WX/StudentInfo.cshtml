@@ -1,0 +1,96 @@
+﻿@{
+    Layout = "~/Views/_Layout.cshtml";
+    Page.Title = "添加学生";
+}
+@section head
+{
+    <style>
+        .layi-pull-right { float: right; }
+    </style>
+    <script src="~/Resources/js/Controls/Student/Student.js"></script>
+    <script>
+        InfoInit();
+    </script>
+}
+<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+    <ul class="layui-tab-title">
+        <li class="layui-this">基本信息</li>
+        <li>报名信息</li>
+    </ul>
+    <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+            <div class="layui-form">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">学生ID：</label>
+                    <div class="layui-input-inline">
+                        <div class="layui-form-mid">43012119881108103X</div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">证件号码：</label>
+                    <div class="layui-input-inline">
+                        <div class="layui-form-mid">43012119881108103X</div>
+                    </div>
+                    <label class="layui-form-label">姓名：</label>
+                    <div class="layui-input-inline">
+                        <div class="layui-form-mid">赵小龙</div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">手机号码：</label>
+                    <div class="layui-input-inline">
+                        <div class="layui-form-mid">43012119881108103X</div>
+                    </div>
+                    <label class="layui-form-label">性别：</label>
+                    <div class="layui-input-inline">
+                        <div class="layui-form-mid">男</div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">电话：</label>
+                    <div class="layui-input-inline">
+                        <div class="layui-form-mid">43012119881108103X</div>
+                    </div>
+                    <label class="layui-form-label">QQ：</label>
+                    <div class="layui-input-inline">
+                        <div class="layui-form-mid">43012119881108103X</div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">学历：</label>
+                    <div class="layui-input-inline">
+                        <div class="layui-form-mid">43012119881108103X</div>
+                    </div>
+                    <label class="layui-form-label">Email：</label>
+                    <div class="layui-input-inline">
+                        <div class="layui-form-mid">43012119881108103X</div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">来源：</label>
+                    <div class="layui-input-inline">
+                        <div class="layui-form-mid">43012119881108103X</div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">地址：</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid">43012119881108103X</div>
+                    </div>
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">备注：</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid">43012119881108103X</div>
+                    </div>
+                </div>
+                <div class="layui-form-item layui-hide">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-tab-item">内容2</div>
+    </div>
+</div>

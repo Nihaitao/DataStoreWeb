@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>我的客户</title>
+    <style>
+        div.layui-table-cell {
+            height: 30px;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <table id="listTable" lay-filter="listTable"></table>
+    </div>
+</body>
+</html>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'laydate', 'layer'],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+            var layer = layui.layer;
+            function trim(str) {
+                return str.replace(/(^\s*)|(\s*$)/g, "");
+            }
+            //表格基本配置参数
+            var tableColsConfig =
+                [
+
+                    { fixed: true, checkbox: true },
+                        {
+                            title: '产品名称', width: 150, sort: true, templet: function () {
+                                var array = new Array();
+                                array.push("<a href='javascript:;' lay-event='detail1' style='color:#1e9fff;display: inline-block; width: 100%;white-space: nowrap; text-overflow: ellipsis;overflow: hidden;' title=" + (this.Name) + ">" + (this.Name) + "</a>");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        },
+                        { field: 'ProductNumber', title: '产品标号', width: 200, sort: true },
+                        { field: 'NormalPrice', title: '标准单价', width: 200, sort: true },
+                        { field: 'SaleUnit', title: '销售单位', width: 200, sort: true },
+                        { field: 'ProductTypeName', title: '产品分类', width: 300, sort: true },
+                        //{
+                        //    fixed: 'right',
+                        //    field: 'name',
+                        //    title: '操作',
+                        //    width: 180,
+                        //    toolbar: function () {
+                        //        var array = new Array();
+                        //        array.push("<button class=\" layui-btn layui-btn-small " + (this.Valid == 1 ? "layui-btn-warm" : "layui-btn-normal") + " \" lay-event='editisenable'>" + (this.Valid == 1 ? "禁用" : "启用") + "</button>");
+                        //        array.push("<button type='button' class='layui-btn layui-btn-small' lay-event='modifyClient'>修改</button>");
+                        //        array.push("<button class=\"layui-btn layui-btn-small layui-btn-danger \" lay-event='DeleteProduct'>删除</button>");
+                        //        return "<div>" + array.join("") + "</div>";
+                        //    }
+                        //}
+                ];
+
+
+            //搜索条件
+            window.rootApp = new Vue({
+                el: '#root',
+                data: {
+                    //搜索选择的参数列表
+                    queryFormData: {
+                      
+                    },
+                   
+                    releaseClient: [],
+                
+                },
+                ready: function () {
+                },
+                methods: {
+
+                }
+            });
+
+            //绑定列表
+            var listTable = table.render({
+                elem: '#listTable',
+                even: true, //开启隔行背景
+                page: false, //页分,
+                height: 'full-140',
+                id: 'listTable',
+                cols: [tableColsConfig],
+                url: "/service/crm/Product/GetProductModelList?Other=" + fnr.getQueryString('Other')
+            });
+            //获取选中的行相关数据
+            table.on('checkbox(listTable)', function (obj) {
+                var checkStatus = table.checkStatus('listTable');
+                rootApp.releaseClient = [];
+                $.each(checkStatus.data, function (k, v) {
+                    if (v.IsAssign != 1) {
+                        rootApp.releaseClient.push(v.ID);
+                    }
+                });
+            });
+
+
+
+            //监听工具栏事件
+            tableExt.addEvent("tool(listTable)",
+                {
+                
+                });
+        });
+</script>

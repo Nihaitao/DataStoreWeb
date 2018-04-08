@@ -1,0 +1,866 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>做题记录</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <link href="/Resources/fonts/iconfont.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link href="/Resources/CSS/Font/css/font-awesome.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/Resources/CSS/PC_css.css">
+    <link href="/Resources/CSS/video-js.css" rel="stylesheet" />
+    <link href="/Resources/CSS/question.css" rel="stylesheet" />
+    <script src="/Resources/js/moment.js"></script>
+    <script src="/script/jquery.js"></script>
+    
+    <style>
+        [v-cloak]{
+            display: none;
+        }
+
+        .collectionBox .praItemLeft p:first-child span:last-child,
+        .noteBox .praItemLeft p:first-child span:last-child{
+            display: inline-block;
+            height: 20px;
+            width: 640px;
+            white-space:nowrap;
+            text-overflow:ellipsis;
+            overflow:hidden;
+            vertical-align: middle;
+        }
+        .noteBox .praItemLeft p:first-child span:last-child{
+            width: 580px;
+        }
+        .noteBox .praItemLeft p:first-child span:last-child p{
+            display: inline;
+            margin-right: 15px;
+            color: #333;
+            font-size: 14px;
+        }
+        .collectionBox .praItemLeft p:first-child span:last-child img,
+        .noteBox .praItemLeft p:first-child span:last-child img{
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body style="background-color: #f7f7f7;user-select: none;">
+    <!--顶部-->
+    <!--#<!--#include file="/PublicControl/topmenu.html"-->
+    <div class="w1200 clearfix">
+
+        <!--左侧导航-->
+        <!--#<!--#include file="/PublicControl/leftmenu.html"-->
+        <!--做题记录-->
+        <div class="main" id="root">
+            <!--选项卡切换-->
+            <div class="order-top" v-cloak>
+                <ul class="orderTabs">
+                    <li data-temp="practice">练习记录</li>
+                    <li data-temp="collection">我的收藏</li>
+                    <li data-temp="note">我的笔记</li>
+                </ul>
+                <div class="courseListByQR" v-cloak>
+                    <p>题库：</p>
+                    <ul class="items">
+                        <li class="allItem" @click="allQuestionStore($event)">全部</li>
+                        <li v-for="(index, item) in QuestionStoreListData" @click="toggleQuestion(item, $event)">{{item.Name}}</li>
+                    </ul>
+                </div>
+                <div class="typeListByQR" v-show="isTypeList" v-cloak>
+                    <p>类型：</p>
+                    <ul class="items">
+                        <li class="allItem" @click="allQuestionType($event)">全部</li>
+                        <li v-for="(index, item) in QuestionTypeListData" @click="toggleType(item, $event)">{{item.Name}}</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!--做题记录-->
+            <div class="practiceRecord practiceBox" v-bind:class="{'isDisplay': practiceActive}" v-cloak>
+                <div style="padding-bottom: 20px; background-color: #f7f7f7;">
+                    <h2>全部 {{PraticeListTotal || 0}} 条</h2>
+                </div>
+                <div v-show="PraticeListData.length == 0" style="text-align: center;height: 400px;">
+                    <img style="display: inline-block; margin-top: 120px;" src="../../Resources/images/noneData.png" />
+                </div>
+                <ul v-show="PraticeListData.length > 0">
+                    <li class="praItem" v-for="(index, item) in PraticeListData">
+                        <div class="praItemLeft">
+                            <p>
+                                <span class="chapterPractice">[{{item.BusType == 1 ? '章节练习' : '模拟考试'}}]</span>
+                                <span style="color: #333; vertical-align: middle;">{{item.QuestionStoreName}}&nbsp;{{item.Title}}</span>
+                            </p>
+                            <p>
+                                <span style="margin-right: 20px;">{{item.BeginTime}}</span>
+                                <span>{{item.TotalCounts}}题/对{{item.RightCounts}}题</span>
+                            </p>
+                        </div>
+                        <div class="praItemRight">
+                            <p class="unfinishedBtn" v-if="item.Valid == 0">未完成</p>
+                            <p class="analysisBtn" v-else @click="analysisFn(item)">查看解析</p>
+                            <p class="continueBtn" @click="continueFn">继续做题</p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="Pro-pageCount clearfix">
+                            <div class="clearfix" style="margin: 0 auto;width: 680px" id="PraticePage"></div>
+                        </div>
+                    </li>
+                </ul>
+                
+            </div>
+
+            <!--我的收藏-->
+            <div class="practiceRecord collectionBox" v-bind:class="{'isDisplay': collectionActive}" v-cloak>
+                <div style="padding-bottom: 20px; background-color: #f7f7f7;">
+                    <h2>全部 {{CollectionListTotal || 0}} 条</h2>
+                </div>
+                <div v-show="CollectionListData.length == 0" style="text-align: center;height: 400px;">
+                    <img style="display: inline-block; margin-top: 120px;" src="../../Resources/images/noneData.png" />
+                </div>
+                <ul v-show="CollectionListData.length > 0">
+                    <template v-for="(index, item) in CollectionListData">
+                        <li class="praItem">
+                            <div class="praItemLeft">
+                                <p>
+                                    <span class="chapterPractice">[{{item.QuestionType_Name}}]</span>
+                                    <span style="color: #333; vertical-align: top;" v-html="item.Title"></span>
+                                </p>
+                                <p class="someAddTimeP">
+                                    <span>{{item.AddTime}}</span>
+                                </p>
+                            </div>
+                            <div class="praItemRight">
+                                <p class="deleteBtns" @click="toggleCollection(item.ID)">删除</p><p class="seeBtn layoutBtn" @click="layoutBtn($event)">查看</p>
+                            </div>
+                        </li>
+                        <li class="praItem infoItem">
+                            <ul class="chapterInfo">
+                                <li v-if="item.QuestionType_ID == 1 || item.QuestionType_ID == 2 && item.BodyList.length > 0" v-for="(index2, item2) in item.BodyList">{{index2}}、{{item2}}</li>
+                                <li v-if="item.QuestionType_ID == 4" v-for="(index2, item2) in item.BodyList">{{item2.key}}、{{item2.val}}</li>
+                            </ul>
+                            <div class="QAText">
+                                <p class="referenceQA">
+                                    <span>参考答案：</span>
+                                    <span class="refQ" v-if="item.QuestionType_ID == 4">{{item.Answer == 1 ? 'A' : 'B'}}</span>
+                                    <span class="refQ" v-else>{{item.Answer}}</span>
+                                </p>
+                                <div class="dataBtnBox">
+                                    <p @click="viewParsing($event)">
+                                        <i class="iconfont icon-xiala"></i>
+                                        <span>查看解析</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="analysisBox">
+                                <div class="difficulty">
+                                    <p>试题难度：</p>
+                                    <div>
+                                        <i class="iconfont" v-bind:class="{'active': item.Level >= 1, 'icon-pinglunhuangsexingxing': item.Level >= 1, 'icon-pinglunhuisexingxing': item.Level < 1}" style="margin-left: 15px;"></i>
+                                        <i class="iconfont" v-bind:class="{'active': item.Level >= 2, 'icon-pinglunhuangsexingxing': item.Level >= 2, 'icon-pinglunhuisexingxing': item.Level < 2}" style="margin-left: 15px;"></i>
+                                        <i class="iconfont" v-bind:class="{'active': item.Level >= 3, 'icon-pinglunhuangsexingxing': item.Level >= 3, 'icon-pinglunhuisexingxing': item.Level < 3}" style="margin-left: 15px;"></i>
+                                        <i class="iconfont" v-bind:class="{'active': item.Level >= 4, 'icon-pinglunhuangsexingxing': item.Level >= 4, 'icon-pinglunhuisexingxing': item.Level < 4}" style="margin-left: 15px;"></i>
+                                        <i class="iconfont" v-bind:class="{'active': item.Level >= 5, 'icon-pinglunhuangsexingxing': item.Level >= 5, 'icon-pinglunhuisexingxing': item.Level < 5}" style="margin-left: 15px;"></i>
+                                    </div>
+                                </div>
+                                <div class="referenceAnalysis">
+                                    <p class="analysisP">查看解析：</p>
+                                    <div v-html="item.Mark"></div>
+                                </div>
+                                <div class="noteBoxData">
+                                    <p>笔&emsp;&emsp;记：</p>
+                                    <div @click="noteTaking($event)" style="color: #f66401;">
+                                        <i class="iconfont icon-jibiji" style="font-size: 22px; vertical-align: middle;"></i>
+                                        <span>记笔记</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display: none;">
+                                <p class="myNoteText">我的笔记（{{item.NoteList.length}}）</p>
+                                <div class="textareaNote">
+                                    <textarea placeholder="据说认真做笔记的人都成为了大神了呢"></textarea>
+                                    <p @click="saveNote($event, item, index)">
+                                        <i class="iconfont icon-baocun" style="margin-right: 5px;  vertical-align: text-top;"></i>
+                                        保  存
+                                    </p>
+                                </div>
+                                <div class="noteList" v-if="item.NoteList.length > 0">
+                                    <ul>
+                                        <li class="item" v-for="(index3, item3) in item.NoteList">
+                                            <p class="noteTitle">{{item3.Remart}}</p>
+                                            <div class="noteToolBox clearfix" style="overflow: hidden;">
+                                                <p>时间: {{item3.AddTime}}</p>
+                                                <div>
+                                                    <p @click="noteModify($event)" style="cursor: pointer;">编辑</p>
+                                                    <p @click="DeleteNoteByID(item, index, item3.ID)" style="cursor: pointer;">删除</p>
+                                                </div>
+                                            </div>
+                                            <div class="textareaNote nowNoteModify">
+                                                <textarea placeholder="据说认真做笔记的人都成为了大神了呢" v-bind:value="item3.Remart"></textarea>
+                                                <p @click="saveModifyNote($event, item3, index, item)">
+                                                    <i class="iconfont icon-baocun" style="margin-right: 5px;  vertical-align: text-top;"></i>
+                                                    保  存
+                                                </p>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                    </template>
+                    <li>
+                        <div class="Pro-pageCount clearfix">
+                            <div class="clearfix" style="margin: 0 auto;width: 710px" id="CollectionPage"></div>
+                        </div>
+                    </li>
+                </ul>
+                
+            </div>
+
+            <!--我的笔记-->
+            <div class="practiceRecord noteBox" v-bind:class="{'isDisplay': noteActive}" v-cloak>
+                <div style="padding-bottom: 20px; background-color: #f7f7f7;">
+                    <h2>全部 {{NoteListTotal || 0}} 条</h2>
+                </div>
+                <div v-show="NoteListData.length == 0" style="text-align: center;height: 400px;">
+                    <img style="display: inline-block; margin-top: 120px;" src="../../Resources/images/noneData.png" />
+                </div>
+                <ul v-show="NoteListData.length > 0">
+                    <template v-for="(index, item) in NoteListData">
+                        <li class="praItem">
+                            <div class="praItemLeft" style="width: 70%;">
+                                <p>
+                                    <span class="chapterPractice">[{{item.QuestionType_Name}}]</span>
+                                    <span style="color: #333; vertical-align: top;" v-html="item.Title"></span>
+                                </p>
+                                <p class="someAddTimeP">
+                                    <span>{{item.AddTime}}</span>
+                                </p>
+                            </div>
+                            <div class="praItemRight">
+                                <p class="deleteBtns" @click="NoteListDelete(item.ID)">删除</p><p class="seeBtn layoutBtn" @click="layoutBtn($event)">查看</p>
+                            </div>
+                        </li>
+                        <li class="praItem infoItem" style="border-bottom: none;">
+                            <ul class="chapterInfo">
+                                <li v-if="item.QuestionType_ID == 1 || item.QuestionType_ID == 2" v-for="(index2, item2) in item.BodyList">{{index2}}、{{item2}}</li>
+                                <li v-if="item.QuestionType_ID == 4" v-for="(index2, item2) in item.BodyList">{{item2.key}}、{{item2.val}}</li>
+                            </ul>
+                            <div class="QAText">
+                                <p class="referenceQA">
+                                    <span>参考答案：</span>
+                                    <span class="refQ" v-if="item.QuestionType_ID == 4">{{item.Answer == 1 ? 'A' : 'B'}}</span>
+                                    <span class="refQ" v-else>{{item.Answer}}</span>
+                                </p>
+                                <!--<div class="dataBtnBox">
+                                    <p @click="viewParsing($event)">
+                                        <i class="iconfont icon-xiala"></i>
+                                        <span>查看解析</span>
+                                    </p>
+                                </div>-->
+                            </div>
+                            <div class="analysisBox">
+                                <div class="difficulty">
+                                    <p>试题难度：</p>
+                                    <div>
+                                        <i class="iconfont" v-bind:class="{'active': item.Level >= 1, 'icon-pinglunhuangsexingxing': item.Level >= 1, 'icon-pinglunhuisexingxing': item.Level < 1}" style="margin-left: 15px;"></i>
+                                        <i class="iconfont" v-bind:class="{'active': item.Level >= 2, 'icon-pinglunhuangsexingxing': item.Level >= 2, 'icon-pinglunhuisexingxing': item.Level < 2}" style="margin-left: 15px;"></i>
+                                        <i class="iconfont" v-bind:class="{'active': item.Level >= 3, 'icon-pinglunhuangsexingxing': item.Level >= 3, 'icon-pinglunhuisexingxing': item.Level < 3}" style="margin-left: 15px;"></i>
+                                        <i class="iconfont" v-bind:class="{'active': item.Level >= 4, 'icon-pinglunhuangsexingxing': item.Level >= 4, 'icon-pinglunhuisexingxing': item.Level < 4}" style="margin-left: 15px;"></i>
+                                        <i class="iconfont" v-bind:class="{'active': item.Level >= 5, 'icon-pinglunhuangsexingxing': item.Level >= 5, 'icon-pinglunhuisexingxing': item.Level < 5}" style="margin-left: 15px;"></i>
+                                    </div>
+                                </div>
+                                <div class="referenceAnalysis">
+                                    <p class="analysisP">查看解析：</p>
+                                    <div v-html="item.Mark"></div>
+                                </div>
+                                <!--<div class="noteBoxData">
+                                    <p>笔&emsp;&emsp;记：</p>
+                                    <div @click="noteTaking($event)" style="color: #f66401;">
+                                        <i class="iconfont icon-jibiji" style="font-size: 22px; vertical-align: middle;"></i>
+                                        <span>记笔记</span>
+                                    </div>
+                                </div>-->
+                            </div>
+                            <div>
+                                <p class="myNoteText">我的笔记（{{item.NoteList.length}}）</p>
+                                <div class="textareaNote">
+                                    <textarea placeholder="据说认真做笔记的人都成为了大神了呢"></textarea>
+                                    <p @click="saveNote($event, item, index)">
+                                        <i class="iconfont icon-baocun" style="margin-right: 5px; vertical-align: text-top;"></i>
+                                        保  存
+                                    </p>
+                                </div>
+                                <div class="noteList" v-if="item.NoteList.length > 0">
+                                    <ul>
+                                        <li class="item" v-for="(index3, item3) in item.NoteList">
+                                            <p class="noteTitle">{{item3.Remart}}</p>
+                                            <div class="noteToolBox clearfix" style="overflow: hidden;">
+                                                <p>时间: {{item3.AddTime}}</p>
+                                                <div>
+                                                    <p @click="noteModify($event)" style="cursor: pointer;">编辑</p>
+                                                    <p @click="DeleteNoteByID(item, index, item3.ID)" style="cursor: pointer;">删除</p>
+                                                </div>
+                                            </div>
+                                            <div class="textareaNote nowNoteModify">
+                                                <textarea placeholder="据说认真做笔记的人都成为了大神了呢" v-bind:value="item3.Remart"></textarea>
+                                                <p @click="saveModifyNote($event, item3, index, item)">
+                                                    <i class="iconfont icon-baocun" style="margin-right: 5px;  vertical-align: text-top;"></i>
+                                                    保  存
+                                                </p>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                    </template>
+                    <li>
+                        <div class="Pro-pageCount clearfix">
+                            <div class="clearfix" style="margin: 0 auto;width: 680px" id="NotePage"></div>
+                        </div>
+                    </li>
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+    <!--footer-->
+    <!--#<!--#include file="/PublicControl/bottommenu.html"-->
+    <script src="/Resources/js/Page.js"></script>
+    <script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil', 'linq'],
+        function (fnr) {
+            var $ = layui.$;
+            var table = layui.table;
+            var tableExt = layui.tableExt;
+            var linq = layui.linq;
+            var vm = new Vue({
+                el: "#root",
+                data: {
+                    toggleIndex: fnr.getQueryString('index'),
+                    isCollection: false, //是否收藏
+                    practiceActive: true, //做题记录
+                    collectionActive: false, //我的收藏
+                    noteActive: false, //我的笔记
+                    isTypeList: false, //是否显示类型
+                    QuestionStoreListData: [], //题库列表数据
+                    QuestionTypeListData: [], //类型列表数据
+                    CollectionListData: [], //我的收藏列表数据
+                    NoteListData: [], //我的笔记列表数据
+                    PraticeListData: [], //做题记录列表数据
+                    CollectionListTotal: '', //收藏列表总条数
+                    NoteListTotal: '', //笔记列表总条数
+                    PraticeListTotal: '', //做题记录总条数
+                    Collection: {
+                        QuestionStore_ID: -1,  //题库ID
+                        QuestionType_ID: -1    //类型ID
+                    },
+                    Note: {
+                        QuestionStore_ID: -1,  //题库ID
+                        QuestionType_ID: -1    //类型ID
+                    },
+                    Pratice: {
+                        QuestionStore_ID: 0   //题库ID
+                    }
+
+                },
+                ready: function () {
+                    var self = this;
+                    if(self.toggleIndex){
+                        $('.orderTabs').find('li').eq(self.toggleIndex).addClass('active');
+                        if(self.toggleIndex == 0){
+                            self.practiceActive = true;
+                            self.collectionActive = false;
+                            self.noteActive = false;
+                            self.isTypeList = false;
+                        }else if(self.toggleIndex == 1){
+                            self.practiceActive = false;
+                            self.collectionActive = true;
+                            self.noteActive = false;
+                            self.isTypeList = true;
+                        }else if(self.toggleIndex == 2){
+                            self.practiceActive = false;
+                            self.collectionActive = false;
+                            self.noteActive = true;
+                            self.isTypeList = true;
+                        }
+                    }else{
+                        $('.orderTabs').find('li').eq(0).addClass('active');
+                    }
+                    self.tabsToggle();
+                    self.GetQuestionStoreList();  //题库
+                    self.GetQuestionTypeList();   //类型
+                    self.GetCollectionList(-1, -1, 1);  //收藏
+                    self.GetNoteList(-1, -1, 1);  //笔记
+                    self.GetStudentPraticeList(0, 1);  //做题记录
+                },
+                methods: {
+                    //继续做题
+                    continueFn: function(){
+                        location.href = '/usercenter/questionbank/tk/myCourseList.shtml';
+                    },
+                    //查看解析
+                    analysisFn: function(item){
+                        console.log(item);
+                        if(!!item.BusID && !!item.ID){
+                            if(item.BusType == 1){  //章节练习 四个参数
+                              location.href = '/usercenter/questionbank/tk/examAnalysis.shtml?busId=' + item.BusID + '&ResultId=' + item.ID;
+                            }else{                  //模拟考试 两个参数
+                               location.href = '/usercenter/questionbank/tk/Exam/ExamAnalysis.shtml?ID=' + item.BusID + '&ResultId=' + item.ID;
+                            }
+                        }
+                    },
+                    //查看
+                    layoutBtn: function (e) {
+                        var ev = e.target || e.srcElement || e.toElement;
+                        var $t = $(ev);
+                        var $praItem = $t.parents('.praItem');
+                        if ($t.hasClass('seeBtn')) {
+                            $t.removeClass('seeBtn').addClass('stopBtn').html('收起');
+                            $praItem.next('li.infoItem').slideDown();
+                        } else {
+                            $t.addClass('seeBtn').removeClass('stopBtn').html('查看');
+                            $praItem.next('li.infoItem').slideUp();
+                        }
+                    },
+                    //查询笔记列表
+                    GetQuestionNoteList: function (item, index) {
+                        var self = this;
+                        $.get('/service/datastore/Collection/GetQuestionNoteList', { Question_ID: item.ID }, function (res) {
+                            if (res.SuccessResponse) {
+                                $.each(res.Data, function(k, v){
+                                    v.AddTime = moment(v.AddTime).format('YYYY/MM/DD HH:mm:ss');
+                                });
+                                self.CollectionListData[index].NoteList = res.Data;
+                                self.NoteListData[index].NoteList = res.Data;
+                            } else {
+                                layer.msg(res.Message);
+                            }
+                        })
+                    },
+                    //保存笔记
+                    saveNote: function (e, item, index) {
+                        var self = this;
+                        var id=item.ID
+                        var ev = e.target || e.srcElement || e.toElement;
+                        var Remart;
+                        if ($(ev).hasClass('iconfont')) {
+                            Remart = $(ev).parent().prev().val();
+                        } else {
+                            Remart = $(ev).prev().val();
+                        }
+                        if (Remart == '') {
+                            layer.msg('笔记不能为空，请添加您的笔记');
+                        } else {
+                            $.post('/service/datastore/Collection/AddQuestionNote', { Question_ID: id, Remart: Remart }, function (res) {
+                                if (res.SuccessResponse) {
+                                    layer.msg('保存成功');
+                                    self.GetQuestionNoteList(item, index);  //重新查询笔记列表
+                                    if ($(ev).hasClass('iconfont')) {
+                                        Remart = $(ev).parent().prev().val('');
+                                    } else {
+                                        Remart = $(ev).prev().val('');
+                                    }
+                                } else {
+                                    layer.msg(res.Message);
+                                }
+                            });
+                        }
+                    },
+                    //修改笔记 -- 编辑按钮
+                    noteModify: function (e, id) {
+                        var ev = e.target || e.srcElement || e.toElement;
+                        $(ev).parents('.noteToolBox').next().slideToggle();
+                        $(ev).parents('.item').siblings().find('.nowNoteModify').slideUp();
+                        $(ev).parents('.noteList').prev().slideUp();
+
+                    },
+                    //修改笔记
+                    saveModifyNote: function (e, item, index, cItem) {
+                        var id = item.ID;
+                        var ev = e.target || e.srcElement || e.toElement;
+                        var self = this;
+                        var Remart;
+                        if ($(ev).hasClass('iconfont')) {
+                            Remart = $(ev).parent().prev().val();
+                        } else {
+                            Remart = $(ev).prev().val();
+                        }
+                        $.post('/service/datastore/Collection/UpdateNoteByID', { ID: id, Remart: Remart }, function (res) {
+                            if (res.SuccessResponse) {
+                                layer.msg('修改成功');
+                                self.GetQuestionNoteList(cItem, index);  //重新查询笔记列表
+                                $(ev).parents('.noteList').prev().slideDown();
+                            } else {
+                                layer.msg(res.Message);
+                            }
+                        });
+                    },
+                    //删除笔记
+                    DeleteNoteByID: function (item, index1, id) {
+                        var self = this;
+                        if (id) {
+                            layer.confirm('确定删除吗？', function (index) {
+                                $.post('/service/datastore/Collection/DeleteNoteByID', { ID: id }, function (res) {
+                                    if (res.SuccessResponse) {
+                                        layer.msg('删除成功');
+                                        layer.close(index);
+                                        self.GetQuestionNoteList(item, index1);  //重新查询笔记列表
+                                    } else {
+                                        layer.msg(res.Message);
+                                    }
+                                });
+                            });
+                        }
+                    },
+                    tabsToggle: function () {
+                        var self = this;
+                        $('.orderTabs').on('click', 'li', function () {
+                            var $t = $(this);
+                            var temp = $t.data('temp');
+                            if (temp == 'practice') {
+                                self.practiceActive = true;
+                                self.collectionActive = false;
+                                self.noteActive = false;
+                                self.isTypeList = false;
+                            } else if (temp == 'collection') {
+                                self.practiceActive = false;
+                                self.collectionActive = true;
+                                self.noteActive = false;
+                                self.isTypeList = true;
+                            } else {
+                                self.practiceActive = false;
+                                self.collectionActive = false;
+                                self.noteActive = true;
+                                self.isTypeList = true;
+                            }
+                            if (!$t.hasClass('active')) {
+                                $t.addClass('active').siblings().removeClass('active');
+                            }
+                        });
+                    },
+                    //查看解析
+                    viewParsing: function (e) {
+                        var ev = e.srcElement || e.target || e.toElement;
+                        $(ev).parents('.QAText').next().slideToggle();
+                        $(ev).parents('.QAText').next().next().slideUp();
+                    },
+                    //记笔记
+                    noteTaking: function (e) {
+                        var ev = e.srcElement || e.target || e.toElement;
+                        $(ev).parents('.analysisBox').next().slideToggle();
+                    },
+                    //是否收藏
+                    toggleCollection: function (id) {
+                        var self = this;
+                        layer.confirm('确定删除吗？', function (index) {
+                            $.post('/service/datastore/Collection/AddCollection', { BusID: id, BusType: 0 }, function (res) {
+                                if (res.SuccessResponse) {
+                                    layer.msg('删除成功');
+                                    layer.close(index);
+                                    self.GetCollectionList(self.Collection.QuestionStore_ID, self.Collection.QuestionType_ID, 1);
+                                } else {
+                                    layer.msg(res.Message);
+                                }
+                            });
+                        })
+                    },
+                    //笔记列表删除题目
+                    NoteListDelete: function (id) {
+                        var self = this;
+                        layer.confirm('确定删除吗？', function (index) {
+                            $.post('/service/datastore/Collection/DeleteAllNote', { Question_ID: id }, function (res) {
+                                if (res.SuccessResponse) {
+                                    layer.msg('删除成功');
+                                    layer.close(index);
+                                    self.GetNoteList(self.Collection.QuestionStore_ID, self.Collection.QuestionType_ID, 1);
+                                } else {
+                                    layer.msg(res.Message);
+                                }
+                            });
+                        })
+                    },
+                    //题库列表
+                    GetQuestionStoreList: function () {
+                        var self = this;
+                        $.get('/service/datastore/Question/GetMyQuestionStoreList',  function (res) {
+                            if (res.SuccessResponse) {
+                                self.QuestionStoreListData = res.Data;
+                            } else {
+                                layui.msg(res.Message);
+                            }
+                        });
+                    },
+                    //切换题库
+                    toggleQuestion: function (item, e) {
+                        var self = this;
+                        var ev = e.srcElement || e.target || e.toElement;
+                        if (!$(ev).hasClass('active')) {
+                            $(ev).addClass('active').siblings(':not(".allItem")').removeClass('active');
+                        }
+                        var $pt = $(ev).parents('.order-top').siblings('.isDisplay');
+                        if ($pt.hasClass('collectionBox')) {
+                            self.Collection.QuestionStore_ID = item.ID;
+                            self.GetCollectionList(item.ID, self.Collection.QuestionType_ID, 1);
+                        } else if ($pt.hasClass('noteBox')) {
+                            self.Note.QuestionStore_ID = item.ID;
+                            self.GetNoteList(item.ID, self.Note.QuestionType_ID, 1);
+                        } else {
+                            self.Pratice.QuestionStore_ID = item.ID;
+                            self.GetStudentPraticeList(item.ID, 1);
+                        }
+
+                    },
+                    //切换类型
+                    toggleType: function (item, e) {
+                        var self = this;
+                        var ev = e.srcElement || e.target || e.toElement;
+                        if (!$(ev).hasClass('active')) {
+                            $(ev).addClass('active').siblings(':not(".allItem")').removeClass('active');
+                        }
+                        var $pt = $(ev).parents('.order-top').siblings('.isDisplay');
+                        if ($pt.hasClass('collectionBox')) {
+                            self.Collection.QuestionType_ID = item.ID;
+                            self.GetCollectionList(self.Collection.QuestionStore_ID, item.ID, 1);
+                        } else if ($pt.hasClass('noteBox')) {
+                            self.Note.QuestionType_ID = item.ID;
+                            self.GetNoteList(self.Note.QuestionStore_ID, item.ID, 1);
+                        }
+                    },
+                    //全部题库
+                    allQuestionStore: function (e) {
+                        var self = this;
+                        var ev = e.srcElement || e.target || e.toElement;
+                        $(ev).siblings().removeClass('active');
+                        var $pt = $(ev).parents('.order-top').siblings('.isDisplay');
+                        if ($pt.hasClass('collectionBox')) {
+                            self.Collection.QuestionStore_ID = -1;
+                            self.GetCollectionList(-1, self.Collection.QuestionType_ID, 1);
+                        } else if ($pt.hasClass('noteBox')) {
+                            self.Note.QuestionStore_ID = -1;
+                            self.GetNoteList(-1, self.Note.QuestionType_ID, 1);
+                        } else {
+                            self.Pratice.QuestionStore_ID = -1;
+                            self.GetStudentPraticeList(-1, 1);
+                        }
+                    },
+                    //全部类型
+                    allQuestionType: function (e) {
+                        var self = this;
+                        var ev = e.srcElement || e.target || e.toElement;
+                        $(ev).siblings().removeClass('active');
+                        var $pt = $(ev).parents('.order-top').siblings('.isDisplay');
+                        if ($pt.hasClass('collectionBox')) {
+                            self.Collection.QuestionType_ID = -1;
+                            self.GetCollectionList(self.Collection.QuestionStore_ID, -1, 1);
+                        } else if ($pt.hasClass('noteBox')) {
+                            self.Note.QuestionType_ID = -1;
+                            self.GetNoteList(self.Note.QuestionStore_ID, -1, 1);
+                        }
+                    },
+                    //类型列表
+                    GetQuestionTypeList: function () {
+                        var self = this;
+                        $.get('/service/datastore/Question/GetQuestionTypeList', function (res) {
+                            if (res.SuccessResponse) {
+                                self.QuestionTypeListData = res.Data;
+                            } else {
+                                layui.msg(res.Message);
+                            }
+                        });
+                    },
+                    //获取收藏列表
+                    GetCollectionList: function (QuestionStore_ID, QuestionType_ID, num) {
+                        var self = this;
+                        $.get('/service/datastore/Collection/GetCollectionList', { QuestionStore_ID: QuestionStore_ID, QuestionType_ID: QuestionType_ID, BusType: 0, PageIndex: num, PageStatus: 1, PageSize: 10 }, function (res) {
+                            if (res.SuccessResponse) {
+                                self.CollectionListData = res.Data;
+                                if(res.Data.length == 0){
+                                    self.CollectionListTotal = 0;
+                                }else{
+                                    if (res.TotalCount > 0) {
+                                        self.CollectionListTotal = res.TotalCount;
+                                    }
+                                    $.each(self.CollectionListData,function (k,v) {
+                                        if (v.QuestionType_ID == 1) {                                   //单选题
+                                            if (v.Body.length > 0) {
+                                                v["BodyList"] = JSON.parse(v.Body);
+                                            } else {
+                                                v["BodyList"] = '';
+                                            }
+                                            v.QuestionType_Name = '单选题';
+                                        } else if (v.QuestionType_ID == 2) {                            //多选题
+                                            if (v.Body.length > 0) {
+                                                v["BodyList"] = JSON.parse(v.Body);
+                                            } else {
+                                                v["BodyList"] = '';
+                                            }
+                                            v.QuestionType_Name = '多选题';
+                                        } else if (v.QuestionType_ID == 3) {                            //填空题
+                                            v["BodyList"] = '';
+                                            v.QuestionType_Name = '填空题';
+                                        } else if (v.QuestionType_ID == 4) {                            //判断题
+                                            v["BodyList"] = [{ 'key': 'A', 'val': '错' }, { 'key': 'B', 'val': '对' }];
+                                            v.QuestionType_Name = '判断题';
+                                        } else if (v.QuestionType_ID == 5) {                            //问答题
+                                            v["BodyList"] = '';
+                                            v.QuestionType_Name = '问答题';
+                                        } else if (v.QuestionType_ID == 6) {                            //计算题
+                                            v["BodyList"] = '';
+                                            v.QuestionType_Name = '计算题';
+                                        } else if (v.QuestionType_ID == 7) {                            //组合题
+                                            v["BodyList"] = '';
+                                            v.QuestionType_Name = '组合题';
+                                        } else {
+                                            layer.msg('没有此类题型');
+                                        }
+                                        v.AddTime = moment(v.AddTime).format('YYYY-MM-DD HH:mm:ss');
+                                    });
+                                    if (self.CollectionListData.length > 0 && self.CollectionListTotal != '') {
+                                        //分页
+                                        $('#CollectionPage').show();
+                                        self.CollectionListPage(QuestionStore_ID, QuestionType_ID, self.CollectionListTotal, num);
+                                    } else {
+                                        $('#CollectionPage').hide();
+                                    }
+                                }
+                            }
+                        });
+                    },
+                    //收藏列表分页
+                    CollectionListPage: function (QuestionStore_ID, QuestionType_ID, TotalCount, PageIndex) {
+                        var self = this;
+                        return $("#CollectionPage").Page({
+                            pageIndex: PageIndex,
+                            totalPages: Math.ceil(TotalCount / 10),
+                            totalSize: TotalCount,
+                            callback: function (num) {
+                                self.GetCollectionList(QuestionStore_ID, QuestionType_ID, num);
+                            }
+                        })
+                    },
+                    //笔记列表分页
+                    NoteListPage: function (QuestionStore_ID, QuestionType_ID, TotalCount, PageIndex) {
+                        var self = this;
+                        return $("#NotePage").Page({
+                            pageIndex: PageIndex,
+                            totalPages: Math.ceil(TotalCount / 10),
+                            totalSize: TotalCount,
+                            callback: function (num) {
+                                self.GetNoteList(QuestionStore_ID, QuestionType_ID, num);
+                            }
+                        })
+                    },
+                    //练习记录列表分页
+                    PraticeListPage: function (QuestionStore_ID, TotalCount, PageIndex) {
+                        var self = this;
+                        return $("#PraticePage").Page({
+                            pageIndex: PageIndex,
+                            totalPages: Math.ceil(TotalCount / 10),
+                            totalSize: TotalCount,
+                            callback: function (num) {
+                                self.GetStudentPraticeList(QuestionStore_ID, num);
+                            }
+                        });
+                    },
+                    //获取笔记列表
+                    GetNoteList: function (QuestionStore_ID, QuestionType_ID, num) {
+                        var self = this;
+                        $.get('/service/datastore/Collection/GetNoteList', { QuestionStore_ID: QuestionStore_ID, QuestionType_ID: QuestionType_ID, PageIndex: num, PageStatus: 1, PageSize: 10 }, function (res) {
+                            if (res.SuccessResponse) {
+                                self.NoteListData = res.Data;
+                                if(res.Data.length == 0){
+                                    self.NoteListTotal = 0;
+                                }else{
+                                    if (res.TotalCount > 0) {
+                                    self.NoteListTotal = res.TotalCount;
+                                    }
+                                    $.each(self.NoteListData, function (k, v) {
+                                        if (v.QuestionType_ID == 1) {                                   //单选题
+                                            if (v.Body.length > 0) {
+                                                v["BodyList"] = JSON.parse(v.Body);
+                                            } else {
+                                                v["BodyList"] = '';
+                                            }
+                                            v.QuestionType_Name = '单选题';
+                                        } else if (v.QuestionType_ID == 2) {                            //多选题
+                                            if (v.Body.length > 0) {
+                                                v["BodyList"] = JSON.parse(v.Body);
+                                            } else {
+                                                v["BodyList"] = '';
+                                            }
+                                            v.QuestionType_Name = '多选题';
+                                        } else if (v.QuestionType_ID == 3) {                            //填空题
+                                            v["BodyList"] = '';
+                                            v.QuestionType_Name = '填空题';
+                                        } else if (v.QuestionType_ID == 4) {                            //判断题
+                                            v["BodyList"] = [{ 'key': 'A', 'val': '错' }, { 'key': 'B', 'val': '对' }];
+                                            v.QuestionType_Name = '判断题';
+                                        } else if (v.QuestionType_ID == 5) {                            //问答题
+                                            v["BodyList"] = '';
+                                            v.QuestionType_Name = '问答题';
+                                        } else if (v.QuestionType_ID == 6) {                            //计算题
+                                            v["BodyList"] = '';
+                                            v.QuestionType_Name = '计算题';
+                                        } else if (v.QuestionType_ID == 7) {                            //组合题
+                                            v["BodyList"] = '';
+                                            v.QuestionType_Name = '组合题';
+                                        } else {
+                                            layer.msg('没有此类题型');
+                                        }
+                                        v.AddTime = moment(v.AddTime).format('YYYY-MM-DD HH:mm:ss');
+                                    });
+                                    if (self.NoteListData.length > 0 && self.NoteListTotal != '') {
+                                        //分页
+                                        $('#NotePage').show();
+                                        self.NoteListPage(QuestionStore_ID, QuestionType_ID, self.NoteListTotal, num);
+                                    } else {
+                                        $('#NotePage').hide();
+                                    }
+                                }
+                            } else {
+                                layer.msg(res.Message);
+                            }
+                        });
+                    },
+                    //获取练习记录列表
+                    GetStudentPraticeList: function (id, num) {
+                        var self = this;
+                        $.get('/service/datastore/Chapter/GetStudentPraticeList', { QuestionStore_ID: id, PageIndex: num, PageStatus: 1, PageSize: 10 }, function (res) {
+                            if (res.SuccessResponse) {
+                                self.PraticeListData = res.Data;
+                                if(res.Data.length == 0){
+                                    self.PraticeListTotal = 0;
+                                }else{
+                                    if (res.TotalCount > 0) {
+                                        self.PraticeListTotal = res.TotalCount;
+                                    }
+                                    $.each(self.PraticeListData, function (k, v) {
+                                        v.BeginTime = moment(v.BeginTime).format('YYYY-MM-DD HH:mm:ss');
+                                    });
+                                    if (self.PraticeListTotal != '' && res.Data.length > 0) {
+                                        $('#PraticePage').show();
+                                        self.PraticeListPage(id, self.PraticeListTotal, num);
+                                    } else {
+                                        $('#PraticePage').hide();
+                                    }
+                                }
+                            }
+                        })
+                    }
+                }
+            });
+        })
+    </script>
+</body>
+
+</html>

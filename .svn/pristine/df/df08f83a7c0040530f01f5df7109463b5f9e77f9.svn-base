@@ -1,0 +1,509 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>市场部客户</title>
+    <style>
+        div.layui-table-cell { height: 30px; }
+    </style>
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery-1.4.4.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery.ztree.core.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery.ztree.excheck.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery.ztree.exedit.js"></script>
+
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+
+
+    <script>
+        require_js_file(['table', 'form', 'jquery', 'tableExt', 'laydate', 'layer', 'tree'],
+            function (fnr) {
+                var table = layui.table;
+                var form = layui.form;
+                var tableExt = layui.tableExt;
+                var layer = layui.layer;
+                var treeList = [];
+                var childrenArr = [];
+
+                var zTreeObj;
+
+                var setting = {
+                    async: {
+                        enable: true,
+                        autoParam: ["ID=Group_ID"],
+                        type: "get",
+                        dataFilter: ajaxDataFilter,
+                        url: "/service/crm/Group/GetListGroupDataNew"
+                    },
+                    data: {
+                        key: {
+                            name: "Name"
+                        },
+                        simpleData: {
+                            enable: true,
+                            idKey: "ID",
+                            pIdKey: "C_ID"
+                        }
+                    },
+                    view: {
+                        //addHoverDom: addHoverDom,  //添加事件
+                        //removeHoverDom: removeHoverDom, //鼠标移开移除添加按钮
+                        //nameIsHTML: true,
+                        showTitle: false
+                    },
+                    callback: {
+                        //beforeEditName: beforeEditName,//修改
+                        //beforeRemove: beforeRemove,//删除
+                        beforeClick: beforeClick, //点击事件
+                    }
+                }
+
+                function ajaxDataFilter(treeId, parentNode, rsp) {
+                    if (!rsp.Data) return;
+                    rsp.Data.map(function (a, b) {
+                        a.open = a.IsExistChild;
+                    })
+                    return rsp.Data;
+                };
+
+                $(document).ready(function () {
+                    zTreeObj = $.fn.zTree.init($("#treeDemo"), setting);
+                });
+
+                //公司节点去掉删除
+                function showRemoveBtn(treeId, treeNode) {
+                    return treeNode.C_ID;
+                }
+                //公司节点去掉修改
+                function showRenameBtn(treeId, treeNode) {
+                    return treeNode.C_ID;
+                }
+                //修改
+                function beforeEditName(treeId, treeNode) {
+                    zTreeObj.selectNode(treeNode);
+                    fnr.openDialog({
+                        title: '修改分组',
+                        area: ['470px', '200px'],
+                        content: ['../SystemSet/GroupEdit.html?ID=' + treeNode.ID + '&CID=' + treeNode.C_ID],
+                        btn: ['确认修改'],
+                        events: {
+                            refresh: function (data) {
+                                layer.msg('修改成功')
+                                var nodes = zTreeObj.getSelectedNodes();
+                                if (nodes != null) {
+                                    nodes[0].Name = data.Name;
+                                    zTreeObj.updateNode(nodes[0]);
+                                }
+                            }
+                        }
+                    });
+                    return false;
+                }
+
+                //删除节点事件
+                function beforeRemove(treeId, treeNode) {
+                    layer.confirm('确定删除吗？删除后不可恢复！', function () {
+                        $.ajax({
+                            url: '/service/crm/Group/DeleteGroup',
+                            type: 'POST',
+                            data: {
+                                Other: treeNode.ID,
+                            },
+                            success: function (data) {
+                                if (data.SuccessResponse) {
+                                    var nodes = zTreeObj.getNodesByParam("ID", treeNode.C_ID, null);
+                                    zTreeObj.selectNode(nodes[0]);
+                                    layer.msg(data.Message == null ? '删除成功' : data.Message)
+                                    zTreeObj.removeNode(treeNode);
+                                } else {
+                                    layer.msg(data.Message);
+                                }
+                            }
+                        });
+                    })
+                    return false;
+                }
+                //添加部门
+                function addHoverDom(treeId, treeNode) {
+                    var sObj = $("#" + treeNode.tId + "_span");
+                    if (treeNode.editNameFlag || $("#addBtn_" + treeNode.tId).length > 0) return;
+                    var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
+                        + "' title='add node' onfocus='this.blur();'></span>";
+                    sObj.after(addStr);
+                    var btn = $("#addBtn_" + treeNode.tId);
+                    if (btn)
+                        btn.bind("click", function () {
+                            zTreeObj.selectNode(treeNode);
+                            fnr.openDialog({
+                                title: '添加分组',
+                                area: ['470px', '200px'],
+                                content: ['../SystemSet/GroupAdd.html?CID=' + treeNode.ID],
+                                btn: ['确认添加'],
+                                events: {
+                                    refresh: function (data) {
+                                        var nodes = zTreeObj.getSelectedNodes();
+                                        if (!nodes[0].isParent) {
+                                            nodes[0].isParent = true;
+                                            zTreeObj.updateNode(nodes[0]);
+                                        }
+                                        zTreeObj.reAsyncChildNodes(null, "refresh");
+                                    }
+                                }
+                            });
+                            return false;
+                        });
+                };
+                function removeHoverDom(treeId, treeNode) {
+                    $("#addBtn_" + treeNode.tId).unbind().remove();
+                };
+                function beforeClick(treeId, treeNode, clickFlag) {
+                    window.rootApp.treeIds = treeNode.ID;
+                    if (treeNode.ID != null && treeNode.ID != "") {
+                        listTable.reload({
+                            where: { Group_ID: treeNode.ID }
+                        });
+                    }
+                }
+                //表格基本配置参数
+                var tableColsConfig =
+                    [
+                        { fixed: true, checkbox: true },
+                        { fixed: true, field: 'ID', title: 'ID', width: 80, sort: true },
+                        {
+                            title: '客户名称', width: 150, sort: true, templet: function () {
+                                var array = new Array();
+                                array.push("<a href='javascript:;' lay-event='detail1'  style='color:#1e9fff;display: inline-block; width: 100%;white-space: nowrap; text-overflow: ellipsis;overflow: hidden;' title=" + (this.Name) + ">" + (this.Name) + "</a>");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        },
+                        { field: 'ImportanceName', title: '重要程度', width: 150, sort: true },
+                        { field: 'SourceName', title: '来源', width: 120, sort: true },
+                        { field: 'PhaseTypeName', title: '跟进阶段', width: 120, sort: true },
+                        { field: 'SysGroupPath', title: '全局分组', width: 120, sort: true },
+                        {
+                            title: '时间', width: 160, sort: true, templet: function () {
+                                var array = new Array();
+                                array.push("<span>" + fnr.format(this.AddTime, "yyyy-MM-dd HH:mm") + "</span>");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        },
+                        {
+                            title: '最新跟进记录', sort: true, templet: function () {
+                                var array = new Array();
+                                array.push("<span>" + (this.Content == null || this.Content == '' ? "-" : this.Content) + "</span>");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        },
+                        {
+                            fixed: 'right',
+                            title: '操作',
+                            width: 200,
+                            toolbar: function () {
+                                var array = new Array();
+                                array.push("<button href='javascript:;' class='layui-btn layui-btn-info layui-btn-small layui-btn-normal' lay-event='detail2'>添加跟进</button><button type='button' class='layui-btn layui-btn-info layui-btn-small' lay-event='modifyClient'>修改</button><button type='button' class='layui-btn layui-btn-danger layui-btn-small' lay-event='deleteClient'>删除</button>");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        }
+                    ];
+
+                //绑定列表
+                var listTable = table.render({
+                    elem: '#listTable',
+                    even: true, //开启隔行背景
+                    page: true, //页分,
+                    height: 'full-140',
+                    id: 'listTable',
+                    cols: [tableColsConfig],
+                    where: { ModelIndex: '' },
+                    url: "/service/crm/Client/GetClientByGroupID"
+                });
+                //获取选中的行相关数据
+                table.on('checkbox(listTable)', function (obj) {
+                    var checkStatus = table.checkStatus('listTable');
+                    rootApp.myClientData = [];
+                    rootApp.DistributionClientData = [];
+                    $.each(checkStatus.data, function (k, v) {
+                        rootApp.myClientData.push(v.ID);
+                        rootApp.DistributionClientData.push(v.ID);
+                    });
+                });
+
+                //监听工具栏事件
+                tableExt.addEvent("tool(listTable)",
+                    {
+                        "detail1": function (data, obj) {
+                            rootApp.clientMsg(data);
+                        },
+
+                        "detail2": function (data, obj, e) {
+                            rootApp.followStatus(data);
+                        },
+
+                        //删除一行
+                        "deleteClient": function (data, obj) {
+                            layer.confirm('确定删除吗，删除后将无法恢复', function (index) {
+                                $.ajax({
+                                    url: '/service/crm/Client/DeleteClient',
+                                    type: 'POST',
+                                    data: { Other: data.ID },
+                                    dataType: 'json',
+                                    success: function (data) {
+                                        if (data.ReturnData.Data) {
+                                            if (data.SuccessResponse) {
+                                                obj.del();
+                                                layer.close(index);
+                                                layer.msg(data.Message)
+                                            } else {
+                                                layer.msg(data.Message)
+                                            }
+                                        } else {
+                                            layer.msg('data为空');
+                                        }
+                                    }
+                                });
+                            })
+                        },
+
+                        //修改一行
+                        "modifyClient": function (data, obj) {
+                            rootApp.modifyC(data);
+                        }
+                    });
+
+                var addTreeList = [];
+
+                //搜索条件
+                window.rootApp = new Vue({
+                    el: '#root',
+                    data: {
+                        //搜索选择框 --- 跟进阶段
+                        searchKeySetting: {
+                            search: true,
+                            options: [],
+                            fields: { root: 'Data', key: 'ID', value: 'Description' },
+                            remote: { url: '/service/public/HDictionary/GetHDictionaryList', data: { Valid: 1, ColumnName: 'PhaseType_ID' } }
+                        },
+                        //搜索选择框 --- 来源
+                        statusSetting: {
+                            search: true,
+                            options: [],
+                            fields: { root: 'Data', key: 'ID', value: 'Description' },
+                            remote: { url: '/service/public/HDictionary/GetHDictionaryList', data: { Valid: 1, ColumnName: 'Source_ID' } }
+                        },
+                        //搜索选择的参数列表
+                        queryFormData: {
+                            PhaseType_ID: 0,
+                            Source_ID: 0,
+                            ModelValue: '',
+                            Group_ID: ''
+                        },
+                        //释放客户的参数列表
+                        releaseClient: [],
+                        deleteClients: [],
+                        clientMsgs: [],
+                        //分配客户参数列表
+                        DistributionClientData: [],
+                        treeIds: '',
+                        arr: [],
+                        GroupData: {
+                            status: 0,
+                            CID: 0,
+                            Name: ''
+                        },
+                    },
+                    ready: function () {
+
+                    },
+                    methods: {
+
+                        //分配客户
+                        DistributionClient: function () {
+                            fnr.openDialog({
+                                title: '分配客户',
+                                area: ['400px', '400px'],
+                                content: ['Distribution.html?Other=' + this.DistributionClientData.join(',')],
+                                btn: ['确认分配'],
+                                events: {
+                                    refresh: function (data) {
+                                        if (data.status) {
+                                            layer.msg(data.msg);
+                                            listTable.refresh();
+                                        } else {
+                                            layer.msg(data.msg);
+                                        }
+                                    }
+                                }
+                            });
+                        },
+
+                        //按条件查询
+                        doSearch: function () {
+                            this.queryFormData.Group_ID = this.treeIds;
+                            listTable.reload({
+                                where: this.queryFormData
+                            })
+                        },
+
+                        //添加客户
+                        addClient: function () {
+                            if (this.treeIds > 0) {
+                                fnr.openDialog({
+                                    title: '添加客户',
+                                    area: ['1000px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                                    content: ['Add.html?SystemGroup_ID=' + this.treeIds],
+                                    btn: ['确认添加'],
+                                    events: {
+                                        refresh: function (data) {
+                                            if (data.status) {
+                                                layer.msg(data.Message);
+                                                listTable.refresh();
+                                            } else {
+                                                layer.msg(data.Message);
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        },
+
+                        //添加联系记录
+                        followStatus: function (data) {
+                            fnr.openDialog({
+                                title: '添加联系记录',
+                                area: ['750px', '500px'],
+                                content: ['/Html/Client/Contact/Add.html?ID=' + data.ID + "&PhaseType_ID=" + data.PhaseType_ID],
+                                btn: ['确认添加'],
+                                events: {
+                                    refresh: function (data) {
+                                        if (data.status) {
+                                            layer.msg(data.msg);
+                                            listTable.refresh()
+                                        } else {
+                                            layer.msg(data.msg);
+                                        }
+                                    }
+                                }
+                            });
+                        },
+
+                        //客户信息
+                        clientMsg: function (data) {
+                            fnr.openDialog({
+                                title: '客户信息',
+                                area: ['1000px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                                content: ['Info.html?ID=' + data.ID + "&PhaseType_ID=" + data.PhaseType_ID + '&SystemGroup_ID=' + this.treeIds],
+                                events: {
+                                    add: function () {
+                                        listTable.refresh();
+                                    }
+                                }
+                            });
+                        },
+
+                        //释放客户
+                        clientRe: function () {
+                            var releaseArr = this.releaseClient.join(',');
+                            layer.confirm('真的释放吗', function (index) {
+                                $.ajax({
+                                    url: "/service/crm/Client/ReleaseClient",
+                                    data: { Other: releaseArr },
+                                    type: 'POST',
+                                    dataType: 'json',
+                                    success: function (data) {
+                                        if (data.SuccessResponse) {
+                                            layer.msg(data.Message);
+                                            listTable.refresh();
+                                        } else {
+                                            layer.msg(data.Message);
+                                        }
+                                    }
+                                });
+                            })
+                        },
+
+                        //修改
+                        modifyC: function (data) {
+                            fnr.openDialog({
+                                title: '修改客户信息',
+                                area: ['1000px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                                content: ['Modify.html?ID=' + data.ID + '&SystemGroup_ID=' + this.treeIds],
+                                btn: ['确认修改'],
+                                events: {
+                                    refresh: function (data) {
+                                        if (data.status) {
+                                            listTable.refresh();
+                                        } else {
+                                            layer.msg(data.msg);
+                                        }
+                                    }
+                                }
+                            });
+                        },
+
+                        //批量删除
+                        deleteClientFn: function () {
+                            var deleteArr = this.deleteClients.join(',');
+                            layer.confirm('确定删除吗，删除后将无法恢复', function (index) {
+                                $.ajax({
+                                    url: '/service/crm/Client/DeleteClient',
+                                    type: 'POST',
+                                    data: { Other: deleteArr },
+                                    dataType: 'json',
+                                    success: function (data) {
+                                        if (data.SuccessResponse) {
+                                            layer.msg(data.Message);
+                                            listTable.refresh();
+                                        } else {
+                                            layer.msg(data.Message)
+                                        }
+                                    }
+                                });
+                            })
+                        }
+
+                    }
+                });
+            });
+    </script>
+
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <div class="layui-col-xs2">
+            <ul id="treeDemo" class="ztree"></ul>
+        </div>
+
+        <div class="layui-col-xs10">
+            <blockquote class="layui-elem-quote">
+                <div class="layui-row layui-form">
+                    <div class="layui-col-xs10">
+                        <div class="layui-input-inline">
+                            <remote-sel class="" v-bind:setting="searchKeySetting" laytips="跟进阶段" v-bind:value.sync="queryFormData.PhaseType_ID" initial="off"></remote-sel>
+                        </div>
+                        <div class="layui-input-inline">
+                            <remote-sel v-bind:setting="statusSetting" laytips="来源" v-bind:value.sync="queryFormData.Source_ID"
+                                        initial="off"></remote-sel>
+                        </div>
+                        <div class="layui-input-inline">
+                            <input placeholder="客户名称/手机号" type="text" name="SearchValue" class="layui-input" v-model="queryFormData.ModelValue">
+                        </div>
+                        <button class="layui-btn layui-btn-primary" lay-submit lay-filter="btn" @click="doSearch">查询</button>
+                    </div>
+                    <div class="layui-col-xs2" style="text-align: right">
+                        <button v-bind:class="treeIds !== ''?'layui-btn':'layui-btn layui-btn-disabled'" @click="addClient"><i class="layui-icon"></i> 添加客户</button>
+                    </div>
+                </div>
+            </blockquote>
+            <div>
+                <button class="layui-btn layui-btn-primary layui-btn-small" v-bind:class="{'layui-btn-disabled':DistributionClientData.length<=0}" v-bind:disabled="DistributionClientData.length<=0" @click="DistributionClient">转移客户</button>
+            </div>
+            <!--操作模板-->
+            <table id="listTable" lay-filter="listTable"></table>
+        </div>
+    </div>
+</body>
+</html>

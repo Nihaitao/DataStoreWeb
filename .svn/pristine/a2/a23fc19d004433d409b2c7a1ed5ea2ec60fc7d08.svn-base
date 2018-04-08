@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+
+</head>
+<body id="root">
+<div class="mainContainer">
+    <blockquote class="layui-elem-quote">
+        <div class="layui-row layui-form" id="divSearch">
+            <div class="layui-col-xs6">
+                <div class="layui-input-inline">
+                    <remote-sel :setting="searchKeySetting" :value.sync="queryFormData.SearchName"
+                                initial="off"></remote-sel>
+
+                </div>
+                <div class="layui-input-inline">
+                    <input type="text" name="SearchValue" class="layui-input" v-model="queryFormData.SearchValue">
+                </div>
+                <div class="layui-input-inline">
+                    <remote-sel v-bind:setting="statusSetting" laytips="跟进状态" v-bind:value.sync="queryFormData.SearchIsEnable" initial="off"></remote-sel>
+
+                    <remote-sel :setting="statusSetting" :laytips="跟进状态" v-bind:value.sync="queryFormData.SearchIsEnable"  initial="off"></remote-sel>
+                </div>
+                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="btn" @click="doSearch">查询</button>
+            </div>
+            <div class="layui-col-xs6" style="text-align: right">
+                <button class="layui-btn" @click="addStudent"><i class="layui-icon"></i> 添加学生</button>
+                <button class="layui-btn layui-btn-primary">导入学生</button>
+            </div>
+        </div>
+    </blockquote>
+    <!--操作模板-->
+    <table class="layui-table" id="listTable" style="margin-bottom: 10px" lay-filter="listTable"></table>
+</div>
+</body>
+
+
+</html>
+<link href="../../..//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="../../..//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="../../..//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="../../..//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+
+<script src="../../..//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/Controls/Student/StudentList.js"></script>

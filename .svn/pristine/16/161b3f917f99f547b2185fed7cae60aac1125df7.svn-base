@@ -1,0 +1,137 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title></title>
+	</head>
+
+	<body id="root">
+		<div class="mainContainer">
+
+			<blockquote class="layui-elem-quote">
+                <div class="layui-row layui-form">
+                    <label class="layui-form-label" style="width:96px">试听时长设置</label>
+                </div>
+			</blockquote>
+            <hr />
+            <form class="layui-form" action="" onsubmit="return false">
+                <div class="layui-col-xs6">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label" style="width:116px;">开放课程评论功能</label>
+                        <div class="layui-input-block">
+                            <local-switch value.sync="submitForm.chbSwitch" text="开|关" initial="open" checked></local-switch>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="layui-form-item">
+                    <div class="layui-input-block site-demo-button" id="layerDemo">
+                        <button class="layui-btn" lay-submit="" data-method="offset" data-type="auto" lay-filter="demo1" @click="saveUpdate"> 保存 </button>
+                    </div>
+                </div>
+                </form>
+                <!--操作模板-->
+</div>
+	</body>
+
+</html>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+	require_js_file(['table', 'form', 'jquery', 'tableExt', 'layedit', 'tree', 'layer','element'],
+		function(fnr) {
+			var table = layui.table;
+			var form = layui.form;
+			var tableExt = layui.tableExt;
+			var layer = layui.layer;
+			var element = layui.element;
+			var $ = layui.$;
+
+			//搜索条件
+			var rootApp = new Vue({
+			    el: '#root',
+			    data: {
+			      
+			    },
+			    ready: function () {
+
+
+			        $.get("/Base/Aciton?urlData=WConfiguration/GetWConfiguration", function (data) {
+			            var that = data.ReturnData.Data
+
+			            //评论开关
+			            if (that.CommentValid == 1) {
+			                console.log(that.CommentValid+'开')
+			                $(".layui-form-switch").find("em").parent().addClass("layui-form-onswitch")
+			                $(".layui-form-switch").find("em").html("开")
+			            } else if (that.CommentValid == 0) {
+			                console.log(that.CommentValid+'关')
+			                $(".layui-form-switch").find("em").parent().removeClass("layui-form-onswitch")
+			                $(".layui-form-switch").find("em").html("关")
+			            }
+
+
+			        })
+			    },
+			    methods: {
+			       
+			        saveUpdate: function () {
+			            var CommentValid = $(".layui-form-switch").find("em").html()//多处登录
+			            //console.log(CommentValid)
+
+			            if (CommentValid == '开') {//多处登录
+			                that_CommentValid = 1
+			            } else if (CommentValid == '关') {
+			                that_CommentValid = 0
+			            }
+          
+
+			            console.log(that_CommentValid)
+			            $.post("/Base/Aciton?urlData=WConfiguration/SetWConfiguration", { CommentValid: that_CommentValid })
+			        },
+			    }
+
+			});
+		    //设置保存按钮的弹框
+			var active = {
+			    offset: function (othis) {
+
+			        $.ajax({
+			            url: "/Base/Aciton?urlData=WConfiguration/SetWConfiguration",
+			            type: "post",
+			            async: false,
+			            data: { ok: "1" },
+			            success: function (data) {
+			                etext = data.Message
+			            }
+			        })
+			        if (etext == '成功！') {
+			            etext = '保存成功'
+			        }
+			        var type = othis.data("type");
+			        var text = etext
+			        // console.log(text)
+			        layer.open({
+			            type: 1,
+			            offset: type,
+			            id: "laydemo" + type,
+			            content: '<div style="padding: 20px 100px;">' + text + '</div>',
+			            btn: "确定",
+			            btnAlign: 'c',//按钮居中
+			            shade: 0,//不显示遮罩
+			            yes: function () {
+			                layer.closeAll();
+			            }
+			        })
+			    }
+			};
+			$('#layerDemo .layui-btn').on('click', function () {
+			    var othis = $(this), method = othis.data('method');
+			    active[method] ? active[method].call(this, othis) : '';
+			});
+
+		});
+</script>

@@ -1,0 +1,186 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">存储方式</label>
+                <div class="layui-input-block">
+                    <remote-rad v-bind:setting="SaveTypeSetting" v-bind:value.sync="submitForm.PolyvSource"
+                                initial="off"></remote-rad>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">回调设置</label>
+                <div class="layui-input-inline">
+                    <div class="layui-form-mid layui-word-aux">http://webapi.chutoukj.com/Polyv/GetCallBack</div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">状态</label>
+                <div class="layui-input-block">
+                    <local-switch v-bind:value.sync="submitForm.Valid" text="启用|禁用"
+                                  initial="off"></local-switch>
+                </div>
+            </div>
+            <div class="layui-form-item" v-show="submitForm.PolyvSource==0?false:true">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">userid</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="userid" placeholder="请输入userid" autocomplete="off" class="layui-input" v-model="submitForm.userid">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">writetoken </label>
+                    <div class="layui-input-inline" style="width:300px">
+                        <input type="text" name="writetoken" placeholder="请输入writetoken" autocomplete="off" class="layui-input" v-model="submitForm.writetoken">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">readtoken</label>
+                    <div class="layui-input-inline" style="width:300px">
+                        <input type="text" name="readtoken" placeholder="请输入readtoken" autocomplete="off" class="layui-input" v-model="submitForm.readtoken">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">secretkey</label>
+                    <div class="layui-input-inline" style="width:300px">
+                        <input type="text" name="secretkey" placeholder="请输入secretkey" autocomplete="off" class="layui-input" v-model="submitForm.secretkey">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit @click="saveUpdate">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<!--<script src="../../../Resources/js/modules/vue/vue.min.js"></script>
+<script src="../../../Resources/js/modules/layer/layui.js"></script>
+<link href="../../../Resources/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="../../../Resources/js/require_config.js"></script>
+<script src="../../../Resources/js/Controls/Common.js"></script>-->
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/Controls/Common.js"></script>
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'laydate'],
+    function (fnr) {
+        var table = layui.table;
+        var form = layui.form;
+        var tableExt = layui.tableExt;
+        var $ = layui.$;
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+                chbSwitch: 0,
+                SaveTypeSetting: {
+                    tags: { name: "TypeSetting" },
+                    options: [
+                        { key: '0', value: '系统默认' },
+                        { key: '1', value: '自主账号' }
+                    ]
+                },
+                submitForm: {
+                    ID: 0,
+                    PolyvSource: 0,
+                    Valid: 0,
+                    cataid: '',
+                    readtoken: '',
+                    secretkey: '',
+                    userid: '',
+                    writetoken: ''
+                }
+            },
+            ready: function () {
+                var self = this;
+                $.get("/service/datastore/PolyvInfo/GetPolyvSetByWhere", {}, function (rsp) {
+                    if (rsp.SuccessResponse) {
+                        fnr.mergeJson(rsp.Data, self.submitForm);//合并ajax值
+                    }
+                });
+                self.selectChange();
+            },
+            methods: {
+                selectChange: function () { 
+                    var self = this;
+                    form.on('radio', function (data) {
+                        if (data.value == 1) { //如果选自主
+                            $.get("/service/datastore/PolyvInfo/GetPolyvInfoByWhere", {}, function (rsp) {
+                                if (rsp.SuccessResponse && rsp.Data != null) {
+                                    //self.submitForm.Valid = rsp.ReturnData.Data.Valid;
+                                    self.submitForm.readtoken = rsp.Data.readtoken;
+                                    self.submitForm.userid = rsp.Data.userid;
+                                    self.submitForm.writetoken = rsp.Data.writetoken;
+                                    self.submitForm.secretkey = rsp.Data.secretkey;
+                                } else {
+                                    //self.submitForm.Valid = 0;
+                                    self.submitForm.readtoken = "";
+                                    self.submitForm.userid = "";
+                                    self.submitForm.writetoken = "";
+                                    self.submitForm.secretkey = "";
+                                }
+                            });
+                        }
+                    })
+                },
+                FirstChange: function () {
+                    var self = this;
+                    if (self.submitForm.Discipline_OneLevelID == '') {
+                        self.SecondSetting.remote = {};
+                        self.SecondSetting.remote.url = "";
+                        self.SecondSetting.remote.data = {};
+                        self.$refs.second.reset();  //重置select
+                    } else {
+                        fnr.mergeJson(SelectDisciplineBind(self.submitForm.Discipline_OneLevelID), self.SecondSetting);//合并ajax值
+                        self.$refs.second.reset();
+                    }
+                    if (self.ThreeSetting.remote != undefined) {
+                        self.ThreeSetting.remote = {};
+                        self.ThreeSetting.remote.url = "";
+                        self.ThreeSetting.remote.data = {};
+                        self.$refs.three.reset();
+                    }
+                },
+                SecondChange: function () {
+                    var self = this;
+                    if (self.submitForm.Discipline_TwoLevelID == '') {
+                        self.ThreeSetting.remote.url = "";
+                        self.ThreeSetting.remote.data = {};
+                    } else {
+                        fnr.mergeJson(SelectDisciplineBind(self.submitForm.Discipline_TwoLevelID), self.ThreeSetting);//合并ajax值
+                    }
+                    self.$refs.three.reset();
+                },
+                //提交表单
+                saveUpdate: function (e) {
+                    if (!layui.form.checkInput(e)) {
+                        return false;
+                    }
+                    this.submitForm.Valid = this.submitForm.Valid ? 1 : 0;
+                    $.post("/service/datastore/PolyvInfo/SavePolyvInfo", this.submitForm, function (rsp) {
+                        if (rsp.SuccessResponse) {
+                            layer.msg(rsp.Message, { time: 1000 }, function () {
+                                //fnr.callDialog('refresh');
+                                //fnr.closeDialog();
+                            });
+                        }
+                        else {
+                            layer.msg(rsp.Message, { icon: 2 });
+                        }
+                    });
+                },
+                test: function () { alert("1")}
+            }
+        });
+    });
+</script>

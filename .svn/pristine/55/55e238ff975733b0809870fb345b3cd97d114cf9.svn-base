@@ -1,0 +1,189 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <div class="layui-form">
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">联系方式</label>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="contactWaySetting" layverify="required" v-bind:value.sync="submitForm.ContactType_ID"
+                                    initial="off"></remote-sel>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">联系时间</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="contactDate" id="contactDate" lay-verify="required" placeholder="选择日期" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">联系人</label>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="contactPersonSetting"
+                                    initial="off"></remote-sel>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">跟进状态</label>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="followStatusSetting" v-bind:value.sync="submitForm.PhaseTypeID"
+                                    initial="off"></remote-sel>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">备注</label>
+                <div class="layui-input-block">
+                    <textarea placeholder="请输入内容" class="layui-textarea" v-model="submitForm.Content"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">开关</label>
+                <div class="layui-input-block">
+                    <local-switch v-bind:value.sync="chbSwitch" text="开|关"
+                                  initial="off"></local-switch>
+                </div>
+            </div>
+
+            <div class="layui-form-item" v-show="chbSwitch">
+                <div class="layui-inline">
+                    <label class="layui-form-label">预约时间</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="reserveDate" id="reserveDate" placeholder="选择日期" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">预约类型</label>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="AppointmentTypeSetting" v-bind:value.sync="submitForm.AppointmentType_ID"
+                                    initial="off"></remote-sel>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <button class="layui-btn layui-hide" lay-submit @click="submit">提交</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="../../../Resources/js/Controls/Common.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate"],
+    function (fnr) {
+        var laydate = layui.laydate;
+        var $ = layui.jquery;
+        var form = layui.form;
+        laydate.render({
+            elem: '#reserveDate',
+            type: 'datetime',
+            min: 0,
+            max: 365,
+            done: function (value) {
+                rootApp.submitForm.Date = value;
+            }
+        });
+        laydate.render({
+            elem: '#contactDate',
+            type: 'datetime',
+            min: -365,
+            max: 1,
+            done: function (value) {
+                rootApp.submitForm.ContactTime = value;
+            }
+        });
+
+        var contactWayOptions = [];
+
+        var followStatusOptions = [];
+
+        var AppointmentTypeData = [];
+
+        var contactPersonOptions = [];
+
+
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+                AppointmentTypeSetting: {
+                    search: true,
+                    selectedIndex: 0,
+                    options: AppointmentTypeData,
+                    fields: { root: 'ReturnData.Data', key: 'ID', value: 'Description' },
+                    remote: { url: '/service/HDictionary/GetHDictionaryList', data: { Valid: 1, ColumnName: 'AppointmentType_ID' } }
+                },
+                followStatusSetting: {
+                    search: true,
+                    options: followStatusOptions,
+                    fields: { root: 'ReturnData.Data', key: 'ID', value: 'Description' },
+                    remote: { url: '/service/HDictionary/GetHDictionaryList', data: { Valid: 1, ColumnName: 'PhaseType_ID' } }
+                },
+                contactWaySetting: {
+                    search: true,
+                    selectedIndex: 0,
+                    options: contactWayOptions,
+                    fields: { root: "ReturnData.Data", key: 'ID', value: 'Description' },
+                    remote: { url: '/service/HDictionary/GetHDictionaryList', data: { Valid: 1, ColumnName: 'ContactType_ID' } }
+                },
+                contactPersonSetting: {
+                    search: true,
+                    selectedIndex: 0,
+                    options: contactPersonOptions,
+                    fields: { root: "ReturnData.Data", key: 'ID', value: 'Name' },
+                },
+                chbSwitch: false,
+                submitForm: {
+                    ContactType_ID: '',    //联系类型
+                    Content: "",           //联系内容
+                    ContactTime: '',       //联系时间
+                    ContactPerson_ID: 3,   //联系人
+                    status: 100,
+                    Date: "",              //预约时间
+                    AppointmentType_ID: "",//预约类型
+                    BusType:2,
+                    PhaseTypeID: ""          //跟进状态
+
+                }
+            },
+            ready: function () {
+                this.submitForm.BusID = GetQueryString('ID');
+                this.submitForm.PhaseTypeID = GetQueryString('PhaseType_ID');
+            },
+            methods: {
+                submit: function (e) {
+                    if (!layui.form.checkInput(e)) {
+                        return false;
+                    }
+                    this.submitForm.status = this.chbSwitch ? '1' : '0';
+                    $.ajax({
+                        url: '/service/Contact/InsertContact',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: this.submitForm,
+                        success: function (data) {
+                            if (data.SuccessResponse) {
+                                fnr.callDialog('refresh', { status: data.SuccessResponse, msg: data.Message });
+                                fnr.closeDialog();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    });
+</script>

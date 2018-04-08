@@ -1,0 +1,333 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        textarea {
+            resize: none;
+        }
+
+        .tip_css {
+            color: #1E9FFF;
+            cursor: pointer;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body id="root" v-cloak>
+    <form class="layui-form" action="" onsubmit="return false">
+        <div class="OpenContainer">
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:80px;"><label style="color:red">*</label>&nbsp;对应客户</label>
+                <div class="layui-input-inline" style="width:580px">
+                    <remote-sel v-bind:setting="ClientSetting" v-bind:value.sync="ContractFormData.Client_ID" initial="off" disabled></remote-sel>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:80px;"><label style="color:red">*</label>&nbsp;所属合同</label>
+                <div class="layui-input-inline" style="width:580px">
+                    <remote-sel v-bind:setting="ContractSetting" v-bind:value.sync="ContractFormData.ID" initial="off" disabled></remote-sel>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:80px;"><label style="color:red">*</label>&nbsp;合同总金额</label>
+                <div class="layui-input-inline" style="width:580px">
+                    <input type="text" name="title" v-model="ContractFormData.TotalAmount" placeholder="" autocomplete="off" class="layui-input" disabled>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:80px;"><label style="color:red">*</label>&nbsp;签约日期</label>
+                <div class="layui-input-inline" style="width:580px">
+                    <input type="text" name="title" v-model="ContractFormData.ContractDate" placeholder="" autocomplete="off" class="layui-input" disabled>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <table class="layui-table" lay-skin="row">
+                    <colgroup>
+                        <col width="80">
+                        <col width="130">
+                        <col width="120">
+                        <col width="120">
+                        <col>
+                        <col width="80">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>期次</th>
+                            <th>计划回款日期</th>
+                            <th>计划回款占比</th>
+                            <th>计划回款金额</th>
+                            <th>备注</th>
+                            <th>
+                                操作
+                                <i class="layui-icon tip_css" style="font-size:14px" id="tipAdd" @mouseenter="tipAdd" @click="clickAdd">&#xe654;</i>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(index, item) in RepayPlanData">
+                            <td>
+                                <input type="number" placeholder="" autocomplete="off" class="layui-input" v-model="item.Number" style="height:30px">
+                            </td>
+                            <td>
+                                <lay-date placeholder="" v-bind:value.sync="item.PlanDate" class="layui-input" style="height:30px"></lay-date>
+                            </td>
+                            <td>
+                                <input type="text" lay-verify="number" placeholder="" autocomplete="off" class="layui-input" v-model="item.Proportion" style="height:30px" @blur="blurProportion">
+                            </td>
+                            <td>
+                                <input type="text" lay-verify="number" placeholder="" autocomplete="off" class="layui-input" v-model="item.PlanMoney" style="height:30px" @blur="blurPlanMoney">
+                            </td>
+                            <td>
+                                <input type="text" placeholder="" autocomplete="off" class="layui-input" v-model="item.Remart" style="height:30px">
+                            </td>
+                            <td align="center">
+                                <i class="layui-icon tip_css" style="font-size:16px" id="tipDelete{{item.ID}}" @mouseenter="tipDelete(item.ID)" @click="clickDelete(index)">&#xe640;</i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>合计</td>
+                            <td></td>
+                            <td>{{proportion}}</td>
+                            <td>{{planMoney}}</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block" style="float:right;">
+                    <button class="layui-btn" lay-submit @click="formDemo">保存</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</body>
+</html>
+
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+
+<script>
+    function getNowFormatDate() {
+        var date = new Date();
+        var seperator1 = "-";
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1;
+        var strDate = date.getDate();
+        if (month >= 1 && month <= 9) {
+            month = "0" + month;
+        }
+        if (strDate >= 0 && strDate <= 9) {
+            strDate = "0" + strDate;
+        }
+        var currentdate = year + seperator1 + month + seperator1 + strDate;
+        return currentdate;
+    }
+
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate"],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var laydate = layui.laydate;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+
+            window.rootApp = new Vue({
+                el: "#root",
+                data: {
+                    ContractFormData: {
+                        ID: 0,
+                        Name: '', //合同名
+                        TotalAmount: 0, //合同总金额
+                        ContractDate: '',//签约日期
+                        Client_ID: 0,//对应客户
+                    },
+                    RepayPlanData: [],//回款计划列表
+                    RepayPlanCount: 0,
+                    ClientName: '',
+                    ClientSetting: {
+                        search: false,
+                        options: [],
+                        fields: { root: 'Data', key: 'ID', value: 'Name' },
+                        remote: { url: "/service/crm/Client/GetAllClient", options: { method: 'get' } }
+                    },
+                    ContractSetting: {
+                        search: false,
+                        options: [],
+                        fields: { root: 'Data', key: 'ID', value: 'Name' },
+                        remote: { url: "/service/crm/Contract/GetContractList", options: { method: 'get' } }
+                    },
+                    proportion: 0,//计划回款占比总
+                    planMoney: 0,//计划回款金额总
+                },
+                watch: {
+                },
+                ready: function () {
+                    _this = this;
+                    var Contract_ID = fnr.getQueryString('Contract_ID');
+                    if (Contract_ID != undefined && Contract_ID != 0) {
+                        //合同信息
+                        _this.ContractFormData.ID = Contract_ID;
+                        var para = { ID: Contract_ID };
+                        $.get("/service/crm/Contract/GetContractInfoCount", para, function (rsp) {
+                            if (rsp.SuccessResponse) {
+                                if (rsp.Data) {
+                                    _this.ContractFormData.Name = rsp.Data.Name;
+                                    _this.ContractFormData.TotalAmount = rsp.Data.TotalAmount;
+                                    _this.ContractFormData.ContractDate = (fnr.format(rsp.Data.ContractDate, "yyyy-MM-dd HH:mm") == "2001-01-01 00:00" ? "" : fnr.format(rsp.Data.ContractDate, "yyyy-MM-dd"));
+                                    _this.ContractFormData.Client_ID = rsp.Data.Client_ID;
+                                }
+                            }
+                            else {
+                                layer.msg(rsp.Message);
+                            }
+                        });
+
+                        //加载计划列表
+                        _this.bindPlanList(Contract_ID);
+                    }
+                },
+                methods: {
+                    bindPlanList: function (Contract_ID) {
+                        _this = this;
+                        _this.RepayPlanData = [];
+                        _this.proportion = 0;
+                        _this.planMoney = 0;
+                        //计划列表
+                        $.get("/service/crm/Repaymentplan/GetRepaymentplanList", { Contract_ID: Contract_ID }, function (rsp2) {
+                            if (rsp2.SuccessResponse) {
+                                $.each(rsp2.Data, function (key, value) {
+                                    _this.RepayPlanData.push({ "ID": value.ID, "Number": value.Number, "PlanDate": value.PlanDate != null ? value.PlanDate.substring(0, 10) : value.PlanDate, "Proportion": value.Proportion, "PlanMoney": value.PlanMoney, "Remart": value.Remart });
+
+                                    _this.proportion += value.Proportion;
+                                    _this.planMoney += value.PlanMoney;
+                                })
+
+                                _this.proportion = _this.proportion.toFixed(2);
+                                _this.planMoney = _this.planMoney.toFixed(2);
+
+                                _this.RepayPlanCount = rsp2.Data.length == 0 ? 0 : rsp2.Data[0].maxNumber;
+                            }
+                            else {
+                                layer.msg(rsp.Message);
+                            }
+                        });
+                    },
+                    //悬停提醒
+                    tipAdd: function () {
+                        layer.tips("添加计划", '#tipAdd', {
+                            tips: [3, '#1E9FFF'],
+                            tipsMore: false,
+                            time: 1500
+                        });
+                    },
+                    //删除提醒
+                    tipDelete: function (id) {
+                        var D_id = '#tipDelete' + id;
+                        layer.tips("删除计划", D_id, {
+                            tips: [3, '#1E9FFF'],
+                            tipsMore: false,
+                            time: 1500
+                        });
+                    },
+                    //失去焦点
+                    blurProportion: function () {
+                        var self = this;
+                        self.proportion = 0;
+                        self.RepayPlanData.map(function (v, k) {
+                            self.proportion += Number(v.Proportion);
+                        });
+                        self.proportion = self.proportion.toFixed(2);
+                    },
+                    //失去焦点
+                    blurPlanMoney: function () {
+                        var self = this;
+                        self.planMoney = 0;
+                        self.RepayPlanData.map(function (v, k) {
+                            self.planMoney += Number(v.PlanMoney);
+                        });
+                        self.planMoney = self.planMoney.toFixed(2);
+                    },
+                    //删除计划
+                    clickDelete: function (d_index) {
+                        _this = this;
+                        layer.confirm('确认要删除该计划么?', { icon: 3, title: '提示' }, function (index) {
+                            _this.RepayPlanData.splice(d_index, 1);
+                            _this.blurProportion();
+                            _this.blurPlanMoney();
+                            layer.close(index);
+                        }); 
+                        /*if (id != undefined && id != 0) {
+                            layer.confirm('确认要删除该计划么?', { icon: 3, title: '提示' }, function (index) {
+                                var Delpara = { PlanIds: id };
+                                $.post("/service/crm/Repaymentplan/RepaymentplanDelete", Delpara, function (rsp) {
+                                    if (rsp.SuccessResponse) {
+                                        //加载计划列表
+                                        var Contract_ID = fnr.getQueryString('Contract_ID');
+                                        _this.bindPlanList(Contract_ID);
+                                    } else {
+                                        layer.msg(rsp.Message);
+                                    }
+                                });
+                                layer.close(index);
+                            });
+                        }*/
+                    },
+                    clickAdd: function () {
+                        var Contract_ID = fnr.getQueryString('Contract_ID');
+                        if (Contract_ID != undefined && Contract_ID != 0) {
+                            _this = this;
+                            _this.RepayPlanCount = _this.RepayPlanCount + 1;
+
+                            _this.RepayPlanData.push({ "ID": -1, "Number": _this.RepayPlanCount, "PlanDate": '', "Proportion": '', "PlanMoney": '', "Remart": '' });
+                            _this.blurProportion();
+                            _this.blurPlanMoney();
+                            //var layerIndex = parent.layer.load(2);
+                            //var Addpara = { Contract_ID: Contract_ID, Number: _this.RepayPlanCount }
+                            //$.post("/service/crm/Repaymentplan/RepaymentplanInsert", Addpara, function (rsp) {
+                            //    if (rsp.SuccessResponse) {
+                            //        //加载计划列表
+                            //        _this.bindPlanList(Contract_ID);
+                            //    } else {
+                            //        layer.msg(rsp.Message);
+                            //    }
+                            //    parent.layer.close(layerIndex);
+                            //});
+                        }
+                    },
+                    //保存数据关闭弹窗
+                    formDemo: function (e) {
+                        _this = this;
+                        if (!layui.form.checkInput(e)) {
+                            return false;
+                        }
+                        var Contract_ID = fnr.getQueryString('Contract_ID');
+
+                        if (_this.RepayPlanData != null && Contract_ID != undefined && Contract_ID != 0) {
+                            var Addpara = { Contract_ID: Contract_ID, planList: _this.RepayPlanData }
+                            $.post("/service/crm/Repaymentplan/RepaymentplanSave", Addpara, function (rsp) {
+                                if (rsp.SuccessResponse) {
+                                    //加载计划列表
+                                    fnr.callDialog('refresh');
+                                    fnr.closeDialog();
+                                } else {
+                                    layer.msg(rsp.Message);
+                                }
+                            });
+                        }
+                        else {
+                            layer.msg("保存成功！");
+                        }
+                    }
+                }
+            });
+        });
+</script>

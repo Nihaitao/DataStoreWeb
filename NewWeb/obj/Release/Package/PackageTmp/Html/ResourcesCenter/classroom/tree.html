@@ -1,0 +1,557 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" style="background-color: #ccc;">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+    <style>
+        .tree { border-radius: 2px; }
+
+        .tree-content { padding-left: 30px; }
+
+        .tree-node {
+            border-top: 1px solid #e2e2e2;
+            position: relative;
+        }
+
+        .tree-node:first-child { border-top: none; }
+
+        .tree-node .option-area {
+            display: none;
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            transform: translateY(-50%);
+        }
+
+        .option-area .layui-icon { display: inline-block; }
+
+        .tree-tit {
+            position: relative;
+            height: 42px;
+            line-height: 42px;
+            padding: 0 15px;
+            color: #333;
+            background-color: #ffffff;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .layui-colla-content {
+            display: none;
+            padding: 10px 15px;
+            line-height: 22px;
+            border-top: 1px solid #ffffff;
+            color: #666;
+        }
+
+        .state-highlight {
+            height: 50px;
+            border: 1px dashed #5FB878;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body id="root">
+<div style="width: 1200px; margin: 50px auto;">
+<div class="tree-wrap">
+<div class="tree">
+<div class="tree-node">
+<div class="tree-tit">
+    <h2 class="tit-area"><i class="layui-icon" style="margin-right: 10px;">&#xe61a;</i>1111111
+    </h2>
+    <div class="option-area">
+        <i class="layui-icon edit">&#xe642;</i>
+        <i class="layui-icon add">&#xe654;</i>
+        <i class="layui-icon del">&#xe640;</i>
+    </div>
+</div>
+<div class="tree-content" style="display: none">
+<div class="tree">
+    <div class="tree-node">
+        <div class="tree-tit">
+            <h2 class="tit-area"><i class="layui-icon" style="margin-right: 10px;">&#xe61a;</i>2017年考研
+            </h2>
+            <div class="option-area">
+                <i class="layui-icon edit">&#xe642;</i>
+                <i class="layui-icon add">&#xe654;</i>
+                <i class="layui-icon del">&#xe640;</i>
+            </div>
+        </div>
+        <div class="tree-content" style="display: none">
+            <div class="tree">
+                <div class="tree-node">
+                    <div class="tree-tit">
+                        <h2 class="tit-area"><i class="layui-icon" style="margin-right: 10px;">&#xe61a;</i>2017年考研
+                        </h2>
+                        <div class="option-area">
+                            <i class="layui-icon edit">&#xe642;</i>
+                            <i class="layui-icon add">&#xe654;</i>
+                            <i class="layui-icon del">&#xe640;</i>
+                        </div>
+                    </div>
+                    <div class="tree-content" style="display: none">
+
+                    </div>
+                </div>
+            </div>
+            <div class="tree">
+                <div class="tree-node">
+                    <div class="tree-tit">
+                        <h2 class="tit-area"><i class="layui-icon" style="margin-right: 10px;">&#xe61a;</i>2017年考研
+                        </h2>
+                        <div class="option-area">
+                            <i class="layui-icon edit">&#xe642;</i>
+                            <i class="layui-icon add">&#xe654;</i>
+                            <i class="layui-icon del">&#xe640;</i>
+                        </div>
+                    </div>
+                    <div class="tree-content" style="display: none">
+
+                    </div>
+                </div>
+            </div>
+            <div class="tree">
+                <div class="tree-node">
+                    <div class="tree-tit">
+                        <h2 class="tit-area"><i class="layui-icon" style="margin-right: 10px;">&#xe61a;</i>2017年考研
+                        </h2>
+                        <div class="option-area">
+                            <i class="layui-icon edit">&#xe642;</i>
+                            <i class="layui-icon add">&#xe654;</i>
+                            <i class="layui-icon del">&#xe640;</i>
+                        </div>
+                    </div>
+                    <div class="tree-content" style="display: none">
+
+                    </div>
+                </div>
+            </div>
+            <div class="tree">
+                <div class="tree-node">
+                    <div class="tree-tit">
+                        <h2 class="tit-area"><i class="layui-icon" style="margin-right: 10px;">&#xe61a;</i>2017年考研
+                        </h2>
+                        <div class="option-area">
+                            <i class="layui-icon edit">&#xe642;</i>
+                            <i class="layui-icon add">&#xe654;</i>
+                            <i class="layui-icon del">&#xe640;</i>
+                        </div>
+                    </div>
+                    <div class="tree-content" style="display: none">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="tree">
+    <div class="tree-node">
+        <div class="tree-tit">
+            <h2 class="tit-area"><i class="layui-icon" style="margin-right: 10px;">&#xe61a;</i>2017年考研
+            </h2>
+            <div class="option-area">
+                <i class="layui-icon edit">&#xe642;</i>
+                <i class="layui-icon add">&#xe654;</i>
+                <i class="layui-icon del">&#xe640;</i>
+            </div>
+        </div>
+        <div class="tree-content" style="display: none">
+            <div class="tree">
+                <div class="tree-node">
+                    <div class="tree-tit">
+                        <h2 class="tit-area"><i class="layui-icon" style="margin-right: 10px;">&#xe61a;</i>2017年考研
+                        </h2>
+                        <div class="option-area">
+                            <i class="layui-icon edit">&#xe642;</i>
+                            <i class="layui-icon add">&#xe654;</i>
+                            <i class="layui-icon del">&#xe640;</i>
+                        </div>
+                    </div>
+                    <div class="tree-content" style="display: none">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="tree">
+    <div class="tree-node">
+        <div class="tree-tit">
+            <h2 class="tit-area"><i class="layui-icon" style="margin-right: 10px;">&#xe61a;</i>2017年考研
+            </h2>
+            <div class="option-area">
+                <i class="layui-icon edit">&#xe642;</i>
+                <i class="layui-icon add">&#xe654;</i>
+                <i class="layui-icon del">&#xe640;</i>
+            </div>
+        </div>
+        <div class="tree-content" style="display: none">
+            <div class="tree">
+                <div class="tree-node">
+                    <div class="tree-tit">
+                        <h2 class="tit-area"><i class="layui-icon" style="margin-right: 10px;">&#xe61a;</i>2017年考研
+                        </h2>
+                        <div class="option-area">
+                            <i class="layui-icon edit">&#xe642;</i>
+                            <i class="layui-icon add">&#xe654;</i>
+                            <i class="layui-icon del">&#xe640;</i>
+                        </div>
+                    </div>
+                    <div class="tree-content" style="display: none">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="tree">
+    <div class="tree-node">
+        <div class="tree-tit">
+            <h2 class="tit-area"><i class="layui-icon" style="margin-right: 10px;">&#xe61a;</i>2017年考研
+            </h2>
+            <div class="option-area">
+                <i class="layui-icon edit">&#xe642;</i>
+                <i class="layui-icon add">&#xe654;</i>
+                <i class="layui-icon del">&#xe640;</i>
+            </div>
+        </div>
+        <div class="tree-content" style="display: none">
+            <div class="tree">
+                <div class="tree-node">
+                    <div class="tree-tit">
+                        <h2 class="tit-area"><i class="layui-icon" style="margin-right: 10px;">&#xe61a;</i>2017年考研
+                        </h2>
+                        <div class="option-area">
+                            <i class="layui-icon edit">&#xe642;</i>
+                            <i class="layui-icon add">&#xe654;</i>
+                            <i class="layui-icon del">&#xe640;</i>
+                        </div>
+                    </div>
+                    <div class="tree-content" style="display: none">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="tree">
+    <div class="tree-node">
+        <div class="tree-tit">
+            <h2 class="tit-area"><i class="layui-icon" style="margin-right: 10px;">&#xe61a;</i>2017年考研
+            </h2>
+            <div class="option-area">
+                <i class="layui-icon edit">&#xe642;</i>
+                <i class="layui-icon add">&#xe654;</i>
+                <i class="layui-icon del">&#xe640;</i>
+            </div>
+        </div>
+        <div class="tree-content" style="display: none">
+            <div class="tree">
+                <div class="tree-node">
+                    <div class="tree-tit">
+                        <h2 class="tit-area"><i class="layui-icon" style="margin-right: 10px;">&#xe61a;</i>2017年考研
+                        </h2>
+                        <div class="option-area">
+                            <i class="layui-icon edit">&#xe642;</i>
+                            <i class="layui-icon add">&#xe654;</i>
+                            <i class="layui-icon del">&#xe640;</i>
+                        </div>
+                    </div>
+                    <div class="tree-content" style="display: none">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+</div>
+<div class="tree">
+    <div class="tree-node">
+        <div class="tree-tit">
+            <h2 class="tit-area"><i class="layui-icon" style="margin-right: 10px;">&#xe61a;</i>222222
+            </h2>
+            <div class="option-area">
+                <i class="layui-icon edit">&#xe642;</i>
+                <i class="layui-icon add">&#xe654;</i>
+                <i class="layui-icon del">&#xe640;</i>
+            </div>
+        </div>
+        <div class="tree-content" style="display: none">
+            <div class="tree">
+                <div class="tree-node">
+                    <div class="tree-tit">
+                        <h2 class="tit-area"><i class="layui-icon" style="margin-right: 10px;">&#xe61a;</i>2017年考研
+                        </h2>
+                        <div class="option-area">
+                            <i class="layui-icon edit">&#xe642;</i>
+                            <i class="layui-icon add">&#xe654;</i>
+                            <i class="layui-icon del">&#xe640;</i>
+                        </div>
+                    </div>
+                    <div class="tree-content" style="display: none">
+                        <div class="tree">
+                            <div class="tree-node">
+                                <div class="tree-tit">
+                                    <h2 class="tit-area"><i class="layui-icon" style="margin-right: 10px;">&#xe61a;</i>2017年考研
+                                    </h2>
+                                    <div class="option-area">
+                                        <i class="layui-icon edit">&#xe642;</i>
+                                        <i class="layui-icon add">&#xe654;</i>
+                                        <i class="layui-icon del">&#xe640;</i>
+                                    </div>
+                                </div>
+                                <div class="tree-content" style="display: none">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="tree">
+    <div class="tree-node">
+        <div class="tree-tit">
+            <h2 class="tit-area"><i class="layui-icon" style="margin-right: 10px;">&#xe61a;</i>333333
+            </h2>
+            <div class="option-area">
+                <i class="layui-icon edit">&#xe642;</i>
+                <i class="layui-icon add">&#xe654;</i>
+                <i class="layui-icon del">&#xe640;</i>
+            </div>
+        </div>
+        <div class="tree-content" style="display: none">
+            <div class="tree">
+                <div class="tree-node">
+                    <div class="tree-tit">
+                        <h2 class="tit-area"><i class="layui-icon" style="margin-right: 10px;">&#xe61a;</i>2017年考研
+                        </h2>
+                        <div class="option-area">
+                            <i class="layui-icon edit">&#xe642;</i>
+                            <i class="layui-icon add">&#xe654;</i>
+                            <i class="layui-icon del">&#xe640;</i>
+                        </div>
+                    </div>
+                    <div class="tree-content" style="display: none">
+                        <div class="tree">
+                            <div class="tree-node">
+                                <div class="tree-tit">
+                                    <h2 class="tit-area"><i class="layui-icon" style="margin-right: 10px;">&#xe61a;</i>2017年考研
+                                    </h2>
+                                    <div class="option-area">
+                                        <i class="layui-icon edit">&#xe642;</i>
+                                        <i class="layui-icon add">&#xe654;</i>
+                                        <i class="layui-icon del">&#xe640;</i>
+                                    </div>
+                                </div>
+                                <div class="tree-content" style="display: none">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="tree">
+    <div class="tree-node">
+        <div class="tree-tit">
+            <h2 class="tit-area"><i class="layui-icon" style="margin-right: 10px;">&#xe61a;</i>444444
+            </h2>
+            <div class="option-area">
+                <i class="layui-icon edit">&#xe642;</i>
+                <i class="layui-icon add">&#xe654;</i>
+                <i class="layui-icon del">&#xe640;</i>
+            </div>
+        </div>
+        <div class="tree-content" style="display: none">
+            <div class="tree">
+                <div class="tree-node">
+                    <div class="tree-tit">
+                        <h2 class="tit-area"><i class="layui-icon" style="margin-right: 10px;">&#xe61a;</i>2017年考研
+                        </h2>
+                        <div class="option-area">
+                            <i class="layui-icon edit">&#xe642;</i>
+                            <i class="layui-icon add">&#xe654;</i>
+                            <i class="layui-icon del">&#xe640;</i>
+                        </div>
+                    </div>
+                    <div class="tree-content" style="display: none">
+                        <div class="tree">
+                            <div class="tree-node">
+                                <div class="tree-tit">
+                                    <h2 class="tit-area"><i class="layui-icon" style="margin-right: 10px;">&#xe61a;</i>2017年考研
+                                    </h2>
+                                    <div class="option-area">
+                                        <i class="layui-icon edit">&#xe642;</i>
+                                        <i class="layui-icon add">&#xe654;</i>
+                                        <i class="layui-icon del">&#xe640;</i>
+                                    </div>
+                                </div>
+                                <div class="tree-content" style="display: none">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="tree">
+    <div class="tree-node">
+        <div class="tree-tit">
+            <h2 class="tit-area"><i class="layui-icon" style="margin-right: 10px;">&#xe61a;</i>555555
+            </h2>
+            <div class="option-area">
+                <i class="layui-icon edit">&#xe642;</i>
+                <i class="layui-icon add">&#xe654;</i>
+                <i class="layui-icon del">&#xe640;</i>
+            </div>
+        </div>
+        <div class="tree-content" style="display: none">
+            <div class="tree">
+                <div class="tree-node">
+                    <div class="tree-tit">
+                        <h2 class="tit-area"><i class="layui-icon" style="margin-right: 10px;">&#xe61a;</i>2017年考研
+                        </h2>
+                        <div class="option-area">
+                            <i class="layui-icon edit">&#xe642;</i>
+                            <i class="layui-icon add">&#xe654;</i>
+                            <i class="layui-icon del">&#xe640;</i>
+                        </div>
+                    </div>
+                    <div class="tree-content" style="display: none">
+                        <div class="tree">
+                            <div class="tree-node">
+                                <div class="tree-tit">
+                                    <h2 class="tit-area"><i class="layui-icon" style="margin-right: 10px;">&#xe61a;</i>2017年考研
+                                    </h2>
+                                    <div class="option-area">
+                                        <i class="layui-icon edit">&#xe642;</i>
+                                        <i class="layui-icon add">&#xe654;</i>
+                                        <i class="layui-icon del">&#xe640;</i>
+                                    </div>
+                                </div>
+                                <div class="tree-content" style="display: none">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="tree">
+    <div class="tree-node">
+        <div class="tree-tit">
+            <h2 class="tit-area"><i class="layui-icon" style="margin-right: 10px;">&#xe61a;</i>666666
+            </h2>
+            <div class="option-area">
+                <i class="layui-icon edit">&#xe642;</i>
+                <i class="layui-icon add">&#xe654;</i>
+                <i class="layui-icon del">&#xe640;</i>
+            </div>
+        </div>
+        <div class="tree-content" style="display: none">
+            <div class="tree">
+                <div class="tree-node">
+                    <div class="tree-tit">
+                        <h2 class="tit-area"><i class="layui-icon" style="margin-right: 10px;">&#xe61a;</i>2017年考研
+                        </h2>
+                        <div class="option-area">
+                            <i class="layui-icon edit">&#xe642;</i>
+                            <i class="layui-icon add">&#xe654;</i>
+                            <i class="layui-icon del">&#xe640;</i>
+                        </div>
+                    </div>
+                    <div class="tree-content" style="display: none">
+                        <div class="tree">
+                            <div class="tree-node">
+                                <div class="tree-tit">
+                                    <h2 class="tit-area"><i class="layui-icon" style="margin-right: 10px;">&#xe61a;</i>2017年考研
+                                    </h2>
+                                    <div class="option-area">
+                                        <i class="layui-icon edit">&#xe642;</i>
+                                        <i class="layui-icon add">&#xe654;</i>
+                                        <i class="layui-icon del">&#xe640;</i>
+                                    </div>
+                                </div>
+                                <div class="tree-content" style="display: none">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+</body>
+</html>
+<script src="../../..//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="../../..//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="../../..//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet"/>
+<script src="https://cdn.bootcss.com/jquery/1.10.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.js"></script>
+<script src="../../..//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="Sortable.js"></script>
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'layer'],
+        function(fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+
+
+            $(".tree-wrap").mySortable({
+                "tree": ".tree-wrap",
+                "treeContent": ".tree-content",
+                "treeTitle": ".tree-tit",
+                "optionArea": ".option-area",
+                events: {
+                    add: add,
+                    edit: edit,
+                    delete1: delete1
+                }
+            });
+
+            function edit(ui) {
+                alert(ui.html());
+                layer.prompt(function(value, index, elem) {
+                    layer.close(index);
+                });
+            }
+
+            function add() {
+                layer.prompt(function(value, index, elem) {
+                    layer.close(index);
+                });
+            }
+
+            function delete1() {
+                layer.prompt(function(value, index, elem) {
+                    layer.close(index);
+                });
+            }
+
+
+        })
+</script>

@@ -1,0 +1,399 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="css/layui.css" rel="stylesheet" media="all">
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/index.css">
+    <script src="js/jquery-1.11.3.js"></script>
+    <script src="js/layer.js"></script>
+</head>
+<body>
+    <div class="product-col div1">
+        <div class="treeContainer">
+            <ul id="trees"></ul>
+        </div>
+    </div>
+    <div class="mainContainer">
+
+        <div class="mainTitle">
+            <h5>时间相关</h5>
+        </div>
+        <div class="mainForm">
+            <button name="btnDate" class="btns btns-default btnDate" type="button">今天</button>
+            <button name="btnDate" class="btns btns-default btnDate" type="button">昨天</button>
+            <button name="btnDate" class="btns btns-default btnDate" type="button">最近七天</button>
+            <button name="btnDate" class="btns btns-default btnDate" type="button">本月</button>
+            <div class="layui-form-pane">
+                <div class="layui-form-item">
+                    <div class="layui-input-inline">
+                        <input class="layui-input" placeholder="开始日" id="LAY_demorange_s">
+                    </div>
+                    <div class="layui-input-inline">
+                        <input class="layui-input" placeholder="截止日" id="LAY_demorange_e">
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="btns btns-default">搜索</button>
+        </div>
+
+        <div class="mainTitle">
+            <h5>表格相关</h5>
+        </div>
+        <div class="mainTable">
+            <div class="layui-form">
+                <table class="layui-table">
+                    <colgroup>
+                        <col width="50">
+                        <col width="100">
+                        <col width="100">
+                        <col width="100">
+                        <col width="100">
+                        <col width="100">
+                        <col width="100">
+                        <col width="100">
+                        <col width="100">
+                        <col width="100">
+                        <col width="100">
+                        <col width="100">
+                        <col width="100">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                        <th><input type="checkbox" name="" lay-skin="primary" lay-filter="allChoose"></th>
+                        <th>说明</th>
+                        <th>总数</th>
+                        <th>自学考试</th>
+                        <th>成人高考</th>
+                        <th>远程教育</th>
+                        <th>职业资格</th>
+                        <th>电大</th>
+                        <th>
+                            统招
+                            <a href="" class="btnOrderBy">
+                                <span class="span2"></span>
+                                <span class="span1"></span>
+                            </a>
+                        </th>
+                        <th>培训</th>
+                        <th style="position: relative;">
+                            <a class="hoverBtn" href="javascript:;">
+                                总人数
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropList" style="z-index: 100;">
+                                <li class="hoverColor">
+                                    <a href="javascript:;">选项11111111</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:;">选项2</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:;">选项3</a>
+                                </li>
+                            </ul>
+                        </th>
+                        <th>联系人数</th>
+                        <th>成功率</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="checkbox" name="" lay-skin="primary"></td>
+                            <td>去年数据</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="" lay-skin="primary"></td>
+                            <td>去年本人</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="" lay-skin="primary"></td>
+                            <td>今年数据</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="" lay-skin="primary"></td>
+                            <td>今年本人</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="" lay-skin="primary"></td>
+                            <td>今年排名</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="mainTitle">
+            <h5>按钮相关</h5>
+        </div>
+        <div class="mainButton">
+            <div style="margin-top: 10px;">
+                <button type="button" class="layui-btn layui-btn-primary">原始</button>
+                <button type="button" class="layui-btn">默认</button>
+                <button type="button" class="layui-btn layui-btn-normal">百搭</button>
+                <button type="button" class="layui-btn layui-btn-warm">暖色</button>
+                <button type="button" class="layui-btn layui-btn-danger">警告</button>
+                <button type="button" class="layui-btn layui-btn-disabled">禁用</button>
+            </div>
+        </div>
+
+        <div class="mainTitle">
+            <h5>表单相关</h5>
+        </div>
+        <div class="mainForm">
+            <div style="margin-top: 10px; width: 500px;">
+                <form class="layui-form" action="">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">输入框</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="title" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">密码框</label>
+                        <div class="layui-input-inline">
+                            <input type="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">不能小于XXX，不能超过XXX</div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">选择框</label>
+                        <div class="layui-input-block">
+                            <select name="city" lay-verify="required">
+                                <option value=""></option>
+                                <option value="0">北京</option>
+                                <option value="1">上海</option>
+                                <option value="2">广州</option>
+                                <option value="3">深圳</option>
+                                <option value="4">杭州</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">复选框</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" name="like[write]" title="选项1">
+                            <input type="checkbox" name="like[read]" title="选项2" checked>
+                            <input type="checkbox" name="like[dai]" title="选项3">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">开关</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" name="switch" lay-skin="switch">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">单选框</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="sex" value="男" title="男">
+                            <input type="radio" name="sex" value="女" title="女" checked>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-form-text">
+                        <label class="layui-form-label">文本域</label>
+                        <div class="layui-input-block">
+                            <textarea name="desc" placeholder="请输入内容" class="layui-textarea"></textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+        <div class="mainTitle">
+            <h5>进度条</h5>
+        </div>
+        <div class="mainProgress">
+            <div style="margin-top: 10px;">
+                <div class="layui-progress">
+                    <div class="layui-progress-bar" lay-percent="10%"></div>
+                </div>
+                <br>
+                <div class="layui-progress" lay-showPercent="yes">
+                    <div class="layui-progress-bar layui-bg-red" lay-percent="30%"></div>
+                </div>
+                <br>
+
+                <div class="layui-progress layui-progress-big" lay-showPercent="yes">
+                    <div class="layui-progress-bar layui-bg-green" lay-percent="50%"></div>
+                </div>
+                <br>
+
+                <div class="layui-progress layui-progress-big">
+                    <div class="layui-progress-bar" lay-percent="20%"></div>
+                </div>
+                <br>
+
+                <div class="layui-progress layui-progress-big">
+                    <div class="layui-progress-bar layui-bg-orange" lay-percent="50%"></div>
+                </div>
+                <br>
+
+                <div class="layui-progress layui-progress-big" lay-showPercent="true">
+                    <div class="layui-progress-bar layui-bg-blue" lay-percent="80%"></div>
+                </div>
+                <br>
+
+            </div>
+        </div>
+
+        <div class="mainTitle">
+            <h5>手风琴</h5>
+        </div>
+        <div class="mainAccordion">
+            <!--<div style="margin-top: 10px;">-->
+                <!--<div class="layui-collapse" lay-accordion>-->
+                    <!--<div class="layui-colla-item">-->
+                        <!--<h4 class="layui-colla-title">杜甫</h4>-->
+                        <!--<div class="layui-colla-content">内容1</div>-->
+                    <!--</div>-->
+                    <!--<div class="layui-colla-item">-->
+                        <!--<h4 class="layui-colla-title">李清照</h4>-->
+                        <!--<div class="layui-colla-content">内容2</div>-->
+                    <!--</div>-->
+                    <!--<div class="layui-colla-item">-->
+                        <!--<h4 class="layui-colla-title">鲁迅</h4>-->
+                        <!--<div class="layui-colla-content layui-show">内容3</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="layui-collapse" lay-accordion="">-->
+                <!--<div class="layui-colla-item">-->
+                    <!--<h2 class="layui-colla-title">layui 更适合哪些开发者？</h2>-->
+                    <!--<div class="layui-colla-content layui-show">-->
+                        <!--<p>在前端技术快速变革的今天，layui 仍然坚持语义化的组织模式，甚至于模块理念都是采用类AMD组织形式，并非是有意与时代背道而驰。layui 认为以jQuery为核心的开发方式还没有到完全消亡的时候，而早期市面上基于jQuery的UI都普通做得差强人意，所以需要有一个新的UI去重新为这一领域注入活力，并采用一些更科学的架构方式。-->
+                            <!--<br>-->
+                            <!--因此准确地说，layui 更多是面向那些追求开发简单的前端工程师们，以及所有层次的服务端程序员。</p>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="layui-colla-item">-->
+                    <!--<h2 class="layui-colla-title">为什么JS社区大量采用未发布或者未广泛支持的语言特性？</h2>-->
+                    <!--<div class="layui-colla-content">-->
+                        <!--<p>有不少其他答案说是因为JS太差。我下面的答案已经说了，这不是根本性的原因。但除此之外，我还要纠正一些对JS具体问题的误解。JS当初是被作为脚本语言设计的，所以某些问题并不是JS设计得差或者是JS设计者的失误。比如var的作用域问题，并不是“错误”，而是当时绝大部分脚本语言都是这样的，如perl/php/sh等。模块的问题也是，脚本语言几乎都没有模块/命名空间功能。弱类型、for-in之类的问题也是，只不过现在用那些老的脚本语言的人比较少，所以很多人都误以为是JS才有的坑。另外有人说JS是半残语言，满足不了开发需求，1999年就该死。半残这个嘛，就夸张了。JS虽然有很多问题，但是设计总体还是优秀的。——来自知乎@贺师俊</p>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="layui-colla-item">-->
+                    <!--<h2 class="layui-colla-title">为什么前端工程师多不愿意用 Bootstrap 框架？</h2>-->
+                    <!--<div class="layui-colla-content">-->
+                        <!--<p>因为不适合。如果希望开发长期的项目或者制作产品类网站，那么就需要实现特定的设计，为了在维护项目中可以方便地按设计师要求快速修改样式，肯定会逐步编写出各种业务组件、工具类，相当于为项目自行开发一套框架。——来自知乎@Kayo</p>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="layui-colla-item">-->
+                    <!--<h2 class="layui-colla-title">贤心是男是女？</h2>-->
+                    <!--<div class="layui-colla-content">-->
+                        <!--<p>man！ 所以这个问题不要再出现了。。。</p>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        </div>
+
+        <div class="mainTitle">
+            <h5>弹出层</h5>
+        </div>
+        <div class="mainModal">
+            <div style="margin-top: 10px;">
+                <button type="button" class="layui-btn btn1">弹出层</button>
+            </div>
+        </div>
+
+        <div class="mainTitle">
+            <h5>分页</h5>
+        </div>
+        <div class="mainPage">
+            <div style="margin-top: 10px;">
+                <div id="demoPage">
+                    <div class="layui-box layui-laypage layui-laypage-default" id="layui-laypage1">
+                        <span class="layui-laypage-curr">
+                            <em class="layui-laypage-em"></em>
+                            <em>1</em>
+                        </span>
+                        <a href="javascript:;" data-page="2">2</a>
+                        <a href="javascript:;" data-page="3">3</a>
+                        <a href="javascript:;" data-page="4">4</a>
+                        <a href="javascript:;" data-page="5">5</a>
+                        <span>...</span>
+                        <a href="javascript:;" class="layui-laypage-last" title="尾页" data-page="100">末页</a>
+                        <a href="javascript:;" class="layui-laypage-next" data-page="2">下一页</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mainTitle">
+            <h5>富文本框</h5>
+        </div>
+        <div class="mainEdit">
+            <div style="margin-top: 10px;">
+                <textarea id="editDemo" style="display: none;"></textarea>
+            </div>
+        </div>
+
+
+    </div>
+    <script src="layui.js"></script>
+    <script src="js/mainRight.js"></script>
+</body>
+</html>

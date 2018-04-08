@@ -1,0 +1,115 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body id="root" v-cloak>
+    <div class="OpenContainer">
+        <div class="layui-form">
+            <div id="layountView"></div>
+            <button class="layui-btn" style="margin-left:120px;" lay-submit @click="submit">保存</button>
+        </div>
+    </div>
+</body>
+</html>
+
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="../../../LayoutConfig.js"></script>
+<script>
+    var BusType = 100;
+    //用于修改加载数据
+    require_js_file(['form', 'jquery'],
+        function (fnr) {
+            var $ = layui.$;
+            var form = layui.form;
+
+            var stuid = fnr.getQueryString("stuid");
+
+            layoutReady = (function (vm) {
+                //修改基本信息
+                if (stuid != undefined) {
+                    $.get("/service/edu/Student/GetStudentInfo", { stuid: stuid }, function (rsp) {
+                        if (rsp.SuccessResponse) {
+                            if (rsp.Data.ExtDataList != null && rsp.Data.ExtDataList.length > 0) {
+                                $.each(rsp.Data.ExtDataList, function (index, item) {
+                                    //item.Value = "12321321";
+                                    rsp.Data[item.ItemName] = item.ItemValue;
+                                })
+                            }
+                            vm.submitData = rsp.Data;
+                            vm.cityData();
+                            vm.AreaData();
+
+                        }
+                    });
+                }
+            });
+
+            window.rootApp = new Vue({
+                el: "#root",
+                data: {
+                    editstatus: 0
+                },
+                methods: {
+                    submit: function (e) {
+                        var self = this;
+                        if (!layui.form.checkInput(e)) {
+                            return false;
+                        }
+
+                        var list = [];
+                        $.each(layoutApp.submitData, function (k, v) {
+                            if (k != null && k.indexOf("customField_") == 0) {
+                                list.push({ ItemName: k, ItemValue: v })
+                            }
+                        })
+                        layoutApp.submitData.ListExtData = list;
+
+
+                        if (stuid == undefined) {
+                            //添加
+                            $.ajax({
+                                url: '/service/edu/Student/EditStudentInfo',
+                                type: 'post',
+                                data: layoutApp.submitData,
+                                dataType: 'json',
+                                success: function (rsp) {
+                                    if (rsp.SuccessResponse) {
+                                        layer.msg("添加成功！");
+                                        //location.href = "EditDetailInfo.html?stuid=" + rsp.Data.StuID + "&model_id=" + model_id + "&province_id=" + province_id + "&school_id=" + school_id + "&level_id=" + level_id + "&category_id=" + category_id + "&specialty_id=" + specialty_id + "";
+                                    } else {
+                                        layer.msg(rsp.Message);
+                                    }
+                                }
+                            });
+                        } else {
+                            //修改
+                            layoutApp.StuID = stuid;
+                            $.ajax({
+                                url: '/service/edu/Student/EditStudentInfo',
+                                type: 'post',
+                                data: layoutApp.submitData,
+                                dataType: 'json',
+                                success: function (rsp) {
+                                    layer.msg(rsp.Message, {
+                                        time: 1000
+                                    }, function () {
+                                        if (rsp.SuccessResponse) {
+                                            location.href = location.href;
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    }
+                },
+                ready: function () {
+                    var self = this;
+                }
+            });
+        });
+</script>

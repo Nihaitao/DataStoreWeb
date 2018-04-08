@@ -1,0 +1,51 @@
+header {
+  position: relative;
+  line-height: 0.862068rem;
+  background: #f6f6f6;
+  text-align: center;
+  border-top: 0.017241rem solid #dddddd;
+  border-bottom: 0.017241rem solid #dddddd;
+}
+header .log {
+  position: absolute;
+  top: 0;
+  right: 0.189655rem;
+  color: #f12532;
+}
+header .icon-sanjiao-copy {
+  position: absolute;
+  top: 0;
+  left: 0.344827rem;
+}
+.main {
+  padding: 0 0.25862rem;
+}
+.main .passIpt {
+  position: relative;
+  padding-bottom: 0.448275rem;
+  margin-top: 0.948275rem;
+}
+.main .passIpt .password {
+  padding-left: 0.793103rem;
+  border: 0.017241rem solid #dddddd;
+  line-height: 0.775862rem;
+  width: 100% ;
+}
+.main .passIpt .icon-mima {
+  position: absolute;
+  top: 0.224137rem;
+  font-size: 0.310344rem;
+  padding-left: 0.25862rem;
+}
+.main .logbtn {
+  padding: 0;
+  margin: 0 auto;
+  border: none;
+  width: 100%;
+  line-height: 0.75862rem;
+  text-align: center;
+  background: #f10013;
+  color: #ffffff;
+  margin-bottom: 0.344827rem;
+  font-size: 0.224137rem;
+}

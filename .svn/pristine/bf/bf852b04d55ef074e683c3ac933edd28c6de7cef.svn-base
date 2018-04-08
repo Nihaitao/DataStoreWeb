@@ -1,0 +1,177 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        .isDisplay {
+            display: none;
+        }
+        .box {
+            position: relative;
+            border-radius: 5px;
+            padding: 25px 25px;
+            display: inline-block;
+            text-align: center;
+            width: 130px;
+        }
+        .box.ddd {
+            border: 1px solid #ddd;
+        }
+        .box.ff9 {
+            border: 1px solid #0099ff;
+        }
+
+        .box a {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        .box p.imgP {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .yes {
+            color: #ddd;
+        }
+        .chooseIcon {
+            display: inline-block;
+            border-top-left-radius: 3px;
+            border-bottom-right-radius: 5px;
+            padding: 2px 7px 3px 4px;
+            background-color: #00B7EE;
+            color: #fff;
+            font-size: 12px;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .box a.settingBtn {
+            border-color: #0099ff;
+            color: #0099ff;
+            margin-left: 10px;
+        }
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body id="root" v-cloak>
+    <div class="OpenContainer">
+        <div v-bind:class="{'box': true, 'ff9': AliIsDisabled, 'ddd': !AliIsDisabled}">
+            <p class="imgP" v-if="!AliIsDisabled">
+                <img src="../../Resources/images/AliPay01.png" style="width: 70px; height: 70px;" />
+                <span style="display: block; margin-top: 10px; color: #ddd;">支付宝支付</span>
+            </p>
+            <p class="imgP" v-if="AliIsDisabled">
+                <img src="../../Resources/images/AliPay02.png" style="width: 70px; height: 70px;" />
+                <span style="display: block; margin-top: 10px; color: #0099ff;">支付宝支付</span>
+            </p>
+            <a class="yes" href="javascript:;" v-if="!AliIsDisabled" @click="AliEnableFn">启用</a>
+            <a class="no" href="javascript:;" v-if="AliIsDisabled" style="color: #ddd;" @click="AliDisabledFn">禁用</a>
+            <a class="settingBtn" v-if="AliIsDisabled" href="javascript:;" @click="AliSetModelFn">设置</a>
+            <div class="chooseIcon" v-if="AliIsDisabled">已选择</div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script> 
+<script src="../../Resources/js/Controls/Common.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate", "customUtil"],
+    function (fnr) {
+
+        var laydate = layui.laydate;
+        var $ = layui.jquery;
+
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+                AliIsDisabled: false,
+                AliID: ''
+            },
+            ready: function () {
+                this.AliIsEnabledFn();
+            },
+            methods: {
+                AliEnableFn: function () {
+                    var self = this;
+                    fnr.openDialog({
+                        title: '支付宝支付配置',
+                        area: ['1000px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                        content: ['payForm.html'],
+                        btn: ['保存'],
+                        events: {
+                            refresh: function (data) {
+                                if (data.status) {
+                                    layer.msg(data.msg ? data.msg : '操作成功');
+                                    self.AliIsEnabledFn();
+                                } else {
+                                    layer.msg(data.msg ? data.msg : '操作失败');
+                                }
+                            }
+                        }
+                    });
+                },
+
+                //判断是否启用
+                AliIsEnabledFn: function () {
+                    var self = this;
+                    $.get('/service/pay/OnLinePay/QueryPaySetView', { PayType: 2 }, function (res) {
+                        console.log(res);
+                        if (res.SuccessResponse) {
+                            if (res.Data != null) {
+                                self.AliID = res.Data.ID;
+                                if (res.Data.Valid == 1) {
+                                    self.AliIsDisabled = true;
+                                } else {
+                                    self.AliIsDisabled = false;
+                                }
+                            }
+                        }
+                    })
+                },
+
+                //禁用
+                AliDisabledFn: function () {
+                    var self = this;
+                    $.get('/service/pay/OnLinePay/PaySetEnable', { ID: self.AliID, Valid: 0 }, function (res) {
+                        if (res.SuccessResponse) {
+                            self.AliIsDisabled = false;
+                            layer.msg(res.Message ? res.Message : '操作成功')
+                        } else {
+                            layer.msg(res.Message)
+                        }
+                    })
+                },
+
+                //配置
+                AliSetModelFn: function () {
+                    var self = this;
+                    fnr.openDialog({
+                        title: '微信支付配置',
+                        area: ['1000px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                        content: ['paySetForm.html?ID=' + self.AliID],
+                        btn: ['保存'],
+                        events: {
+                            refresh: function (data) {
+                                if (data.status) {
+                                    layer.msg(data.msg ? data.msg : '操作成功');
+                                } else {
+                                    layer.msg(data.msg ? data.msg : '操作失败');
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    });
+</script>

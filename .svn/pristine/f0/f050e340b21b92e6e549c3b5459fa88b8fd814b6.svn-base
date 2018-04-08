@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心</title>
+    <script src="../Resources/js/jquery.js"></script>
+    <link rel="stylesheet" href="../Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link href="../Resources/CSS/Font/css/font-awesome.min.css" rel="stylesheet" />
+    <script src="../Resources/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../Resources/CSS/PC_css.css">
+    <script src="../script/artTemplate.js"></script>
+    <style>
+        img.logo{
+            margin: 0;
+        }
+    </style>
+</head>
+<body style="background-color: #E8E8E8">
+    <!--顶部-->
+    <!--#<!--#include file="../UserControl/stepHeader.html"-->
+    <!--logo and search-->
+    <div style="background: #fff" class="top_search">
+        <div class="container" style="height: 100%;">
+            <a href="../index.shtml" class="pull-left" style="display: inline-block; width: 232px; height: 60px; margin: 30px 0;">
+                <img src="" alt="" class="logo" style="width: 100%; height: 100%; display: none;">
+                <span style="width: 100%; display: none; height: 100%;line-height: 60px;margin-left: 15px;" class="textLogo"></span>
+            </a>
+            <div class="search pull-left">
+                <span class="TOP-selected">课程 <i class=" fa fa-angle-down" style="position: absolute;right: 10px;top: 0"></i></span>
+                <input type="text" class="search_input" placeholder="2017年10月考期自考报名时间">
+                <div class="gary">搜索</div>
+            </div>
+        </div>
+    </div>
+    <!--个人中心主体部分-->
+    <div class="Ps-advertisement">
+        <div class="container">
+            <img src="../Resources/images/addBanner.png" alt="404" style="width: 100%; height: 100%;">
+        </div>
+    </div>
+    <div class="Ps-body">
+        <div class="container">
+            <div class="Ps-nav pull-left">
+                <ul>
+                    <li class=""><a href="indexs.shtml"><i class="fa fa-home"></i>首页 <span class="Ps-down-icon"></span></a>  </li>
+                    <li class=""><a href="baseInfos.shtml"><i class="fa fa-user-circle"></i>基本资料 <span class="Ps-down-icon"></span></a>  </li>
+                    <li class=""><a href="Setting.shtml"><i class="fa fa-cog"></i>账户设置 <span class="Ps-down-icon"></span></a>  </li>
+                    <li class=""><a><i class="fa fa-book"></i>我的课程 <span class="Ps-down-icon"></span></a>  </li>
+                    <li class=""><a href="Order.shtml"><i class="fa fa-jpy"></i>我的订单 <span class="Ps-down-icon"></span></a>  </li>
+                    <li class=""><a href="interlocution.shtml"><i class="fa fa-question-circle"></i>我的问答 <span class="Ps-down-icon"></span></a>  </li>
+                    <li class="active"><a href="comment.shtml"><i class="fa fa-pencil-square-o"></i>我的评论   <span class="Ps-down-icon"></span></a>  </li>
+                </ul>
+            </div>
+            <div class="tab-content pull-right">
+                <!--我的评论-->
+                <div role="tabpanel" class="tab-pane active" id="Ps-myPl">
+                    <div class="Ps-sectionBlock" style="margin: 0;">
+                        <h3 style="position: relative">
+                            我的评论
+                        </h3>
+                    </div>
+                    <div class="Ps-sectionBlock " id="CommentContainer">
+                        <ul class="problem-list"></ul>
+                        <!--分页-->
+                        <!--<div class="Pro-pageCount clearfix">
+                            <div class="clearfix" style="margin: 0 auto;width: 680px">
+                                <span>首页</span>
+                                <span>上一页</span>
+                                <ul>
+                                    <li>1</li>
+                                    <li>2</li>
+                                    <li class="active">3</li>
+                                    <li>4</li>
+                                    <li>5</li>
+                                    <li>6</li>
+                                    <li>7</li>
+                                </ul>
+                                <span>下一页</span>
+                                <span>尾页</span>
+                            </div>
+                        </div>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--footer-->
+    <!--#<!--#include file="../UserControl/Footer.html"-->
+</body>
+</html>
+
+<script id="test" type="text/html">
+    <ul class="problem-list">
+        {{each Data as value i}}
+        <li class="clearfix">
+            <img src="../Resources/images/photo.png" alt="" class="problem-user-photo" width="40" height="40">
+            <div class="problem-info">
+                <h4>{{value.StudentName}}  <span class="problem-info-time">{{value.Addtime | dataFormat}} </span></h4>
+                <p>{{value.Content}}     </p>
+                <span class="question-info">提问课程：《{{value.CourseName}}{{value.ChapterName}}  》</span>
+            </div>
+        </li>
+        {{/each}}
+    </ul>
+</script>
+<script type="text/html">
+
+</script>
+<script>
+    function ImgFn() {
+        $.get('/service/public/Mechanism/GetSetlist', function (res) {
+            if (res.SuccessResponse) {
+                if (res.Data) {
+                    console.log(res.Data);
+                    if (res.Data.HeaderLogoOrName == 1) {
+                        $('.logo').attr('src', res.Data.HeaderLogo ? res.Data.HeaderLogo : 'Resources/images/wxdef.png')
+                        $('.logo').css('display', 'block');
+                        $('.textLogo').css('display', 'none');
+                    } else {
+                        $('.textLogo').html(res.Data.HeaderName);
+                        $('.logo').css('display', 'none');
+                        $('.textLogo').css('display', 'block');
+                    }
+                }
+            }
+        });
+    }
+    ImgFn();
+    $.get("/service/CourseComment/GetMyCourseComment", function (datas) {
+        console.log(datas);
+        if (datas.ReturnData.Data.length > 0) {
+            var html = template('test', datas.ReturnData);
+            document.getElementById('CommentContainer').innerHTML = html;
+        } else {
+            var html = '<h4 style="text-align:center;color:#666">暂无数据</h4>';
+            document.getElementById('CommentContainer').innerHTML = html;
+        }
+
+
+    })
+    template.helper('dataFormat', function (time) {
+        if (time == undefined) {
+            return '';
+        }
+        var NowTime = (new Date().getTime() - new Date(time).getTime()) / 1000 / 60 / 60
+
+        if (NowTime > 24) {
+            return time
+        } else {
+            return Math.round(NowTime) + "小时前"
+        }
+    });
+    //document.getElementById('OrderContainer').innerHTML = html;
+</script>

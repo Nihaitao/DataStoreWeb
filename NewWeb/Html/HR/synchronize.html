@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body id="root">
+    <div class="OpenContainer" style="padding-top:30px;">
+        <form class="layui-form" action="" onsubmit="return false">
+            <div class="layui-tab-item layui-show" style="line-height:35px; font-size:14px">
+                <b>同步须知：</b><br />
+                • "CT平台"中不存在的成员，会被同步过来；<br />
+                • "企业微信"中不存在的成员，在"CT平台"中，会被设置为离职；<br />
+                • 请只在"CT平台"中维护通讯录，否则双向操作可能导致数据不一致；<br />
+                • 每天可更新3次组织架构，两次更新间隔需10分钟;<br />
+                • 点击同步后请稍作等待，避免重复操作<br /><br />
+                <a href="javascript:;" style="color:red;" @click="errordom">查看错误日志</a>
+            </div>
+            <div class="layui-form-item layui-hide">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit @click="formDemo">立即提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="/Resources/js/Controls/Common.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate"],
+        function (fnr) {
+            var laydate = layui.laydate;
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+            var flg = true;
+            window.rootApp = new Vue({
+                el: "#root",
+                ready: function () {
+
+                },
+                methods: {
+                    //保存数据关闭弹窗
+                    formDemo: function (e) {
+                        _this = this;
+                        if (flg) {
+                            flg = false;
+                            var index = layer.msg('通讯录同步中，请勿刷新！', {
+                                icon: 16,
+                                shade: 0.01,
+                                time: 999999
+                            });
+
+                            $.post("/service/work/api/synchronize", [], function (res) {
+                                flg = true;
+                                layer.close(index);
+                                layer.msg(res.Message, {
+                                    time: 2000
+                                }, function () {
+                                    if (res.SuccessResponse) {
+                                        if (res.Data.errorCount > 0) {
+                                            return false;
+                                        }
+                                        fnr.callDialog('refresh'); //回调打开窗口events中的refresh
+                                        fnr.closeDialog(); //关闭当前的对话框
+                                    }
+                                });
+                            })
+                        }
+                        return false;
+                    },
+                    errordom: function () {
+                        fnr.openDialog({
+                            title: '同步日志',
+                            area: ['550px', "360px"],
+                            content: ['/html/hr/synchronizelog.html'],
+                            //btn: ['开始同步'],
+                            events: {
+                                refresh: function (data) {
+                                    //location.href = location.href;
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        });
+</script>

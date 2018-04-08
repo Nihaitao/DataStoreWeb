@@ -1,0 +1,163 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title></title>
+</head>
+<body id="root">
+<div class="layui-upload">
+
+    <form class="layui-form" action="">
+
+        <div class="layui-form-item">
+            <button type="button" class="layui-btn layui-btn-normal" id="testList" style="position: relative; cursor: pointer">
+                <input multiple @change="choosefile" name="file_upload" type="file" accept="video/avi,.avi,.f4v,video/mpeg,.mpg,video/mp4,.mp4,video/x-flv,.flv,video/x-ms-wmv,.wmv,video/quicktime,.mov,video/3gpp,.3gp,.rmvb,video/x-matroska,.mkv,.asf,.264,.ts,.mts,.dat,.vob,audio/mpeg,.mp3,audio/x-wav,.wav,video/x-m4v,.m4v,video/webm,.webm,.mod" multiple @change="choosefile" style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; opacity: 0; cursor: pointer"/>
+                选择多文件
+            </button>
+        </div>
+    </form>
+    <div class="layui-upload-list">
+        <table class="layui-table">
+            <thead>
+            <tr>
+                <th layui-col-md4>文件名</th>
+                <th layui-col-md1>大小</th>
+                <th layui-col-md1>上传速度</th>
+                <th layui-col-md2>剩余时长</th>
+                <th layui-col-md2>上传百分比</th>
+                <th layui-col-md1>完成状态</th>
+                <th layui-col-md1>操作</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr v-show="fileList.length==0">
+                <td colspan="7">请选择文件上传</td>
+            </tr>
+
+            <tr v-for="(index,item) in fileList">
+                <td>{{item.file.name}} {{index}}</td>
+                <td>{{item.fileSize}}</td>
+                <td>{{item.speed}}</td>
+                <td>{{item.countDown}}</td>
+                <td>
+                    {{item.percentage+'%'}}
+                </td>
+                <td>{{item.showText}}</td>
+                <td>
+                    <button class="layui-btn layui-btn-warm" v-show="item.uploadIng" @click="uploadStop(item)">暂停</button>
+                    <button class="layui-btn" v-show="item.stopIng" @click="uploadStart(item)">续传</button>
+                    <button class="layui-btn layui-btn-danger" @click="removeFile(index,item)">删除</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <button type="button" class="layui-btn" @click="startUpload" v-bind:disabled="disable">开始上传</button>
+    <button type="button" class="layui-btn" @click="stopUpload" v-bind:disabled="disable">停止上传</button>
+</div>
+</body>
+</html>
+
+<link href="../../../Resources/js/modules/layer/css/layui.css" rel="stylesheet"/>
+<script src="../../../Resources/js/modules/vue/vue.min.js"></script>
+<script src="../../../Resources/js/modules/layer/layui.js"></script>
+<script src="../../../Resources/js/require_config.js"></script>
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'upload', 'polyvfbp'],
+        function(fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+            var upload = layui.upload;
+            var polyvfbp = layui.polyvfbp;
+            var rootApp = new Vue({
+                el: "#root",
+                data: {
+                    fileList: [],
+                    disable: false
+                },
+                ready: function() {
+                    var self = this;
+                    self.requestHash();
+                    polyvfbp.updateOption({ userid: 'fed9ee9ee5' });
+                    polyvfbp.addEventListener('complete',
+                        function() {
+                            self.startNextFile();
+
+                        });
+                    setInterval(self.requestHash, 3 * 60 * 1000);
+                    polyvfbp.maxQueueSize = 3;
+                },
+                methods: {
+                    choosefile: function(e) {
+                        var self = this;
+                        var files = e.target.files;
+                        $.each(files,
+                            function(index) {
+                                var file = polyvfbp.create(this);
+                                self.fileList.push(file);
+                                if (self.uploadCount() < polyvfbp.maxQueueSize)
+                                    file.start();
+                            });
+                    },
+                    removeFile: function(index, obj) {
+                        if (!obj.complete) {
+                            if (obj.uploadIng) {
+                                fnr.msg("文件还在上传中，请暂停上传后再移除队列");
+                                return;
+                            }
+                        }
+                        this.fileList.splice(index, 1);
+                    },
+                    uploadStart: function(item) {
+                        var self = this;
+                        if (item.stopIng) {
+                            item.start();
+                            return;
+                        } else if (self.uploadCount() < polyvfbp.maxQueueSize) {
+                            item.start();
+                        } else {
+                            fnr.msg("当前上传队列已满，请等待其他文件上传完毕或删除正在上传的文件");
+                        }
+                    },
+                    uploadStop: function(item) {
+                        item.pause();
+                    },
+                    requestHash: function() {
+                        $.get("/api/polyv/hash",
+                            {},
+                            function(resp) {
+                                polyvfbp.updateOption(resp);
+                            },
+                            "json");
+                    },
+                    uploadCount: function() {
+                        var self = this;
+                        var count = 0;
+                        $.each(self.fileList,
+                            function() {
+                                if (this.uploadIng || this.stopIng) {
+                                    count++;
+                                }
+                            });
+                        return count;
+                    },
+                    startNextFile: function() {
+                        var self = this;
+                        if (self.uploadCount() < polyvfbp.maxQueueSize) {
+                            $.each(self.fileList,
+                                function() {
+                                    if (!this.uploadIng && !this.complete) {
+                                        this.start();
+                                        return false;
+                                    }
+                                    return true;
+                                });
+                        }
+                    }
+                }
+            });
+        });
+</script>

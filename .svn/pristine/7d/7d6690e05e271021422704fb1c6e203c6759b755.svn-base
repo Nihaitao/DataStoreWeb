@@ -1,0 +1,104 @@
+﻿666 -->
+
+<link href="/Resources/usercss/EditPhone.css" rel="stylesheet" />
+
+<div class="tips">
+    <p>温馨提示：为了您的账号安全，请及时修改初始密码，防止盗号（初始密码为身份证后六位）;</p>
+    <p>密码最好不要设置成生日，电话号码，车牌和门牌号码。</p>
+</div>
+<form class="layui-form" style="overflow: hidden;background-color:#fff" id="passwordFrm">
+    <div class="layui-form-item">
+        <label class="layui-form-label">原始密码</label>
+        <div class="layui-inline">
+            <input type="password" name="password" required lay-verify="required" v-model="params.OldPassword" placeholder="请输入原始密码" autocomplete="off" class="layui-input ipt_bg_color" style="width: 240px; box-sizing: border-box;">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">新密码</label>
+        <div class="layui-inline">
+            <input type="password" name="password1" lay-verify="required|pass" required placeholder="请输入新密码" autocomplete="off" class="layui-input ipt_bg_color" v-model="newPassword1" style="width: 240px; box-sizing: border-box;">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">确认密码</label>
+        <div class="layui-inline" style="position: relative;">
+            <input type="password" name="password1" required lay-verify="required|pass" placeholder="请确认密码" autocomplete="off" class="layui-input ipt_bg_color" v-model="newPassword2" style="width: 240px; box-sizing: border-box;">
+            <p class="psd_wrong_tips" style="display:none;">两次输入的新密码不一致,请重新输入!</p>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <p style="padding-left: 150px;color: #999;">密码可以为6-16位英文字母，数字、"."、"_"、"?" ，且下划线不能在最后。</p>
+    </div>
+
+    <a href="#" style="color:#fff!important" class="layui-btn layui-btn-danger edit_btn" @click="editPassword">修改密码</a>
+</form>
+<script>
+    require_js_file(['table', 'tree', 'form', 'jquery', 'tableExt', "customUtil", 'laydate'],
+    function (fnr) {
+        var table = layui.table;
+        var form = layui.form;
+        var laydate = layui.laydate;
+        var tableExt = layui.tableExt;
+        var $ = layui.$;
+        window.rootApp = new Vue({
+            el: '#passwordFrm',
+            data: {
+                newPassword1: "",
+                newPassword2: "",
+                params: {
+                    OldPassword: "",
+                    newPassword: "",
+                }
+            },
+            ready: function () {
+            },
+            methods: {
+                //修改密码
+                editPassword: function (e) {
+                    var _this = this;
+                    var inputEls = $("input[name='password1']");
+
+                    if (!layui.form.checkInput(e)) {
+                        return false;
+                    }
+                    if (inputEls) {
+                        var val1 = inputEls[0].value;
+                        var val2 = inputEls[inputEls.length - 1].value;
+                        if (val1 !== val2) {
+                            $(".psd_wrong_tips").show();
+                            return;
+                        }
+                        $(".psd_wrong_tips").hide();
+                        this.params.newPassword = val1;
+                    }
+                    $.ajax({
+                        url: '/service/edu/Student/EditStudentInfoPassword',
+                        data: this.params,
+                        type: "post",
+                        success: function (res) {
+                            if (res.SuccessResponse) {
+                                for (key in _this.params) {
+                                    console.log(key)
+                                    _this.params[key] = "";
+                                }
+                                _this.newPassword2 = "";
+                                _this.newPassword1 = "";
+                                
+                                layer.msg(res.Message)
+                            } else {
+                                layer.msg(res.Message)
+                            }
+                        }
+                    })
+                },
+            }
+        });
+        form.verify({
+            pass: [
+            /^(?!.*?_$)[\S]{6,16}$/
+            , '密码格式错误,请重新填写'
+            ]
+        });
+    });
+</script>

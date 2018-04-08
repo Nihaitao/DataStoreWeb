@@ -1,0 +1,423 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label"><span style="color:red">* </span>老师姓名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="Name" lay-verify="required" autocomplete="off" placeholder="老师姓名"
+                               class="layui-input" v-model="submitForm.Name">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">性别</label>
+                    <remote-rad name="Sex" v-bind:setting="SelectSex" v-bind:value.sync="submitForm.Sex"
+                                initial="off"></remote-rad>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">身份证</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="CardNo" autocomplete="off" placeholder="身份证"
+                               class="layui-input" v-model="submitForm.CardNo">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">职称</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="JobTitle" autocomplete="off" placeholder="职称"
+                               class="layui-input" v-model="submitForm.JobTitle">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">头像</label>
+                        <img class="layui-upload-img" v-bind:src="submitForm.HeadImage" alt="" width="190" height="90" />
+                        <button type="button" class="layui-btn layui-btn-normal" id="upload">
+                            <i class="layui-icon">&#xe67c;</i>上传图片
+                        </button>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label"><span style="color:red">* </span>手机号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="Phone" lay-verify="phone" autocomplete="off" placeholder="手机号"
+                               class="layui-input" v-model="submitForm.Phone">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">邮箱</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="Email" autocomplete="off" placeholder="邮箱"
+                               class="layui-input" v-model="submitForm.Email">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">生日</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="Birthday" autocomplete="off" placeholder="生日" id="birth"
+                               class="layui-input" v-model="submitForm.Birthday | formatTime 'yyyy-MM-dd'">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">地址</label>
+                <div class="layui-input-block">
+                    <input type="text" name="Address" autocomplete="off" placeholder="地址"
+                           class="layui-input" v-model="submitForm.Address">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">最高学历</label>
+                    <div class="layui-input-block">
+                        <remote-sel v-bind:setting="Education" v-bind:value.sync="submitForm.Education_ID" v-bind:change="searchCourse"
+                                    initial="off" lay-filter="Education_ID"></remote-sel>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">毕业学校</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="GraduateSchool" autocomplete="off" placeholder="毕业学校"
+                               class="layui-input" v-model="submitForm.GraduateSchool">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline" v-for="item in submitForm.TeacherDisciplines">
+                    <label class="layui-form-label" v-if="$index==0">授课学科</label>
+                    <label class="layui-form-label" v-else></label>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="FirstSetting" v-bind:value.sync="item.Discipline_OneLevelID" v-bind:change="FirstChange"
+                                    initial="off" v-bind:tag="'first|'+$index"></remote-sel>
+                    </div>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="SecondSetting" v-bind:value.sync="item.Discipline_TwoLevelID" v-bind:change="SecondChange" v-ref:second
+                                    initial="off" v-bind:tag="'second|'+$index"></remote-sel>
+                    </div>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="ThreeSetting" v-bind:value.sync="item.Discipline_ThreeLevelID" v-ref:three
+                                    initial="off" v-bind:tag="'three|'+$index"></remote-sel>
+                    </div>
+                    <div style="display:inline-block;height:36px;line-height:38px;" v-if="$index==0">
+                        <a href="javascript:;" @click="addItem">添加学科</a>
+                    </div>
+                    <div style="display:inline-block;height:36px;line-height:38px;" v-else>
+                        <i class="layui-icon" style="font-size:24px;cursor:pointer;" @click="delItme($index)">&#xe640;</i>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">简介</label>
+                <div class="layui-input-block">
+                    <textarea name="Introduction" placeholder="请输入内容" class="layui-textarea" v-model="submitForm.Introduction"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item layui-hide">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit="submit" lay-filter="demo1" @click="SaveTeacher">立即提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<style>
+    .layui-upload-img { width: 92px; height: 92px; margin: 0 10px 10px 0; border: 1px solid #ccc; }
+</style>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/Controls/Common.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/util.js"></script>
+<script>
+    Vue.filter('formatTime', function (time, format) {
+        if (time == undefined) {
+            return '';
+        }
+        var finalTime;
+        if (typeof (time) == 'string') {
+            time = time.replace("T", " ");
+            time = time.replace("Z", " ");
+            var timeIOS = time.replace(/\-/g, "/");
+            finalTime = new Date(timeIOS);
+        } else {
+            finalTime = time;
+        }
+
+        var t = new Date(finalTime);
+        var tf = function (i) {
+            return (i < 10 ? '0' : '') + i
+        };
+        return format.replace(/yyyy|MM|dd|HH|mm|ss/g,
+            function (a) {
+                switch (a) {
+                    case 'yyyy':
+                        return tf(t.getFullYear());
+                        break;
+                    case 'MM':
+                        return tf(t.getMonth() + 1);
+                        break;
+                    case 'mm':
+                        return tf(t.getMinutes());
+                        break;
+                    case 'dd':
+                        return tf(t.getDate());
+                        break;
+                    case 'HH':
+                        return tf(t.getHours());
+                        break;
+                    case 'ss':
+                        return tf(t.getSeconds());
+                        break;
+                }
+            });
+    })
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate", 'upload'],
+    function (fnr) {
+        var form = layui.form;
+        var $ = layui.$;
+        var laydate = layui.laydate;
+        var upload = layui.upload;
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+                SelectSex: {
+                    tags: { name: "Sex" },
+                    options: [
+                        { key: "1", value: "男" },
+                        { key: "0", value: "女" },
+                    ],
+                    fields: { key: 'key', value: 'value' }
+                },
+                submitForm: {
+                    ID: '',
+                    TeacherDetail_ID: '',
+                    Name: '',
+                    Sex: '',
+                    CardNo: '',
+                    JobTitle: '',
+                    HeadImage: '',
+                    Phone: '',
+                    Email: '',
+                    Birthday: '',
+                    Address: '',
+                    Education_ID: '',
+                    GraduateSchool: '',
+                    Introduction: '',
+                    TeacherDisciplines: [],
+                    Teacher_DisciplineIDs: ''
+                },
+                Education: {
+                    options: [],
+                    fields: { root: 'Data', key: 'ID', value: 'Description' },
+                    remote: { url: "/service/public/HDictionary/GetHDictionaryList", options: { method: 'get' }, data: { Valid: 1, ColumnName: "Education_ID" } }
+                },
+
+                FirstSetting: {
+                    search: true,
+                    options: [
+                    ],
+                    remote: {
+                        url: '/service/datastore/Discipline/GetDisciplineWithCID',
+                        data: { CID: 0 }
+                    },
+                    fields: { root: 'Data', key: 'ID', value: 'Name' }
+                },
+                SecondSetting: {
+                    options: [],
+                    remote: {
+                        url: '',
+                        data: {}
+                    },
+                    fields: { root: 'Data', key: 'ID', value: 'Name' }
+                },
+                ThreeSetting: {
+                    options: [],
+                    remote: {
+                        url: '',
+                        data: {}
+                    },
+                    fields: { root: 'Data', key: 'ID', value: 'Name' }
+                },
+            },
+            ready: function () {
+                if (fnr.getQueryString('TeacherDetail_ID')) {
+                    var TeacherDetail_ID = fnr.getQueryString('TeacherDetail_ID')
+                    var params = { 'TeacherDetail_ID': TeacherDetail_ID };
+                    this.GetTeacherByID(params)
+                }
+            },
+            methods: {
+                SecondBind: function (ID) {
+                    var data;
+                    if (ID > 0) {
+                        data = {
+                            search: true,
+                            fields: { key: 'ID', value: 'Name' },
+                            options: [],
+                            remote: { url: "", data: { CID: ID } }
+                        }
+                    } else {
+                        data = {
+                            search: true,
+                            fields: { key: 'ID', value: 'Name' },
+                            options: []
+                        }
+                    }
+                    return data;
+                },
+                ThreeBind: function (ID) {
+                    var data;
+                    if (ID > 0) {
+                        data = {
+                            search: true,
+                            fields: { key: 'ID', value: 'Name' },
+                            options: [],
+                            remote: { url: "", data: { CID: ID } }
+                        }
+                    } else {
+                        data = {
+                            search: true,
+                            fields: { key: 'ID', value: 'Name' },
+                            options: []
+                        }
+                    }
+                    return data;
+                },
+                FirstChange: function (obj) {
+                    if (obj.value == '') return;
+                    var tag = "second|" + obj.tag.split('|')[1];
+                    this.SecondSetting.remote.url = '/service/datastore/Discipline/GetDisciplineWithCID';
+                    this.SecondSetting.remote.data = { CID: obj.value };
+                    fnr.findComponent(this, tag).reset();
+                    //this.$refs.second.reset();
+                },
+                SecondChange: function (obj) {
+                    if (obj.value == '') return;
+                    var tag = "three|" + obj.tag.split('|')[1];
+                    this.ThreeSetting.remote.url = '/service/datastore/Discipline/GetDisciplineWithCID';
+                    this.ThreeSetting.remote.data = { CID: obj.value };
+                    fnr.findComponent(this, tag).reset();
+                },
+                //根据Id查找老师
+                GetTeacherByID: function (params) {
+                    var self = this;
+                    $.get("/service/datastore/Teacher/GetTeacherByID", params, function (res) {
+                        if (res.SuccessResponse) {
+
+                            if(res.Data.TeacherDisciplines.length<1){
+                                res.Data.TeacherDisciplines.push({ Discipline_OneLevelID: '', Discipline_TwoLevelID: '', Discipline_ThreeLevelID: '' })
+                            }
+                            self.submitForm = res.Data;
+
+                            self.$nextTick(function () {
+                                $.each(self.submitForm.TeacherDisciplines, function (k, v) {
+                                    self.FirstChange({ value: v.Discipline_OneLevelID, tag: "frist|" + k });
+                                    self.SecondChange({ value: v.Discipline_TwoLevelID, tag: "second|" + k });
+                                });
+                            });
+                        } else {
+                            layer.msg(res.Message)
+                        }
+                    })
+                },
+                //添加老师
+                SaveTeacher: function (e) {
+                    if (!layui.form.checkInput(e)) {
+                        return false;
+                    }
+                    var data={
+                        ID:this.submitForm.ID,
+                        TeacherDetail_ID:this.submitForm.TeacherDetail_ID,
+                        Name:this.submitForm.Name,
+                        Sex:this.submitForm.Sex,
+                        CardNo:this.submitForm.CardNo,
+                        JobTitle:this.submitForm.JobTitle,
+                        HeadImage:this.submitForm.HeadImage,
+                        Phone:this.submitForm.Phone,
+                        Email:this.submitForm.Email,
+                        Birthday:this.submitForm.Birthday,
+                        Address:this.submitForm.Address,
+                        Education_ID:this.submitForm.Education_ID,
+                        GraduateSchool:this.submitForm.GraduateSchool,
+                        Introduction:this.submitForm.Introduction,
+                        Teacher_DisciplineIDs:'',
+                    };
+                    var onehtml='';
+                    this.submitForm.TeacherDisciplines.forEach(function(item,index,arr){
+                        if(item.Discipline_OneLevelID){
+                            if(item.Discipline_TwoLevelID){
+                                if(item.Discipline_ThreeLevelID){
+                                    onehtml+=item.Discipline_ThreeLevelID;
+                                }else{
+                                    onehtml+=item.Discipline_TwoLevelID;
+                                }
+                            }else{
+                                onehtml+=item.Discipline_OneLevelID;
+                            }
+                        }
+                        onehtml+=','
+                    })
+                    data.Teacher_DisciplineIDs=onehtml.substring(0,onehtml.length-1);
+                    $.post("/service/datastore/Teacher/SaveTeacher", data, function (res) {
+                        if (res.SuccessResponse) {
+                            
+                            fnr.callDialog('refresh');
+                            fnr.closeDialog(); //关闭当前的对话框
+                        } else {
+                            layer.msg(res.Message)
+                        }
+                    })
+                },
+                addItem: function () {
+                    this.submitForm.TeacherDisciplines.push({ Discipline_OneLevelID: '', Discipline_TwoLevelID: '', Discipline_ThreeLevelID: '' })
+                },
+                delItme: function (index) {
+                    this.submitForm.TeacherDisciplines.splice(index, 1)
+                }
+            }
+        });
+        var ins1 = laydate.render({
+            elem: '#birth' //指定元素
+            , done: function (value, date, endDate) {
+                window.rootApp.submitForm.Birthday = value;
+            }
+        });
+        //上传图片
+        var uploadInst = upload.render({
+            elem: '#upload'
+            , url: '/service/upload'
+            , accept: 'images' //普通文件
+            , done: function (res, index, upload) {
+                if (!res.SuccessResponse) {
+                    return layer.msg('上传失败');
+                } else {
+                    rootApp._data.submitForm.HeadImage = res.Message;
+                    return layer.msg('上传成功');
+                }
+            }
+            , error: function () {
+                //演示失败状态，并实现重传
+                var demoText = $('#demoText');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function () {
+                    uploadInst.upload();
+                });
+            }
+        });
+
+    });
+</script>

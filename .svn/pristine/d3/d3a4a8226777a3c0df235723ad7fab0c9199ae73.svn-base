@@ -1,0 +1,10 @@
+﻿function LayoutFn() {
+    $.get('/service/public/Mechanism/GetSetlist', function (res) {
+        if (res.SuccessResponse) {
+            if (res.Data) {
+                window.rootApp.layoutData = res.Data;
+                $('.favIcon').attr('href', res.Data.Favicon ? res.Data.Favicon : '../../favicon.ioc');
+            }
+        }
+    });
+}

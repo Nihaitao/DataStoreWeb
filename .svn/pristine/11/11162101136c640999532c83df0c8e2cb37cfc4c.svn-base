@@ -1,0 +1,599 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>页头浏览器图标菜单导航设置</title>
+    <style>
+         .tree {
+            border-radius: 2px;
+        }
+
+        .tree-content {
+            padding-left: 30px;
+        }
+
+        .tree-node {
+            border-top: 1px solid #e2e2e2;
+            position: relative;
+        }
+
+            .tree-node:first-child {
+                border-top: none;
+            }
+
+            .tree-node .option-area {
+                position: absolute;
+                top: 50%;
+                right: 15px;
+                transform: translateY(-50%);
+            }
+
+        .option-area .layui-icon {
+            display: inline-block;
+            color: #999;
+        }
+
+            .option-area .layui-icon:hover {
+                color: #333;
+            }
+
+        .tree-tit {
+            position: relative;
+            height: 42px;
+            line-height: 42px;
+            padding: 0 15px;
+            color: #333;
+            background-color: #f0f0f0;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+            .tree-tit .layui-icon {
+                display: inline-block;
+                margin-right: 10px;
+                transition: transform 0.4s;
+            }
+
+                .tree-tit .layui-icon.open {
+                    -webkit-transform: rotate(90deg);
+                    -moz-transform: rotate(90deg);
+                    transform: rotate(90deg);
+                }
+
+            .tree-tit:hover {
+                box-shadow: 2px 2px 5px #ccc;
+            }
+
+        .layui-colla-content {
+            display: none;
+            padding: 10px 15px;
+            line-height: 22px;
+            border-top: 1px solid #f0f0f0;
+            color: #666;
+        }
+
+        .state-highlight {
+            height: 50px;
+            border: 1px dashed #5FB878;
+            margin-bottom: 10px;
+        }
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+            <legend>页头设置</legend>
+        </fieldset>
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">页头设置:</label>
+                    <div class="layui-input-inline">
+                        <remote-rad v-bind:setting="HeaderSelect" v-bind:value.sync="HeaderSubmitForm.HeaderLogoOrName" initial="off"></remote-rad>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item" v-show="HeaderSubmitForm.HeaderLogoOrName == '0'">
+                <label class="layui-form-label">公司名称:</label>
+                <div class="layui-input-inline">
+                    <input type="text" lay-verify="empty|HeaderName" autocomplete="off" placeholder="请输公司名称" class="layui-input"
+                           v-model="HeaderSubmitForm.HeaderName" style="width:350px;">
+                </div>
+            </div>
+            <div class="layui-form-item" v-show="HeaderSubmitForm.HeaderLogoOrName == '1'">
+                <label class="layui-form-label">学生中心Logo:</label> &nbsp;
+                <img class="layui-upload-img" id="HeaderStuP" v-bind:src="HeaderSubmitForm.HeaderLogo" style="height:60px; width: 232px;">&nbsp;
+                <button type="button" class="layui-btn layui-btn-normal" id="HeaderUpStudP" style="margin:15px 0"><i class="layui-icon">&#xe67c;</i>选择图片</button><span style="padding-left:10px; color:red;"> * 建议上传 透明底色的PNG 图片。图像尺寸为:宽232px * 高60px</span>
+                <p id="HeaderStuText" style="margin-left:-15px;margin-top:5px;"></p>
+            </div>
+            <div class="layui-form-item" style="margin-left:10px;position:relative;text-align:left;">
+                <div class="layui-upload">
+                    <div class="layui-upload-list" style="">
+                        <label class="layui-form-label">浏览器图标:</label>
+                        <div class="layui-input-block">
+                            <img class="layui-upload-img" id="FaviconStuP" v-bind:src="HeaderSubmitForm.Favicon" style="width:32px;height:32px;">
+                            <button type="button" class="layui-btn layui-btn-normal" id="FaviconUpStudP" style="margin:15px 0"><i class="layui-icon">&#xe67c;</i>选择图片</button><span style="color:red;"> * 建议上传文件格式为ico类型，文件大小不能大于32x32</span>
+                            <p id="FaviconStuText" style="margin-left:-15px;margin-top:4px;"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" @click="HeaderSaveAdd" lay-submit>立即提交</button>
+                </div>
+            </div>
+        </div>
+
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+            <legend>菜单导航栏设置</legend>
+        </fieldset>
+        <blockquote class="layui-elem-quote">
+            <div class="layui-row layui-form">
+                <div class="layui-col-xs6" style="text-align:left">
+                    <button class="layui-btn" @click="SaveMenu"><i class="layui-icon"></i> 添加一级菜单</button>
+                </div>
+            </div>
+        </blockquote>
+        <div class="block layui-clear" style="height:700px;overflow:hidden;">
+            <div class="layui-col-xs6" style="overflow:auto;height:100%;">
+                <div class="tree-wrap" v-cloak>
+                    <div class="tree" v-for="(index,item) in MenuList" v-bind:data-id="item.ID">
+                        <div class="tree-node">
+                            <div class="tree-tit" @click="setInfo(item)">
+                                <h2 class="tit-area">
+                                    <i class="layui-icon open arrow" v-if="item.Childs.length>0">&#xe602;</i><i class="layui-icon" style="visibility:hidden;" v-else>&#xe602;</i><span class="name">{{item.Name}}</span>
+                                </h2>
+                                <div class="option-area">
+                                    <button class="layui-btn layui-btn-small" v-bind:class='[item.Valid == 1 ? " layui-btn-warm" :"layui-btn-normal"]' @click.stop="SetMenuValid(item)">{{item.Valid ==0 ?'启用':'禁用'}}</button>
+                                    <i class="layui-icon add" @click.stop="add(item,index)">&#xe654;</i>
+                                    <i class="layui-icon del" @click.stop="delete1(item,index)">&#xe640;</i>
+                                </div>
+                            </div>
+                            <div class="tree-content">
+                                <div class="tree" v-if="item.Childs.length>0" v-for="(index2,item2) in item.Childs" v-bind:data-id="item2.ID">
+                                    <div class="tree-node">
+                                        <div class="tree-tit" @click="setInfo(item2)">
+                                            <h2 class="tit-area">
+                                                <i class="layui-icon open arrow" v-if="item2.Childs.length>0">&#xe602;</i><i class="layui-icon" style="visibility:hidden;" v-else>&#xe602;</i><span class="name">{{item2.Name}}</span>
+                                            </h2>
+                                            <div class="option-area">
+                                                <button class="layui-btn layui-btn-small" v-bind:class='[item2.Valid == 1 ? " layui-btn-warm" :"layui-btn-normal"]' @click.stop="SetMenuValid(item2)" v-if="item.Valid == 1">{{item2.Valid ==0 ?'启用':'禁用'}}</button>
+                                                <i class="layui-icon del" @click.stop="delete1(item2,index2)">&#xe640;</i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-xs6" style="overflow:auto;height:100%;">
+                <div class="layui-form" v-show="modifyMenu">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">菜单名称</label>
+                        <div class="layui-input-block">
+                            <input type="text" lay-verify="required" autocomplete="off" placeholder="请输入菜单名称" class="layui-input" v-model="SaveMenuForm.Name">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">链接网址</label>
+                            <div class="layui-input-block">
+                                <input type="text" autocomplete="off" placeholder="请输入链接网址" class="layui-input" v-bind:disabled="SaveMenuForm.IsEdit!=0" v-model="SaveMenuForm.Url">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button type="button" class="layui-btn" id="upload" @click="GetMenuUrl()" v-bind:disabled="SaveMenuForm.IsEdit!=0">
+                                ...
+                            </button>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">链接类型</label>
+                        <div class="layui-input-block">
+                            <!--<input type="radio" name="sex" value="0" title="本页打开" checked="">
+                        <input type="radio" name="sex" value="1" title="弹出新窗口">-->
+                            <remote-rad name="Sex" v-bind:setting="SelectOpenType" v-bind:value.sync="SaveMenuForm.OpenType"
+                                        initial="off"></remote-rad>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">排序</label>
+                        <div class="layui-input-block">
+                            <input type="text" autocomplete="off" placeholder="请输入菜单排序" class="layui-input" v-model="SaveMenuForm.Sort">
+                        </div>
+                    </div>
+                    <div class="layui-form-item ">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" @click="saveMenuInfo">保存</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/Controls/Common.js"></script>
+<script src="https://cdn.bootcss.com/jquery/1.10.1/jquery.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/jquery/jquery-ui.js"></script>
+<script src="/Html/ResourcesCenter/classroom/Sortable.js"></script>
+
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate"],
+function (fnr) {
+    var table = layui.table;
+    var form = layui.form;
+    var tableExt = layui.tableExt;
+    var $ = layui.jquery;
+    var upload = layui.upload;
+    //浏览器图标
+    
+
+    layui.use('upload', function () {
+        
+        upload = layui.upload;
+        var FaviconUploadInst = upload.render({
+            elem: '#FaviconUpStudP'
+          , url: '/service/public/Upload/File/2'
+            , exts: 'ico'
+          , before: function (obj) {
+              //预读本地文件示例，不支持ie8
+              obj.preview(function (index, file, result) {
+                  $('#FaviconStuP').attr('src', result); //图片链接（base64
+              });
+          }
+          , done: function (res) {
+              //如果上传失败
+              if (res.code > 0) {
+                  return layer.msg('上传失败');
+              }
+              //上传成功
+              rootApp.HeaderSubmitForm.Favicon = res.Message
+              layer.msg('上传成功')
+          }
+          , error: function () {
+              //演示失败状态，并实现重传
+              var demoText = $('#FaviconStuText');
+              demoText.html('<span style="color: #FF5722;">上传失败</span> <a class=" favicon-reload" style="cursor:pointer;">重试</a>');
+              demoText.find('.favicon-reload').on('click', function () {
+                  FaviconUploadInst.upload();
+              });
+          }
+        })
+        
+    });
+
+    //页头LOGO
+    layui.use('upload', function () {
+        upload = layui.upload;
+        //普通图片上传
+        var HeaderUploadInst = upload.render({
+            elem: '#HeaderUpStudP'
+         , url: '/service/public/Upload/File/2'
+         , before: function (obj) {
+             //预读本地文件示例，不支持ie8
+             obj.preview(function (index, file, result) {
+                 $('#HeaderStuP').attr('src', result); //图片链接（base64）
+             });
+         }
+         , done: function (res) {
+             //如果上传失败
+             if (res.code > 0) {
+                 return layer.msg('上传失败');
+             }
+             //上传成功
+             rootApp.HeaderSubmitForm.HeaderLogo = res.Message
+             layer.msg('上传成功')
+         }
+         , error: function () {
+             //演示失败状态，并实现重传
+             var demoText = $('#HeaderStuText');
+             demoText.html('<span style="color: #FF5722;">上传失败</span> <a class=" header-reload" style="cursor:pointer;">重试</a>');
+             demoText.find('.header-reload').on('click', function () {
+                 HeaderUploadInst.upload();
+             });
+         }
+        });
+    });
+
+    window.rootApp = new Vue({
+        el: "#root",
+        data: {
+            HeaderSelect: {
+                tags: { name: "HeaderLogoOrName" },
+                options: [
+                { key: "0", value: "公司" },
+                { key: "1", value: "LOGO" }
+                ]
+            },
+            HeaderSubmitForm: {
+                HeaderLogoOrName: '0',
+                HeaderLogo: '',
+                HeaderName: '',
+                Favicon: ''
+            },
+            FaviconSubmitForm: {
+                
+            },
+            modifyMenu: false,
+            MenuLength: '',
+            MenuList: [],
+            emptyMenu: {
+                CID: 0,
+                Childs: [],
+                Url: '/',
+                ID: 0,
+                Name: '',
+                Valid: 1,
+                OpenType: 1,
+                Sort: 99,
+                IsEdit: 0,
+            },
+            SelectOpenType: {
+                tags: { name: "Sex" },
+                options: [
+                    { key: "1", value: "本页打开" },
+                    { key: "0", value: "弹出新窗口" },
+                ],
+                fields: { key: 'key', value: 'value' }
+            },
+            validSetting: {
+                search: true,
+                options: [
+                    {
+                        key: '1',
+                        value: '启用'
+                    }, {
+                        key: '0',
+                        value: '禁用'
+                    }
+                ]
+            },
+            SaveMenuForm: {
+                ID: 0,
+                CID: '',
+                Name: '',
+                Url: '/',
+                OpenType: '',
+                Sort: 0,
+                IsEdit: 0,
+            }
+        },
+        ready: function () {
+            var self = this;
+            self.GetMenuList();
+            var laydate = layui.laydate;
+            $.get("/service/public/Mechanism/GetSetlist", {}, function (rsp) {
+                if (rsp.SuccessResponse) {
+                    if (self.HeaderSubmitForm.HeaderLogo != "") {
+                        self.HeaderSubmitForm.HeaderLogo = self.HeaderSubmitForm.HeaderLogo + '?x-oss-process=image/resize,m_fixed,h_227,w_447'
+                    }
+                    fnr.mergeJson(rsp.Data, self.HeaderSubmitForm);//合并ajax值fnr.closeDialog();
+
+                    if (self.HeaderSubmitForm.Favicon != "") {
+                        self.HeaderSubmitForm.Favicon = self.HeaderSubmitForm.Favicon + '?x-oss-process=image/resize,m_fixed,h_227,w_447';
+                    }
+                    fnr.mergeJson(rsp.Data, self.HeaderSubmitForm);//合并ajax值fnr.closeDialog();
+                }
+                else {
+                    layer.msg(rsp.Message, { icon: 2 });
+                }
+            });
+        },
+        methods: {
+            HeaderSaveAdd: function (e) {
+                var self = this;
+                if (!layui.form.checkInput(e)) {
+                    return false;
+                }
+                $.post("/service/Public/Mechanism/HeaderSet", this.HeaderSubmitForm, function (result) {
+                    if (result.SuccessResponse) {
+                        layer.msg(result.Message, { time: 2000, icon: 1 }, function () {
+                            window.parent.layer.close(parent.layer.getFrameIndex(window.name));
+                        });
+                    }
+                    else {
+                        layer.msg(result.Message, { icon: 2 });
+                    }
+                })
+                return false;
+            },
+
+            FaviconSaveAdd: function (e) {
+                var self = this;
+                if (!layui.form.checkInput(e)) {
+                    return false;
+                }
+                $.post("/service/public/Mechanism/HeaderSet", self.FaviconSubmitForm, function (result) {
+                    if (result.SuccessResponse) {
+                        layer.msg(result.Message, { time: 2000, icon: 1 }, function () {
+                            window.parent.layer.close(parent.layer.getFrameIndex(window.name));
+                        });
+                    }
+                    else {
+                        layer.msg(result.Message, { icon: 2 });
+                    }
+                })
+                return false;
+            },
+
+            //获取长度
+            length: function (arr) {
+                return (arr.length) + 1;
+            },
+            //启用禁用学科
+            SetMenuValid: function (item) {
+                var self = this;
+                if (item.Valid == 1) {
+                    layer.confirm('是否禁用', function (index) {
+                        $.post("/service/public/Menu/UpdateMenuStatus", { ID: item.ID, Status: 0, Other: 0 }, function (res) {
+                            if (res.SuccessResponse) {
+                                layer.msg('禁用成功');
+                                item.Valid = 0;
+                                self.GetMenuList();
+                                layer.close(index);
+                            }
+                        })
+                    })
+                } else if (item.Valid == 0) {
+                    layer.confirm('是否启用', function (index) {
+                        $.post("/service/public/Menu/UpdateMenuStatus", { ID: item.ID, Status: 1, Other: 0 }, function (res) {
+                            if (res.SuccessResponse) {
+                                layer.msg('启用成功');
+                                item.Valid = 1;
+                                self.GetMenuList();
+                                layer.close(index);
+                            }
+                        })
+                    })
+                }
+            },
+            //设置科目
+            setInfo: function (item) {
+                this.modifyMenu = true;
+                this.SaveMenuForm = item;
+            },
+            //保存菜单信息
+            saveMenuInfo: function () {
+                var Item = this.SaveMenuForm;
+                this.saveRequst(Item)
+            },
+            GetMenuUrl: function () {
+                var self = this;
+                fnr.openDialog({
+                    title: '设置菜单链接路径',
+                    area: ['800px', '700px'],
+                    content: ['/Html/Set/MenuSet/SetMenuUrl.html'],
+                    btn: ['确认添加'],
+                    events: {
+                        refresh: function (retVal) {
+                            if (retVal.status) {
+                                self.SaveMenuForm.Url = retVal.MenuUrl;
+                            } else {
+                                if (data.msg) {
+                                    layer.msg(data.msg)
+                                } else {
+                                    layer.msg('添加失败');
+                                }
+                            }
+                        }
+                    }
+                });
+            },
+            saveRequst: function (params, cb) {
+                var self = this;
+                if (params.ID == 0) {
+                    $.post("/service/public/Menu/AddMenu", params, function (res) {
+                        if (res.SuccessResponse) {
+                            if (cb && typeof cb == "function")
+                                cb(res);
+                            layer.msg("添加成功");
+                            self.GetMenuList();
+                            self.modifyMenu = false;
+                        } else {
+                            layer.msg(res.Message);
+                            return;
+                        }
+                    })
+                }
+                else {
+                    $.post("/service/public/Menu/UpdateMenu", params, function (res) {
+                        if (res.SuccessResponse) {
+                            if (cb && typeof cb == "function")
+                                cb(res);
+                            layer.msg("修改成功");
+                            self.GetMenuList();
+                        } else {
+                            layer.msg(res.Message);
+                            return;
+                        }
+                    })
+                }
+            },
+            //添加一级学科
+            SaveMenu: function () {
+                var self = this;
+                var timetamp = new Date().getTime().toString();
+                var item = this.emptyMenu;
+                item.Name = "新增菜单" + timetamp.substr(-4, 4);
+                item.CID = 0;
+                this.SaveMenuForm = item;
+                this.modifyMenu = true;
+
+            },
+            //查询学科集合
+            GetMenuList: function () {
+                var self = this;
+                $.get("/service/public/Menu/GetMenuData", {}, function (res) {
+                    if (res.SuccessResponse) {
+                        self.MenuList = res.Data;
+                        self.$nextTick(function () {
+                            $(".tree-wrap").mySortable({
+                                "tree": ".tree-wrap",
+                                "treeContent": ".tree-content",
+                                "treeTitle": ".tree-tit",
+                                "optionArea": ".option-area"
+                                //"stop":function(event,ui){
+                                //    var sortedIDs = $( ".tree-wrap" ).sortable( "toArray" ,{ attribute: "data-id" });
+                                //    console.log(sortedIDs)
+                                //    $.post("/service/Discipline/SortDiscipline",{old_prev_order:0,old_next_order:0,new_prev_order:0,new_next_order:0,currDisciplineId:0,currParentId:0},function(res){
+                                //        if(res.SuccessResponse){
+                                //            layer.msg('排序成功')
+                                //        }
+                                //    })
+                                //}
+                            });
+
+                        });
+                    }
+
+                })
+            },
+            add: function (item, index, parentIndex) {
+                var self = this;
+                var timetamp = new Date().getTime().toString();
+                var obj = this.emptyMenu;
+                this.modifyMenu = true;
+                obj.CID = self.MenuList[index].ID
+                obj.Name = "新增二级菜单" + timetamp.substr(-4, 4);
+                obj.Url = '/';
+                obj.Sort = 99;
+                this.SaveMenuForm = obj;
+                this.modifyMenu = true;
+            },
+
+            delete1: function (item, index) {
+                var self = this;
+                layer.confirm('是否删除？', {
+                    btn: ['确定', '取消'] //按钮
+                }, function () {
+                    if (item.Menu_ID == 0) {
+                        $.post("/service/public/Menu/DeleteMenu", { ID: item.ID }, function (res) {
+                            if (res.SuccessResponse) {
+                                self.MenuList.splice(index, 1);
+                                self.modifyMenu = false;
+                                layer.msg('删除成功', { icon: 1 });
+                                self.GetMenuList();
+                            }
+                        })
+                    }
+                    else {
+                        layer.msg("系统菜单不能删除！");
+                    }
+                })
+            }
+        }
+    });
+});
+    
+</script>

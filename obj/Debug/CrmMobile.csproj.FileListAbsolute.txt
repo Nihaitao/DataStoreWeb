@@ -1,0 +1,14 @@
+D:\公司项目20170207\SmartSchool 5.0\CrmMobile\bin\StuMobile.dll.config
+D:\公司项目20170207\SmartSchool 5.0\CrmMobile\bin\StuMobile.dll
+D:\公司项目20170207\SmartSchool 5.0\CrmMobile\bin\StuMobile.pdb
+D:\公司项目20170207\SmartSchool 5.0\CrmMobile\bin\Aliyun.OSS.dll
+D:\公司项目20170207\SmartSchool 5.0\CrmMobile\bin\Common.dll
+D:\公司项目20170207\SmartSchool 5.0\CrmMobile\bin\NPOI.dll
+D:\公司项目20170207\SmartSchool 5.0\CrmMobile\bin\NPOI.OOXML.dll
+D:\公司项目20170207\SmartSchool 5.0\CrmMobile\bin\NPOI.OpenXmlFormats.dll
+D:\公司项目20170207\SmartSchool 5.0\CrmMobile\bin\NPOI.OpenXml4Net.dll
+D:\公司项目20170207\SmartSchool 5.0\CrmMobile\bin\Common.pdb
+D:\公司项目20170207\SmartSchool 5.0\CrmMobile\bin\NPOI.xml
+D:\公司项目20170207\SmartSchool 5.0\CrmMobile\obj\Debug\CrmMobile.csprojResolveAssemblyReference.cache
+D:\公司项目20170207\SmartSchool 5.0\CrmMobile\obj\Debug\StuMobile.dll
+D:\公司项目20170207\SmartSchool 5.0\CrmMobile\obj\Debug\StuMobile.pdb

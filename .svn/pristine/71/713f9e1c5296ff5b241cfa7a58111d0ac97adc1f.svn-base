@@ -1,0 +1,237 @@
+header {
+  line-height: 0.844827rem;
+  border-bottom: 0.017241rem solid #dddddd ;
+  border-top: 0.017241rem solid #dddddd ;
+  position: relative;
+  text-align: center;
+  font-size: 0.275862rem;
+  color: #333333;
+}
+header i {
+  position: absolute;
+  top: 0;
+  left: 0.344827rem;
+  font-size: 0.310344rem;
+  color: #333333;
+}
+header .changePassword {
+  position: absolute;
+  top: 0;
+  right: 0.25862rem;
+  color: #ffa200;
+}
+.centerbox {
+  display: block;
+  background: #f5f5f9;
+  width: 100%;
+  height: 0.172413rem;
+  border-bottom: 0.017241rem solid #dddddd;
+}
+main h4 {
+  padding-left: 0.25862rem;
+  line-height: 0.844827rem;
+  font-size: 0.25862rem;
+}
+main h4 i {
+  color: #f10013;
+  font-weight: 600;
+  font-size: 0.293103rem;
+  font-style: normal;
+}
+main .phonenum {
+  margin-left: 0.25862rem;
+  position: relative;
+  border-bottom: 0.017241rem solid #ddd;
+}
+main .phonenum .icon-shouji {
+  position: absolute;
+  top: 0.103448rem;
+  left: 0.051724rem;
+  color: #ffa200;
+  font-size: 0.344827rem;
+}
+main .phonenum .txt {
+  padding-left: 0.431034rem;
+}
+main .phonenum .txt .phone {
+  line-height: 0.413793rem;
+  font-size: 0.241379rem;
+  color: #333333;
+}
+main .phonenum .txt .phone span {
+  color: #f10013;
+}
+main .phonenum .txt .findBack {
+    line-height: 0.344827rem;
+    padding-bottom: 0.172413rem;
+    font-size: 0.155172rem;
+    color: #cdcdcd;
+    width: 4.56rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+main .phonenum .changeNum {
+  line-height: 0.431034rem;
+  color: #FFFFFF;
+  background: #f10013;
+  border-radius: 0.051724rem;
+  position: absolute;
+  top: 0.172413rem;
+  right: 0.25862rem;
+  border: none;
+}
+main .msgBox {
+  position: relative;
+  border-bottom: 0.017241rem solid #dddddd;
+}
+main .msgBox .icon-youxiang {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.25862rem;
+  font-size: 0.275862rem;
+}
+main .msgBox .bindEM {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+main .msgBox .txt {
+  padding-left: 0.741379rem;
+}
+main .msgBox .txt .youxiang {
+  line-height: 0.413793rem;
+  padding-top: 0.241379rem;
+  color: #333;
+}
+main .msgBox .txt .findBack {
+  line-height: 0.344827rem;
+  color: #a1a1a1;
+  padding-bottom: 0.172413rem;
+}
+main .msgBox .bindEM {
+  width: 0.844827rem;
+  line-height: 0.431034rem;
+  color: #FFFFFF;
+  background: #dcdcdc;
+  border-radius: 0.051724rem;
+  position: absolute;
+  top: 0.413793rem;
+  right: 0.25862rem;
+  border: none;
+}
+.phoneBindMask {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background: rgba(0, 0, 0, 0.3);
+  top: 0;
+  padding-top: 1.275862rem;
+  padding-left: 0.25862rem;
+}
+.phoneBindMask .phoneBind-T {
+  width: 5.948275rem;
+  background: #fff;
+  border-radius: 0.086206rem;
+  padding-top: 0.482758rem;
+  padding-left: 0.25862rem;
+  padding-right: 0.25862rem;
+  position: relative;
+}
+.phoneBindMask .phoneBind-T i {
+  position: absolute;
+  top: 0.25862rem;
+  right: 0.25862rem;
+}
+.phoneBindMask .phoneBind-T p {
+  line-height: 0.844827rem;
+  font-size: 0.25862rem;
+  color: #000;
+  border-bottom: 0.017241rem solid #ddd;
+}
+.phoneBindMask .phoneBind-T p input {
+  line-height: 0.844827rem;
+  width: 2.241379rem;
+  margin-left: 0.431034rem;
+  border: none;
+  color: #adadad;
+}
+.phoneBindMask .phoneBind-T p .getnum {
+  background-color: #ddd;
+  padding: 0 15px;
+  border: none;
+  height: 0.517241rem;
+  text-align: center;
+  font-size: 0.189655rem;
+  border-radius: 0.051724rem;
+}
+.phoneBindMask .phoneBind-T h4 {
+  line-height: 0.275862rem;
+  padding-top: 0.206896rem;
+  font-size: 0.172413rem;
+  width: 5.068965rem;
+  color: #b4b4b4;
+}
+.phoneBindMask .phoneBind-T .confirm {
+  margin-top: 0.293103rem;
+  width: 5.517241rem;
+  line-height: 0.689655rem;
+  text-align: center;
+  color: #fff;
+  border: none;
+  background: #F10013;
+  margin-bottom: 1.086206rem;
+}
+.emailBindMask {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background: rgba(0, 0, 0, 0.3);
+  top: 0;
+  padding-top: 1.275862rem;
+  padding-left: 0.25862rem;
+}
+.emailBindMask .emailBind-T {
+  width: 5.948275rem;
+  position: relative;
+  background: #fff;
+  border-radius: 0.086206rem;
+  padding-top: 0.482758rem;
+  padding-left: 0.25862rem;
+  padding-right: 0.25862rem;
+}
+.emailBindMask .emailBind-T i {
+  position: absolute;
+  top: 0.25862rem;
+  right: 0.25862rem;
+}
+.emailBindMask .emailBind-T p {
+  line-height: 0.844827rem;
+  font-size: 0.25862rem;
+  color: #000;
+  border-bottom: 0.017241rem solid #ddd;
+}
+.emailBindMask .emailBind-T p input {
+  line-height: 0.844827rem;
+  width: 2.37931rem;
+  margin-left: 0.431034rem;
+  border: none;
+  color: #adadad;
+}
+.emailBindMask .emailBind-T h4 {
+  line-height: 0.275862rem;
+  padding-top: 0.206896rem;
+  font-size: 0.172413rem;
+  width: 5.068965rem;
+  color: #b4b4b4;
+}
+.emailBindMask .emailBind-T .confirm {
+  margin-top: 0.293103rem;
+  width: 5.517241rem;
+  line-height: 0.689655rem;
+  text-align: center;
+  color: #fff;
+  border: none;
+  background: #F10013;
+  margin-bottom: 1.086206rem;
+}

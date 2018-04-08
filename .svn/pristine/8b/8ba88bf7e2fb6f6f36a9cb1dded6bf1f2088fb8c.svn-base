@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title></title>
+    <link href="Resources/css/layui.css" rel="stylesheet"/>
+    <script src="Resources/js/modules/layui.js"></script>
+</head>
+<body>
+<table id="layerTable">
+</table>
+
+<script>
+    layui.use('table',
+        function() {
+            var table = layui.table;
+            table.render({
+                elem: '#layerTable  ' //指定原始表格元素选择器（推荐id选择器）
+                ,
+                height: 315 //容器高度
+                ,
+                cols: [
+                    [//标题栏
+                        { checkbox: true }, { field: 'Id', title: 'ID', width: 80 },
+                        { field: 'userName', title: '用户名', width: 120 }
+                    ]
+                ],
+                url: '/proxy/?id=123',
+                method: 'get',
+                where: {
+                    a: 1,
+                    b: 2
+                },
+                page: true,
+                limits: [30, 60, 90, 150, 300],
+                limit: 10
+            });
+        });
+</script>
+</body>
+</html>

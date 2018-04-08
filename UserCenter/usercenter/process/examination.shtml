@@ -1,0 +1,242 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>过程性考核-培养计划-选择</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="//at.alicdn.com/t/font_514871_9czxk955wqy6i529.css" rel="stylesheet" />
+    <script src="//at.alicdn.com/t/font_514871_z6ne30o81t3mcxr.js"></script>
+    <link rel="stylesheet" href="/Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link href="/Resources/CSS/financelist.css" rel="stylesheet" />
+    <link href="/Resources/CSS/question.css" rel="stylesheet" />
+    <link href="/Resources/CSS/PC_css.css" rel="stylesheet" />
+    <link href="/Resources/CSS/video-js.css" rel="stylesheet" />
+    <link href="/Resources/CSS/super.css" rel="stylesheet" />
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <style>
+    .tanchuBigBox{
+        display:block;
+    }
+    
+    </style>
+</head>
+<body style="background-color: #f7f7f7;padding-top: 20px;" id="examination">
+    <div class="w1200 clearfix" v-cloak>
+        <!--左侧导航 Start-->
+        <!--#<!--#include file="/PublicControl/leftmenu.html"-->
+        <!--左侧导航 End-->
+        <!--确认报考-->
+        <div class="main" v-cloak>
+            <div class="courseTitle blockBgColor">过程性考核-培养计划</div>
+            <div class="blockBgColor courseBox">
+                <div class="shenming_txt">
+                    <p><span class="color_span">注:</span>本平台为湖南省过程性考核学生学习平台，学生报考过程性考核科目后，学生在此平台的学习过程将纳入考评体系。</p>
+                    <p>课程名称代表该课程在当前考期该专业下有报考计划</p>
+                    <p>有参加国考并且考试成绩及格的科目将不能在报考过程性考核</p>
+                    <div class="see" @click="see">查看报考课程</div>
+                </div>
+                <div class="">
+
+
+                    <div class="listKec">
+                        <div class="kecheng clearfix_1">
+
+
+                            <table class="list_box">
+                                <thead>
+                                    <tr>
+                                        <th>课程代码</th>
+                                        <th>课程名称</th>
+                                        <th>统考成绩</th>
+                                        <th>已报人数</th>
+                                        <th>总时长</th>
+                                        <th>报考费</th>
+                                        <th>报考</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="item in baokaokc">
+                                        <td align="center">{{item.CuCode}}</td>
+                                        <td align="center" style="overflow:hidden;white-space: nowrap;text-overflow: ellipsis;">{{item.CuName}}</td>
+                                        <td align="center">{{item.Score}}</td>
+                                        <td align="center">{{item.ApplyCount}}</td>
+                                        <td align="center">{{item.ClassHour}}</td>
+                                        <td align="center">{{item.Price}}</td>
+                                        <td v-if="item.CurrentIsPay >0 && item.Score < 60" align="center"><span style="color:#4cff00">已报考</span></td>
+                                        <td v-if="item.Score >=60 " align="center"><span style="color:#4cff00">已通过</span></td>
+                                        <td v-if="item.Score < 60 && item.CurrentIsPay==0" align="center"><input type="checkbox" v-model="item.state" /></td>
+
+
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!--确认报考-->
+                    <div class="signUp" @click="submit"><span class="spanPayment">确认报考</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--弹出层-报考列表-默认为隐藏-->
+    <div class="tanchuBigBox" style="position:fixed" v-if="showAll" v-cloak>
+        <div class="tanchuBox">
+            <div class="tanchuBox_tit">报考列表 <span class="Close" @click="showAll=false"></span></div>
+            <ul class="listTitle danchu_tit clearfix_1">
+                <li>课程名称</li>
+                <li>单元</li>
+                <li>考试开始时间</li>
+                <li>考试结束时间</li>
+            </ul>
+
+            <ul class="listTitle danchu_tit clearfix_1" v-for="item in List">
+                <li>{{item.CUName}}</li>
+                <li>{{item.Unit}}单元</li>
+                <li>{{item.StartTime}}</li>
+                <li>{{item.EndTime}}</li>
+            </ul>
+
+        </div>
+    </div>
+
+    <script>
+
+
+        require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil','wxconfig'],
+           function (fnr) {
+               var $ = layui.$;
+               var table = layui.table;
+               var tableExt = layui.tableExt;
+          var wxconfig = layui.wxconfig;
+
+               var vm = new Vue({
+                   el: "#examination",
+                   data: {
+                       queryFormData: {
+
+                           Name: "",
+
+                       },
+                       test: true,
+                       baokaokc: [],
+                       List: [],
+                          userInfo: {}, //学生信息数据
+                       showAll:false,
+                   },
+                   ready: function () {
+                         this.userInfo = wxconfig.GetStudentInfo();
+                       this.getCoursekk();
+                   },
+                   methods: {
+                       //查看方法
+                       see: function () {
+                           if (this.List.length === 0) this.getAll();
+                           this.showAll = true;
+                       },
+                       getCoursekk: function () {
+                           var self = this;
+                           $.get("/service/edu/ResultCurriculum/GetProcessCurriculumList", {
+                               Specialty_ID: self.userInfo.Specialty_ID,
+                               StuId: self.userInfo.StuID,
+                               StuDetail_ID: self.userInfo.StuDetail_ID,
+                               SpecialtyVersion_ID: self.userInfo.SpecialtyVersion_ID
+                           }, function (rsp) {
+                               if (rsp.SuccessResponse) {
+
+                                 self.baokaokc = rsp.Data.SpecialtyCurriculum;
+
+                                   if (fnr.getQueryString('arr') != null && fnr.getQueryString('arr') != "") {
+                                       fnr.getQueryString('arr').split(",").map(function (a, b) {
+                                           self.baokaokc.map(function (c, d) {
+                                               if (a == c.Curriculum_ID) {
+                                                   self.$set('baokaokc[' + d + '].state', true);
+                                               } else if (c.state===undefined) {
+                                                   self.$set('baokaokc[' + d + '].state', false);
+                                               }
+                                           });
+                                       });
+                                   } else {
+
+                                       self.baokaokc.map(function (c, d) {
+                                           if (c.CurrentIsApply > 0) {
+                                               if (c.Score >=60) {
+                                                   self.$set('baokaokc[' + d + '].state', false);
+                                               } else {
+                                                   self.$set('baokaokc[' + d + '].state', true);
+                                               }
+
+                                           } else {
+                                               self.$set('baokaokc[' + d + '].state', false);
+
+                                           }
+
+
+                                       });
+                                   }
+
+
+                                   //self.baokaokc.map(function (a, b) {
+                                   //    self.$set('baokaokc[' + b + '].state', false)
+                                   //});
+
+                                   if (rsp.Data.PlanModel.Name != null && rsp.Data.PlanModel.Name != "") {
+                                       self.queryFormData.Name = rsp.Data.PlanModel.Name.slice(0, 4) + "年" + rsp.Data.PlanModel.Name.slice(4, 6) + "月"
+                                   }
+
+
+
+                               }
+                           })
+                       },
+                       getAll: function () {
+                           var self = this;
+                           if (self.queryFormData.Name != null && self.queryFormData.Name != "") {
+
+                               $.get("/service/edu/StudentExam/StudentExamList", {
+                                   Specialty_ID: self.userInfo.Specialty_ID,
+                                   StuID: self.userInfo.StuID,
+                                   StuDetail_ID: self.userInfo.StuDetail_ID,
+                                   SpecialtyVersion_ID: self.userInfo.SpecialtyVersion_ID,
+                                   DateName: self.queryFormData.Name
+                               }, function (rsp) {
+                                   if (rsp.SuccessResponse) {
+
+                                       if (rsp.Data != null && rsp.Data[0].List != null && rsp.Data[0].List != "") {
+                                           rsp.Data[0].List.map(function (a, b) {
+
+                                               self.List.push({ Unit: a.Unit, CUName: a.CUName, EndTime: fnr.format(a.EndTime, 'yyyy-MM-dd HH:mm:ss'), StartTime: fnr.format(a.StartTime, 'yyyy-MM-dd HH:mm:ss') })
+                                           });
+                                       }
+
+
+                                   }
+                               })
+                           }
+                       },
+                       submit: function () {
+                           var _this = this;
+                           var arr = [];
+
+                           _this.baokaokc.map(function (a, b) {
+                               if (a.state) { arr.push(a.Curriculum_ID) };
+                           });
+                           if (arr.length === 0) {
+                               layer.msg(' 请选择课程');
+                           } else {
+                               window.location.href = "/usercenter/process/coursePay.shtml?arr=" + arr ;
+                           }
+                       }
+                   },
+               })
+           })
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,712 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="/usercenter/Resources/fonts/iconfont.css" rel="stylesheet" />
+    <link href="/usercenter/Resources/CSS/Font/css/font-awesome.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/usercenter/Resources/CSS/PC_css.css">
+    <link href="/usercenter/Resources/CSS/common.css" rel="stylesheet" />
+    <link href="/usercenter/Resources/CSS/index.css" rel="stylesheet" />
+    <link href="/usercenter/Resources/CSS/question.css" rel="stylesheet" />
+    <script src="/usercenter/script/artTemplate.js"></script>
+</head>
+<body style="background-color: #f7f7f7">
+    <!--顶部-->
+    <!--#<!--#include file="../UserControl/stepHeader.html"-->
+    <div class="nav">
+        <div class="w1200 clearfix">
+            <div class="nav-header pull-left">
+                <a href="#"><img src="/usercenter/Resources/images/hd.png" /></a>
+            </div>
+        </div>
+    </div>
+    <div class="w1200 clearfix">
+        <div class="content">
+            <div class="container">
+                <!-- 栏目路径 开始 -->
+                <div class="bd-bg">
+                    <div class="adress f-f14"> <i></i> 当前位置： <a href="#">章节练习-练习模式</a><span>&nbsp; &gt; &nbsp;</span><a href="#" style="cursor:default" id="title">管理学原理第一节管理概述</a> </div>
+
+
+                    <div class="tpro-gress-pra">
+                        <div id="m_progress" class="tpro-gress">
+                            <div class="progress"> <em class="page-done" style="width:0%;"></em> </div>
+                            <div class="txt"><em>已完成<code id="page-done-count-text">0</code>题</em>/共<code id="page-question-count-text">6</code>题</div>
+                        </div>
+                    </div>
+                </div>
+                <!--栏目路径 结束-->
+                <!--题型 开始-->
+                <div class="dopra-con clearfix">
+                    <div class="pra-left-con pra-right-font16">
+
+                        <!-- 练习模式做题-->
+
+                        <div id="questionModule" class="" style="width:915px;overflow:hidden;position:relative;min-height:880px">
+                            <ul id="QuestionList" style="min-height: 100%; width: 5490px;">
+
+                                <li id="116253" style="min-height:880px" class="page-list" typeid="1" data-id="116253">
+                                    <div class="subject-con bor clearfix m-question " style="min-height:880px;">
+                                        <div class="subject-con">
+                                            <div class="sub-content2 sub-conanswer ">
+
+                                                <i class="subjec-daan subjec-none" id="zt116253"></i>
+                                                <div class="sub-dotitle"> <em>1</em> <i>[单选题]</i>   要开发一个管理信息系统需要具备的基本条件不包括（　）。 </div>
+
+                                                <div class="sub-content h200 ">
+                                                    A、建立和完善管理体系<br>
+                                                    B、选用计算机主机和外围设备<br>
+                                                    C、配备专门人才，培训组织成员<br>
+                                                    D、再造业务流程，优化组织结构<br>
+                                                </div>
+                                                <div class="m-question-html">
+                                                    <div class="m-questionToolbar">
+                                                        <div class="m-checkBox single" input_type="xt" id="daan116253" data-id="116253">
+                                                            <a class="question-option-list" href="javascript:;" data-index="2" data-value="A" data-questionid="116253">A</a><a class="question-option-list" href="javascript:;" data-index="2" data-value="B" data-questionid="116253">B</a><a class="question-option-list" href="javascript:;" data-index="2" data-value="C" data-questionid="116253">C</a><a class="question-option-list" href="javascript:;" data-index="2" data-value="D" data-questionid="116253">D</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="clear"></div>
+                                                <div class="clearfix " id="qeding116253" style="margin-bottom:20px;padding:0 34px;display:none">
+                                                    <a href="#" class="btn btn-orange mid-btn" onclick="QueDing(116253)">确定</a>
+                                                </div>
+                                                <div style="display:none" id="Answer116253">
+                                                    <div class="m_answerLine refer-answer clearfix jx_box ">
+                                                        <input type="hidden" id="CanKao116253" value="D">
+                                                        <input type="hidden" id="MyAnswer116253" value="">
+                                                        <div class="reck" id="reck116253">参考答案：<em class="right">D</em></div>
+                                                        <ul>
+                                                            <li class="nobro">
+                                                                <a class="btn_scbt scbt" href="javascript:void(0)" onclick="shouchangQuestion(116253,this)"><i></i>收藏本题</a>
+                                                            </li>
+                                                            <li><a href="javascript:" class="btn_jc jc" onclick="shitijiucuo(116253)"><i></i>纠错</a></li>
+                                                            <li>
+                                                                <a href="javascript:" class="btn_zkjx zkjx" onclick="shouqi(this,116253)"><i></i>收起解析</a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="m_analyse detail-intro " id="jiexi116253">
+                                                        <div class="solution  f-f14">
+                                                            <ul>
+                                                                <li>
+                                                                    <span class="s-stnd"><i></i>试题难度：</span>
+                                                                    <div class="so-star"><b style="width:100%;"></b></div>
+                                                                </li>
+                                                                <li>
+                                                                    <span class="s-jx"><i></i>参考解析：</span>
+                                                                    <div class="so-timu">
+                                                                        <div class="wenzi">      暂无解析</div>
+                                                                    </div>
+                                                                </li>
+
+                                                            </ul>
+                                                        </div>
+                                                        <div class="detail-more" id="SeeListPage116253" style="display:block"> <a href="javascript:" onclick="LoadBiji(116253,this,0)" class="btn__showAllNote"><span><i></i>查看我的笔记 <em>(0)</em></span></a> </div>
+
+
+                                                        <div class="biji_notes" data-questionid="116253" style="display:none" id="biji116253">
+                                                            <h4><a href="javascript:">我的笔记</a></h4>
+                                                            <div class="add_biji text-right">
+                                                                <textarea placeholder="好记性不如烂笔头，你可以记录试题" id="txt116253"></textarea>
+                                                                <button class="mid-btn btn-red" onclick="AddJX(this,116253)">新增笔记</button>
+                                                                <div class="clear"></div>
+                                                            </div>
+                                                            <div id="question-discuss-list-116253">
+
+
+                                                            </div>
+                                                            <div id="PageStr116253">
+                                                            </div>
+                                                            <div class="detail-more mt40"> <a href="javascript:" onclick="ShouQi(116253)" class="btn__showAllNote"><span><i></i>收起笔记 <em></em></span></a> </div>
+
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="clear"></div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </li>
+
+                                <li id="116254" style="min-height:880px" class="page-list" typeid="1" data-id="116254">
+                                    <div class="subject-con bor clearfix m-question " style="min-height:880px;">
+                                        <div class="subject-con">
+                                            <div class="sub-content2 sub-conanswer ">
+
+                                                <i class="subjec-daan subjec-none" id="zt116254"></i>
+                                                <div class="sub-dotitle"> <em>2</em> <i>[单选题]</i>   系统的开发过程是（　）。 </div>
+
+                                                <div class="sub-content h200 ">
+                                                    A、系统设计、系统分析、系统实施<br>
+                                                    B、系统设计、系统实施、系统分析<br>
+                                                    C、系统分析、系统实施、系统设计<br>
+                                                    D、系统分析、系统设计、系统实施<br>
+                                                </div>
+                                                <div class="m-question-html">
+                                                    <div class="m-questionToolbar">
+                                                        <div class="m-checkBox single" input_type="xt" id="daan116254" data-id="116254">
+                                                            <a class="question-option-list" href="javascript:;" data-index="2" data-value="A" data-questionid="116254">A</a><a class="question-option-list" href="javascript:;" data-index="2" data-value="B" data-questionid="116254">B</a><a class="question-option-list" href="javascript:;" data-index="2" data-value="C" data-questionid="116254">C</a><a class="question-option-list" href="javascript:;" data-index="2" data-value="D" data-questionid="116254">D</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="clear"></div>
+                                                <div class="clearfix " id="qeding116254" style="margin-bottom:20px;padding:0 34px;display:none">
+                                                    <a href="#" class="btn btn-orange mid-btn" onclick="QueDing(116254)">确定</a>
+                                                </div>
+                                                <div style="display:none" id="Answer116254">
+                                                    <div class="m_answerLine refer-answer clearfix jx_box ">
+                                                        <input type="hidden" id="CanKao116254" value="D">
+                                                        <input type="hidden" id="MyAnswer116254" value="">
+                                                        <div class="reck" id="reck116254">参考答案：<em class="right">D</em></div>
+                                                        <ul>
+                                                            <li class="nobro">
+                                                                <a class="btn_scbt scbt" href="javascript:void(0)" onclick="shouchangQuestion(116254,this)"><i></i>收藏本题</a>
+                                                            </li>
+                                                            <li><a href="javascript:" class="btn_jc jc" onclick="shitijiucuo(116254)"><i></i>纠错</a></li>
+                                                            <li>
+                                                                <a href="javascript:" class="btn_zkjx zkjx" onclick="shouqi(this,116254)"><i></i>收起解析</a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="m_analyse detail-intro " id="jiexi116254">
+                                                        <div class="solution  f-f14">
+                                                            <ul>
+                                                                <li>
+                                                                    <span class="s-stnd"><i></i>试题难度：</span>
+                                                                    <div class="so-star"><b style="width:100%;"></b></div>
+                                                                </li>
+                                                                <li>
+                                                                    <span class="s-jx"><i></i>参考解析：</span>
+                                                                    <div class="so-timu">
+                                                                        <div class="wenzi">      暂无解析</div>
+                                                                    </div>
+                                                                </li>
+
+                                                            </ul>
+                                                        </div>
+                                                        <div class="detail-more" id="SeeListPage116254" style="display:block"> <a href="javascript:" onclick="LoadBiji(116254,this,0)" class="btn__showAllNote"><span><i></i>查看我的笔记 <em>(0)</em></span></a> </div>
+
+
+                                                        <div class="biji_notes" data-questionid="116254" style="display:none" id="biji116254">
+                                                            <h4><a href="javascript:">我的笔记</a></h4>
+                                                            <div class="add_biji text-right">
+                                                                <textarea placeholder="好记性不如烂笔头，你可以记录试题" id="txt116254"></textarea>
+                                                                <button class="mid-btn btn-red" onclick="AddJX(this,116254)">新增笔记</button>
+                                                                <div class="clear"></div>
+                                                            </div>
+                                                            <div id="question-discuss-list-116254">
+
+
+                                                            </div>
+                                                            <div id="PageStr116254">
+                                                            </div>
+                                                            <div class="detail-more mt40"> <a href="javascript:" onclick="ShouQi(116254)" class="btn__showAllNote"><span><i></i>收起笔记 <em></em></span></a> </div>
+
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="clear"></div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </li>
+
+                                <li id="116256" style="min-height:880px" class="page-list" typeid="1" data-id="116256">
+                                    <div class="subject-con bor clearfix m-question " style="min-height:880px;">
+                                        <div class="subject-con">
+                                            <div class="sub-content2 sub-conanswer ">
+
+                                                <i class="subjec-daan subjec-none" id="zt116256"></i>
+                                                <div class="sub-dotitle"> <em>3</em> <i>[单选题]</i>   下列属于信息处理新技术的是（　）。 </div>
+
+                                                <div class="sub-content h200 ">
+                                                    A、数据库技术<br>
+                                                    B、人工智能技术<br>
+                                                    C、软件编程技术<br>
+                                                    D、数据挖掘技术<br>
+                                                </div>
+                                                <div class="m-question-html">
+                                                    <div class="m-questionToolbar">
+                                                        <div class="m-checkBox single" input_type="xt" id="daan116256" data-id="116256">
+                                                            <a class="question-option-list" href="javascript:;" data-index="2" data-value="A" data-questionid="116256">A</a><a class="question-option-list" href="javascript:;" data-index="2" data-value="B" data-questionid="116256">B</a><a class="question-option-list" href="javascript:;" data-index="2" data-value="C" data-questionid="116256">C</a><a class="question-option-list" href="javascript:;" data-index="2" data-value="D" data-questionid="116256">D</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="clear"></div>
+                                                <div class="clearfix " id="qeding116256" style="margin-bottom:20px;padding:0 34px;display:none">
+                                                    <a href="#" class="btn btn-orange mid-btn" onclick="QueDing(116256)">确定</a>
+                                                </div>
+                                                <div style="display:none" id="Answer116256">
+                                                    <div class="m_answerLine refer-answer clearfix jx_box ">
+                                                        <input type="hidden" id="CanKao116256" value="D">
+                                                        <input type="hidden" id="MyAnswer116256" value="">
+                                                        <div class="reck" id="reck116256">参考答案：<em class="right">D</em></div>
+                                                        <ul>
+                                                            <li class="nobro">
+                                                                <a class="btn_scbt scbt" href="javascript:void(0)" onclick="shouchangQuestion(116256,this)"><i></i>收藏本题</a>
+                                                            </li>
+                                                            <li><a href="javascript:" class="btn_jc jc" onclick="shitijiucuo(116256)"><i></i>纠错</a></li>
+                                                            <li>
+                                                                <a href="javascript:" class="btn_zkjx zkjx" onclick="shouqi(this,116256)"><i></i>收起解析</a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="m_analyse detail-intro " id="jiexi116256">
+                                                        <div class="solution  f-f14">
+                                                            <ul>
+                                                                <li>
+                                                                    <span class="s-stnd"><i></i>试题难度：</span>
+                                                                    <div class="so-star"><b style="width:100%;"></b></div>
+                                                                </li>
+                                                                <li>
+                                                                    <span class="s-jx"><i></i>参考解析：</span>
+                                                                    <div class="so-timu">
+                                                                        <div class="wenzi">      暂无解析</div>
+                                                                    </div>
+                                                                </li>
+
+                                                            </ul>
+                                                        </div>
+                                                        <div class="detail-more" id="SeeListPage116256" style="display:block"> <a href="javascript:" onclick="LoadBiji(116256,this,0)" class="btn__showAllNote"><span><i></i>查看我的笔记 <em>(0)</em></span></a> </div>
+
+
+                                                        <div class="biji_notes" data-questionid="116256" style="display:none" id="biji116256">
+                                                            <h4><a href="javascript:">我的笔记</a></h4>
+                                                            <div class="add_biji text-right">
+                                                                <textarea placeholder="好记性不如烂笔头，你可以记录试题" id="txt116256"></textarea>
+                                                                <button class="mid-btn btn-red" onclick="AddJX(this,116256)">新增笔记</button>
+                                                                <div class="clear"></div>
+                                                            </div>
+                                                            <div id="question-discuss-list-116256">
+
+
+                                                            </div>
+                                                            <div id="PageStr116256">
+                                                            </div>
+                                                            <div class="detail-more mt40"> <a href="javascript:" onclick="ShouQi(116256)" class="btn__showAllNote"><span><i></i>收起笔记 <em></em></span></a> </div>
+
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="clear"></div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </li>
+
+                                <li id="119120" style="min-height:880px" class="page-list" typeid="1" data-id="119120">
+                                    <div class="subject-con bor clearfix m-question " style="min-height:880px;">
+                                        <div class="subject-con">
+                                            <div class="sub-content2 sub-conanswer ">
+
+                                                <i class="subjec-daan subjec-none" id="zt119120"></i>
+                                                <div class="sub-dotitle"> <em>4</em> <i>[单选题]</i>   管理的载体是（　） </div>
+
+                                                <div class="sub-content h200 ">
+                                                    A、文化<br>
+                                                    B、组织<br>
+                                                    C、目标<br>
+                                                    D、人力资源<br>
+                                                </div>
+                                                <div class="m-question-html">
+                                                    <div class="m-questionToolbar">
+                                                        <div class="m-checkBox single" input_type="xt" id="daan119120" data-id="119120">
+                                                            <a class="question-option-list" href="javascript:;" data-index="2" data-value="A" data-questionid="119120">A</a><a class="question-option-list" href="javascript:;" data-index="2" data-value="B" data-questionid="119120">B</a><a class="question-option-list" href="javascript:;" data-index="2" data-value="C" data-questionid="119120">C</a><a class="question-option-list" href="javascript:;" data-index="2" data-value="D" data-questionid="119120">D</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="clear"></div>
+                                                <div class="clearfix " id="qeding119120" style="margin-bottom:20px;padding:0 34px;display:none">
+                                                    <a href="#" class="btn btn-orange mid-btn" onclick="QueDing(119120)">确定</a>
+                                                </div>
+                                                <div style="display:none" id="Answer119120">
+                                                    <div class="m_answerLine refer-answer clearfix jx_box ">
+                                                        <input type="hidden" id="CanKao119120" value="B">
+                                                        <input type="hidden" id="MyAnswer119120" value="">
+                                                        <div class="reck" id="reck119120">参考答案：<em class="right">B</em></div>
+                                                        <ul>
+                                                            <li class="nobro">
+                                                                <a class="btn_scbt scbt" href="javascript:void(0)" onclick="shouchangQuestion(119120,this)"><i></i>收藏本题</a>
+                                                            </li>
+                                                            <li><a href="javascript:" class="btn_jc jc" onclick="shitijiucuo(119120)"><i></i>纠错</a></li>
+                                                            <li>
+                                                                <a href="javascript:" class="btn_zkjx zkjx" onclick="shouqi(this,119120)"><i></i>收起解析</a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="m_analyse detail-intro " id="jiexi119120">
+                                                        <div class="solution  f-f14">
+                                                            <ul>
+                                                                <li>
+                                                                    <span class="s-stnd"><i></i>试题难度：</span>
+                                                                    <div class="so-star"><b style="width:100%;"></b></div>
+                                                                </li>
+                                                                <li>
+                                                                    <span class="s-jx"><i></i>参考解析：</span>
+                                                                    <div class="so-timu">
+                                                                        <div class="wenzi">      暂无解析</div>
+                                                                    </div>
+                                                                </li>
+
+                                                            </ul>
+                                                        </div>
+                                                        <div class="detail-more" id="SeeListPage119120" style="display:block"> <a href="javascript:" onclick="LoadBiji(119120,this,0)" class="btn__showAllNote"><span><i></i>查看我的笔记 <em>(0)</em></span></a> </div>
+
+
+                                                        <div class="biji_notes" data-questionid="119120" style="display:none" id="biji119120">
+                                                            <h4><a href="javascript:">我的笔记</a></h4>
+                                                            <div class="add_biji text-right">
+                                                                <textarea placeholder="好记性不如烂笔头，你可以记录试题" id="txt119120"></textarea>
+                                                                <button class="mid-btn btn-red" onclick="AddJX(this,119120)">新增笔记</button>
+                                                                <div class="clear"></div>
+                                                            </div>
+                                                            <div id="question-discuss-list-119120">
+
+
+                                                            </div>
+                                                            <div id="PageStr119120">
+                                                            </div>
+                                                            <div class="detail-more mt40"> <a href="javascript:" onclick="ShouQi(119120)" class="btn__showAllNote"><span><i></i>收起笔记 <em></em></span></a> </div>
+
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="clear"></div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </li>
+
+                                <li id="119121" style="min-height:880px" class="page-list" typeid="1" data-id="119121">
+                                    <div class="subject-con bor clearfix m-question " style="min-height:880px;">
+                                        <div class="subject-con">
+                                            <div class="sub-content2 sub-conanswer ">
+
+                                                <i class="subjec-daan subjec-none" id="zt119121"></i>
+                                                <div class="sub-dotitle"> <em>5</em> <i>[单选题]</i>   被认为是管理的核心的是（　） </div>
+
+                                                <div class="sub-content h200 ">
+                                                    A、主管人员<br>
+                                                    B、中层管理者<br>
+                                                    C、处理组织目标<br>
+                                                    D、处理好组织中各种人际关系<br>
+                                                </div>
+                                                <div class="m-question-html">
+                                                    <div class="m-questionToolbar">
+                                                        <div class="m-checkBox single" input_type="xt" id="daan119121" data-id="119121">
+                                                            <a class="question-option-list" href="javascript:;" data-index="2" data-value="A" data-questionid="119121">A</a><a class="question-option-list" href="javascript:;" data-index="2" data-value="B" data-questionid="119121">B</a><a class="question-option-list" href="javascript:;" data-index="2" data-value="C" data-questionid="119121">C</a><a class="question-option-list" href="javascript:;" data-index="2" data-value="D" data-questionid="119121">D</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="clear"></div>
+                                                <div class="clearfix " id="qeding119121" style="margin-bottom:20px;padding:0 34px;display:none">
+                                                    <a href="#" class="btn btn-orange mid-btn" onclick="QueDing(119121)">确定</a>
+                                                </div>
+                                                <div style="display:none" id="Answer119121">
+                                                    <div class="m_answerLine refer-answer clearfix jx_box ">
+                                                        <input type="hidden" id="CanKao119121" value="D">
+                                                        <input type="hidden" id="MyAnswer119121" value="">
+                                                        <div class="reck" id="reck119121">参考答案：<em class="right">D</em></div>
+                                                        <ul>
+                                                            <li class="nobro">
+                                                                <a class="btn_scbt scbt" href="javascript:void(0)" onclick="shouchangQuestion(119121,this)"><i></i>收藏本题</a>
+                                                            </li>
+                                                            <li><a href="javascript:" class="btn_jc jc" onclick="shitijiucuo(119121)"><i></i>纠错</a></li>
+                                                            <li>
+                                                                <a href="javascript:" class="btn_zkjx zkjx" onclick="shouqi(this,119121)"><i></i>收起解析</a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="m_analyse detail-intro " id="jiexi119121">
+                                                        <div class="solution  f-f14">
+                                                            <ul>
+                                                                <li>
+                                                                    <span class="s-stnd"><i></i>试题难度：</span>
+                                                                    <div class="so-star"><b style="width:100%;"></b></div>
+                                                                </li>
+                                                                <li>
+                                                                    <span class="s-jx"><i></i>参考解析：</span>
+                                                                    <div class="so-timu">
+                                                                        <div class="wenzi">      暂无解析</div>
+                                                                    </div>
+                                                                </li>
+
+                                                            </ul>
+                                                        </div>
+                                                        <div class="detail-more" id="SeeListPage119121" style="display:block"> <a href="javascript:" onclick="LoadBiji(119121,this,0)" class="btn__showAllNote"><span><i></i>查看我的笔记 <em>(0)</em></span></a> </div>
+
+
+                                                        <div class="biji_notes" data-questionid="119121" style="display:none" id="biji119121">
+                                                            <h4><a href="javascript:">我的笔记</a></h4>
+                                                            <div class="add_biji text-right">
+                                                                <textarea placeholder="好记性不如烂笔头，你可以记录试题" id="txt119121"></textarea>
+                                                                <button class="mid-btn btn-red" onclick="AddJX(this,119121)">新增笔记</button>
+                                                                <div class="clear"></div>
+                                                            </div>
+                                                            <div id="question-discuss-list-119121">
+
+
+                                                            </div>
+                                                            <div id="PageStr119121">
+                                                            </div>
+                                                            <div class="detail-more mt40"> <a href="javascript:" onclick="ShouQi(119121)" class="btn__showAllNote"><span><i></i>收起笔记 <em></em></span></a> </div>
+
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="clear"></div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </li>
+
+                                <li id="119144" style="min-height:880px" class="page-list" typeid="1" data-id="119144">
+                                    <div class="subject-con bor clearfix m-question " style="min-height:880px;">
+                                        <div class="subject-con">
+                                            <div class="sub-content2 sub-conanswer ">
+
+                                                <i class="subjec-daan subjec-none" id="zt119144"></i>
+                                                <div class="sub-dotitle"> <em>6</em> <i>[单选题]</i>   老刘是一家建筑公司施工队的队长，主要管辖的是施工人员，他认为这些人员普遍学历较低，不愿意承担责任，不喜欢本身的工作。那么，老刘的看法符合管理学的（　） </div>
+
+                                                <div class="sub-content h200 ">
+                                                    A、X理论&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;<br>
+                                                    B、Y理论<br>
+                                                    C、超Y理论&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;<br>
+                                                    D、Z理论<br>
+                                                </div>
+                                                <div class="m-question-html">
+                                                    <div class="m-questionToolbar">
+                                                        <div class="m-checkBox single" input_type="xt" id="daan119144" data-id="119144">
+                                                            <a class="question-option-list" href="javascript:;" data-index="2" data-value="A" data-questionid="119144">A</a><a class="question-option-list" href="javascript:;" data-index="2" data-value="B" data-questionid="119144">B</a><a class="question-option-list" href="javascript:;" data-index="2" data-value="C" data-questionid="119144">C</a><a class="question-option-list" href="javascript:;" data-index="2" data-value="D" data-questionid="119144">D</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="clear"></div>
+                                                <div class="clearfix " id="qeding119144" style="margin-bottom:20px;padding:0 34px;display:none">
+                                                    <a href="#" class="btn btn-orange mid-btn" onclick="QueDing(119144)">确定</a>
+                                                </div>
+                                                <div style="display:none" id="Answer119144">
+                                                    <div class="m_answerLine refer-answer clearfix jx_box ">
+                                                        <input type="hidden" id="CanKao119144" value="A">
+                                                        <input type="hidden" id="MyAnswer119144" value="">
+                                                        <div class="reck" id="reck119144">参考答案：<em class="right">A</em></div>
+                                                        <ul>
+                                                            <li class="nobro">
+                                                                <a class="btn_scbt scbt" href="javascript:void(0)" onclick="shouchangQuestion(119144,this)"><i></i>收藏本题</a>
+                                                            </li>
+                                                            <li><a href="javascript:" class="btn_jc jc" onclick="shitijiucuo(119144)"><i></i>纠错</a></li>
+                                                            <li>
+                                                                <a href="javascript:" class="btn_zkjx zkjx" onclick="shouqi(this,119144)"><i></i>收起解析</a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="m_analyse detail-intro " id="jiexi119144">
+                                                        <div class="solution  f-f14">
+                                                            <ul>
+                                                                <li>
+                                                                    <span class="s-stnd"><i></i>试题难度：</span>
+                                                                    <div class="so-star"><b style="width:100%;"></b></div>
+                                                                </li>
+                                                                <li>
+                                                                    <span class="s-jx"><i></i>参考解析：</span>
+                                                                    <div class="so-timu">
+                                                                        <div class="wenzi">      暂无解析</div>
+                                                                    </div>
+                                                                </li>
+
+                                                            </ul>
+                                                        </div>
+                                                        <div class="detail-more" id="SeeListPage119144" style="display:block"> <a href="javascript:" onclick="LoadBiji(119144,this,0)" class="btn__showAllNote"><span><i></i>查看我的笔记 <em>(0)</em></span></a> </div>
+
+
+                                                        <div class="biji_notes" data-questionid="119144" style="display:none" id="biji119144">
+                                                            <h4><a href="javascript:">我的笔记</a></h4>
+                                                            <div class="add_biji text-right">
+                                                                <textarea placeholder="好记性不如烂笔头，你可以记录试题" id="txt119144"></textarea>
+                                                                <button class="mid-btn btn-red" onclick="AddJX(this,119144)">新增笔记</button>
+                                                                <div class="clear"></div>
+                                                            </div>
+                                                            <div id="question-discuss-list-119144">
+
+
+                                                            </div>
+                                                            <div id="PageStr119144">
+                                                            </div>
+                                                            <div class="detail-more mt40"> <a href="javascript:" onclick="ShouQi(119144)" class="btn__showAllNote"><span><i></i>收起笔记 <em></em></span></a> </div>
+
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="clear"></div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </li>
+
+                            </ul>
+                        </div>
+                        <!-- 题目切换栏 -->
+                    </div>
+                    <!--右侧设置-->
+
+                    <div class="pra-right-con">
+                        <div id="m_rightPart" class="pra-right-con-sub" style="z-index: 1001; position: static; top: auto; bottom: auto; left: auto;">
+
+                            <!---->
+
+                            <div id="m_rightBtnLine" class="pra-r-set bor clearfix">
+                                <ul class="f-f14">
+                                    <li>
+                                        <a href="javascript:;" class="btn_backList fhlb" onclick="javascript :history.back(-1);">
+                                            <i></i>
+                                            <p>返回列表</p>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;" class="btn_jsq jsq" onclick="jisuanqi()">
+                                            <i></i>
+                                            <p>计算器</p>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;" class="btn_fontsize font" data-type="0">
+                                            <i></i> <!--选择时添加 this-->
+                                            <p>字体</p>
+                                        </a>
+                                        <!-- 字体设置-->
+                                        <div class="m_fontsize pop" style="display: none;">
+                                            <i></i>
+                                            <div class="txt-size clearfix">
+                                                <a href="javascript:;" data-value="18" class="f-f18">大</a>
+                                                <a href="javascript:;" data-value="16" class="f-f16 this">中</a>
+                                                <a href="javascript:;" data-value="14" class="f-f14 ">小</a>
+                                            </div>
+                                        </div>
+                                        <!-- 字体设置 end-->
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!---->
+                            <div class="time-card bor mt20">
+                                <!--答题卡区域-->
+                                <div class="rightArea-answer clear">
+                                    <div id="answerCard">
+                                        <div class="hd clearfix"> <span class="title f-fl">答题卡 <span class="e_doneCount card-count" id="page-card-info" style="font-size: 12px;color: #F06000;margin-left: 10px"></span></span> </div>
+                                        <div class="bd clear" style="min-height:80px; max-height: 62px;">
+                                            <dl class="panel-item">
+                                                <dt>题号</dt>
+                                                <dd class="panel-order" id="datika1"><a href="javascript:;" class="e_answerCard page-card-item" id="question116253" onclick="GoTo(116253)">1</a><a href="javascript:;" class="e_answerCard page-card-item" id="question116254" onclick="GoTo(116254)">2</a><a href="javascript:;" class="e_answerCard page-card-item" id="question116256" onclick="GoTo(116256)">3</a><a href="javascript:;" class="e_answerCard page-card-item" id="question119120" onclick="GoTo(119120)">4</a><a href="javascript:;" class="e_answerCard page-card-item" id="question119121" onclick="GoTo(119121)">5</a><a href="javascript:;" class="e_answerCard page-card-item" id="question119144" onclick="GoTo(119144)">6</a></dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                    <div class="cad-color clear">
+                                        <div class="panel-order-notice panel-notice-t"> <em>已做</em><i class="a doit"></i> <em>未做</em><i class="a normal"></i> </div>
+                                    </div>
+                                    <div class="ft">
+                                        <div class="btn2"><a href="javascript:" class="btn_submit" onclick="tijiao()">结束作答</a></div>
+                                    </div>
+                                </div>
+                                <!--答题卡区域 end-->
+                            </div>
+                        </div>
+                    </div>
+                    <!--右侧设置 end-->
+                </div>
+                <!--题型 结束-->
+
+            </div>
+        </div>
+        <div id="m__bottomBtnLine" class="subbottom-con">
+            <div class="subbottom">
+                <input type="hidden" id="xianQID" value="133505">
+                <div class="tieshi"><a href="javascript:;" class="btn__tips"><i></i>小贴士</a></div>
+                <div id="m__tipsInfo" class="tie-list-con clearfix">
+                    <div class="tie-list clearfix">
+                        <ul class="f-f14">
+                            <li class="s-pgup">
+                                <span>切换<br>“上一题”</span> <i></i>
+                            </li>
+
+                            <li class="s-pgdn">
+                                <i></i><span>切换<br>“下一题”</span>
+                            </li>
+                        </ul>
+                        <i class="s-off" onclick="tsclose()"></i>
+                    </div>
+                </div>
+                <ul class="bor">
+                    <li class="btn__prev pre " onclick="upquestion()"><a href="javascript:;"><i></i>上一题</a></li>
+                    <li class="btn__analyse ckdan ckzt" onclick="seeAnswer()"><a href="javascript:;"><i></i>查看答案</a></li>
+                    <li class="btn__next next" onclick="nextquestion()"><a href="javascript:;">下一题 <i></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--footer-->
+    <!--#<!--#include file="../UserControl/Footer.html"-->
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <script src="/usercenter/Resources/js/headFootLayout.js"></script>
+    <script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil'],
+        function (fnr) {
+            var $ = layui.$;
+            var table = layui.table;
+            var tableExt = layui.tableExt;
+            var vm = new Vue({
+                el: "#root",
+                data: {
+                    ID:'',
+                    Data:'',
+                },
+                ready: function () {
+                    this.ID=fnr.getQueryString('ID');
+                    this.GetAllDiscipline(this.ID)
+                },
+                methods: {
+
+                }
+            });
+        })
+    </script>
+</body>
+
+</html>

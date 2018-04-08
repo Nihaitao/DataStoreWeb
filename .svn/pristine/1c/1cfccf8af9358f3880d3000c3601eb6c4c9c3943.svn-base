@@ -1,0 +1,197 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>全部联系记录</title>
+    <style>
+        div.layui-table-cell { height: 30px; }
+    </style>
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <blockquote class="layui-elem-quote">
+            <div class="layui-form">
+                <div class="layui-input-inline">
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="BusTypeSetting" laytips="来源方式" v-bind:value.sync="queryFormData.BusType" initial="off"></remote-sel>
+                    </div>
+                </div>
+                <div class="layui-input-inline">
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="ContactTypeSetting" laytips="联系方式" v-bind:value.sync="queryFormData.ContactType_ID" initial="off"></remote-sel>
+                    </div>
+                </div>
+                <div class="layui-input-inline">
+                    <input placeholder="名称" type="text" name="SearchValue" class="layui-input" v-model="queryFormData.SearchValue">
+                </div>
+                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="btn" @click="doSearch">查询</button>
+            </div>
+        </blockquote>
+
+        <!--操作模板-->
+        <table id="listTable" lay-filter="listTable"></table>
+    </div>
+</body>
+</html>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'laydate'],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var laydat
+            var $ = layui.$;
+            function trim(str) {
+                return str.replace(/(^\s*)|(\s*$)/g, "");
+            }
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#followDate'
+            });
+
+            var tableColsConfig =
+                [
+                    //{ fixed: true, checkbox: true },
+                    { fixed: true, field: 'ID', title: 'ID', width: 100, sort: true },
+                    {
+                        field: 'BusType', title: '业务来源', width: 100, sort: true, templet: function () {
+                            if (this.BusType == "1") {
+                                return "来自客户";
+                            }
+                            else {
+                                return "来自线索";
+                            }
+                        }
+                    },
+                    {
+                        title: '名称', width: 200, sort: true, templet: function () {
+                            var array = new Array();
+                            array.push("<a href='javascript:;' lay-event='OpenClientInfo'>" + (this.ClientName) + "</a>");
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    },
+                    { field: 'ContactTypeName', title: '联系类型', width: 200, sort: true },
+                    {
+                        title: '联系时间', width: 200, sort: true, templet: function () {
+                            var array = new Array();
+                            array.push("<a href='javascript:;' lay-event='detail1'>" + fnr.format(this.ContactTime, "yyyy-MM-dd HH:mm") + "</a>");
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    },
+                    { field: 'Content', title: '联系内容', sort: true },
+                    {
+                        title: '添加时间', width: 200, sort: true, templet: function () {
+                            var array = new Array();
+                            array.push("<a href='javascript:;' lay-event='detail1'>" + fnr.format(this.AddTime, "yyyy-MM-dd HH:mm") + "</a>");
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    },
+                    {
+                        fixed: 'right',
+                        title: '操作',
+                        width: 220,
+                        toolbar: function () {
+                            var array = new Array();
+                            array.push("<button class='layui-btn layui-btn-primary layui-btn-small' href='javascript:;' lay-event='ContactMsg'>查看</button>")
+                            array.push("<button class='layui-btn layui-btn-danger layui-btn-small' href='javascript:;' lay-event='detail2'>删除</button>");
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    }
+                ]
+
+            //搜索条件
+            var rootApp = new Vue({
+                el: '#root',
+                data: {
+                    queryFormData: {
+                        SearchValue: '',
+                        FeildType: 1,
+                        ModelIndex: 2,
+                        BusType: '',
+                        ContactType_ID: ''
+                    },
+                    BusTypeSetting: {
+                        search: true,
+                        options: [{ ID: 0, Value: '请选择' }, { ID: 1, Value: '客户' }, { ID: 2, Value: '线索' }],
+                        fields: { key: 'ID', value: 'Value' }
+                    },
+                    ContactTypeSetting: {
+                        search: true,
+                        options: [],
+                        fields: { root: "Data", key: 'ID', value: 'Description' },
+                        remote: { url: '/service/public/HDictionary/GetHDictionaryList', data: { Valid: 1, ColumnName: 'ContactType_ID' } }
+                    },
+                },
+                ready: function () {
+                },
+                methods: {
+                    //搜索
+                    doSearch: function () {
+                        var self = this;
+                        self.queryFormData.SearchValue = trim(self.queryFormData.SearchValue);
+                        listTable.reload({
+                            where: this.queryFormData
+                        })
+                    },
+
+                    //联系记录信息
+                    ContactMsg: function (data) {
+                        var self = this;
+                        fnr.openDialog({
+                            title: '联系记录信息',
+                            area: ['750px', '500px'],
+                            content: ['Info.html?ID=' + data.ID],
+                            yes: function (index, layero) {
+                                var iframeWin = window[layero.find('iframe')[0]['name']];
+                                $(iframeWin.document).find(".layui-btn").click();
+                            }
+                        });
+                    }
+                }
+            });
+
+            //绑定列表
+            var listTable = table.render({
+                elem: '#listTable',
+                even: true, //开启隔行背景
+                page: true, //页分
+                height: 'full-110',
+                cols: [tableColsConfig],
+                url: "/service/crm/Contact/GetListContact",
+                where: { FeildType: 1, ModelIndex: 2 }
+            });;
+
+            //监听工具栏事件
+            tableExt.addEvent("tool(listTable)",
+                {
+                    "detail2": function (data, obj, e) {
+                        layer.confirm('确定删除吗，删除后将不可恢复', function (index) {
+                            layer.close(index);
+                            $.ajax({
+                                url: '/service/crm/Contact/DeleteContact',
+                                type: 'POST',
+                                dataType: 'json',
+                                data: { Other: data.ID },
+                                success: function (data) {
+                                    if (data.SuccessResponse) {
+                                        obj.del();
+                                        layer.msg(data.Message);
+                                    }
+                                    else {
+                                        layer.msg(data.Message);
+                                    }
+                                }
+                            });
+                        })
+                    },
+                    "ContactMsg": function (data, obj) {
+                        rootApp.ContactMsg(data);
+                    }
+                });
+        });
+</script>

@@ -1,0 +1,338 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>课程管理</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+
+    <link href="/Resources/fonts/iconfont.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link href="/Resources/CSS/Font/css/font-awesome.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/Resources/CSS/PC_css.css">
+    <link href="/Resources/CSS/video-js.css" rel="stylesheet" />
+    <link href="/Resources/CSS/question.css" rel="stylesheet" />
+    <script src="/script/jquery.js"></script>
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <style>
+        .Pro-showList {
+            min-height: 510px;
+        }
+
+        .Pro-pageCount {
+            margin-bottom: 0px;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body style="background-color: #f7f7f7;user-select: none;" >
+    <div class="">
+        <!--顶部-->
+        <!--#<!--#include file="/PublicControl/topmenu.html"-->
+
+        <div class="w1200 clearfix">
+            <!--左侧导航-->
+            <!--#<!--#include file="/PublicControl/leftmenu.html"-->
+
+            <div class="main" id="root" v-cloak>
+                <div class="order-top">
+                    <ul class="orderTabs">
+                        <li class="active" data-id="0" style="cursor:pointer">已购课程</li>
+                        <li data-id="1" style="cursor:pointer">我的答疑</li>
+                        <li data-id="2" style="cursor:pointer">我的评论</li>
+                    </ul>
+                </div>
+                <div class="order-middle">
+                    <b>全部 <span>{{TotalCount}}</span> 条</b>
+                    <div class="record-main">
+                        <div class="listItems" v-if="TotalCount == 0">
+                            <div style="width:100%; height:500px; text-align:center;padding-top:130px">
+                                <img src="/Resources/images/noneData.png" style="width: 200px; height: 180px;" />
+                            </div>
+                        </div>
+                        <div class="showPages">
+                            <ul class="course_yes">
+                                <li v-for="item in CourseList">
+                                    <div class="recordRight clearfix" style="display: table; width: 100%; padding: 20px 30px; border-bottom: 1px solid #f3f3f3;">
+                                        <div class="imgBox">
+                                            <i class="dot"></i>
+                                            <img v-bind:src="item.CoverPath" style="width: 100%; height: 100%;" />
+                                        </div>
+                                        <div class="courseDetail">
+                                            <p class="" style="color: #333;font-size: 16px;margin-bottom: 10px;">{{item.Name}}</p>
+                                            <p style="color: #9a9a9a;margin-bottom: 10px;">
+                                                {{item.JobTitle || "讲师"}}
+                                                &nbsp;
+                                                <span class="teacName">{{item.Teacher || "匿名"}}</span>
+                                                &nbsp;
+                                                <span class="courseTime">{{item.TotalHours}}</span>
+                                                课
+                                            </p>
+                                            <div class="">
+                                                <div class="jiantou"></div>
+                                                <p style="color: #666; display: inline-block;">
+                                                    已学
+                                                    <span style="color: #fb791c">{{item.TotalHours == 0 ? '0.00' :(item.LookHours / item.TotalHours).toFixed(2) }}%</span>
+                                                    &nbsp;
+                                                    用时
+                                                    <span style="color: #fb791c">{{item.LearnTimes}}分</span>
+                                                    &nbsp;
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="btnsBox">
+                                            <p class="nextBtn" style="cursor:pointer" @click="WatchWare(item.ID,item.ChapterId)">{{item.LearnTimes > 0 ? '继续学习' : '开始学习'}}</p>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="showPages commentQ" style="display: none;">
+                            <div class="item" v-for="item in AnswerList">
+                                <h2>{{item.Content}}</h2>
+                                <p>{{item.NewInterlocution.Content}}</p>
+                                <div style="margin-top: 8px;">
+                                    <span style="color: #999;">{{item.AddTime}}</span>
+                                    <span style="color: #999;">&emsp;&emsp;{{item.CourseName}}</span>
+                                    <div class="buttonBox">
+                                        <p style="cursor:pointer" @click="showAnswer(item.ID)">查看</p>
+                                        <p @click="deleteAnswer(item.ID)" style="cursor:pointer">删除</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="showPages ansQ" style="display: none;">
+                            <div class="item" v-for="item in CommentList">
+                                <p>{{item.Content}}</p>
+                                <div style="margin-top: 8px;">
+                                    <span style="color: #999; ">{{item.AddTime}}</span>
+                                    <span style="color: #999;">&emsp;&emsp;{{item.CourseName}}</span>
+                                    <div class="buttonBox">
+                                        <p @click="deleteComment(item.ID)" style="cursor:pointer">删除</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="showPages maDetail" style="display: none;">
+                            <div class="clearfix" style="overflow: hidden; margin-bottom: 50px;">
+                                <span style="margin-left: 20px; font-size: 16px; color: #333; display: inline-block; vertical-align: bottom;">{{AnswerContent}}</span>
+                                <p class="propBtn" style="cursor:pointer" @click="backList">返回列表</p>
+                            </div>
+                            <div class="clearfix" style="overflow: hidden;">
+                                <p style="color: #333;padding-bottom: 20px; border-bottom: 1px solid #efefef;">
+                                    共
+                                    <span>{{AnswerDetail.length}}</span>
+                                    条回答
+                                </p>
+                                <div class="layui-row" style="margin-top: 27px;" v-for="item in AnswerDetail">
+                                    <div class="layui-col-xs1" style="display: inline-block;">
+                                        <p style="margin-top: 4px;">{{item.AccountName}}</p>
+                                    </div>
+                                    <div class="layui-col-xs11" style="border-bottom: 1px solid #efefef;">
+                                        <p style="line-height: 1.6;margin-bottom: 15px;">
+                                            {{item.Content}}
+                                        </p>
+                                        <p style="color: #999; margin-bottom: 20px;">{{item.AddTime}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--分页-->
+                        <div class="Pro-pageCount clearfix" style="overflow: hidden;">
+                            <div class="clearfix" style="margin: 0 auto;width: 100%;text-align: center; " id="pages"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+    <!--footer-->
+    <!--#<!--#include file="/PublicControl/bottommenu.html"-->
+    <script src="/Resources/js/Page.js"></script>
+    <script>
+        require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil'],
+            function (fnr) {
+                var $ = layui.$;
+                var table = layui.table;
+                var tableExt = layui.tableExt;
+                var vm = new Vue({
+                    el: "#root",
+                    data: {
+                        page: {
+                            PageIndex: 1,
+                            PageSize: 10,
+                            PageStatus: 1
+                        },
+                        CourseList: [],
+                        CommentList: [],
+                        AnswerList: [],
+                        AnswerDetail: [],
+                        AnswerContent: '',
+                        TotalCount: 0,
+                        Index: 0,
+                        //Length:0,
+                        //ShowData:false
+                    },
+                    ready: function () {
+                        this.tabsToggle();
+                        this.getCourseList(1);
+
+                    },
+                    methods: {
+                        tabsToggle: function () {
+                            var self = this;
+                            self.TotalCount = 0;
+                            $('.orderTabs').on('click', 'li', function () {
+                                if (!$(this).hasClass('active')) {
+                                    $(this).addClass('active').siblings().removeClass('active');
+                                    self.Index = $(this).attr("data-id");
+                                    console.log(self.Index);
+                                    $(".showPages").hide();
+                                    $(".showPages").eq(self.Index).show();
+                                    self.InitPage(1);
+                                }
+                            });
+                        },
+                        getCourseList: function (num) {
+                            var that = this;
+                            that.page.PageIndex = num;
+                            $.get("/service/datastore/Order/GetMyCourseList", that.page, function (rsp) {
+                                if (rsp.SuccessResponse) {
+                                    //that.showTheData(rsp.Data.length);
+                                    that.CourseList = rsp.Data;
+                                    //that.Length = rsp.Data.length;
+                                    if (rsp.TotalCount > 0)
+                                        that.TotalCount = rsp.TotalCount;
+                                    that.paging(num);
+                                }
+                                else
+                                    layer.msg(rsp.Message)
+                            })
+                        },
+                        getCommentList: function (num) {
+                            var that = this;
+                            that.page.PageIndex = num;
+                            that.page.Valid = 1;
+                            $.get("/service/datastore/CourseInterlocution/GetMyCourseComment", that.page, function (rsp) {
+                                if (rsp.SuccessResponse) {
+                                    //that.showTheData(rsp.Data.length);
+                                    that.CommentList = rsp.Data;
+                                    //that.Length = rsp.Data.length;
+                                    if (rsp.TotalCount > 0)
+                                        that.TotalCount = rsp.TotalCount;
+                                    that.paging(num);
+                                }
+                                else
+                                    layer.msg(rsp.Message)
+                            })
+                        },
+                        getAnswerList: function (num) {
+                            var that = this;
+                            that.page.PageIndex = num;
+                            $.get("/service/datastore/CourseInterlocution/GetMyCourseInterlocution", that.page, function (rsp) {
+                                if (rsp.SuccessResponse) {
+                                    //that.showTheData(rsp.Data.length);
+                                    that.AnswerList = rsp.Data;
+                                    //that.Length = rsp.Data.length;
+                                    if (rsp.TotalCount > 0)
+                                        that.TotalCount = rsp.TotalCount;
+                                    that.paging(num);
+                                }
+                                else
+                                    layer.msg(rsp.Message)
+                            })
+                        },
+                        //分页
+                        paging: function (PageIndex) {
+                            var self = this;
+
+                            if (self.TotalCount > 10)
+                                $("#pages").show();
+                            else
+                                $("#pages").hide();
+                            return $("#pages").Page({
+                                pageIndex: PageIndex,
+                                totalPages: Math.ceil(self.TotalCount / self.page.PageSize),
+                                totalSize: self.TotalCoun,
+                                callback: function (num) {
+                                    if (num > 0)
+                                        self.InitPage(num);
+                                }
+                            })
+                        },
+                        InitPage: function (num) {
+                            if (this.Index == 0)
+                                this.getCourseList(num);
+                            else if (this.Index == 1)
+                                this.getAnswerList(num);
+                            else if (this.Index == 2)
+                                this.getCommentList(num);
+                        },
+                        //showTheData: function (length) {
+                        //    if (length > 0)
+                        //        this.ShowData = true;
+                        //    else
+                        //        this.ShowData = false;
+                        //},
+                        deleteAnswer: function (ID) {
+                            var that = this;
+                            $.post("/service/datastore/CourseInterlocution/DeleteCourseInterlocution", { Ids: ID }, function (rsp) {
+                                if (rsp.SuccessResponse) {
+                                    that.getAnswerList(that.page.PageIndex);
+                                }
+                                layer.msg(rsp.Message);
+                            })
+                        },
+                        deleteComment: function (ID) {
+                            var that = this;
+                            $.post("/service/datastore/CourseInterlocution/DeleteCourseComment", { Ids: ID }, function (rsp) {
+                                if (rsp.SuccessResponse) {
+                                    that.getCommentList(that.page.PageIndex);
+                                }
+                                layer.msg(rsp.Message);
+                            })
+                        },
+                        //查看课件
+                        WatchWare: function (CoueseID, ChapterID) {
+                            if (ChapterID > 0)
+                                location.href = '../onlinecourse/Video.shtml?ID=' + ChapterID + '&Course_ID=' + CoueseID;
+                            else
+                                location.href = '../onlinecourse/Detail.shtml?ID=' + CoueseID;
+                        },
+                        //查看问答详情
+                        showAnswer: function (ID) {
+                            var self = this;
+                            $.get("/service/datastore/CourseInterlocution/GetCourseInterlocutionList", { PID: ID }, function (rsp) {
+                                if (rsp.SuccessResponse) {
+                                    self.AnswerContent = rsp.Data[0].Content;
+                                    self.AnswerDetail = rsp.Data.slice(1, rsp.Data.length);
+                                    $(".showPages").hide();
+                                    $(".showPages").eq(3).show();
+                                    $("#pages").hide();
+                                } else {
+                                    layer.msg(rsp.Message);
+                                }
+                            })
+                        },
+                        backList: function () {
+                            $(".showPages").hide();
+                            $(".showPages").eq(1).show();
+                            $("#pages").show();
+                        }
+                    }
+                });
+            })
+    </script>
+</body>
+
+</html>

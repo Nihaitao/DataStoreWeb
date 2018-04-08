@@ -1,0 +1,477 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>CRM工作台</title>
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="http://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/echart/echarts.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+
+        .workbench-tittle {
+            margin: 7.5px 20px;
+        }
+
+        td {
+            position: relative;
+            padding: 9px 15px;
+            min-height: 20px;
+            line-height: 20px;
+            font-size: 14px;
+        }
+
+        .workbench-td-border {
+            border-right: 1px solid #e6e6e6;
+        }
+
+        .workbench-tr-border {
+            border-top: 1px solid #e6e6e6;
+        }
+
+        .workbench-tr-height {
+            border-bottom: 1px solid #e6e6e6;
+            height: 50px;
+        }
+
+        .workbench-tr-font-color {
+            color: #808080;
+        }
+
+        .workbench-tr-blue {
+            color: #0094ff;
+        }
+
+        .workbench-table {
+            background-color: white;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        a {
+            color: #0094ff;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body id="root" v-cloak>
+    <div class="mainContainer">
+        <!--销售简报-->
+        <blockquote class="layui-elem-quote" style="border-left:0px">
+            <div class="layui-row layui-form">
+                <div class="layui-col-xs2">
+                    <div class="layui-input-inline workbench-tittle">
+                        <b>销售简报</b>
+                    </div>
+                </div>
+                <div class="layui-col-xs10" style="text-align: right">
+                    <div class="layui-input-inline" style="text-align: left">
+                        <remote-sel v-bind:setting="DateSetting" v-bind:value.sync="SaleQuery.DayType" laytips="选择时间" initial="off" v-bind:change="GetSalesReport"></remote-sel>
+                    </div>
+                    <div class="layui-input-inline">
+                        <input type="checkbox" name="" title="只看自己" lay-skin="primary" lay-filter="mycheck">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row layui-form">
+                <table class="workbench-table">
+                    <tr class="workbench-tr-font-color"><td colspan="3" class="workbench-td-border">成交</td><td colspan="3">预测</td></tr>
+                    <tr><td>合同数</td><td>合同总金额</td><td class="workbench-td-border">已回款金额</td><td>预测签单数</td><td>预计签单金额</td><td>计划回款金额</td></tr>
+                    <tr class="workbench-tr-blue">
+                        <td>{{SaleReport.ContractCount}}</td>
+                        <td>{{ToMoney(SaleReport.TotalAmount)}}</td>
+                        <td class="workbench-td-border">{{ToMoney(SaleReport.ReimbursementAmount)}}</td>
+                        <td>{{SaleReport.ExpectedSignatureCount}}</td>
+                        <td>{{ToMoney(SaleReport.ExpectedSignatureAmount)}}</td>
+                        <td>{{ToMoney(SaleReport.PlannedPaymentAmount)}}</td>
+                    </tr>
+                    <tr class="workbench-tr-border workbench-tr-font-color"><td colspan="3" class="workbench-td-border">新增</td><td colspan="3">跟进</td></tr>
+                    <tr><td>线索数</td><td>客户数</td><td class="workbench-td-border">商机数</td><td>写跟进次数</td><td>拜访签到数</td><td></td></tr>
+                    <tr class="workbench-tr-blue">
+                        <td>{{SaleReport.ClueCount}}</td>
+                        <td>{{SaleReport.ClientCount}}</td>
+                        <td class="workbench-td-border">{{SaleReport.OpportunityCount}}</td>
+                        <td>{{SaleReport.ContactCount}}</td>
+                        <td>{{SaleReport.SignCount}}</td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+        </blockquote>
+        <!--新增排行-->
+        <blockquote class="layui-elem-quote" style="border-left:0px">
+            <div class="layui-row layui-form">
+                <div class="layui-col-xs2">
+                    <div class="layui-input-inline workbench-tittle">
+                        <b>新增排行</b>
+                    </div>
+                </div>
+                <div class="layui-col-xs10" style="text-align: right">
+                    <div class="layui-input-inline" style="text-align: left">
+                        <remote-sel v-bind:setting="BusinessSetting" v-bind:value.sync="NewQuery.BusType" laytips="选择业务" initial="off" v-bind:change="GetNewRankingData"></remote-sel>
+                    </div>
+                    <div class="layui-input-inline" style="text-align: left">
+                        <remote-sel v-bind:setting="DateSetting" v-bind:value.sync="NewQuery.DayType" laytips="选择时间" initial="off" v-bind:change="GetNewRankingData"></remote-sel>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row layui-form">
+                <div class="workbench-table">
+                    <div id="NewRanking" style="width: 100%;height:400px;"></div>
+                </div>
+            </div>
+        </blockquote>
+        <!--跟进排行-->
+        <blockquote class="layui-elem-quote" style="border-left:0px">
+            <div class="layui-row layui-form">
+                <div class="layui-col-xs2">
+                    <div class="layui-input-inline workbench-tittle">
+                        <b>跟进排行</b>
+                    </div>
+                </div>
+                <div class="layui-col-xs10" style="text-align: right">
+                    <div class="layui-input-inline" style="text-align: left">
+                        <remote-sel v-bind:setting="BusinessSettingMore" v-bind:value.sync="ContactQuery.BusType" laytips="选择业务" initial="off" v-bind:change="GetContactRankingData"></remote-sel>
+                    </div>
+                    <div class="layui-input-inline" style="text-align: left">
+                        <remote-sel v-bind:setting="DateSetting" v-bind:value.sync="ContactQuery.DayType" laytips="选择时间" initial="off" v-bind:change="GetContactRankingData"></remote-sel>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row layui-form">
+                <div class="workbench-table">
+                    <div id="ContactRanking" style="width: 100%;height:400px;"></div>
+                </div>
+            </div>
+        </blockquote>
+        <!--跟进排行-->
+        <blockquote class="layui-elem-quote" style="border-left:0px">
+            <div class="layui-row layui-form">
+                <div class="layui-col-xs2">
+                    <div class="layui-input-inline workbench-tittle">
+                        <b>销售助手</b>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row layui-form">
+                <table class="workbench-table">
+                    <tr class="workbench-tr-height"><td><a @click="JumpPage(0)">超过7天没有跟进的客户</a></td></tr>
+                    <tr class="workbench-tr-height"><td><a @click="JumpPage(1)">预计30天内签单的商机</a></td></tr>
+                    <tr class="workbench-tr-height"><td><a @click="JumpPage(2)">7天内需要回款的合同</a></td></tr>
+                    <tr class="workbench-tr-height"><td><a @click="JumpPage(3)">30天内将到期的合同</a></td></tr>
+                    <tr style="height:80px"><td></td></tr>
+                </table>
+            </div>
+        </blockquote>
+        <!--预约提醒-->
+        <blockquote class="layui-elem-quote" style="border-left:0px">
+            <div class="layui-row layui-form">
+                <div class="layui-col-xs3">
+                    <div class="layui-input-inline workbench-tittle">
+                        <b><a class="" @click="AppointmentType" data-id="0">任务</a></b>
+                    </div>
+                    <div class="layui-input-inline workbench-tittle">
+                        <b><a class="workbench-tr-font-color" @click="AppointmentType" data-id="1">过期任务</a></b>
+                    </div>
+                </div>
+                <div class="layui-col-xs9" style="text-align: right">
+                    <div class="layui-input-inline" style="text-align: left">
+                        <remote-sel v-bind:setting="AccountSetting" v-bind:value.sync="AppointmentQuery.AccountID" laytips="选择用户" initial="off" v-bind:change="GetAppointment"></remote-sel>
+                    </div>
+                    <div class="layui-input-inline" style="text-align: left">
+                        <input type="text" class="layui-input" id="AppointmentDate">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row layui-form">
+                <table class="workbench-table">
+                    <tr v-for="item in Appointment" class="workbench-tr-height">
+                        <td width="10%">{{item.DateTime}}</td>
+                        <td width="80%"><span style="text-decoration:line-through;" v-if="item.Valid">{{item.Content}}</span><span v-else>{{item.Content}}</span></td>
+                        <td><button class=" layui-btn layui-btn-small layui-btn-normal" @click="SetUnfinished(item.ID)" v-if="item.Valid">设为未完成</button></tdwidth>
+                    </tr>
+                    <tr style="height:120px;text-align:center;font-family:sans-serif" v-if="Appointment.length==0"><td>暂无数据</td></tr>
+                    <tr style="height:80px"><td></td></tr>
+                </table>
+            </div>
+        </blockquote>
+    </div>
+</body>
+
+</html>
+<script>
+    require_js_file(['table', 'tableExt', 'jquery', 'laydate', "customUtil"],
+     function (fnr) {
+         var $ = layui.jquery;
+         var table = layui.table;
+         var tableExt = layui.tableExt;
+         var form = layui.form;
+         var laydate = layui.laydate;
+
+         //设置宽度
+         var width = window.innerWidth - 100 + 'px';
+         $("#NewRanking").css('width', width);
+         //新增排行echart
+         var NewRanking = echarts.init(document.getElementById('NewRanking'));
+         var NewRankingOption = {
+             title: {
+                 text: '新增客户',
+                 left: 'center',
+                 textStyle: {
+                     fontStyle: 'normal',
+                     fontFamily: 'sans-serif',
+                     fontSize: 16
+                 }
+             },
+             tooltip: {},
+             legend: {
+                 data: ['人数'],
+                 left: 'right'
+             },
+             xAxis: {
+                 data: [],
+             },
+             yAxis: {},
+             series: [{
+                 name: '人数',
+                 type: 'bar',
+                 barMaxWidth: 100,//最大宽度
+                 itemStyle: {
+                     normal: {
+                         color: '#0094ff'
+                     }
+                 },
+                 data: []
+             }]
+         };
+         NewRanking.setOption(NewRankingOption);
+
+
+         $("#ContactRanking").css('width', width);
+         //跟进排行echart
+         var ContactRanking = echarts.init(document.getElementById('ContactRanking'));
+         var ContactRankingOption = {
+             title: {
+                 text: '跟进客户',
+                 left: 'center',
+                 textStyle: {
+                     fontStyle: 'normal',
+                     fontFamily: 'sans-serif',
+                     fontSize: 16
+                 }
+             },
+             tooltip: {},
+             legend: {
+                 data: ['人数'],
+                 left: 'right'
+             },
+             xAxis: {
+                 data: [],
+             },
+             yAxis: {},
+             series: [{
+                 name: '人数',
+                 type: 'bar',
+                 barMaxWidth: 100,//最大宽度
+                 itemStyle: {
+                     normal: {
+                         color: '#0094ff'
+                     }
+                 },
+                 data: []
+             }]
+         };
+         ContactRanking.setOption(ContactRankingOption);
+         //自适应宽度
+         window.onresize = function () {
+             $("#NewRanking").css('width', window.innerWidth - 100 + 'px');
+             NewRanking.resize();
+
+             $("#ContactRanking").css('width', window.innerWidth - 100 + 'px');
+             ContactRanking.resize();
+         };
+
+         window.rootApp = new Vue({
+             el: '#root',
+             data: {
+                 SaleQuery: {},//销售简报查询条件
+                 SaleReport: {},//销售简报数据
+                 NewQuery: {},//新增排行查询条件
+                 ContactQuery: {},//跟进排行查询条件
+                 Appointment: [],//预约提醒列表
+                 AppointmentQuery: { ShowType: 0, AccountID: 0, Date: '' },//预约提醒查询条件
+                 //时间选择 0今天 1昨天 2本周 3上周 4本月 5上月 6本季度 7上季度 8今年 9去年
+                 DateSetting: {
+                     defaultValue: 2,
+                     options: [
+                        { key: '0', value: '今天' },
+                        { key: '1', value: '昨天' },
+                        { key: '2', value: '本周' },
+                        { key: '3', value: '上周' },
+                        { key: '4', value: '本月' },
+                        { key: '5', value: '上月' },
+                        { key: '6', value: '本季度' },
+                        { key: '7', value: '上季度' },
+                        { key: '8', value: '今年' },
+                        { key: '9', value: '去年' }
+                     ]
+                 },
+                 //新增排行业务选择 0客户 1线索 2商机
+                 BusinessSetting: {
+                     defaultValue: 0,
+                     options: [
+                        { key: '0', value: '客户' },
+                        { key: '1', value: '线索' },
+                        { key: '2', value: '商机' }
+                     ]
+                 },
+                 //跟进排行业务选择 -1全部 0客户 1线索 2商机 3合同
+                 BusinessSettingMore: {
+                     defaultValue: -1,
+                     options: [
+                        { key: '-1', value: '全部' },
+                        { key: '0', value: '客户' },
+                        { key: '1', value: '线索' },
+                        { key: '2', value: '商机' },
+                        { key: '3', value: '合同' }
+                     ]
+                 },
+                 //用户下拉
+                 AccountSetting: {
+                     //search: true,
+                     fields: { root: 'Data', key: 'Account_ID', value: 'Name' },
+                     options: [],
+                     remote: { url: "/service/hr/Station/GetListStationAccount", data: { Valid: 1 } }
+
+                 },
+             },
+             ready: function () {
+                 var self = this;
+                 //复选框：只看自己
+                 form.on('checkbox(mycheck)', function (data) {
+                     self.SaleQuery.ShowType = data.elem.checked ? 1 : 0;
+                     self.GetSalesReport();
+                 });
+                 laydate.render({
+                     elem: '#AppointmentDate',
+                     value: new Date(),
+                     btns: ['now', 'confirm'],
+                     done: function (value, date, endDate) {
+                         self.AppointmentQuery.Date = value;
+                         self.GetAppointment();
+                     },
+                     theme: '#0094ff'
+                 });
+
+                 self.GetSalesReport();
+                 self.GetNewRankingData();
+                 self.GetContactRankingData();
+                 self.GetAppointment();
+             },
+             methods: {
+                 //获取销售简报
+                 GetSalesReport: function () {
+                     var self = this;
+                     $.get("/service/crm/Workbench/GetSalesReport", self.SaleQuery, function (rsp) {
+                         if (rsp.SuccessResponse) {
+                             self.SaleReport = rsp.Data;
+                         }
+                     })
+                 },
+                 //数字转金额
+                 ToMoney: function (num) {
+                     if (/[^0-9\.]/.test(num)) return num;
+                     num = num + '';
+                     num = num.replace(/^(\d*)$/, "$1.");
+                     num = (num + "00").replace(/(\d*\.\d\d)\d*/, "$1");
+                     num = num.replace(".", ",");
+                     var re = /(\d)(\d{3},)/;
+                     while (re.test(num))
+                         num = num.replace(re, "$1,$2");
+                     num = num.replace(/,(\d\d)$/, ".$1");
+                     return "￥" + num.replace(/^\./, "0.");
+                 },
+                 //获取新增排名
+                 GetNewRankingData: function () {
+                     var self = this;
+                     $.get("/service/crm/Workbench/GetNewRankings", self.NewQuery, function (rsp) {
+                         if (rsp.SuccessResponse) {
+                             var text = self.NewQuery.BusType == 0 ? "新增客户" : (self.NewQuery.BusType == 1 ? "新增线索" : "新增商机");
+                             var xData = new Array();
+                             var sData = new Array();
+                             $.each(rsp.Data, function () {
+                                 xData.push(this.Name);
+                                 sData.push(this.Counts);
+                             })
+                             var optionColum = NewRanking.getOption();
+                             optionColum.title[0].text = text;
+                             optionColum.xAxis[0].data = xData;
+                             optionColum.series[0].data = sData;
+                             NewRanking.clear();
+                             NewRanking.setOption(optionColum, true);
+                         }
+                     })
+                 },
+                 //获取跟进排行
+                 GetContactRankingData: function () {
+                     var self = this;
+                     $.get("/service/crm/Workbench/GetContactRankings", self.ContactQuery, function (rsp) {
+                         if (rsp.SuccessResponse) {
+                             var text = ({ 0: "跟进客户", 1: "跟进线索", 2: "跟进商机", 3: "跟进合同" })[self.ContactQuery.BusType] || "跟进数据";
+                             var xData = new Array();
+                             var sData = new Array();
+                             $.each(rsp.Data, function () {
+                                 xData.push(this.Name);
+                                 sData.push(this.Counts);
+                             })
+                             var optionColum = ContactRanking.getOption();
+                             optionColum.title[0].text = text;
+                             optionColum.xAxis[0].data = xData;
+                             optionColum.series[0].data = sData;
+                             ContactRanking.clear();
+                             ContactRanking.setOption(optionColum, true);
+                         }
+                     })
+                 },
+                 //销售助手页面跳转
+                 JumpPage: function (index) {
+                     alert(index);
+                     //location.href = ({0:""})[index];
+                 },
+                 //获取预约提醒
+                 GetAppointment: function () {
+                     var self = this;
+                     if (!self.AppointmentQuery.Date)
+                         self.AppointmentQuery.Date = $("#AppointmentDate").val();
+                     if (self.AppointmentQuery.AccountID) {
+                         $.get("/service/crm/Workbench/GetReservationReminding", self.AppointmentQuery, function (rsp) {
+                             if (rsp.SuccessResponse) {
+                                 self.Appointment = rsp.Data;
+                             }
+                         })
+                     }
+                 },
+                 AppointmentType: function (obj) {
+                     var e = obj.srcElement || obj.target || obj.toElement;
+                     $(e).parent().parent().parent().find("a").attr("class", "workbench-tr-font-color");
+                     $(e).attr("class", "");
+                     this.AppointmentQuery.ShowType = $(e).attr("data-id");
+                     this.GetAppointment();
+                 },
+                 SetUnfinished: function (ID) {
+                     var self = this;
+                     $.post("/service/crm/Appointment/UpdateAppointmentValid", { Other: ID, Status: 0 }, function (rsp) {
+                         if (rsp.SuccessResponse) {
+                             layer.msg("操作成功");
+                             self.GetAppointment();
+                         }
+                     })
+                 }
+             }
+         })
+     });
+</script>

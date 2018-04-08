@@ -1,0 +1,9 @@
+﻿function CreateSetting(ColumnName) {
+    return {
+        search: true,
+        selectedIndex: 0,
+        options: [],
+        fields: { root: 'ReturnData.Data', key: 'ID', value: 'Description' },
+        remote: { url: '/service/HDictionary/GetHDictionaryList', data: { Valid: 1, ColumnName: ColumnName } }
+    }
+}

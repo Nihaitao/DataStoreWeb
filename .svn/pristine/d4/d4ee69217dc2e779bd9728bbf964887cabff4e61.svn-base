@@ -1,0 +1,183 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">网络课程表</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="ID" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" v-model="submitForm.ID">
+                </div>
+                <label class="layui-form-label">网课名称</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="Name" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" v-model="submitForm.Name">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">科次id</label>
+                <div class="layui-input-block">
+                    <input type="text" name="Discipline_ID" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" v-model="submitForm.Discipline_ID">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">价格</label>
+                <div class="layui-input-block">
+                    <input type="text" name="Price" lay-verify="Discipline_ID" placeholder="请输入" autocomplete="off" class="layui-input" v-model="submitForm.Price">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">优惠价</label>
+                <div class="layui-input-block">
+                    <input type="text" name="PreferentialPrice" placeholder="请输入" autocomplete="off" class="layui-input" v-model="submitForm.PreferentialPrice">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">购买基数</label>
+                <div class="layui-input-block">
+                    <input type="text" name="BuyBase" placeholder="请输入" autocomplete="off" class="layui-input" v-model="submitForm.BuyBase">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">总课时</label>
+                <div class="layui-input-block">
+                    <input type="text" name="TotalHours" placeholder="请输入" autocomplete="off" class="layui-input" v-model="submitForm.TotalHours">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">授课方式</label>
+                <div class="layui-input-block">
+                    <remote-rad v-bind:setting="radSetting" v-bind:value.sync="submitForm.TeachingMethod"
+                                initial="off"></remote-rad>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">课件大小</label>
+                <div class="layui-input-block">
+                    <input type="text" name="IsRecommend" placeholder="请输入" autocomplete="off" class="layui-input" v-model="submitForm.IsRecommend">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">是否上架</label>
+                <div class="layui-input-block">
+                    <remote-rad v-bind:setting="IsPutawaySetting" v-bind:value.sync="submitForm.IsPutaway"
+                                initial="off"></remote-rad>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">封面</label>
+                <div class="layui-input-block">
+                    <input type="text" name="CoverPath" placeholder="请输入" autocomplete="off" class="layui-input" v-model="submitForm.CoverPath">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">教师明细id</label>
+                <div class="layui-input-block">
+                    <input type="text" name="TeacherDetail_ID" placeholder="请输入" autocomplete="off" class="layui-input" v-model="submitForm.TeacherDetail_ID">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">介绍</label>
+                <div class="layui-input-block">
+                    <input type="text" name="Description" placeholder="请输入" autocomplete="off" class="layui-input" v-model="submitForm.Description">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">课程详情</label>
+                <div class="layui-input-block">
+                    <input type="text" name="Particulars" placeholder="请输入" autocomplete="off" class="layui-input" v-model="submitForm.Particulars">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">添加人</label>
+                <div class="layui-input-block">
+                    <input type="text" name="AddPerson" placeholder="请输入" autocomplete="off" class="layui-input" v-model="submitForm.AddPerson">
+                </div>
+            </div>
+            <div class="layui-form-item layui-hide">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-filter="demo1" @click="saveUpdate">立即提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/Controls/Common.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt"],
+    function (fnr) {
+        var $ = layui.$;
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+                submitForm: {
+                    ID: 0,
+                    Name: '',
+                    Discipline_ID: '',
+                    Price: '',
+                    PreferentialPrice: '',
+                    BuyBase: '',
+                    TotalHours: '',
+                    TeachingMethod: '',
+                    IsRecommend: '',
+                    IsPutaway: '',
+                    CoverPath: '',
+                    TeacherDetail_ID: '',
+                    Description: '',
+                    Particulars: '',
+                    AddPerson: '',
+                },
+                radSetting: {
+                    tags: { name: "aaa" },
+                    options: [
+                        { key: "1", value: "录播" },
+                        { key: "2", value: "直播" },
+                        { key: "3", value: "面授" },
+                    ],
+                    fields: { key: 'key', value: 'value' }
+                },
+                IsPutawaySetting: {
+                    tags: { name: "aaa" },
+                    options: [
+                        { key: "0", value: "下架" },
+                        { key: "1", value: "上架" },
+                    ],
+                    fields: { key: 'key', value: 'value' }
+                },
+            },
+            ready: function () {
+                if (!!GetQueryString('ID')) {
+                    var ID = GetQueryString('ID')
+                    var param = { 'ID': ID }
+                    this.GetCourseInfoByID(param);
+                }
+            },
+            methods: {
+                //根据id查询课件资源
+                GetCourseInfoByID: function (params) {
+                    $.get("/service/Resource/SaveCourseInfo", params, function (res) {
+                        this.CourseInfoList = res.ReturnData.Data;
+                    })
+
+                },
+                //提交表单
+                saveUpdate: function (e) {
+                    if (!layui.form.checkInput(e)) {
+                        return false;
+                    }
+                    $.post("/service/Resource/SaveCourseInfo", this.submitForm, function (res) {
+                    });
+                }
+            }
+        });
+    });
+</script>

@@ -1,0 +1,378 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        .tree { border-radius: 2px; }
+        .tree-content { padding-left: 30px; }
+        .tree-node { border-top: 1px solid #e2e2e2; position: relative; }
+        .tree-node:first-child { border-top: none; }
+        .tree-node .option-area { position: absolute; top: 50%; right: 15px; transform: translateY(-50%); }
+        .option-area .layui-icon { display: inline-block; color: #999; }
+        .option-area .layui-icon:hover { color: #333; }
+        .tree-tit { position: relative; height: 42px; line-height: 42px; padding: 0 15px; color: #333; background-color: #f0f0f0; cursor: pointer; margin-bottom: 10px; }
+        .tree-tit .layui-icon { margin-right: 10px; }
+        .tree-tit:hover { box-shadow: 2px 2px 5px #ccc; }
+        .layui-colla-content { display: none; padding: 10px 15px; line-height: 22px; border-top: 1px solid #f0f0f0; color: #666; }
+        .state-highlight { height: 50px; border: 1px dashed #5FB878; margin-bottom: 10px; }
+        .progress-box { margin: 15px auto; }
+        .steps { position: relative; width: 100%; margin: 0 auto; text-align: center; overflow: hidden; }
+        .steps ul { width: 100%; height: 30px; overflow: hidden; }
+        .steps ul li { width: 33%; background-color: #ddd; display: inline-block; }
+        .steps ul li.active { background-color: #04a2ca; }
+        .steps ul li i { display: inline-block; width: 30px; height: 30px; line-height: 30px; text-align: center; font-style: normal; color: #fff; font-size: 18px; font-weight: 700; }
+        .steps ul li em { position: relative; top: 0; display: inline-block; color: #fff; line-height: 30px; font-size: 14px; font-style: normal; }
+        .ct-step { height: 30px; position: relative; margin-left: 0px; margin-right: 0px; }
+        .ct-step .step { float: left; height: 30px; line-height: 30px; color: #FFF; background: #cacaca; z-index: 1; text-align: center; position: relative; width: 33.33%; }
+        .ct-step .step-active { background-color: #00a0c7; }
+        .ct-step .step:after { content: ''; display: block; width: 20px; height: 30px; position: absolute; right: 0; z-index: 9; top: 0; border-top: 15px solid transparent !important; border-left: 15px solid #cacaca; border-bottom: 15px solid transparent !important; background-color: #fff; box-sizing: border-box; }
+        .ct-step .step-active:after { border-color: #00a0c7; }
+        .ct-step .step:not(:first-child):before { content: ''; display: block; position: absolute; left: -15px; z-index: 8; top: 0px; border-top: 15px solid #cacaca; border-left: 15px solid transparent !important; border-bottom: 15px solid #cacaca; }
+        .ct-step .step-active:before { border-color: #00a0c7 !important; }
+        .ct-step .step i { display: inline-block; width: 30px; height: 30px; line-height: 30px; text-align: center; font-style: normal; color: #fff; font-size: 18px; font-weight: 700; }
+        .ct-step .step em { position: relative; top: 0; display: inline-block; color: #fff; line-height: 30px; font-size: 14px; font-style: normal; }
+        [v-cloak] { display:none;}
+        .tit-area .h3{ font-size:14px;color:#000;padding:0 20px;}
+        .tit-area .h3 input{border:none;border-bottom: solid 1px;border-radius: 0;margin-left: 10px;width: 300px;background-color:inherit;}
+    </style>
+
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <div class="progress-box">
+            <div class="ct-step">
+                <div class="step step-active">
+                    <i>01</i>
+                    <em>基本信息</em>
+                </div>
+                <div class="step step-active">
+                    <i>02</i>
+                    <em>课程详细</em>
+                </div>
+                <div class="step step-active">
+                    <i>03</i>
+                    <em>安排课表</em>
+                </div>
+
+            </div>
+        </div>
+        <blockquote class="layui-elem-quote">
+            <div class="layui-row layui-form">
+                <div class="layui-col-xs10">
+                    <h1 v-cloak style="font-size:20px;">{{UnitName}}</h1>
+                    <!--<div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <input type="text" name="Name" autocomplete="off" placeholder="学科名称" class="layui-input" v-model="queryFormData.Name">
+                        </div>
+                        <div class="layui-input-inline">
+                            <remote-sel v-bind:setting="validSetting" v-bind:value.sync="queryFormData.SearchIsEnable" initial="off"></remote-sel>
+                        </div>
+                    </div>
+                    <button class="layui-btn layui-btn-primary" lay-submit lay-filter="btn" @click="doSearch">查询</button>-->
+                </div>
+                <div class="layui-col-xs2" style="text-align: right">
+                    <button class="layui-btn" @click="SaveDiscipline"><i class="layui-icon"></i> 添加一级学科</button>
+                </div>
+            </div>
+        </blockquote>
+        <div class="block layui-clear" style="height:600px;overflow:hidden;">
+            <div class="tree-wrap" v-cloak style="width:90%;margin:0 auto;">
+                <div class="tree" v-for="(index,item) in Unit">
+                    <div class="tree-node">
+                        <div class="tree-tit" @click="setInfo(item)">
+                            <h2 class="tit-area">
+                                <i class="layui-icon">&#xe61a;</i>
+                                <span class="name layui-hide">{{item.Name}}</span>
+                                <span class="name_edit"><span class="h3"><input type="text" name="name" v-model="item.Name" /></span><button class="layui-btn layui-btn-primary layui-btn-small" @click.stop="SaveCourse_Unit($event,item,index)">保存</button></span>
+                            </h2>
+                            <div class="option-area">
+                                <button class="layui-btn layui-btn-small" v-bind:class='[item.Valid == 1 ? " layui-btn-warm" :"layui-btn-normal"]' @click="SetDisciplineValid(item)">{{item.Valid ==0 ?'启用':'禁用'}}</button>
+                                <i class="layui-icon add" @click.stop="edit(item,index)">&#xe642;</i>
+                                <i class="layui-icon add" @click.stop="add(item,index)">&#xe654;</i>
+                                <i class="layui-icon del" @click.stop="delete1(item,index)">&#xe640;</i>
+                            </div>
+                        </div>
+                        <div class="tree-content">
+                            <div class="tree" v-if="item.ChildNodeList.length>0" v-for="(index2,item2) in item.ChildNodeList">
+                                <div class="tree-node">
+                                    <div class="tree-tit" @click="setInfo(item2)">
+                                        <h2 class="tit-area">
+                                            <i class="layui-icon">&#xe61a;</i>
+                                            <span class="name layui-hide">{{item2.Name}}</span>
+                                            <span class="name_edit"><span class="h3"><input type="text" name="name" v-model="item2.Name" /></span><button class="layui-btn layui-btn-primary layui-btn-small" @click.stop="SaveCourse_Unit($event,item2,index2)">保存</button></span>
+                                        </h2>
+                                        <div class="option-area">
+                                            <button class="layui-btn layui-btn-small" v-bind:class='[item2.Valid == 1 ? " layui-btn-warm" :"layui-btn-normal"]' @click="SetDisciplineValid(item2)">{{item2.Valid ==0 ?'启用':'禁用'}}</button>
+                                            <i class="layui-icon add" @click.stop="edit(item,index)">&#xe642;</i>
+                                            <i class="layui-icon add" @click.stop="add(item2,index2,index)">&#xe654;</i>
+                                            <i class="layui-icon del" @click.stop="delete1(item2,index2)">&#xe640;</i>
+                                        </div>
+                                    </div>
+                                    <div class="tree-content">
+                                        <div class="tree" v-if="item2.ChildNodeList.length>0" v-for="(item2,item3) in item2.ChildNodeList">
+                                            <div class="tree-node">
+                                                <div class="tree-tit" @click="setInfo(item3)">
+                                                    <h2 class="tit-area">
+                                                        <i class="layui-icon">&#xe61a;</i>
+                                                        <span class="name layui-hide">{{item3.Name}}</span>
+                                                        <span class="name_edit"><span class="h3"><input type="text" name="name" v-model="UnitEmpty.Name" /></span><button class="layui-btn layui-btn-primary layui-btn-small" @click.stop="SaveCourse_Unit($event,item3,index3)">保存</button></span>
+                                                    </h2>
+                                                    <div class="option-area">
+                                                        <button class="layui-btn layui-btn-small" v-bind:class='[item3.Valid == 1 ? " layui-btn-warm" :"layui-btn-normal"]' @click="SetDisciplineValid(item3)">{{item3.Valid ==0 ?'启用':'禁用'}}</button>
+                                                        <i class="layui-icon add" @click.stop="edit(item,index)">&#xe642;</i>
+                                                        <i class="layui-icon del" @click.stop="delete1(item3,index3)">&#xe640;</i>
+                                                    </div>
+                                                </div>
+                                                <div class="tree-content">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<link href="../../..//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="../../..//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="../../..//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="../../..//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="https://cdn.bootcss.com/jquery/1.10.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.js"></script>
+<script src="../Classroom/Sortable.js"></script>
+<script src="../../..//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/Controls/Common.js"></script>
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'laydate', 'upload'],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+            var upload = layui.upload;
+
+            //搜索条件
+            var rootApp = new Vue({
+                el: '#root',
+                data: {
+                    Name:'',
+                    modifyDiscipline: false,
+                    UnitEmpty: {
+                        ID: 0,
+                        Name: '',
+                        Course_ID: '',
+                        Orders: '0',
+                    },
+                    UnitName:'',
+                    Unit:[],
+                    Unit_ClassTimeEmpty:{
+                        ID:'',
+                        Name:'',
+                        Unit_ID:'',
+                        BegInTime:'',
+                        EndTime:'',
+                        TeacherDetail_ID:'',
+                        ClassRoom_ID:'',
+                        Orders:'',
+                    },
+                    Unit_ClassTime:[],
+
+                },
+                computed:{
+
+                },
+                ready: function () {
+                    if (GetQueryString("ID")) {
+                        var ID = GetQueryString("ID");
+                        this.GetCourseByID({ ID: ID })
+                    }
+                },
+                methods: {
+                    GetCourseByID:function(params){
+                        var self=this;
+                        $.get("/service/WebCourse/GetCourseByID",params,function(res){
+                            if(res.SuccessResponse){
+                                self.UnitName=res.ReturnData.Data.Name;
+                                self.UnitEmpty.Course_ID=res.ReturnData.Data.ID
+                            }
+                        })
+                    },
+                    //获取长度
+                    length: function (arr) {
+                        return (arr.length)+1;
+                    },
+                    //启用禁用学科
+                    SetDisciplineValid:function(item){
+                        if(item.Valid == 1 ){
+                            layer.confirm('是否禁用',function(index){
+                                $.post("/service/Discipline/SetDisciplineValid",{ID:item.ID,Valid:0},function(res){
+                                    if(res.SuccessResponse){
+                                        layer.msg('禁用成功');
+                                        item.Valid=0;
+                                        layer.close(index);
+                                    }
+                                })
+                            })
+                        }else if(item.Valid == 0 ){
+                            layer.confirm('是否启用',function(index){
+                                $.post("/service/Discipline/SetDisciplineValid",{ID:item.ID,Valid:1},function(res){
+                                    if(res.SuccessResponse){
+                                        layer.msg('禁用成功');
+                                        item.Valid=1;
+                                        layer.close(index);
+                                    }
+                                })
+                            })
+                        }
+                    },
+                    //设置科目
+                    setInfo: function (item) {
+                        this.modifyDiscipline = true;
+                        this.SaveDisciplineForm = item;
+                    },
+
+                    //保存课次信息
+                    saveDisciplineInfo: function () {
+                        var {ID,Name,Description,Picture} = this.SaveDisciplineForm
+                        this.saveRequst({ID,Name,Description,Picture})
+                    },
+                    //添加修改网课单元
+                    SaveCourse_Unit: function (event, params,index) {
+                        var self=this;
+                        var name=$(event.target).parent(".name_edit");
+                        $.post("/service/WebCourse/SaveCourse_Unit", params, function (res) {
+                            if (res.SuccessResponse) {
+                                layer.msg("添加成功");
+                                name.addClass("layui-hide");
+                                name.prev(".name").removeClass("layui-hide");
+                            }
+                        })
+                    },
+                    //添加修改网课单元课次
+                    SaveCourse_Unit_ClassTime:function(){
+                        $.post("/service/WebCourse/SaveCourse_Unit_ClassTime",{},function(res){
+                            
+                        })
+                    },
+                    //删除单元课次及对应的关系表
+                    DeleteCourseUnitClassTime:function(){
+                        $.post("/service/WebCourse/DeleteCourseUnitClassTime",{},function(res){
+                            
+                        })
+                    },
+                    //删除单元及对应的关系表
+                    DeleteCourseUnit:function(params){
+                        $.post("/service/WebCourse/DeleteCourseUnit",params,function(res){
+                            if(res.SuccessResponse){
+                                layer.msg('删除成功')
+                            }
+                        })
+                    },
+                    //禁用启用网课单元
+                    UpdateCourseUnitValid:function(){
+                        $.post("/service/WebCourse/UpdateCourseUnitValid",params,function(res){
+                            if(res.SuccessResponse){
+                                
+                            }
+                        })
+                    },
+                    //添加一级学科
+                    SaveDiscipline: function () {   
+                        this.Unit.push(JSON.parse(JSON.stringify(this.UnitEmpty)));
+                        //this.Unit.push(this.UnitEmpty);
+                        this.Drag();
+                    },
+                    //拖拽
+                    Drag:function(){
+                        return  $(".tree-wrap").mySortable({
+                                    "tree": ".tree-wrap",
+                                    "treeContent": ".tree-content",
+                                    "treeTitle": ".tree-tit",
+                                    "optionArea": ".option-area",
+                                    "stop":function(event,ui){
+                                        $.post("/service/Discipline/SortDiscipline",{old_prev_order:0,old_next_order:0,new_prev_order:0,new_next_order:0,currDisciplineId:0,currParentId:0},function(res){
+                                            if(res.SuccessResponse){
+                                                layer.msg('排序成功')
+                                            }
+                                        })
+                                    }
+                                });
+                    },
+                    //查询学科集合
+                    GetAllDiscipline: function (params) {
+                        var self = this;
+                        $.get("/service/Discipline/GetAllDiscipline", params, function (res) {
+                            self.Discipline = res.ReturnData.Data;
+                            self.$nextTick(function () {
+                                $(".tree-wrap").mySortable({
+                                    "tree": ".tree-wrap",
+                                    "treeContent": ".tree-content",
+                                    "treeTitle": ".tree-tit",
+                                    "optionArea": ".option-area",
+                                    "stop":function(event,ui){
+                                        $.post("/service/Discipline/SortDiscipline",{old_prev_order:0,old_next_order:0,new_prev_order:0,new_next_order:0,currDisciplineId:0,currParentId:0},function(res){
+                                            if(res.SuccessResponse){
+                                                layer.msg('排序成功')
+                                            }
+                                        })
+                                    }
+                                });
+                            });
+                        })
+                    },
+                    edit: function (item, index) {
+                        layer.prompt(function (value, index, elem) {
+                            item.Name = value;
+                            $.post("/service/WebCourse/SaveCourse_Unit", item, function (res) {
+                                if (res.SuccessResponse) {
+                                    layer.msg("添加成功");
+                                    item.Name = value;
+                                    layer.close(index);
+                                }
+                            })
+                        });
+                    },
+
+                    add: function (item, index,parentIndex) {
+                        var obj = this.emptyDiscipline;
+                        if(typeof(parentIndex)=="undefined"){
+                            obj.CID=this.Discipline[index].ID
+                            obj.Name = "新增二级菜单" + this.length(this.Discipline[index].ChildNodeList);
+                            this.Discipline[index].ChildNodeList.push(JSON.parse(JSON.stringify(obj)));
+                        }else{
+                            obj.CID = this.Discipline[parentIndex].ChildNodeList[index].ID;
+                            obj.Name = "新增三级菜单" + this.length(this.Discipline[parentIndex].ChildNodeList[index].ChildNodeList);
+                            this.Discipline[parentIndex].ChildNodeList[index].ChildNodeList.push(JSON.parse(JSON.stringify(obj)));
+                        }
+                        this.SaveCourse_Unit(obj)
+                    },
+
+                    delete1: function (item, index) {
+                        var self = this;
+                        layer.confirm('是否删除？', {
+                            btn: ['确定', '取消'] //按钮
+                        }, function () {
+                            self.DeleteCourseUnit({ ID: item.Course_ID })
+                        })
+                    }
+                }
+            });
+            //上传图片
+            var uploadInst = upload.render({
+                elem: '#upload' //绑定元素
+                , url: '/upload/' //上传接口
+                , done: function (res) {
+                    //上传完毕回调
+                }
+                , error: function () {
+                    //请求异常回调
+                }
+            });
+        });
+</script>

@@ -1,0 +1,146 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心</title>
+    <!--<script src="/usercenter/Resources/js/jquery.js"></script>-->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="/usercenter/Resources/fonts/iconfont.css" rel="stylesheet" />
+    <link href="/usercenter/Resources/CSS/Font/css/font-awesome.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/usercenter/Resources/CSS/PC_css.css">
+    <link href="/usercenter/Resources/CSS/common.css" rel="stylesheet" />
+    <link href="/usercenter/Resources/CSS/index.css" rel="stylesheet" />
+    <link href="/usercenter/Resources/CSS/question.css" rel="stylesheet" />
+    <script src="/usercenter/script/artTemplate.js"></script>
+</head>
+<body style="background-color: #f7f7f7">
+    <!--顶部-->
+    <!--#<!--#include file="../UserControl/stepHeader.html"-->
+    <div class="nav">
+        <div class="w1200 clearfix">
+            <div class="nav-header pull-left">
+                <a href="#"><img src="/usercenter/Resources/images/hd.png" /></a>
+            </div>
+        </div>
+    </div>
+    <div class="w1200 clearfix">
+        <div class="content">
+            <div class="container">
+                <div class="crumbs-nav f-f14">
+                    <span class="current">您当前所在位置：</span>
+                    <ol>
+                        <li><a href="">学习中心首页</a></li>
+                        <li><a href="">我的课程</a></li>
+                    </ol>
+                </div>
+                <div class="bd-bg mt20">
+                    <div class="lead text-center">
+                        <h1 id="title">会计学第一节  会计概述练习</h1>
+                    </div>
+                    <div class="item">
+                        <div class="title">
+                            <h4>
+                                考试设置
+                                <span class="f-f14" style="color: #999;"></span>
+                            </h4>
+                        </div>
+                        <div class="mode" id="page-filter-body">
+                            <div class="mode-item">
+                                <div class="mode-name f-f18">练习模式：</div>
+                                <div class="mode-content" id="filter">
+                                    <a href="javascript:" class="check" data-filter="0">
+                                        未做试题
+                                        <em class="f-f12" id="weizuo">4</em>
+                                    </a>
+                                    <a href="javascript:" class="" data-filter="1">
+                                        已做试题
+                                        <em class="f-f12" id="yizuo">0</em>
+                                    </a>
+                                    <a href="javascript:" class="" data-filter="2">
+                                        错误试题
+                                        <em class="f-f12" id="zuocuo">0</em>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="mode-item">
+                                <div class="mode-name f-f18">试题类型：</div>
+                                <div class="mode-content" id="Type">
+                                    <a data-type="0" class="check">全部</a>
+                                    <a data-type="1">单选题</a>
+                                    <a data-type="2">多项题</a>
+                                    <a data-type="4">判断题</a>
+                                </div>
+                            </div>
+                            <div class="mode-item">
+                                <div class="mode-name f-f18">试题数量：</div>
+                                <div class="mode-content" id="Num">
+                                    <a data-num="5" class="">5</a>
+                                    <a data-num="10" class="check">10</a>
+                                    <a data-num="15" class="">15</a>
+                                    <a data-num="20" class="">20</a>
+                                    <a data-num="25" class="">25</a>
+                                    <a data-num="30" class="">30</a>
+                                    <a data-num="35" class="">35</a>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="lx-choice-btn clearfix">
+                            <ul>
+                                <li class="lxms pull-left">
+                                    <a href="javascript:" @click="lianxi()">
+                                        <i></i><span>练习模式</span>
+                                        <p>做题后立即显示答案</p>
+                                    </a>
+                                </li>
+                                <li class="ksms pull-right">
+                                    <a href="javascript:" @click="tijiao()">
+                                        <i></i><span>考试模式</span>
+                                        <p>提交试卷后显示答案</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--footer-->
+    <!--#<!--#include file="../UserControl/Footer.html"-->
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <script src="/usercenter/Resources/js/headFootLayout.js"></script>
+    <script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil'],
+        function (fnr) {
+            var $ = layui.$;
+            var table = layui.table;
+            var tableExt = layui.tableExt;
+            var vm = new Vue({
+                el: "#root",
+                data: {
+                    ID:'',
+                    Data:'',
+                },
+                ready: function () {
+                    this.ID=fnr.getQueryString('ID');
+                    this.GetAllDiscipline(this.ID)
+                },
+                methods: {
+                    lianxi:function(){
+                        
+                    }
+                }
+            });
+        })
+    </script>
+</body>
+
+</html>

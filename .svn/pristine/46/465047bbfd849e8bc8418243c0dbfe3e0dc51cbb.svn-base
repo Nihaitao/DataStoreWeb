@@ -1,0 +1,33 @@
+﻿666 -->
+<div class="foot">
+    <ul class="clearfix info">
+        <li>eol简介</li>
+        <li>联系方式</li>
+        <li>招聘信息</li>
+        <li>京IC证140769号</li>
+        <li>京IC备12045350号</li>
+        <li>京IC网文[2014]2106-306号</li>
+        <li>京公网安备&nbsp;11010802020236号</li>
+    </ul>
+    <p class="copyright">{{layoutData.FooterCopyright}}</p>
+</div>
+<script>
+    
+    require_js_file(['jquery', 'element', 'wxconfig'],
+        function (fnr) {
+
+            var wxconfig = layui.wxconfig;
+
+            var rootApp = new Vue({
+                el: '#foot',
+                data: {
+                    layoutData: {},
+                },
+                ready: function () {
+                    this.layoutData = wxconfig.GetSetting();  //获取logo设置
+                },
+                methods: {
+                }
+            });
+        })
+</script>

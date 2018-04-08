@@ -1,0 +1,244 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <blockquote class="layui-elem-quote">
+            <div class="layui-row layui-form">
+                <div class="layui-col-xs10">
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <input type="text" name="Name" autocomplete="off" class="layui-input" placeholder="网课名称" v-model="searchForm.Name">
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" name="Discipline_ID" autocomplete="off" class="layui-input" placeholder="科次id" v-model="searchForm.Discipline_ID">
+                        </div>
+                        <!--<div class="layui-input-inline">
+                            <remote-sel name="IsRecommend" v-bind:setting="IsRecommendSetting" v-bind:value.sync="searchForm.IsRecommend" initial="off"></remote-sel>
+                        </div>-->
+                        <div class="layui-input-inline">
+                            <remote-sel name="IsPutaway" v-bind:setting="IsPutawaySetting" v-bind:value.sync="searchForm.IsPutaway" initial="off"></remote-sel>
+                        </div>
+                        <div class="layui-input-inline">
+                            <remote-sel name="Valid" v-bind:setting="validSetting" v-bind:value.sync="seachForm.Valid" initial="off"></remote-sel>
+                        </div>
+                    </div>
+                    <button class="layui-btn layui-btn-primary" lay-submit lay-filter="btn" @click="doSearch">查询</button>
+                </div>
+                <div class="layui-col-xs2" style="text-align: right">
+                    <button class="layui-btn" @click="addData"><i class="layui-icon"></i> 添加课件资源</button>
+                </div>
+            </div>
+        </blockquote>
+        <!--操作模板-->
+        <table id="listTable" lay-filter="listTable"></table>
+    </div>
+</body>
+</html>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt','laydate'],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+
+            //搜索条件
+            var rootApp = new Vue({
+                el: '#root',
+                data: {
+                    searchForm:{
+                        Name: '',
+                        Discipline_ID: '',
+                        IsRecommend: '',
+                        IsPutaway: '',
+                        Valid:'',
+                    },
+                    IsRecommendSetting: {
+                        options: [
+                            { key: '1', value: '推荐' },
+                            { key: '0', value: '不推荐' }
+                        ]
+                    },
+                    IsPutawaySetting: {
+                        options: [
+                            { key: '1', value: '上架' },
+                            { key: '0', value: '下架' }
+                        ]
+                    },
+                    validSetting: {
+                        options: [
+                            { key: '1', value: '启用' },
+                            { key: '0', value: '禁用' }
+                        ]
+                    }
+                },
+                ready: function () {
+                },
+                methods: {
+                    doSearch: function () {
+                        tableIns.reload({
+                            where: this.searchForm
+                        });
+                    },
+
+                    //删除课件资源
+                    DeleteCourseInfo: function (params) {
+                        $.get("/service/Resource/DeleteCourseInfo", params, function (res) {
+                            if (res.SuccessResponse) {
+                                this.CourseInfoList = res.ReturnData.Data;
+                            }
+                        })
+
+                    },
+
+                    //添加网课
+                    addData: function () {
+                        fnr.openDialog({
+                            title:'添加课件资源',
+                            area: ['750px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                            content: ['/Html/ResourcesCenter/Classinfo/Add.html'],
+                            events: {
+                                addSource: function (data) {
+                                    if (data) {
+                                        fnr.openDialog({
+                                            title: '添加课件资源',
+                                            area: ['1000px', '700px'],
+                                            content: ['/Html/ResourcesCenter/editSimpleCourse/editSimpleCourse.html?TeachingMethod='] + data.TeachingMethod,
+                                        });
+                                    }
+                                }
+                            }
+                        });
+                    },
+                }
+            });
+
+            var tableIns = table.render({
+                elem: '#listTable',
+                even: true, //开启隔行背景
+                page: true, //页分
+                cols: [
+                    [
+                        { field: 'ID', fixed: true, title: 'ID', width: 80 },
+                        { field: 'Name', title: '网课名称', width: 320 },
+                        { field: 'Price', title: '价格', width: 120 },
+                        { field: 'PreferentialPrice', title: '优惠价', width: 120 },
+                        { field: 'BuyBase', title: '购买基数', width: 120 },
+                        { field: 'TotalHours', title: '总课时', width: 120 },
+                        {
+                            field: 'TeachingMethod', title: '授课方式', width: 100, templet: function () {
+                                if (this.TeachingMethod == 1) {
+                                    return "<div>录播</div>"
+                                } else if (this.TeachingMethod == 2) {
+                                    return "<div>直播</div>"
+                                } else if (this.TeachingMethod == 3) {
+                                    return "<div>面授</div>"
+                                } else {
+                                    return"<div></div>"
+                                }
+                            }
+                        },
+                        {
+                            field: 'IsRecommend', title: '是否推荐', width: 100, templet: function () {
+                                if (this.IsRecommend == 1) {
+                                    return "<div>推荐</div>"
+                                } else if (this.IsRecommend == 0) {
+                                    return "<div>不推荐</div>"
+                                } else {
+                                    return "<div></div>"
+                                }
+                            }
+                        },
+                        {
+                            field: 'IsPutaway', title: '是否上架', width: 100, templet: function () {
+                                if (this.IsPutaway == 1) {
+                                    return "<div>上架</div>"
+                                } else if (this.IsPutaway == 0) {
+                                    return "<div>下架</div>"
+                                } else {
+                                    return "<div></div>"
+                                }
+                            }
+                        },
+                        {
+                            field: 'AddTime', title: '添加时间', width: 160, templet: function () {
+                                var array = new Array();
+                                array.push("<span>" + fnr.format(this.AddTime, "yyyy-MM-dd HH:mm") + "</span>");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        },
+                        { field: 'AddPersonName', title: '添加人', width: 120 },
+                        {
+                            fixed: 'right',
+                            field: 'Valid',
+                            title: '启用状态',
+                            width: 180,
+                            toolbar: function () {
+                                var array = new Array();
+                                array.push("<button class=\"layui-btn layui-btn-small\" lay-event='edit'>编辑</button>");
+                                array.push("<button class=\"layui-btn layui-btn-small " + (this.Valid == 1 ? "layui-btn-warm" : "layui-btn-normal") + " \" lay-event='editisenable'>" + (this.Valid == 1 ? "禁用" : "启用") + "</button>");
+                                array.push("<button class=\"layui-btn layui-btn-small layui-btn-danger \" lay-event='delete'>删除</button>");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        }
+                    ]
+                ],
+                url: '/service/WebCourse/GetCourseList',
+                response: {
+                   dataName: 'ReturnData.data'
+               }
+            });
+            tableExt.addEvent("tool(listTable)",
+                {
+                    //工具栏编辑事件
+                    "edit": function (data, obj) {
+                        fnr.openDialog({
+                            title: '添加课件资源',
+                            area: ['1200px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                            content: ['/Html/ResourcesCenter/editSimpleCourse/editSimpleCourse.html?ID='] + data.ID + "&TeachingMethod=" + data.TeachingMethod,
+                        });
+                    },
+                    //工具栏禁用启用事件
+                    "editisenable": function (data, obj) {
+                        var params = { ID: data.ID, Valid: data.Valid==1? 0: 1 }
+                        $.post("/service/Resource/UpdateValid", params, function (res) {
+                            if (res.SuccessResponse) {
+                                $.get("/service/Resource/GetCourseInfoList", function (res) {
+                                    if (res.SuccessResponse) {
+                                        tableIns.reload();
+                                    }
+                                })
+                            }
+                        })
+                    },
+                    //工具栏删除事件
+                    "delete": function (data, obj) {
+                        layer.confirm('是否确定删除', function (index) {
+                            $.post("/service/WebCourse/DeleteCourse", { ID: data.ID }, function (res) {
+                                if (res.SuccessResponse) {
+                                    tableIns.reload();
+                                    layer.msg('删除成功')
+                                    layer.close(index);
+                                } else {
+                                    layer.msg(res.Message)
+                                }
+                            })
+                        });
+
+                    }
+                });
+            //监听复选框事件
+            table.on('checkbox(listTable)', function (obj) {
+                console.log(obj)
+
+            });
+        });
+</script>

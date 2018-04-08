@@ -1,0 +1,31 @@
+.featureHeader{
+    height: 0.88rem;
+    background-color: #F5F5F9;
+}
+.headText{
+    font-size: 0.28rem;
+    color: #333;
+    display: inline-block;
+    margin-left: 0.26rem;
+    line-height: 0.88rem;
+}
+.items{
+    width: 50%;
+    float: left;
+    height: 1.9rem;
+    text-align: center;
+    box-sizing: border-box;
+    border-bottom: 0.01rem solid #ededed;
+}
+.temp{
+    margin-top: 0.45rem;
+}
+.temp p{
+    font-size: 0.3rem;
+    color: #333;
+    margin-top: 0.05rem;
+}
+ul .items:nth-child(odd){
+    border-right: 0.01rem solid #ededed;
+
+}

@@ -1,0 +1,333 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        .tree {
+            border-radius: 2px;
+        }
+
+        .tree-content {
+            padding-left: 30px;
+        }
+
+        .tree-node {
+            border-top: 1px solid #e2e2e2;
+            position: relative;
+        }
+
+            .tree-node:first-child {
+                border-top: none;
+            }
+
+            .tree-node .option-area {
+                position: absolute;
+                top: 50%;
+                right: 15px;
+                transform: translateY(-50%);
+            }
+
+        .option-area .layui-icon {
+            display: inline-block;
+            color: #999;
+        }
+
+            .option-area .layui-icon:hover {
+                color: #333;
+            }
+
+        .tree-tit {
+            position: relative;
+            height: 42px;
+            line-height: 42px;
+            padding: 0 15px;
+            color: #333;
+            background-color: #f0f0f0;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+            .tree-tit .layui-icon {
+                display: inline-block;
+                margin-right: 10px;
+                transition: transform 0.4s;
+            }
+
+                .tree-tit .layui-icon.open {
+                    -webkit-transform: rotate(90deg);
+                    -moz-transform: rotate(90deg);
+                    transform: rotate(90deg);
+                }
+
+            .tree-tit:hover {
+                box-shadow: 2px 2px 5px #ccc;
+            }
+
+        .layui-colla-content {
+            display: none;
+            padding: 10px 15px;
+            line-height: 22px;
+            border-top: 1px solid #f0f0f0;
+            color: #666;
+        }
+
+        .state-highlight {
+            height: 50px;
+            border: 1px dashed #5FB878;
+            margin-bottom: 10px;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+
+</head>
+<body id="root">
+    <div class="mainContainer">
+        
+    </div>
+</body>
+</html>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="https://cdn.bootcss.com/jquery/1.10.1/jquery.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/jquery/jquery-ui.js"></script>
+<script src="../../ResourcesCenter/classroom/Sortable.js?v1.0.1"></script>
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'laydate', 'upload'],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+            var upload = layui.upload;
+
+            //搜索条件
+            var rootApp = new Vue({
+                el: '#root',
+                data: {
+                    modifyMenu: false,
+                    MenuLength:'',
+                    MenuList: [],
+                    emptyMenu: {
+                        CID: 0,
+                        Childs: [],
+                        Url: '/',
+                        ID: 0,
+                        Name: '',
+                        Valid: 1,
+                        OpenType: 1,
+                        Sort: 99,
+                        IsEdit: 0,
+                    },
+                    SelectOpenType: {
+                        tags: { name: "Sex" },
+                        options: [
+                            { key: "1", value: "本页打开" },
+                            { key: "0", value: "弹出新窗口" },
+                        ],
+                        fields: { key: 'key', value: 'value' }
+                    },
+                    validSetting: {
+                        search: true,
+                        options: [
+                            {
+                                key: '1',
+                                value: '启用'
+                            }, {
+                                key: '0',
+                                value: '禁用'
+                            }
+                        ]
+                    },
+                    SaveMenuForm: {
+                        ID:0,
+                        CID: '',
+                        Name: '',
+                        Url: '/',
+                        OpenType: '',
+                        Sort: 0,
+                        IsEdit:0,
+                    },
+
+                },
+                computed:{
+
+                },
+                ready: function () {
+                    this.GetMenuList();
+                },
+                methods: {
+                    //获取长度
+                    length: function (arr) {
+                        return (arr.length)+1;
+                    },
+                    //启用禁用学科
+                    SetMenuValid:function(item){
+                        var self=this;
+                        if(item.Valid == 1 ){
+                            layer.confirm('是否禁用',function(index){
+                                $.post("/service/public/Menu/UpdateMenuStatus",{ID:item.ID,Status:0,Other:0},function(res){
+                                    if(res.SuccessResponse){
+                                        layer.msg('禁用成功');
+                                        item.Valid=0;
+                                        self.GetMenuList();
+                                        layer.close(index);
+                                    }
+                                })
+                            })
+                        }else if(item.Valid == 0 ){
+                            layer.confirm('是否启用',function(index){
+                                $.post("/service/public/Menu/UpdateMenuStatus",{ID:item.ID,Status:1,Other:0},function(res){
+                                    if(res.SuccessResponse){
+                                        layer.msg('启用成功');
+                                        item.Valid=1;
+                                        self.GetMenuList();
+                                        layer.close(index);
+                                    }
+                                })
+                            })
+                        }
+                    },
+                    //设置科目
+                    setInfo: function (item) {
+                        this.modifyMenu = true;
+                        this.SaveMenuForm = item;
+                    },
+                    //保存菜单信息
+                    saveMenuInfo: function () {
+                        var Item = this.SaveMenuForm;
+                        this.saveRequst(Item)
+                    },
+                    GetMenuUrl:function (){
+                        var self = this;
+                        fnr.openDialog({
+                            title: '设置菜单链接路径',
+                            area: ['800px', '700px'],
+                            content: ['SetMenuUrl.html'],
+                            btn: ['确认添加'],
+                            events: {
+                                refresh: function (retVal) {
+                                    if (retVal.status) {
+                                        self.SaveMenuForm.Url=retVal.MenuUrl;
+                                    } else {
+                                        if (data.msg) {
+                                            layer.msg(data.msg)
+                                        } else {
+                                            layer.msg('添加失败');
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    },
+                    saveRequst: function (params,cb) {
+                        var self=this;
+                        if(params.ID==0){
+                            $.post("/service/public/Menu/AddMenu", params, function (res) {
+                                if (res.SuccessResponse) {
+                                    if(cb && typeof cb=="function")
+                                        cb(res);
+                                    layer.msg("添加成功");
+                                    self.GetMenuList();                                    
+                                    self.modifyMenu = false;
+                                }else{
+                                    layer.msg(res.Message);
+                                    return;
+                                }
+                            })
+                        }
+                        else{
+                            $.post("/service/public/Menu/UpdateMenu", params, function (res) {
+                                if (res.SuccessResponse) {
+                                    if(cb && typeof cb=="function")
+                                        cb(res);
+                                    layer.msg("修改成功");  
+                                    self.GetMenuList();
+                                }else{
+                                    layer.msg(res.Message);
+                                    return;
+                                }
+                            })
+                        }
+                    },
+                    //添加一级学科
+                    SaveMenu: function () {
+                        var self=this;
+                        var timetamp=new Date().getTime().toString();
+                        var item=this.emptyMenu;
+                        item.Name = "新增菜单" + timetamp.substr(-4,4);
+                        item.CID = 0;
+                        this.SaveMenuForm = item;
+                        this.modifyMenu = true;
+
+                    },
+                    //查询学科集合
+                    GetMenuList: function () {
+                        var self = this;
+                        $.get("/service/public/Menu/GetMenuData", {}, function (res) {
+                            if(res.SuccessResponse){
+                                self.MenuList = res.Data;
+                                self.$nextTick(function () {
+                                    $(".tree-wrap").mySortable({
+                                        "tree": ".tree-wrap",
+                                        "treeContent": ".tree-content",
+                                        "treeTitle": ".tree-tit",
+                                        "optionArea": ".option-area"
+                                        //"stop":function(event,ui){
+                                        //    var sortedIDs = $( ".tree-wrap" ).sortable( "toArray" ,{ attribute: "data-id" });
+                                        //    console.log(sortedIDs)
+                                        //    $.post("/service/Discipline/SortDiscipline",{old_prev_order:0,old_next_order:0,new_prev_order:0,new_next_order:0,currDisciplineId:0,currParentId:0},function(res){
+                                        //        if(res.SuccessResponse){
+                                        //            layer.msg('排序成功')
+                                        //        }
+                                        //    })
+                                        //}
+                                    });
+
+                                });
+                            }
+
+                        })
+                    },
+                    add: function (item, index,parentIndex) {
+                        var self=this;
+                        var timetamp=new Date().getTime().toString();
+                        var obj = this.emptyMenu;
+                        this.modifyMenu=true;
+                        obj.CID=self.MenuList[index].ID
+                        obj.Name = "新增二级菜单" + timetamp.substr(-4,4);
+                        obj.Url='/';
+                        obj.Sort=99;
+                        this.SaveMenuForm = obj;
+                        this.modifyMenu = true;
+                    },
+
+                    delete1: function (item, index) {
+                        var self = this;
+                        layer.confirm('是否删除？', {
+                            btn: ['确定', '取消'] //按钮
+                        }, function () {
+                            if(item.Menu_ID==0){
+                                $.post("/service/public/Menu/DeleteMenu", { ID: item.ID }, function (res) {
+                                    if (res.SuccessResponse) {
+                                        self.MenuList.splice(index, 1);
+                                        self.modifyMenu = false;
+                                        layer.msg('删除成功', { icon: 1 });
+                                        self.GetMenuList();
+                                    }
+                                })
+                            }
+                            else{
+                                layer.msg("系统菜单不能删除！");
+                            }
+                        })
+                    }
+                }
+            });
+        });
+</script>

@@ -1,0 +1,193 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>客户公海</title>
+    <style>
+        div.layui-unselect{
+            width: 62px;
+        }
+        div.layui-form-switch em{
+            width: 44px;
+        }
+        div.layui-form-onswitch i{
+            left: 51px;
+        }
+        div.layui-form-switch{
+            margin-top: 0;
+        }
+        .maxNum{
+            color: #5d5d5d;
+            line-height: 24px;
+            display: inline-block;
+            vertical-align: top;
+            padding-left: 10px;
+            border-left: 1px solid #e8e8e8;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <div class="layui-tab">
+            <ul class="layui-tab-title">
+                <li class="layui-this">客户公海列表</li>
+                <li>最大客户数限制</li>
+            </ul>
+            <div class="layui-tab-content">
+
+                <!--客户公海列表-->
+                <div class="layui-tab-item layui-show">
+                    <button class="layui-btn " @click="AddHighSea">新增客户公海</button>
+                    <table id="listTable" lay-filter="listTable"></table>
+                </div>
+
+                <!--最大客户数限制-->
+                <div class="layui-tab-item">
+                    <div class="layui-form">
+                        <div class="layui-form-item" style="background-color: #f8f8f8;padding: 4px 0; padding-left: 5px;">
+                            <input type="checkbox" name="switch" lay-skin="switch" lay-text="已启用|已停用">
+                            <span class="maxNum">限制每个员工拥有的最大客户数</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!--操作模板-->
+    </div>
+</body>
+</html>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'laydate', 'layer', 'element'],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+            var layer = layui.layer;
+            var element = layui.element;
+            function trim(str) {
+                return str.replace(/(^\s*)|(\s*$)/g, "");
+            }
+            //表格基本配置参数
+            var tableColsConfig =
+                [
+                    {
+                        field: 'AdminName',
+                        title: '客户公海名称',
+                        toolbar: function () {
+                            var array = new Array();
+                            var s = this.AdminName.split(',');
+                            s.map(function(val, ind){
+                                console.log(val);
+                                array.push("<div>"+val+"</div>");
+                            });
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    },
+                    { field: 'ImportanceName', title: '客户公海管理员',  sort: true },
+                    { field: 'SourceName', title: '客户公海成员',  sort: true },
+                    { field: 'PhaseTypeName', title: '客户公海规则',  sort: true },
+                    {
+                        fixed: 'right',
+                        title: '操作',
+                        toolbar: function () {
+                            var array = new Array();
+                            array.push("<button type='button' class='layui-btn layui-btn-small' lay-event='modifyClient'>客户公海规则</button>");
+                            array.push("<button type='button' class='layui-btn layui-btn-danger layui-btn-small' lay-event='deleteClient'>删除</button>");
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    }
+                ];
+
+
+            //搜索条件
+            window.rootApp = new Vue({
+                el: '#root',
+                data: {
+                    
+                },
+                ready: function () {
+                    this.aaa();
+                },
+                methods: {
+                    //新增客户公海
+                    AddHighSea: function () {
+                        fnr.openDialog({
+                            title: '新增客户公海',
+                            area: ['1200px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                            content: ['Add.html'],
+                            btn: ['确认添加'],
+                            events: {
+                                refresh: function (data) {
+                                    if (data.status) {
+                                        layer.msg('添加成功');
+                                        listTable.refresh();
+                                    } else {
+                                        layer.msg('添加失败');
+                                    }
+                                }
+                            }
+                        });
+                    },
+                    aaa: function () {
+                        $.get('/service/crm/PublicClient/GetPublicClientList', function (res) {
+                            console.log(res);
+                        })
+                    }
+                }
+            });
+
+            //绑定列表
+            var listTable = table.render({
+                elem: '#listTable',
+                even: true, //开启隔行背景
+                url: '/service/crm/PublicClient/GetPublicClientList',
+                page: true, //页分,
+                //height: 'full-140',
+                id: 'listTable',
+                cols: [tableColsConfig],
+            });
+
+            //监听工具栏事件
+            tableExt.addEvent("tool(listTable)",
+                {
+                    //删除一行
+                    "deleteClient": function (data, obj) {
+                        layer.confirm('确定删除吗，删除后将无法恢复', function (index) {
+                            $.ajax({
+                                url: '/service/MyClient/DeleteClient',
+                                type: 'POST',
+                                data: { Other: data.ID },
+                                dataType: 'json',
+                                success: function (data) {
+                                    if (data.ReturnData.Data) {
+                                        if (data.SuccessResponse) {
+                                            obj.del();
+                                            layer.close(index);
+                                            layer.msg(data.Message)
+                                        } else {
+                                            layer.msg(data.Message)
+                                        }
+                                    } else {
+                                        layer.msg('data为空');
+                                    }
+                                }
+                            });
+                        })
+                    },
+
+                    "modifyClient": function (data, obj) {
+                        rootApp.modifyC1(data);
+                    }
+                });
+        });
+</script>

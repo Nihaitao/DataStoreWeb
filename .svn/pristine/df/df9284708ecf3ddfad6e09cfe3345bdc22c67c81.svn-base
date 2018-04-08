@@ -1,0 +1,341 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我的答疑</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="../Resources/fonts/iconfont.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link href="../Resources/CSS/Font/css/font-awesome.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../Resources/CSS/PC_css.css">
+    <script src="../script/artTemplate.js"></script>
+    <link href="../Resources/CSS/question.css" rel="stylesheet" />
+</head>
+<body style="background-color: #f7f7f7;user-select: none;" id="root">
+    <!--顶部-->
+    <!--#<!--#include file="../UserControl/stepHeader.html"-->
+    <!--学校图标以及当前专业-->
+    <div class="nav">
+        <div class="w1200 clearfix">
+            <div class="nav-header pull-left">
+                <a href="#"><img src="../Resources/images/hd.png" /></a>
+            </div>
+            <div class="nav-bar-right pull-right">
+                <div class="toggle-switch">
+                    <span class="inlineblock subject-label">当前专业</span>
+                    <div class="drowntoggle inlineblock">
+                        <i class="iconfont icon-zuotijilu"></i>
+                        <span class="current">自学考试-本科-人力资源管理</span>
+                        <i class="glyphicon glyphicon-triangle-bottom"></i>
+                    </div>
+                    <div class="drownmenu">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="w1200 clearfix">
+
+        <!--左侧导航-->
+        <div class="nav-left">
+            <div class="nav-title">
+                <h3>首页</h3>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">我的网课</div>
+                <ul class="sub-nav">
+                    <li><a href="#"><i class="iconfont icon-kechengguanli"></i>课程管理</a></li>
+                    <li><i class="iconfont icon-tingkejilu"></i>听课记录</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">我的题库</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-kaishizuoti"></i>开始做题</li>
+                    <li><i class="iconfont icon-zuotijilu"></i>做题记录</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">我的学费</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-lijijiaofei"></i>立即缴费</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">我的教务</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-wodechengji"></i>我的成绩</li>
+                    <li><i class="iconfont icon-wodebaokao"></i>我的报考</li>
+                    <li><i class="iconfont icon-wodeshuji"></i>我的书籍</li>
+                    <li><i class="iconfont icon-lianxijilu"></i>联系记录</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">我要毕业</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-xuexijindu"></i>学习进度</li>
+                    <li><i class="iconfont icon-lunwendabian"></i>论文答辩</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">个人管理</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-wodedingdan"></i>我的订单</li>
+                    <li><i class="iconfont icon-zhanghaoshezhi"></i>账号设置</li>
+                    <li><i class="iconfont icon-tousuyutiwen"></i>投诉提问</li>
+                    <li><i class="iconfont icon-xiaoxizhongxin"></i>消息中心</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">过程性考核</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-kaishixuexi"></i>开始学习</li>
+                    <li><i class="iconfont icon-peiyangjihua"></i>培养计划</li>
+                    <li><i class="iconfont icon-xuankeguanli"></i>选课管理</li>
+                    <li><i class="iconfont icon-chengjichaxun"></i>成绩查询</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="main">
+            <div class="order-top">
+                <ul class="orderTabs">
+                    <li class="active">已购课程</li>
+                    <li>我的答疑</li>
+                    <li>我的笔记</li>
+                    <li>我的评论</li>
+                </ul>
+            </div>
+            <div class="order-middle">
+                <!--<b>全部 <span>2</span> 条</b>-->
+                <b>按时间顺序</b>
+                <div class="record-main">
+                    <ul class="course_yes" style="display: none;">
+                        <li>
+                            <div class="recordRight clearfix" style="display: table; width: 100%; padding: 20px 30px; border-bottom: 1px solid #f3f3f3;">
+       
+                                    <div class="imgBox">
+                                        <i class="dot"></i>
+                                        <img src="../Resources/images/dianshang.png" style="width: 100%; height: 100%;" />
+                                    </div>
+                                    <div class="courseDetail">
+                                        <p class="" style="color: #333;font-size: 16px;margin-bottom: 10px;">反对外国侵略的斗争</p>
+                                        <p style="color: #9a9a9a;margin-bottom: 10px;">
+                                            一级建造师
+                                            &nbsp;
+                                            <span class="teacName">赵小熙</span>
+                                            &nbsp;
+                                            <span class="courseTime">407</span>
+                                            课
+                                        </p>
+                                        <div class="">
+                                            <div class="jiantou"></div>
+                                            <p style="color: #666; display: inline-block;">
+                                                已学
+                                                <span style="color: #fb791c">12%</span>
+                                                &nbsp;
+                                                用时
+                                                <span style="color: #fb791c">10分</span>
+                                                &nbsp;
+                                                学习至
+                                                <span>1-1 课程介绍</span>
+                                                &nbsp;
+                                                <span style="color: #fb791c;">
+                                                    <i class="iconfont icon-fanhuishouye1"></i>
+                                                    继续学习
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="btnsBox">
+                                        <p class="startBtn">开始听课</p>
+                                    </div>
+                            </div>
+                        </li>
+
+                        <li>
+                            <div class="recordRight clearfix" style="display: table; width: 100%; padding: 20px 30px; border-bottom: 1px solid #f3f3f3;">
+                                <div class="imgBox">
+                                    <i class="dot"></i>
+                                    <img src="../Resources/images/dianshang.png" style="width: 100%; height: 100%;" />
+                                </div>
+                                <div class="courseDetail">
+                                    <p class="" style="color: #333;font-size: 16px;margin-bottom: 10px;">反对外国侵略的斗争</p>
+                                    <p style="color: #9a9a9a;margin-bottom: 10px;">
+                                        一级建造师
+                                        &nbsp;
+                                        <span class="teacName">赵小熙</span>
+                                        &nbsp;
+                                        <span class="courseTime">407</span>
+                                        课
+                                    </p>
+                                    <div class="">
+                                        <div class="jiantou"></div>
+                                        <p style="color: #666; display: inline-block;">
+                                            已学
+                                            <span style="color: #fb791c">12%</span>
+                                            &nbsp;
+                                            用时
+                                            <span style="color: #fb791c">10分</span>
+                                            &nbsp;
+                                            学习至
+                                            <span>1-1 课程介绍</span>
+                                            &nbsp;
+                                            <span style="color: #fb791c;">
+                                                <i class="iconfont icon-fanhuishouye1"></i>
+                                                继续学习
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="btnsBox">
+                                    <p class="startBtn">开始听课</p>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <div class="ansQ" style="display: none;">
+                        <div class="item">
+                            <h2>现在的人是不是对李鸿章过誉了？</h2>
+                            <p>李中堂的卖国，并不是卖在马关。甲午这事儿，换了其他人也差不多，曾国藩可能怂着死更窝囊，左宗棠可能刚易折输更惨。但李中堂收俄国钱卖掉旅顺大连中长铁路是板上钉钉的。俄国判代表维特伯爵写回忆录，说五十万卢布就买了中堂达人的签。</p>
+                            <div style="margin-top: 8px;">
+                                <span style="color: #999;">2017-08-19 19:02</span>
+                                <div class="buttonBox">
+                                    <p>删除</p>
+                                    <p>查看</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="item">
+                            <h2>现在的人是不是对李鸿章过誉了？</h2>
+                            <p>李中堂的卖国，并不是卖在马关。甲午这事儿，换了其他人也差不多，曾国藩可能怂着死更窝囊，左宗棠可能刚易折输更惨。但李中堂收俄国钱卖掉旅顺大连中长铁路是板上钉钉的。俄国判代表维特伯爵写回忆录，说五十万卢布就买了中堂达人的签。</p>
+                            <div style="margin-top: 8px;">
+                                <span style="color: #999; ">2017-08-19 19:02</span>
+                                <div class="buttonBox">
+                                    <p>删除</p>
+                                    <p>查看</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="commentQ" style="display: none;">
+                        <div class="item">
+                            <h2>现在的人是不是对李鸿章过誉了？</h2>
+                            <p>李中堂的卖国，并不是卖在马关。甲午这事儿，换了其他人也差不多，曾国藩可能怂着死更窝囊，左宗棠可能刚易折输更惨。但李中堂收俄国钱卖掉旅顺大连中长铁路是板上钉钉的。俄国判代表维特伯爵写回忆录，说五十万卢布就买了中堂达人的签。</p>
+                            <div style="margin-top: 8px;">
+                                <span style="color: #999;">2017-08-19 19:02 </span> 
+                                <span style="color: #999;">&emsp;&emsp;中国近现代史</span>
+                                <div class="buttonBox">
+                                    <p>删除</p>
+                                    <p>编辑</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="item">
+                            <h2>现在的人是不是对李鸿章过誉了？</h2>
+                            <p>李中堂的卖国，并不是卖在马关。甲午这事儿，换了其他人也差不多，曾国藩可能怂着死更窝囊，左宗棠可能刚易折输更惨。但李中堂收俄国钱卖掉旅顺大连中长铁路是板上钉钉的。俄国判代表维特伯爵写回忆录，说五十万卢布就买了中堂达人的签。</p>
+                            <div style="margin-top: 8px;">
+                                <span style="color: #999;">2017-08-19 19:02</span> 
+                                <span style="color: #999;">&emsp;&emsp;中国近现代史</span>
+                                <div class="buttonBox">
+                                    <p>删除</p>
+                                    <p>编辑</p>
+                                </div>
+
+                                <div class="modifyTemp">
+                                    <textarea placeholder="啦啦啦啦啦" value="这期不错表扬一下！！"></textarea>
+
+                                    <div style="text-align: right; margin-top: 20px;">
+                                        <p style="color: #fff; background-color: #ddd; padding :5px 15px; border-radius: 3px; margin-right: 20px; display: inline-block;">取消</p>
+                                        <p style="color: #fff; background-color: #ed4242; padding :5px 15px; border-radius: 3px; display: inline-block;">确认</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="noteQ">
+                        <div class="item">
+                            <h2>现在的人是不是对李鸿章过誉了？</h2>
+                            <p>李中堂的卖国，并不是卖在马关。甲午这事儿，换了其他人也差不多，曾国藩可能怂着死更窝囊，左宗棠可能刚易折输更惨。但李中堂收俄国钱卖掉旅顺大连中长铁路是板上钉钉的。俄国判代表维特伯爵写回忆录，说五十万卢布就买了中堂达人的签。</p>
+                            <div style="margin-top: 8px;">
+                                <span style="color: #999;">2017-08-19 19:02 </span>
+                                <span style="color: #999;">&emsp;&emsp;中国近现代史&nbsp;&nbsp;第一章</span>
+                                <div class="buttonBox">
+                                    <p>删除</p>
+                                    <p>编辑</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="item">
+                            <h2>现在的人是不是对李鸿章过誉了？</h2>
+                            <p>李中堂的卖国，并不是卖在马关。甲午这事儿，换了其他人也差不多，曾国藩可能怂着死更窝囊，左宗棠可能刚易折输更惨。但李中堂收俄国钱卖掉旅顺大连中长铁路是板上钉钉的。俄国判代表维特伯爵写回忆录，说五十万卢布就买了中堂达人的签。</p>
+                            <div style="margin-top: 8px;">
+                                <span style="color: #999;">2017-08-19 19:02</span>
+                                <span style="color: #999;">&emsp;&emsp;中国近现代史&nbsp;&nbsp;第一章</span>
+                                <div class="buttonBox">
+                                    <p>删除</p>
+                                    <p>编辑</p>
+                                </div>
+
+                                <div class="modifyTemp">
+                                    <textarea placeholder="啦啦啦啦啦" value="这期不错表扬一下！！"></textarea>
+
+                                    <div style="text-align: right; margin-top: 20px;">
+                                        <p style="color: #fff; background-color: #ddd; padding :5px 15px; border-radius: 3px; margin-right: 20px; display: inline-block;">取消</p>
+                                        <p style="color: #fff; background-color: #ed4242; padding :5px 15px; border-radius: 3px; display: inline-block;">确认</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--footer-->
+    <!--#<!--#include file="../UserControl/Footer.html"-->
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil'],
+        function (fnr) {
+            var $ = layui.$;
+            var table = layui.table;
+            var tableExt = layui.tableExt;
+            var vm = new Vue({
+                el: "#root",
+                data: {
+                    Discipline:[],
+                    tip:[],
+                },
+                ready: function () {
+                    this.tabsToggle();
+                },
+                methods: {
+                    tabsToggle: function () {
+                        $('.orderTabs').on('click', 'li', function () {
+                            if (!$(this).hasClass('active')) {
+                                $(this).addClass('active').siblings().removeClass('active');
+                            }
+                        });
+                    }
+                }
+            });
+        })
+    </script>
+</body>
+
+</html>

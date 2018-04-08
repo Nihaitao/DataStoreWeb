@@ -1,0 +1,211 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery-1.4.4.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery.ztree.core.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery.ztree.excheck.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery.ztree.exedit.js"></script>
+
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <script language="JavaScript">
+        require_js_file(["table", 'tree', "form", "jquery", "tableExt"],
+        function (fnr) {
+            var zTreeObj;
+            // zTree 的参数配置，深入使用请参考 API 文档（setting 配置详解）
+            var setting = {
+                async: {
+                    enable: true,
+                    type: "get",
+                    dataFilter: ajaxDataFilter,
+                    url: "/service/crm/Product/GetProductData"
+                },
+                data: {
+                    key: {
+                        name: "Name"
+                    },
+                    simpleData: {
+                        enable: true,
+                        idKey: "ID",
+                        pIdKey: "CID"
+                    }
+                },
+                ztree: [],
+                view: {
+                    nameIsHTML: true,
+                    showTitle: false,
+                },
+                callback: {
+                    onCheck: zTreeOnCheck,
+                    beforeEditName: zTreeBeforeEditName,
+                    beforeRemove: zTreeBeforeRemove
+                },
+                edit: {
+                    enable: true,
+                    showRemoveBtn: true,
+                    removeTitle: "删除节点"
+                }
+            };
+            function ajaxDataFilter(treeId, parentNode, rsp) {
+                rsp.Data.map(function (x, i) {
+                    if (x.CID == 0) {
+                        x.ID = x.ID
+                        x.CID = x.ID,
+                        x.Name = x.Name
+                    }
+                });
+
+                return rsp.Data;
+
+
+                //rsp.Data.map(function (x, i) {
+                //    if (x.Code.length > 4) {
+                //        x.ID = x.Code;
+                //        x.CID = x.Code.substring(0, x.Code.length - 2);
+                //        x.Name = x.Name + "[" + x.Code + "]";
+                //    }
+                //    else {
+                //        x.ID = x.Code;
+                //        x.CID = 0;
+                //        x.Name = x.Name + "[" + x.Code + "]";
+                //    }
+                //    if (x.IsEnd == 0)
+                //        x.nocheck = true;
+                //    $.each(window.rootApp.$data.SelectData, function (y,j) {
+                //        if (this.code == x.Code)
+                //            x.checked = true;
+                //    })
+                //});
+
+                //return rsp.Data;
+            };
+            function zTreeOnCheck(event, treeId, treeNode) {
+                if (treeNode.checked) {
+                    if (treeNode.CID == 0)
+                        rootApp.$data.SelectData.push({ "code": treeNode.Code, "name": treeNode.Name });
+                    else
+                        rootApp.$data.SelectData.push({ "code": treeNode.Code, "name": treeNode.Name });
+                } else {
+                    $.each(rootApp.$data.SelectData, function (i, x) {
+                        if (this.code == treeNode.Code) {
+                            rootApp.$data.SelectData.splice(i, 1);
+                            return false;
+                        }
+                    });
+                }
+            };
+
+            function zTreeBeforeRemove(treeId, treeNode) {
+                var flag = false;//此处必须定义一个变量，不然还没确定就把节点从树上删除
+                layer.confirm("确认要删除当前节点（" + treeNode.Name + "）及其子节点吗？", {
+                    btn: ['确定', '取消']
+                }, function (index) {
+                    layer.close(index);
+                    flag = true;
+                }, function (index) {
+                    layer.close(index);
+                    flag = false;
+                })
+                console.log(flag)
+                return flag;
+            }
+          
+            function zTreeBeforeEditName(treeId, treeNode) {
+                fnr.openDialog({
+                    title: '修改产品分类',
+                    area: ['470px', '200px'],
+                    content: ['./EditProduct.html?ID=' + treeNode.ID], //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+                    btn: ['确认修改'],
+                    yes: function (index, layero) {
+
+                        var iframeWin = window[layero.find('iframe')[0]['name']];
+                        $(iframeWin.document).find(".layui-btn").click();
+
+                    },
+                    events: {
+                        refresh: function (data) {
+                            var nodes = zTreeObj.getSelectedNodes();
+                            treeNode.Name = data.Name;
+                            zTreeObj.updateNode(treeNode);
+                            //zTreeObj.reAsyncChildNodes(nodes[0], "refresh");
+                        }
+                    },
+                });
+            }
+
+
+            window.rootApp = new Vue({
+                el: '#root',
+                data: {
+                    SelectData: []
+                },
+                ready: function () {
+
+                    var queryJson = fnr.getQueryString("json");
+                    if (queryJson != undefined && queryJson != "") {
+                        for (var i = 0; i < queryJson.split(',').length; i++) {
+                            var str = queryJson.split(',')[i];
+                            if (str != "")
+                                this.SelectData.push({ "code": str.split('|')[0], "name": str.split('|')[1] });
+                        }
+                    }
+                    zTreeObj = $.fn.zTree.init($("#treeDemo"), setting);
+
+                },
+                methods: {
+                    delItem: function (Code) {
+                        var self = this;
+                        $.each(self.SelectData, function (i, x) {
+                            if (this.code == Code) {
+                                var nodes = zTreeObj.getNodesByParam("Code", Code, null);
+                                if (nodes.length > 0) {
+                                    nodes[0].checked = false;
+                                    zTreeObj.updateNode(nodes[0]);
+                                }
+                                self.SelectData.splice(i, 1);
+                                return false;
+                            }
+                        });
+                    },
+                    formDemo: function () {
+                        console.log(this.SelectData);
+                        fnr.callDialog('refresh', this.SelectData); //回调打开窗口events中的refresh
+                        fnr.closeDialog(); //关闭当前的对话框
+                    }
+                }
+            });
+        });
+    </script>
+</head>
+<body id="root" v-cloak>
+    <div class="OpenContainer">
+        <div class="layui-col-xs5" style="border-right:1px solid #E4E6E9; height:480px; overflow:auto">
+            <div style="margin-left:15px; margin-bottom:10px; color:#787878">产品分类</div>
+            <ul id="treeDemo" class="ztree"></ul>
+        </div>
+        <div class="layui-col-xs5">
+            <div style="margin-left:15px; margin-bottom:10px; color:#787878">已选择</div>
+            <ul class="ztree">
+                <li v-for="(index,item) in SelectData" style="height:22px;  margin-right:10px; padding:0px 10px; margin-bottom:5px">
+                    <i class="layui-icon" style=" float:left;color: #808080;">&#xe63c;</i>
+                    <span style="display:inline-table; margin-left:10px; float:left">{{item.name}}</span>
+                    <i class="layui-icon" data-departmentid="{{item.code}}" style="cursor:pointer; float:right; margin-right:5px" @click="delItem(item.code)">&#x1006;</i>
+                </li>
+            </ul>
+        </div>
+        <div class="layui-hide">
+            <button class="layui-btn" lay-submit @click="formDemo">提交</button>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,159 @@
+﻿using Common.Exceptions;
+using CT.Signature.Profile;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Text;
+using CT.Signature;
+
+namespace Common
+{
+    public class ProfileManager
+    {
+        public const string AuthServiceUrl = "http://webceshi.chutoukj.com/";   //测试环境
+      //  public const string AuthServiceUrl = "http://webapi.chutoukj.com/";   //正式环境
+        //public const string AuthServiceUrl = "http://localhost:30400/";   //测试环境
+        static ProfileManager()
+        {
+            //正式
+            //routeDictionary.Add("/service/public", "http://webpublic.chutoukj.com/");  //公用方法正式
+            //routeDictionary.Add("/service/datastore", "http://webdatastore.chutoukj.com/"); //资源正式
+            //routeDictionary.Add("/service/pay", "http://app.api.chutoukj.com/"); //支付正式
+            //routeDictionary.Add("/service/finance", "http://webfinance.chutoukj.com/"); //财务正式
+
+            //路由字典，请求路径
+            routeDictionary.Add("/service/crm", "http://webcrmceshi.chutoukj.com/"); //CRM测试
+            routeDictionary.Add("/service/public", "http://webpubliccs.chutoukj.com/");  //公用方法测试
+            routeDictionary.Add("/service/finance", "http://webfinanceceshi.chutoukj.com/");  //财务测试
+            routeDictionary.Add("/service/datastore", "http://webdatastoreceshi.chutoukj.com/"); //资源测试
+            routeDictionary.Add("/service/edu", "http://edu.api.chutoukj.com/");  //教务测试
+            routeDictionary.Add("/service/pay", "http://apptest.api.chutoukj.com/"); //支付测试
+
+
+
+            routeDictionary.Add("/service", AuthServiceUrl);
+            routeDictionary.Add("/api", AuthServiceUrl);
+        }
+
+        /// <summary>
+        /// 路由字典
+        /// </summary>
+        public static readonly Dictionary<string, string> routeDictionary =
+            new Dictionary<string, string>();
+
+
+        /// <summary>
+        /// 站点属性
+        /// </summary>
+        private static readonly ConcurrentDictionary<string, SiteModel> siteConcurrentDictionary =
+            new ConcurrentDictionary<string, SiteModel>();
+
+
+        /// <summary>
+        /// 获取路由服务的ClientProfile
+        /// </summary>
+        /// <param name="requestUri"></param>
+        /// <param name="serviceUrl"></param>
+        /// <returns></returns>
+        private static IClientProfile GetClientProfile(Uri requestUri, string serviceUrl)
+        {
+            var siteModel = GetSiteModel(requestUri);
+            var host = requestUri.Host;
+            IClientProfile clientProfile = null;
+            if (siteModel.ProfileDictionary.TryGetValue(serviceUrl, out clientProfile))
+            {
+                return clientProfile;
+            }
+            clientProfile = DefaultProfile.GetProfile(siteModel.AccessKeyId, siteModel.AccessKeySecret, serviceUrl);
+            siteModel.ProfileDictionary.TryAdd(host, clientProfile);
+            return clientProfile;
+        }
+
+        /// <summary>
+        /// 获取站点的认证属性
+        /// </summary>
+        /// <param name="requestUri"></param>
+        /// <returns></returns>
+        private static SiteModel GetSiteModel(Uri requestUri)
+        {
+            var host = requestUri.Host;
+            SiteModel siteModel = null;
+            if (siteConcurrentDictionary.TryGetValue(host, out siteModel))
+            {
+                return siteModel;
+            }
+            var client = new WebClient();
+            client.Headers.Add("DomainName", host);
+            //client.Headers.Add("DomainName", "wx.bbsstep.chutoukj.com");
+            var buffer = client.DownloadData(AuthServiceUrl + "Base/GetStationBaseInfo");
+            var config = Encoding.UTF8.GetString(buffer);
+            var jToken = JToken.Parse(config);
+            if (jToken["SuccessResponse"].Type == JTokenType.Boolean && jToken["SuccessResponse"].Value<bool>() &&
+                jToken["ReturnData"]["Data"].HasValues)
+            {
+                siteModel = new SiteModel();
+                var jTokenData = jToken["ReturnData"]["Data"];
+                siteModel.AccessKeyId = jTokenData["AccessKeyId"].Value<string>();
+                siteModel.AccessKeySecret = jTokenData["AccessKeySecret"].Value<string>();
+                siteConcurrentDictionary.TryAdd(host, siteModel);
+            }
+            else
+            {
+                throw new SiteNotAuthenticationException(host, "当前站点未注册:" + jToken["Message"].Value<string>());
+            }
+            return siteModel;
+        }
+
+
+        public static IClientProfile GetClientProfile(Uri requestUri, out string resourceUrl)
+        {
+            var host = requestUri.Host;
+            resourceUrl = string.Empty;
+            var requestPath = requestUri.PathAndQuery;
+            var serviceUrl = string.Empty;
+            foreach (var route in routeDictionary)
+            {
+                if (requestPath.StartsWith(route.Key, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    resourceUrl = requestPath.Remove(0, route.Key.Length);
+                    serviceUrl = route.Value;
+                    break;
+                }
+            }
+            if (string.IsNullOrEmpty(serviceUrl))
+            {
+                throw new SiteNotAuthenticationException(host, "当前路由未注册");
+            }
+            return GetClientProfile(requestUri, serviceUrl);
+        }
+
+        public static CommonRequest GetRequest(Uri requestUri)
+        {
+            var resourceUrl = string.Empty;
+            var clientProfile = GetClientProfile(requestUri, out resourceUrl);
+            return new CommonRequest(resourceUrl, clientProfile);
+        }
+        public static ByteRequest GetByteRequest(Uri requestUri)
+        {
+            var resourceUrl = string.Empty;
+            var clientProfile = GetClientProfile(requestUri, out resourceUrl);
+            return new ByteRequest(resourceUrl, clientProfile);
+        }
+    }
+
+    public class SiteModel
+    {
+        public SiteModel()
+        {
+            ProfileDictionary = new ConcurrentDictionary<string, IClientProfile>();
+        }
+
+        public string AccessKeyId { get; set; }
+        public string AccessKeySecret { get; set; }
+
+        public ConcurrentDictionary<string, IClientProfile> ProfileDictionary { get; set; }
+    }
+}

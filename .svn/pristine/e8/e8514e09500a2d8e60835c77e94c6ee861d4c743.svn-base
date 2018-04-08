@@ -1,0 +1,323 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link rel="shortcut icon" href="" type="image/x-icon" class="favIcon" />
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+
+    <!--<link href="/Resources/fonts/iconfont.css" rel="stylesheet" />-->
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/Resources/fonts/iconfont.css" rel="stylesheet" />
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/Resources/CSS/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/Resources/CSS/Font/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/Resources/CSS/PC_css.css" rel="stylesheet" />
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/Resources/CSS/video-js.css" rel="stylesheet" />
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/Resources/CSS/question.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/Resources/js/moment.js"></script>
+    <!--<link href="/Resources/CSS/bootstrap/css/bootstrap.min.css" rel="stylesheet" />-->
+    <!--<link href="/Resources/CSS/Font/css/font-awesome.css" rel="stylesheet" />-->
+    <!--<link href="/Resources/CSS/PC_css.css" rel="stylesheet" />-->
+    <!--<link href="/Resources/CSS/video-js.css" rel="stylesheet" />-->
+    <!--<link href="/Resources/CSS/question.css" rel="stylesheet" />-->
+    <!--<script src="/Resources/js/moment.js"></script>-->
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body style="background-color: #f7f7f7;user-select: none;">
+    <div class="totalContaier clearfix">
+        <!--顶部-->
+        <!--#<!--#include file="/PublicControl/topmenu.html"-->
+        <div class="w1200 clearfix">
+            <!--左侧导航-->
+            <!--#<!--#include file="/PublicControl/leftmenu.html"-->
+            <div class="main" id="root" v-cloak>
+                <!--头像信息-->
+                <div class="indexHead" v-cloak>
+                    <div class="imagesBox">
+                        <img v-bind:src="userInfo.HeadImg ? userInfo.HeadImg : '/Resources/images/photo.png'" />
+                    </div>
+                    <div class="infoBox" style="vertical-align: bottom;">
+                        <p>
+                            <span style="color: #333;font-weight: bold; font-size: 20px;">{{userInfo.Name || '不详'}}&nbsp;</span>
+                            <span style="color: #999; margin-right: 30px;">欢迎您!</span>
+                            <span style="color: #f97a1e; cursor: pointer;" @click="ceshi">查看更多>></span>  <!--待续-->
+                        </p>
+                        <p style="color: #666; margin: 17.5px 0;">
+                            <i class="iconfont icon-shouji"></i>
+                            <span style="margin-right: 30px;">{{userInfo.Phone || '不详'}}</span>
+                            <i class="iconfont icon-youxiang"></i>
+                            <span style="vertical-align: top;">{{userInfo.Email || '不详'}}</span>
+                        </p>
+                        <!--<p style="color: #666;">
+                            余额
+                            <span>0</span>
+                        </p>-->
+                    </div>
+                    <div class="orderMsgBox" v-cloak>
+                        <div class="myOrderBox" @click="hrefMyOrder">
+                            <i class="iconfont icon-dingdan" style="display: block;text-align: center;font-size: 24px;"></i>
+                            <p style="margin-top: 10px;">我的订单</p>
+                            <span class="posNum">{{myOrderListData.length}}</span>
+                        </div>
+                        <div class="myMessageBox">
+                            <i class="iconfont icon-xiaoxi" style="display: block;text-align: center;font-size: 24px;"></i>
+                            <p style="margin-top: 10px;">我的消息</p>
+                            <span class="posNum1">10</span>
+                        </div>
+                    </div>
+                </div>
+                <!--通知公告-->
+                <!--<div class="indexNotice">
+                <h2 class="noticeText">通知公告</h2>
+                <div class="noticeTemp">
+                    <i class="iconfont icon-tongzhigonggao"></i>
+                    <span>2017年11月14日 19:30--21:00，初级会计实务热身直播！11月14日庄心老师教你过初级！</span>
+                    <span style=" float: right; color: #f97a1e; cursor: pointer;">查看更多>></span>
+                </div>
+            </div>-->
+                <!--待支付订单-->
+                <div class="indexPaidOrder" v-if="myOrderListData.length > 0" v-cloak>
+                    <h2 class="noticeText">待支付订单</h2>
+                    <div class="listItems" style="margin: 15px 20px;">
+
+                        <ul class="item" v-for="(index, item) in myOrderListData">
+                            <li class="title">
+                                <span class="orderNum">订单编号: <span>{{item.OrderNo || '暂无'}}</span></span>
+                                <span class="orderTime">{{item.PayTime || '暂无'}}</span>
+                                <!--<span style="color: #999;float: right;font-size: 12px; cursor: pointer;">我有疑问，需要反馈？</span>-->
+                            </li>
+                            <!--订单详细-->
+                            <li class="layui-row">
+                                <table style="width: 100%;">
+                                    <tr v-for="(x, items) in item.OrderDetailList">
+                                        <td style="width: 55%; padding: 21px 18px 18px;">
+                                            <img v-bind:src="items.CoverPath ? items.CoverPath : '/Resources/images/def.jpg'" style="width: 160px; height: 90px;" />
+                                            <div class="courseWarp">
+                                                <h3 class="courseName">{{items.Name || '暂无'}}</h3>
+                                                <p class="teacherMsg">{{items.JobTitle || '讲师'}} <span class="teacName">{{items.teachName || '暂无'}}</span> <span class="courseNum">{{items.TotalHours || 0}}</span>课</p>
+                                            </div>
+                                        </td>
+                                        <td style="width: 15%; text-align: center;">
+                                            <p style="color: #ee1715; font-weight:bold; height: 100%; line-height: 130px;">￥ <span>{{(items.PreferentialPrice > 0 ? items.PreferentialPrice : items.Price)}}</span> </p>
+                                        </td>
+                                        <td style="width: 15%; text-align: center;">
+                                            <p style="color: #333; height: 100%; line-height: 130px;">等待付款</p>
+                                        </td>
+                                        <td v-if="x == 0 && item.PayStatus == 0" style="width: 15%;" v-bind:rowspan="item.OrderDetailList.length">
+                                            <p style="display: inline-block; width: 100%; margin-top: 5px; text-align: center;">
+                                                <span class="ljzf" @click="buyNow(item)">立即支付</span>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!--我的网课-->
+                <div class="indexCourse">
+                    <h2 class="noticeText">我的网课</h2>
+                    <div class="AvailableList" v-if="myCourseListData.length > 0">
+                        <ul class="item" v-cloak>
+                            <li v-for="(index, item) in myCourseListData">
+                                <div class="itemsLeft">
+                                    <img v-bind:src="item.CoverPath || '/Resources/images/def.jpg'" />
+                                    <div class="courseInfo">
+                                        <h2><a style="text-decoration: none;" v-bind:href="'/usercenter/onlinecourse/Detail.shtml?ID='+item.ID" target="_blank">{{item.Name || '暂无'}}</a></h2>
+                                        <p>
+                                            <span>{{item.JobTitle || '讲师'}}</span>
+                                            &nbsp;
+                                            <span>{{item.TeacherName || '暂无'}}</span>
+                                            &nbsp;
+                                            <span>{{item.TotalHours || 0}}课</span>
+                                        </p>
+                                        <div class="jiantou"></div>
+                                        <p style="color: #666; display: inline-block;width: 80%;">
+                                            已学
+                                            <span style="color: #fb791c">{{item.TotalHours == 0 ? '0.00' :(item.LookHours / item.TotalHours * 100).toFixed(2) }}%</span>
+                                            &nbsp;
+                                            用时
+                                            <span style="color: #fb791c">{{item.LearnTimes}}分</span>
+                                            &nbsp;
+                                            学习至
+                                            <span style="color: #fb791c;white-space:nowrap; text-overflow:ellipsis;overflow:hidden; display: inline-block;vertical-align:bottom;width: 50%;" title="222">{{item.ChapterName || '暂无'}}</span>
+                                            <!--<span style="color: #fb791c;">
+                                            <i class="iconfont icon-bofanganniu" style="vertical-align: middle;"></i>
+                                            继续学习
+                                        </span>-->
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="itemsRight">
+                                    <a v-if="item.CourseChaptersID == 0" v-bind:href="'/usercenter/onlinecourse/Detail.shtml?ID='+item.ID" target="_blank">开始学习</a>
+                                    <a v-if="item.CourseChaptersID > 0" v-bind:href="'/usercenter/onlinecourse/Video.shtml?ID='+item.CourseChaptersID+'&Course_ID='+item.ID" target="_blank">继续学习</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="notAvailable" v-else>
+                        <p>
+                            <img src="/Resources/images/th1.png" />
+                            <span style="display: inline-block; vertical-align: text-top; color: #999; margin-left: 8px;">您还没有报名过课程哟，快去找些感兴趣的课程吧！</span>
+                        </p>
+                        <p class="electiveCourse">
+                            <a href="/onlineschool/CourseList.shtml" style="text-decoration: none;">选课中心</a>
+                        </p>
+                    </div>
+                </div>
+                <!--我的题库-->
+                <!--<div class="indexQuestions">
+                <h2 class="noticeText">我的题库</h2>
+                <div class="notAvailable">
+                    <p>
+                        <img src="../Resources/images/th1.png" />
+                        <span style="display: inline-block; vertical-align: text-top; color: #999; margin-left: 8px;">您还没有选择题库哟，快去找些感兴趣的课程吧！</span>
+                    </p>
+                    <p class="electiveCourse">题库分类</p>
+                </div>
+            </div>-->
+            </div>
+        </div>
+    </div>
+    
+    <!--footer-->
+    <!--#<!--#include file="/PublicControl/bottommenu.html"-->
+    <script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil'],
+        function (fnr) {
+            var $ = layui.$;
+            var table = layui.table;
+            var tableExt = layui.tableExt;
+            var vm = new Vue({
+                el: "#root",
+                data: {
+                    userInfo: {}, //学生信息数据
+                    myOrderListData: [], //未支付订单数据
+                    myCourseListData: [] //我的网课列表数据
+                },
+                ready: function () {
+                    this.GetStudentInfo();
+                    this.GetOrderDetailList();
+                    this.GetOrderListByCourse();
+
+                    var contaierHeight = $('.totalContaier').height();
+                    var windowScreenHeight = window.innerHeight;
+                    if(contaierHeight < windowScreenHeight){
+                        $('.totalContaier').css('min-height', (windowScreenHeight - 160) + 'px');
+                    }
+                },
+                methods: {
+                    //跳转到我的订单
+                    hrefMyOrder: function () {
+                        location.href = '/usercenter/order/myorder.shtml?status=0';
+                    },
+
+                    //学生信息
+                    GetStudentInfo: function () {
+                        var self = this;
+                        $.get("/service/edu/Student/GetStudentInfo", function (res) {
+                            if (res.SuccessResponse) {
+                                if (res.Data) {
+                                    self.userInfo = res.Data.student_model;
+                                } else {
+                                    layui.msg('未发现数据');
+                                }
+                            } else {
+                                layui.msg(res.Message);
+                            }
+                        })
+                    },
+
+                    //未支付订单列表 PayStatus订单状态：0未支付，1已支付
+                    GetOrderDetailList: function () {
+                        var self = this;
+                        $.get("/service/datastore/Order/GetOrderDetailListByStuId", { PayStatus: 0 }, function (res) {
+                            if (res.SuccessResponse) {
+                                if (res.Data) {
+                                    $.each(res.Data, function (k, v) {
+                                        v.PayTime = moment(v.PayTime).format('YYYY-MM-DD HH:mm:ss');
+                                    });
+                                    self.myOrderListData = res.Data;
+                                } else {
+                                    layui.msg('未发现数据');
+                                }
+                            } else {
+                                layui.msg(res.Message);
+                            }
+                        })
+                    },
+
+                    //查询我的网课列表
+                    GetOrderListByCourse: function () {
+                        var self = this;
+                        $.get('/service/datastore/Order/GetMyCourseList', { PageIndex: 1, PageSize: 10, PageStatus: 1 }, function (res) {
+                            if (res.SuccessResponse) {
+                                self.myCourseListData = res.Data;
+                            } else {
+                                layui.msg(res.Message);
+                            }
+                        });
+                    },
+
+                    //立即支付
+                    buyNow: function (data) {
+                        if (sessionStorage.getItem("thisUrl")) {
+                            sessionStorage.removeItem("thisUrl");
+                            sessionStorage.setItem("thisUrl", location.href);
+                        } else {
+                            sessionStorage.setItem("thisUrl", location.href);
+                        }
+                        var loginState = fnr.Cookie.get("StuId")
+                        if (!loginState && loginState != 'undefined') {
+                            layer.open({
+                                type: 2,
+                                area: ['400px', '550px'],
+                                fixed: false, //不固定
+                                maxmin: true,
+                                title: '欢迎登录',
+                                content: '/usercenter/login_model.html'
+                            });
+                        } else {
+                            if (data) {
+                                var param = {};
+                                param.System_Station_ID = data.System_Station_ID;
+                                param.OrderId = data.OrderId;
+                                param.Money = data.Price;
+                                param.OrderName = "课程支付";
+                                param.NotifyUrl = "http://" + location.host + "/service/datastore/Order/PaySuccessDoSomething";
+                                param.Info = "";
+                                if (data.Price > 0) {
+                                    $.post('/service/pay/OnLinePay/UnifiedCreateOrder', param, function (rsp) {
+                                        if (rsp.SuccessResponse) {
+                                            location.href = '/usercenter/order/payType.shtml?ID=' + rsp.Data.ID + "&OrderId=" + data.OrderId;
+                                        }
+                                    });
+                                }
+                                else if (data.Price == 0) {
+                                    location.href = '/usercenter/onlinecourse/paysuccess.shtml';
+                                }
+                                else {
+                                    layer.msg("订单异常，订单价格不能为负数！");
+                                }
+                            } else {
+                                layer.msg("跳转异常，订单不存在！");
+                            }
+                        }
+                    }
+                }
+            });
+        })
+    </script>
+</body>
+
+</html>

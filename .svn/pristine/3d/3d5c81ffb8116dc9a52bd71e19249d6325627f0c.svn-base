@@ -1,0 +1,123 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        textarea {
+            resize: none;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body id="root" v-cloak>
+    <div class="OpenContainer">
+        <form class="layui-form" action="" onsubmit="return false">
+         
+            <div class="layui-form-item">
+                <label class="layui-form-label">用户</label>
+                <div class="layui-input-block">
+                    <remote-sel2 v-bind:setting="UserSetting" laytips="" v-bind:value.sync="queryFormData.UserList" initial="off"></remote-sel2>
+                </div>
+            </div>
+            <div class="layui-form-item ">
+                <div class="layui-input-block">
+                    <button class="layui-btn" @click="addField">保存设置</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+
+</body>
+</html>
+
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/select2.min.css" rel="stylesheet" />
+<style>
+    .select2-container--default.select2-container--focus .select2-selection--multiple {
+        border-color: #C9C9C9 !important;
+    }
+
+    .select2-container--default .select2-selection--multiple {
+        border: 1px solid #e6e6e6 !important;
+        line-height: 27px;
+    }
+</style>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "select2"],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+
+            window.rootApp = new Vue({
+                el: "#root",
+                data: {
+                    queryFormData: {
+                        UserList: []
+                    },
+                    _userId: '',
+                    UserSetting: {
+                        search: true,
+                        options: [],
+                        fields: { root: 'Data', key: 'ID', value: 'Name' },
+                        remote: { url: "/service/crm/Form/GetCustomerlist?Status=1", options: { method: 'get' } },
+                        sel2Opts: {
+                            width: "100%",
+                            multiple: true
+                        }
+                    }
+                },
+                ready: function () {
+                    var self = this;
+                    $.get("/service/crm/Form/GetCustomerlist?Status=1", {}, function (rsp) {
+                        if (rsp.SuccessResponse) {
+                            //用户
+                            var userArray = new Array();
+                            $.each(rsp.Data, function (k, v) {
+                                if (v.IsReceive > 0) {
+                                    userArray.push(v.ID);
+                                }
+                            });
+                            self.queryFormData.UserList = userArray;
+                        }
+                    })
+                },
+                methods: {
+                    addField: function () {
+                        var self = this;
+                        if (self.queryFormData.UserList.length == 0)
+                        {
+                            layer.msg("用户不能为空，请选择用户");
+                            return false;
+                        }
+                        $.ajax({
+                            url: '/service/crm/Client/SetUpRecipient',
+                            type: 'post',
+                            data: { "CustomerData": self.queryFormData.UserList },
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data) {
+                                    layer.msg(data.Message);
+
+                                } else {
+                                    layer.msg(data.Message);
+                                }
+                            }
+                        });
+                    },
+                    
+             
+                }
+            });
+        });
+</script>

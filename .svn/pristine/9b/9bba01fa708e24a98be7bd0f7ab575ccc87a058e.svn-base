@@ -1,0 +1,278 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link href="/Resources/css/index.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header">
+            <div class="layui-logo">
+                <img src="Resources/indexLogo.png" />
+            </div>
+            <ul class="layui-nav layui-layout-left" id="TopMenu"></ul>
+            <ul class="layui-nav layui-layout-right">
+                <li class="layui-nav-item">
+                    <a href="javascript:;">提醒<span class="layui-badge-dot"></span></a>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">设置</a>
+                </li>
+                <li class="layui-nav-item" id="AccountStr">
+                    <a href="javascript:;"><span></span></a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="">个人信息</a></dd>
+                        <dd><a href="">提醒设置</a></dd>
+                        <dd><a href="">安全中心</a></dd><hr>
+                        <dd><a href="javascript:;" id="LoginOut">退出</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">公告<span class="layui-badge-dot"></span></a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="layui-side layui-bg-black">
+            <div class="layui-side-scroll">
+                <ul class="layui-nav layui-nav-tree" id="LeftMenu" lay-filter="LeftMenu"></ul>
+            </div>
+        </div>
+
+        <div class="layui-body" style="overflow: hidden;">
+            <div class="layui-tab" style="margin-top:0px" lay-filter="tab" lay-allowclose="true">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">桌面</li>
+                </ul>
+                <!--<a style=" float:left; margin:10px 10px" href="javascript:;" id="addTab"><i class="layui-icon">&#xe654;</i></a>-->
+                <div class="closeBox">
+                    <ul class="layui-nav ">
+                        <li class="layui-nav-item">
+                            <a href="javascript:;">
+                                <i class="layui-icon" style="font-size:15px">&#xe614;</i>
+                                页面操作
+                            </a>
+                            <dl class="layui-nav-child layui-anim layui-anim-upbit">
+                                <dd>
+                                    <a href="javascript:;" class="refresh">
+                                        <i class="layui-icon" style="font-size:15px">&#x1002;</i>
+                                        &nbsp;
+                                        刷新当前
+                                    </a>
+                                </dd>
+                                <dd class="">
+                                    <a href="javascript:;" class="closePageOther">
+                                        <i class="layui-icon" style="font-size:15px">&#x1006;</i>
+                                        &nbsp;
+                                        关闭其他
+                                    </a>
+                                </dd>
+                                <dd>
+                                    <a href="javascript:;" class="closePageAll">
+                                        <i class="layui-icon" style="font-size:15px">&#x1007;</i>
+                                        &nbsp;
+                                        关闭全部
+                                    </a>
+                                </dd>
+                            </dl>
+                        </li>
+                    </ul>
+                </div>
+                <div class="layui-tab-content" style="padding:0px">
+                    <div class="layui-tab-item layui-show">
+                        <iframe src="html/student/wx/List.html" name="MainRight"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'element'],
+  function (fnr) {
+      var $ = layui.jquery
+      , element = layui.element;
+      var layer = layui.layer;
+      var MenuList;
+      $("#AccountStr span").html(decodeURIComponent(fnr.Cookie.get("AccountName")));
+      $.get("/service/Menu/GetMenu", {}, function (rsp) {
+          if (rsp.SuccessResponse) {
+              MenuList = rsp.ReturnData.Data;
+              var indexNo = 0;
+              $.each(MenuList, function (i, x) {
+                  if (x.CID == null) {
+                      if (indexNo == 0)
+                          iterateMenuTree(x.ID);
+                      $("#TopMenu").append("<li data-id=\"" + x.ID + "\" class=\"layui-nav-item " + (indexNo == 0 ? "layui-this" : "") + "\"><a href=\"javascript:;\">" + x.Name + "</a></li>");
+                      indexNo++;
+                  }
+              });
+              $("#TopMenu").find("li").click(function () {
+                  if ($(this).attr("class").indexOf("layui-this") == -1) {
+                      iterateMenuTree($(this).attr("data-id"));
+                      $(this).addClass("layui-this").siblings().removeClass("layui-this");
+                      element.init();
+                  }
+              });
+          } else {
+              location.href = "/Login.html";
+          }
+          element.init();
+      });
+      var iframHeight = window.innerHeight - 100;
+      $("iframe").height(iframHeight);
+      $("div.layui-tab-content").height(iframHeight);
+      $(".layui-tab-title").width(window.innerWidth - 200 - 140)
+      $(".layui-tab-title").bind("contextmenu", function (e) {
+          if (e.target.localName == "ul") {
+              var _id = new Date().getTime();
+              element.tabAdd('tab', {
+                  title: '新选项卡'
+                  , content: '<iframe src="" name="MainRight" style="height:' + iframHeight + 'px"></iframe>'
+                  , id: _id
+              });
+              element.tabChange('tab', _id);
+          }
+          return false;
+      })
+
+      $(window).resize(function () {
+          var iframHeight = window.innerHeight - 100;
+          $("iframe").height(iframHeight);
+          $("div.layui-tab-content").height(iframHeight);
+      });
+      //增加选项卡
+      $('#addTab').on('click', function () {
+          var _id = new Date().getTime();
+          element.tabAdd('tab', {
+              title: '新选项卡'
+              , content: '<iframe src="" name="MainRight" style="height:' + iframHeight + 'px"></iframe>'
+              , id: _id
+          });
+          element.tabChange('tab', _id);
+      });
+
+      //刷新当前页
+      $('.refresh').on('click', function () {
+          if (!$(this).hasClass("refreshThis")) {
+              $(".layui-show iframe")[0].contentWindow.location.reload(true);
+              $(".refresh").addClass("refreshThis");
+              setTimeout(function () {
+                  $('.refresh').removeClass("refreshThis");
+              }, 2000)
+          } else {
+              layer.msg("您点击的速度超过了服务器的响应速度，还是等两秒再刷新吧！");
+          }
+      });
+      //关闭其他
+      $('.closePageOther').on('click', function () {
+          $(".layui-tab-title li[lay-id]").each(function () {
+              if (!$(this).hasClass("layui-this")) {
+                  element.tabDelete("tab", $(this).attr("lay-id"));
+              }
+          })
+      });
+      //关闭所有
+      $('.closePageAll').on('click', function () {
+          $(".layui-tab-title li[lay-id]").each(function () {
+              element.tabDelete("tab", $(this).attr("lay-id"));
+          })
+      });
+
+      //选项卡切换事件
+      var oldindex = 0;
+      element.on('tab(tab)', function (i) {
+          if (oldindex != i.index) {
+              $(".layui-tab-item iframe").removeAttr("name");
+              $(".layui-tab-item iframe").each(function () {
+                  this.contentWindow.window.name = "";
+              });
+              var indexno = oldindex = i.index;
+              $(".layui-tab-item:eq(" + indexno + ")").find("iframe").attr("name", "MainRight");
+              $(".layui-tab-item:eq(" + indexno + ")").find("iframe")[0].contentWindow.window.name = "MainRight";
+
+              var id = $(this).attr("data-id"), cid = $(this).attr("data-cid"), pid = $(this).attr("data-pid");
+              if (id != undefined && cid != undefined && pid != undefined) {
+                  $("#TopMenu li").removeClass("layui-this").each(function () {
+                      if ($(this).attr("data-id") == pid) {
+                          $(this).addClass("layui-this");
+                          iterateMenuTree(pid)
+
+                          $("#LeftMenu li").removeClass("layui-nav-itemed").each(function () {
+                              if ($(this).attr("data-id") == cid) {
+                                  $(this).addClass("layui-nav-itemed");
+
+                                  $(this).find("dd").each(function () {
+                                      if ($(this).attr("data-id") == id) {
+                                          $(this).addClass("layui-this");
+                                      }
+                                  });
+                              }
+                          });
+                          element.init();
+                      }
+                  });
+              }
+          }
+      });
+
+      function GetCookieValue(name) {
+         var cookieValue = null;
+         if (document.cookie && document.cookie != '') {
+         var cookies = document.cookie.split(';');
+         for (var i = 0; i < cookies.length; i++) {
+           var cookie = $.trim(cookies[i]);
+           if (cookie.substring(0, name.length + 1) == (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+         break;
+           }
+         }
+      }
+      return cookieValue;
+    }
+    function DelCookie(name) {
+      var exp = new Date();
+      exp.setTime(exp.getTime() + (-1 * 24 * 60 * 60 * 1000));
+      var cval = GetCookieValue(name);
+      document.cookie = name + "=" + cval + "; expires=" + exp.toGMTString();
+    }
+      $("#LoginOut").click(function () {
+          DelCookie('AccountID')
+          DelCookie('AccountName')
+          location.href = "/Login.html";
+      });
+
+      function iterateMenuTree(ID) {
+          $("#LeftMenu").html("");
+          var tmpStr = '';
+          var indexNo = 0;
+          $.each(MenuList, function (i, x) {
+              if (x.CID == ID) {
+                  tmpStr += "<li data-id=\"" + x.ID + "\" class=\"layui-nav-item " + (indexNo == 0 ? "layui-nav-itemed" : "") + "\"><a href=\"javascript:;\"><i class=\"layui-icon\" style=\"font-size: 16px;\">&#xe6b2;</i>&nbsp;" + x.Name + "</a>";
+                  if (x.LevelCount > 0) {
+                      tmpStr += "<dl class=\"layui-nav-child\">";
+                      $.each(MenuList, function (ii, xx) {
+                          if (xx.CID == x.ID) {
+                              tmpStr += "<dd style=\"padding-left:20px\" data-id=\"" + xx.ID + "\" data-cid=\"" + x.ID + "\" data-pid=\"" + ID + "\"><a href=\"" + xx.Path + "\" target=\"MainRight\">" + xx.Name + "</a></dd>";
+                          }
+                      });
+                      tmpStr += "</ul>";
+                  }
+                  tmpStr += "</li>";
+                  indexNo++;
+              }
+          });
+          $("#LeftMenu").html(tmpStr);
+
+          $("#LeftMenu dd").click(function () {
+              $(".layui-tab-title .layui-this").html($(this).find("a").text()).attr("data-id", $(this).attr("data-id")).attr("data-cid", $(this).attr("data-cid")).attr("data-pid", $(this).attr("data-pid"));
+              element.init();
+          });
+      }
+  });
+</script>

@@ -1,0 +1,306 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <blockquote class="layui-elem-quote">
+            <div class="layui-row layui-form">
+                <div class="layui-col-xs10">
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="FirstSetting" laytips="一级学科" v-bind:value.sync="selectdata.Discipline_OneLevelID" v-bind:change="FirstChange" layverify="required"></remote-sel>
+                    </div>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="SecondSetting" laytips="二级学科" v-bind:value.sync="selectdata.Discipline_TwoLevelID" v-bind:change="SecondChange" v-ref:second></remote-sel>
+                    </div>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="ThreeSetting" laytips="三级学科" v-bind:value.sync="selectdata.Discipline_ThreeLevelID" v-ref:three></remote-sel>
+                    </div>
+                    <button type="button" v-bind:class="selectdata.Discipline_OneLevelID?'':'layui-btn-disabled'" class="layui-btn" id="testList" style="position: relative; cursor: pointer">
+                        <input v-bind:disabled="selectdata.Discipline_OneLevelID=='' || auth"
+                               multiple
+                               name="file_upload"
+                               type="file"
+                               accept="video/avi,.avi,.f4v,video/mpeg,.mpg,video/mp4,.mp4,video/x-flv,.flv,video/x-ms-wmv,.wmv,video/quicktime,.mov,video/3gpp,.3gp,.rmvb,video/x-matroska,.mkv,.asf,.264,.ts,.mts,.dat,.vob,audio/mpeg,.mp3,audio/x-wav,.wav,video/x-m4v,.m4v,video/webm,.webm,.mod"
+                               @change="choosefile" style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; opacity: 0; cursor: pointer" />
+                        选择多文件
+                    </button>
+                </div>
+            </div>
+        </blockquote>
+
+        <div class="layui-upload-list">
+            <table class="layui-table">
+                <thead>
+                    <tr>
+                        <th width="20%">文件名</th>
+                        <th width="10%">大小</th>
+                        <th width="10%">上传速度</th>
+                        <th width="10%">剩余时长</th>
+                        <th width="20%">进度</th>
+                        <th width="10%">状态</th>
+                        <th width="10%">操作</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr v-show="fileList.length==0">
+                        <td colspan="7">请选择文件上传</td>
+                    </tr>
+
+                    <tr v-for="(index,item) in fileList">
+                        <td>{{item.file.name}}</td>
+                        <td>{{item.fileSize}}</td>
+                        <td>{{item.speed}}</td>
+                        <td>{{item.countDown}}</td>
+                        <td>
+                            <div class="layui-progress layui-progress-big" lay-showpercent="true">
+                                <div class="layui-progress-bar" lay-percent="{{item.percentage+'%'}}" style="width:{{item.percentage+'%'}}">
+                                    <span class="layui-progress-text">{{item.percentage+'%'}}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{item.showText}}</td>
+                        <td>
+                            <div>
+                                <button style='margin-left: 0;' class="layui-btn layui-btn-danger" @click="removeFile(index,item)">删除</button>
+                                <button style='margin-left: 0;' class="layui-btn" v-show="!item.uploadIng" @click="uploadStart(item)">续传</button>
+                                <button style='margin-left: 0;' class="layui-btn layui-btn-warm" v-show="item.uploadIng" @click="uploadStop(item)">暂停</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
+
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="/Resources/js/Controls/Common.js"></script>
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'upload', 'polyvfbp'],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+            var upload = layui.upload;
+            var polyvfbp = layui.polyvfbp;
+            var rootApp = new Vue({
+                el: "#root",
+                data: {
+                    auth: true,
+                    cataid: '',
+                    userid: '',
+                    FirstSetting: SelectDisciplineBind(0),
+                    SecondSetting: SelectDisciplineBind(null),
+                    ThreeSetting: SelectDisciplineBind(null),
+                    fileList: [],
+                    disable: false,
+                    selectdata: {
+                        Discipline_OneLevelID: '',
+                        Discipline_TwoLevelID: '',
+                        Discipline_ThreeLevelID: ''
+                    },
+                    submitForm: {
+                        Name: '',
+                        Discipline_ID: 0,
+                        CourseWareType_ID: 1,
+                        PolyvVID: '',
+                        CourseSize: 0,
+                    }
+                },
+                ready: function () {
+                    var self = this;
+                    self.submitForm.Discipline_ID = fnr.getQueryString('Discipline_ID');
+                    self.selectdata.Discipline_OneLevelID = fnr.getQueryString('Discipline_OneLevelID');
+                    self.selectdata.Discipline_TwoLevelID = fnr.getQueryString('Discipline_TwoLevelID');
+                    self.selectdata.Discipline_ThreeLevelID = fnr.getQueryString('Discipline_ThreeLevelID');
+                    self.requestHash();
+                    //polyvfbp.updateOption({ userid: 'fed9ee9ee5' });
+                    this.checkauth(function (_userid) {
+                        polyvfbp.updateOption({ userid: _userid });
+                    })
+                    polyvfbp.addEventListener('complete',
+                        function () {
+                            //单个上传完成事件
+                            self.startNextFile();
+                        });
+                    polyvfbp.addEventListener('getVid',
+                        function (vid) {
+                            self.submitForm.CourseSize = this.file.size;
+                            self.submitForm.Name = this.file.name;
+                            self.submitForm.PolyvVID = vid;
+
+                            if (self.selectdata.Discipline_OneLevelID != "")
+                                self.submitForm.Discipline_ID = self.selectdata.Discipline_OneLevelID;
+                            if (self.selectdata.Discipline_TwoLevelID != "")
+                                self.submitForm.Discipline_ID = self.selectdata.Discipline_TwoLevelID;
+                            if (self.selectdata.Discipline_ThreeLevelID != "")
+                                self.submitForm.Discipline_ID = self.selectdata.Discipline_ThreeLevelID;
+
+                            $.post("/service/datastore/Resource/SaveCourseWare", self.submitForm, function (rsp) {
+                                if(rsp.SuccessResponse){
+                                    layer.msg(rsp.Message)
+                                    fnr.callDialog('refresh')
+                                }else{
+                                    layer.msg(rsp.Message)
+                                }
+                            });
+                        });
+                    setInterval(self.requestHash, 3 * 60 * 1000);
+                    polyvfbp.maxQueueSize = 3;
+                },
+                methods: {
+                    FirstChange: function () {
+                        var self = this;
+                        if (self.selectdata.Discipline_OneLevelID == '') {
+                            self.SecondSetting.remote = {};
+                            self.SecondSetting.remote.url = "";
+                            self.SecondSetting.remote.data = {};
+                            self.$refs.second.reset();  //重置select
+                        } else {
+                            fnr.mergeJson(SelectDisciplineBind(self.selectdata.Discipline_OneLevelID), self.SecondSetting);//合并ajax值
+                            self.$refs.second.reset();
+                        }
+                        if (self.ThreeSetting.remote != undefined) {
+                            self.ThreeSetting.remote = {};
+                            self.ThreeSetting.remote.url = "";
+                            self.ThreeSetting.remote.data = {};
+                            self.$refs.three.reset();
+                        }
+                    },
+                    SecondChange: function () {
+                        var self = this;
+                        if (self.selectdata.Discipline_TwoLevelID == '') {
+                            self.ThreeSetting.remote.url = "";
+                            self.ThreeSetting.remote.data = {};
+                        } else {
+                            fnr.mergeJson(SelectDisciplineBind(self.selectdata.Discipline_TwoLevelID), self.ThreeSetting);//合并ajax值
+                        }
+                        self.$refs.three.reset();
+                    },
+                    //检查权限
+                    checkauth: function (cb) {
+                        var that = this;
+                        $.get("/service/datastore/PolyvInfo/HasSetAndOpen", function (res) {
+                            if (!res.SuccessResponse) {
+                                return layer.msg(res.Message);
+                            } else {
+                                that.auth = false;
+                                that.cataid = res.Data.cataid;
+                                that.userid = res.Data.userid;
+                                if (typeof cb == 'function') cb(res.Data.userid)
+                            }
+                        });
+                    },
+                    //选择文件
+                    choosefile: function (e) {
+                        var self = this;
+                        var files = e.target.files;
+                        $.each(files,
+                            function (index) {
+                                if (self.checkFileExists(this)) {
+                                    fnr.msg("文件《" + this.name + "》已包含在队列内");
+                                    return;
+                                }
+                                var file = polyvfbp.create(this);
+                                //file.cataid = "1506562542078";
+                                file.cataid = self.cataid;
+                                self.fileList.push(file);
+                                if (self.uploadCount() < polyvfbp.maxQueueSize)
+                                    file.start();
+                            });
+                    },
+                    checkFileExists: function (file) {
+                        var exists = false;
+                        var self = this;
+                        $.each(self.fileList, function () {
+                            if (file.name == this.file.name && file.size == this.file.size) {
+                                exists = true;
+                                return false;
+                            }
+                        });
+                        return exists;
+                    },
+                    //删除事件
+                    removeFile: function (index, obj) {
+                        if (!obj.complete) {
+                            if (obj.uploadIng) {
+                                fnr.msg("文件还在上传中，请暂停上传后再移除队列");
+                                return;
+                            }
+                        }
+                        this.fileList.splice(index, 1);
+                    },
+                    //续传
+                    uploadStart: function (item) {
+                        var self = this;
+                        if (item.stopIng) {
+                            item.start();
+                            return;
+                        } else if (self.uploadCount() < polyvfbp.maxQueueSize) {
+                            item.start();
+                        } else {
+                            fnr.msg("当前上传队列已满，请等待其他文件上传完毕或删除正在上传的文件");
+                        }
+                    },
+                    //暂停
+                    uploadStop: function (item) {
+                        item.pause();
+                    },
+                    //计算保利签名
+                    /*requestHash: function() {
+                        $.get("/api/polyv/hash",
+                            {},
+                            function(resp) {
+                                polyvfbp.updateOption(resp);
+                            },
+                            "json");
+                    }*/
+                    requestHash: function () {
+                        $.get("/service/datastore/PolyvInfo/Hash",
+                            {},
+                            function (resp) {
+                                //console.log(resp);
+                                //alert(resp.ReturnData.Data);
+                                polyvfbp.updateOption(resp);
+                            },
+                            "json");
+                    },
+                    //计算正在上传总数，包括暂定的。
+                    uploadCount: function () {
+                        var self = this;
+                        var count = 0;
+                        $.each(self.fileList,
+                            function () {
+                                if (this.uploadIng || this.stopIng) {
+                                    count++;
+                                }
+                            });
+                        return count;
+                    },
+                    //上传下一个文件
+                    startNextFile: function () {
+                        var self = this;
+                        if (self.uploadCount() < polyvfbp.maxQueueSize) {
+                            $.each(self.fileList,
+                                function () {
+                                    if (!this.uploadIng && !this.complete) {
+                                        this.start();
+                                        return false;
+                                    }
+                                    return true;
+                                });
+                        }
+                    }
+                }
+            });
+        });
+</script>

@@ -1,0 +1,138 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>添加客服</title>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label"><span style="color: red;margin-right: 5px;">*</span>客服姓名</label>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="TransferSetting" v-bind:value.sync="submitForm.Account_ID"
+                                    initial="off" lay-verify="required"></remote-sel>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">权重：</label>
+                <div class="layui-inline">
+                    <input type="text" name="Weight" lay-verify="required"  autocomplete="off"
+                           class="layui-input" v-model="submitForm.Weight">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <button class="layui-btn layui-hide" lay-submit @click="submit">提交</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="/Resources/js/Controls/Common.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate"],
+          function (fnr) {
+              var TransferOptions = [];
+              var Customerlist = [];
+              var $ = layui.jquery;
+              window.rootApp = new Vue({
+                  el: "#root",
+                  data: {
+                      TransferSetting: {
+                          search: true,
+                          options: TransferOptions,
+                          fields: { root: "Data", key: 'Account_ID', value: 'Name' },
+                          remote: { url: '/service/hr/Station/GetListStationAccount' },
+                      },
+                      chbSwitch: false,
+                      submitForm: {
+                          ID:0,
+                          Account_ID: '',
+                          Weight:''
+                        
+                      }
+                  },
+                  ready: function () {
+                      this.submitForm.ID = GetQueryString('ID');
+                      this.modifyCustomer();
+                      this.GetCustomerlist();
+                  },
+                  methods: {
+                      submit: function (e) {
+                          if (!layui.form.checkInput(e)) {
+                              return false;
+                          }
+                          if(this.submitForm.ID > 0)
+                          {
+                              if (this.submitForm.Account_ID != ""){
+                                  $.ajax({
+                                      url: '/service/crm/Form/UpdataCustomer',
+                                      type: 'POST',
+                                      dataType: 'json',
+                                      data: this.submitForm,
+                                      success: function (data) {
+                                      
+                                          if (data.SuccessResponse) {
+                                              fnr.callDialog('refresh', { status: data.SuccessResponse, msg: data.Message });
+                                              fnr.closeDialog();
+                                          }
+                                          else {
+                                              layer.msg(data.Message);
+                                          }
+                                      }
+                                  });
+                              } else {
+                                  layer.msg("客服不能为空！");
+                              }
+                          
+                          }
+                          else {
+                              if(this.submitForm.Account_ID != ""){
+                                  $.ajax({
+                                      url: '/service/crm/Form/AddCustomer',
+                                      type: 'POST',
+                                      dataType: 'json',
+                                      data: this.submitForm,
+                                      success: function (data) {
+                                          if (data.SuccessResponse) {
+                                              fnr.callDialog('refresh', { status: data.SuccessResponse, msg: data.Message });
+                                              fnr.closeDialog(); 
+                                         
+                                          } else {
+                                              layer.msg(data.Message);
+                                          }
+                                      }
+                                  });
+                              } else {
+                                  layer.msg("客服不能为空！");
+                              }                         
+                          }
+                      },
+                      GetCustomerlist: function () {
+                          $.ajax({
+                              url: '/service/crm/Form/GetCustomerlist?Status=1',
+                              type: 'GET',
+                              dataType: 'json',
+                              data: {},
+                              success: function (data) {
+                                  var Datas = data.Data;
+                                  if (data.SuccessResponse) {
+                                      if (Datas != null) {
+                                          Customerlist = Datas;
+                                      }
+                                  } else {
+                                      layer.msg(data.Message);
+                                  }
+                              }
+                          });
+                      }
+                  }
+              })
+          })
+</script>

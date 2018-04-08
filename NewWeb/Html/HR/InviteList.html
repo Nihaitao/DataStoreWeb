@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        [v-cloak] {
+            display: none
+        }
+    </style>
+</head>
+<body id="root" v-cloak>
+    <div class="mainContainer">
+        <blockquote class="layui-elem-quote">
+            <div class="layui-row layui-form">
+                <div class="layui-col-xs10">
+                    <div class="layui-input-inline">
+                        <div style="float:left;padding: 8px 10px 0px 10px">
+                            状态：
+                        </div>
+                        <div style="float:left;">
+                            <remote-sel v-bind:setting="AuditSetting" laytips="" v-bind:value.sync="Auditing" initial="on" style="width:10%"></remote-sel>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </blockquote>
+        <div class="layui-row">
+            <table lay-filter="listTable" id="listTable"></table>
+        </div>
+    </div>
+</body>
+</html>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate"],
+        function (fnr) {
+            var laydate = layui.laydate;
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+
+            var table = layui.table;
+            var tableExt = layui.tableExt;
+            var tableOption = {
+                elem: '#listTable',
+                id: 'listTable',
+                even: true, //开启隔行背景
+                page: true, cellMinWidth: 200,
+                limit: 15,
+                height: 'full-110',
+                cols: [
+                    [
+                        { field: 'Name', title: '姓名', width: 120 },
+                        { field: 'Phone', title: '手机', width: 120 },
+                        {
+                            field: 'AddTime', title: '邀请时间', width: 160, sort: true, templet: function () {
+                                var array = new Array();
+                                array.push("<span>" + (fnr.format(this.AddTime, "yyyy-MM-dd HH:mm") == "2001-01-01 00:00" ? "" : fnr.format(this.AddTime, "yyyy-MM-dd HH:mm")) + "</span>");
+                                return array.join("")
+                            }
+                        },
+                        { field: 'Inviter', title: '邀请人', width: 120 },
+                        {
+                            title: '审核状态', width: 100, sort: true, templet: function () {
+                                var array = new Array();
+                                array.push("<span>" + (this.Status == 0 ? "<font color='#FF8C00'>申请中</font>" : (this.Status == 1 ? "<font color='#3CB371'>审核通过</font>" : "<font color='red'>审核拒绝</font>")) + "</span>");
+                                return "<div>" + array.join("") + "</div>";
+                            }, sort: true
+                        },
+                        { field: 'Auditor', title: '审核人', width: 120 },
+                        {
+                            field: 'Review_Time', title: '审核时间', width: 160, sort: true, templet: function () {
+                                var array = new Array();
+                                array.push("<span>" + (fnr.format(this.Review_Time, "yyyy-MM-dd HH:mm") == "2001-01-01 00:00" ? "" : fnr.format(this.Review_Time, "yyyy-MM-dd HH:mm")) + "</span>");
+                                return array.join("")
+                            }
+                        },
+                        {
+                            fixed: 'right',
+                            title: '操作',
+                            width: 100,
+                            toolbar: function () {
+                                var array = new Array();
+                                if (this.Status == 0) {
+                                    array.push("<button class=\"layui-btn layui-btn-small\" lay-event='audit'>审核</button>");
+                                }
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        }
+                    ]
+                ],
+                url: '/service/hr/StationAccount/GetAccountInviteList',
+                response: {
+                    dataName: 'Data'
+                },
+                method: 'get',
+                where: { Valid: 0, Stationproxy_ID: 0 }
+            }
+            //监听工具栏事件
+            tableExt.addEvent("tool(listTable)",
+                {
+                    "audit": function (data, obj) {
+                        fnr.openDialog({
+                            title: "扫码邀请审核",
+                            area: ['500px', "380px"],
+                            content: ['./InviteAudit.html?Info_ID=' + data.ID],
+                            //btn: ['确定'],
+                            events: {
+                                refresh: function (data) {
+                                    if (data)
+                                        layer.msg("审核成功!");
+                                    listTable.refresh();
+                                }
+                            },
+                        });
+                    },
+                });
+
+            window.rootApp = new Vue({
+                el: "#root",
+                data: {
+                    AuditSetting: {
+                        search: false,
+                        options:
+                            [
+                                { key: "-1", value: "全部" },
+                                { key: "0", value: "申请中" },
+                                { key: "1", value: "审核通过" },
+                                { key: "2", value: "审核拒绝" }
+                            ],
+                    },
+                    Auditing: 0, //审核状态
+                    ProxyID: 0,  //渠道ID
+                    queryFormData: {
+
+                    },
+                },
+                watch: {
+                    'Auditing': function (val, oldval) {
+                        var self = this;
+                        listTable.reload({
+                            where: {
+                                Valid: val, Stationproxy_ID: self.ProxyID
+                            }
+                        })
+                    },
+                },
+                ready: function () {
+                    _this = this;
+                    listTable = table.render(tableOption);
+                },
+                methods: {
+                }
+            });
+        });
+</script>

@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="/Resources/fonts/iconfont.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link href="/Resources/CSS/Font/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="/Resources/CSS/video-js.css" rel="stylesheet" />
+    <style>
+        @charset "utf-8";
+        /* CSS Document */
+
+
+        /**/
+        .p_all20 { padding: 20px; }
+        .tanchuan_box { background: #fff; }
+        .tanchuan_box .tc_title { line-height: 280%; }
+
+        /*点评试卷*/
+        table.table_sjdp { font-family: "微软雅黑"，verdana,arial,sans-serif; font-size: 14px; color: #333333; border-width: 1px; border-color: #e7e7e7; border-collapse: collapse; }
+        table.table_sjdp th { border-width: 1px; padding: 4px 8px; border-style: solid; border-color: #e7e7e7; background-color: #f8f8f8; line-height: 24px;text-align:center; }
+        table.table_sjdp td { border-width: 1px; padding: 4px 8px; border-style: solid; border-color: #e7e7e7; background-color: #ffffff; line-height: 24px; text-align: center; }
+        table.td_center { text-align: center; }
+        table.td_left { text-align: left; }
+        table.td_right { text-align: right; }
+
+
+
+        /*信息确认*/
+        .tc_zhuyi { padding: 12px; background: #fff9e9; border: 1px dashed #ffeec4; border-radius: 40px; }
+        .info_qr { padding: 30px 0 10px 0; }
+        .info_qr li { width: 20%; float: left; }
+        .info_qr li .info_no { text-align: center; line-height: 160%; color: #FFFFFF; background: url(../img/info_qr_no.png) center center no-repeat; height: 80px; padding-top: 15px; }
+        .info_qr li .info_no i { font-style: normal; font-size: 30px; font-weight: bolder; }
+        .info_qr li .info_no a { color: #fff; }
+
+
+        /*找回密码*/
+        .tanchuan_box .stepInfo { width: 420px; padding-top: 30px; position: relative; height: 90px; }
+        .tanchuan_box .stepInfo li { float: left; width: 48%; height: 0.2em; }
+
+        .tanchuan_box .stepInfo li.step_yes { background: #eeeeee; }
+        .tanchuan_box .stepInfo li.step_no { background: #eeeeee; }
+        .tanchuan_box .stepIco { border-radius: 2em; padding: 0.2em; background: #d60e0d; text-align: center; line-height: 1em; color: #fff; position: absolute; width: 1.5em; height: 1.5em; }
+        .tanchuan_box .stepIco_gay { border-radius: 2em; padding: 0.2em; background: #eeeeee; text-align: center; line-height: 1em; color: #666; position: absolute; width: 1.5em; height: 1.5em; }
+        .stepIco1 { top: 1.8em; left: -1%; }
+        .stepIco2 { top: 1.8em; left: 30%; }
+        .stepIco3 { top: 1.8em; left: 64%; }
+        .stepIco4 { top: 1.8em; left: 95%; }
+        .stepText { color: #666; margin-top: 0.4em; width: 4em; text-align: center; margin-left: -1.4em; line-height: 180%; }
+
+        .tanchuan_box .input_name { width: 365px; }
+        .tanchuan_box .input_name h4 { line-height: 240%; }
+        .tanchuan_box .input_text { width: 365px; height: 40px; }
+        .tanchuan_box .input_text2 { width: 180px; height: 40px; }
+
+        .btnw { display: inline-block; font-size: 16px; text-align: center; white-space: nowrap; vertical-align: middle; cursor: pointer; border-radius: 3px; line-height: 1; width: 370px; height: 40px; line-height: 40px; border: none; }
+        .mima_ok { line-height: 240%; }
+        .tanchuan_box .gay { color: #999; }
+
+        .bline { border-bottom: 1px solid #ddd; }
+
+        .wxts_text { padding: 20px; line-height: 240%; }
+        .info_textarea { width: 98%; line-height: 240%; border-radius: 4px; border: 1px solid #ddd; padding: 10px; }
+        .so-star { height: 15px; overflow: hidden; background: url(../img/star_icon.png) no-repeat 0 -49px; position: relative; z-index: 1; top: 3px; }
+        .star_03 { width: 58px; }
+        .star_04 { width: 79px; }
+        .star_05 { width: 100px; }
+
+
+
+
+        /*jiucuo*/
+        .pop-error { width: 520px; line-height: 23px; margin-left: 5px; color: #333; font-size: 12px; padding: 0 15px; padding: 25px; }
+        .pop-error p { margin: 0; padding: 5px 0; text-align: left; font-size: 14px; margin-top: 5px; }
+        .pop-error .txt { color: #666; font-size: 14px; text-align: left; line-height: 26px; border-bottom: 1px dotted #ddd; padding-bottom: 15px; }
+        .pop-error label { vertical-align: middle; margin: 0 25px 10px 0; font-size: 14px; color: #666; text-align: left; }
+        .option { text-align: left; margin-top: 10px; }
+        .pop-error input { vertical-align: middle; }
+        .pop-error span { vertical-align: middle; }
+        .pop-error textarea { width: 495px; height: 90px; line-height: 24px; border-radius: 6px; box-shadow: 0 2px 2px #dedede inset; overflow: auto; padding: 4px 10px; background: #fff; font-size: 14px; margin-top: 20px; border: #d3d3d3 solid 1px; outline: none; resize: none; }
+        .warn { font-family: "\u5b8b\u4f53"; color: #cc3333; font-size: 12px; padding-top: 10px; padding-left: 25px; background: url(//img.233.com/wx/uc/mk/v1/skin/a/tk_gd.png) -182px -155px no-repeat; }
+
+
+        .ui-dialog-button { height: 40px; line-height: 40px; text-align: center; margin: 0 0 30px 0; }
+        .ui-dialog-button .ui-dialog-autofocus { background: #e45433; border: 1px solid #d63910; cursor: pointer; margin: 0 5px; box-shadow: 0 1px 2px #eee; }
+        .ui-dialog-button .ui-dialog-autofocus:hover { background: #f7795b; border: 1px solid #f7795b; }
+        .ui-dialog-button button { line-height: 35px; padding: 0 25px; background: #9fa5ad; border: 1px solid #9aa0a9; border-radius: 3px; font-size: 14px; font-family: "Microsoft YaHei"; color: #fff; cursor: pointer; }
+        .ui-dialog-button button:hover { background: #a6adb4; border: 1px solid #a6adb4; }
+    </style>
+</head>
+<body style="background-color: #f7f7f7" id="root">
+    <div class="tanchuan_box" style="padding:20px;">
+        <table width="100%" border="0" class="table_sjdp mt20" id="Bind">
+            <tbody>
+                <tr>
+                    <th></th>
+                    <th>作对试题</th>
+                    <th>做错试题</th>
+                    <th>未作试题</th>
+                    <th>已做/总题量</th>
+                    <th>正确率</th>
+                </tr>
+                <tr v-for="item in Result">
+                    <th>{{item.TypeName}}</th>
+                    <td class="green">{{item.CorrectCounts}}</td>
+                    <td class="red">{{item.ErrorCounts}}</td>
+                    <td class="red">{{item.YetCounts}}</td>
+                    <td>{{item.AlreadyCounts}}/{{item.TotalCounts}}</td>
+                    <td class="green">{{item.CorrectRate}}%</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="btn-grounp text-center mt20">
+            <input type="button" class="btn btn-green" value="再来一批" @click="retUrl">
+        </div>
+
+    </div>
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet">
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <script>
+        require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil'],
+            function (fnr) {
+                var $ = layui.$;
+                var table = layui.table;
+                var tableExt = layui.tableExt;
+                var vm = new Vue({
+                    el: "#root",
+                    data: {
+                        resultId: fnr.getQueryString('resultId'),
+                        busId: fnr.getQueryString('busId'),
+                        chapterId:fnr.getQueryString('chapterId'),
+                        storeId:fnr.getQueryString('storeId'),
+                        Result:''
+                    },
+                    ready: function () {
+                        this.GetPracticeResult(this.resultId,this.busId)
+                    },
+                    methods: {
+                        //练习结果
+                        GetPracticeResult:function(resultId,busId){
+                            var that=this;
+                            $.get('/service/datastore/Chapter/GetPracticeResult',{resultId:resultId,busId:busId},function(res){
+                                if (res.SuccessResponse) {
+                                        that.Result=res.Data.Result;
+                                }
+                            })
+                        },
+
+                        retUrl:function () {
+                            var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                            parent.location.href = "/usercenter/questionbank/tk/setting.shtml?chapterId="+this.chapterId+"&storeId="+this.storeId;
+                        }
+                    }
+                });
+            })
+    </script>
+</body>
+</html>

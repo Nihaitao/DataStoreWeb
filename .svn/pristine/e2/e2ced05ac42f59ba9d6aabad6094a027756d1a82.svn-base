@@ -1,0 +1,672 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>角色和权限设置</title>
+    <style>
+        * { box-sizing: border-box; }
+
+        .isDisplay { display: none; }
+
+        .toggleNext { height: 39px; background: #fff; line-height: 39px; border: 1px solid #e2e2e2; border-top-color: transparent; }
+
+        .listBox { border: 1px solid #dedede; border-bottom: none; border-right: none; border-top-left-radius: 3px; border-bottom-left-radius: 3px; }
+
+        .listItem { height: 39px; line-height: 39px; border-bottom: 1px solid #dedede; position: relative; background: #F6F8F8; transition: background 0.3s; }
+
+        .listItem div { display: inline-block; }
+
+        .tempBox { width: 100%; padding: 0 10px 0px 20px; }
+
+        .hoverColor { background-color: #009688; width: 0; height: 100%; position: absolute; top: 0; left: 0; transition: width 0.3s; }
+
+        .deleteBtn,
+        .modifyBtn { float: right; transition: color 0.3s; }
+
+        .disabledBtn { float: right; transition: color 0.3s; }
+
+        .deleteBtn,
+        .modifyBtn,
+        .disabledBtn { display: none; margin-right: 10px; }
+
+        .defalutTxt { display: inline-block; position: absolute; top: 0; right: 70px; color: #999; }
+
+        .itemName { transition: color 0.3s; }
+
+        .listItem { cursor: pointer }
+
+        .listItem:hover .itemName { color: #009688; }
+
+        .listItem:hover { background: #fff; }
+
+        .listItem:hover .hoverColor { width: 8px; }
+
+        .listItem:hover .deleteBtn,
+        .listItem:hover .modifyBtn,
+        .listItem:hover .disabledBtn { display: block; color: #009688; }
+
+        .layui-collapse { margin-bottom: 30px; }
+
+        div.layui-tab-content { padding-left: 0; padding-bottom: 0; }
+
+        .rightTitle { height: 39px; line-height: 39px; }
+
+        div.layui-input-block { margin-left: 0; }
+
+        [v-cloak] { display: none; }
+
+        .cursor { cursor: pointer; }
+
+        .listItem.active { background: #fff; }
+
+        .listItem.active .hoverColor { width: 8px; }
+
+        .zz { width: 100%; height: 100%; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: #f6f8f8; opacity: 0.5; z-index: 999; }
+
+        div.isBlock { display: block; }
+
+        .open { transform: rotate(-90deg); }
+
+        .layui-unselect.layui-form-checkbox.layui-form-checked.layui-checkbox-disbaled.layui-disabled i.layui-icon { background-color: #c9c9c9; border-color: #c9c9c9; }
+    </style>
+
+</head>
+<body id="root" v-cloak>
+    <div class="mainContainer">
+        <blockquote class="layui-elem-quote">
+            <div class="layui-row layui-form">
+                <div class="layui-col-xs10">
+                    <div class="layui-input-inline">
+                        <input placeholder="角色" type="text" name="SearchValue" class="layui-input" v-model="queryFormData.SearchValue">
+                    </div>
+                    <button class="layui-btn layui-btn-primary" lay-submit lay-filter="btn" @click="doSearch">查询</button>
+                </div>
+                <div class="layui-col-xs2" style="text-align: right">
+                    <button class="layui-btn" @click="addRole"><i class="layui-icon">&#xe654;</i> 新增角色</button>
+                </div>
+            </div>
+        </blockquote>
+        <!--<div class="layui-row">
+            <div class="layui-col-xs12" style="height: 50px;text-align: right;">
+                <button class="layui-btn" @click="addRole"><i class="layui-icon">&#xe654;</i> 新增角色</button>
+            </div>
+        </div>-->
+        <div class="layui-row">
+            <div class="layui-col-xs3">
+                <div class="treeData" style="height: 100%;">
+                    <ul class="listBox">
+                        <li v-for="(index, item) in RolesData" @click="selectChange($event, item)" v-bind:class="{'listItem': true, 'active': item.ID == -1}">
+                            <div class='hoverColor'></div>
+                            <div class="tempBox" v-if="item.ID == -1">
+                                <a href="javscript:;" class="itemName">超级管理员</a>
+                                <span class="defalutTxt">系统默认</span>
+                            </div>
+                            <div class='tempBox' v-else>
+                                <a href='javscript:;' class='itemName'>{{item.Name}}</a>
+                                <i class='layui-icon deleteBtn cursor' v-if="item.Valid == 1" @click.stop='deleteThis(item.ID)' title="删除角色" style=" font-size:18px">&#xe640;</i>
+                                <i class='layui-icon modifyBtn cursor' v-if="item.Valid == 1" @click.stop='modifyThis(item.ID)' title="修改角色" style=" font-size:18px">&#xe642;</i>
+                                <!--<i class='layui-icon disabledBtn cursor' v-if="item.Valid == 1" @click.stop='toggleThis($event, item.Valid, item.ID)' title="禁用角色">&#xe614;</i>
+                                <i class='layui-icon disabledBtn cursor' v-if="item.Valid == 0" @click.stop='toggleThis($event, item.Valid, item.ID)' title="启用角色">&#xe620;</i>-->
+                            </div>
+                            <span v-if="item.Valid == 0" class="defalutTxt">已禁用</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!--默认选中超级管理员-->
+            <div class="layui-col-xs9" style="padding-left:15px; border: 1px solid #dedede; border-top-right-radius: 3px;border-bottom-right-radius: 3px; position: relative;" v-if="!submitForm.title">
+                <div class="layui-row">
+                    <div class="layui-col-xs12">
+                        <h3 class="rightTitle" style="padding-right: 15px;padding-top: 15px;">
+                            {{submitForm.title ? submitForm.title : '超级管理员'}}设置
+                            <button class="layui-btn layui-btn-sm layui-btn-disabled" style="float: right;" @click="saveFn">保存</button>
+                        </h3>
+                    </div>
+                </div>
+                <div class="layui-row">
+                    <!-----------------------------------分隔符--------------------------------->
+                    <div class="layui-col-xs12">
+                        <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+                            <ul class="layui-tab-title">
+                                <li v-for="(index, item) in ModulesDataLevel1" v-bind:class="{'layui-this': index == 0}" @click="selectLevel2(item.ID)">
+                                    {{item.Name}}
+                                    <i class="layui-icon" @click.stop="modifyBar(item.ID)">&#xe642;</i>
+                                </li> <!-- 一级模块 -->
+                            </ul>
+                            <div class="layui-tab-content">
+                                <div v-for="(index, item) in ModulesDataLevel1" v-bind:class="{'layui-tab-item': true, 'layui-show': index == 0}">
+                                    <div v-for="(index2, item2) in item.childMenuList" class="layui-collapse" lay-filter="test">
+                                        <!--默认第一个面板开启状态-->
+                                        <div class="layui-colla-item">
+                                            <h2 class="layui-colla-title" @click.stop="Model2Click($event)">
+                                                {{item2.Name}}
+                                                <i class="layui-icon" @click.stop="modifyBar(item2.ID)">&#xe642;</i>
+                                            </h2>  <!-- 二级模块 -->
+                                            <div class="layui-colla-content isBlock">
+                                                <div class="layui-form">
+                                                    <div class="layui-form-item" pane="">
+                                                        <div class="layui-input-block">
+                                                            <div style="display:inline-block;margin-right: 10px;" v-for="(index3, item3) in item2.ModuleMenuList">
+                                                                <input type="checkbox" lay-filter="hahaha" lay-skin="primary" title="{{item3.Name}}" lay-id="{{item3.ID}}" checked disabled />
+                                                                <i class="layui-icon" @click="modifyClue(item3.ID,item3.Name)" style="position: relative;top: 6px;right: 15px;cursor: pointer;">&#xe642;</i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--end-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--end-->
+            <!--超级管理员外的列表-->
+            <div class="layui-col-xs9" style="padding-left:15px; border: 1px solid #dedede; border-top-right-radius: 3px;border-bottom-right-radius: 3px; position: relative;" v-else>
+                <div class="layui-row">
+                    <div class="layui-col-xs12">
+                        <h3 class="rightTitle" style="padding-right: 15px;padding-top: 15px;">
+                            {{submitForm.title ? submitForm.title : '超级管理员'}}设置
+                            <button class="layui-btn layui-btn-sm" v-if="submitForm.valid == 1 && submitForm.title != '超级管理员'" style="float: right;" @click="saveFn">保存</button>
+                            <button class="layui-btn layui-btn-sm layui-btn-disabled" v-if="submitForm.valid == 0 || submitForm.title == '超级管理员'" style="float: right;">保存</button>
+                        </h3>
+                    </div>
+                </div>
+                <div class="layui-row">
+                    <!-----------------------------------分隔符--------------------------------->
+                    <div class="layui-col-xs12">
+                        <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+                            <ul class="layui-tab-title">
+                                <li v-for="(index, item) in ModulesDataLevel1" v-bind:class="{'layui-this': index == 0}" @click="selectLevel2(item.ID)">
+                                    {{item.Name}}
+                                    <i class="layui-icon" v-if="submitForm.id == -1" @click.stop="modifyBar(item.ID)">&#xe642;</i>
+                                    <i class="layui-icon" v-if="submitForm.id != -1" style="display: inherit; width:16px; height:17px; position: relative;top: 6px;right: 15px;cursor: pointer;">&nbsp;</i>
+                                </li> <!-- 一级模块 -->
+                            </ul>
+                            <!--判断内容是否禁用-->
+                            <div class="layui-tab-content" v-if="submitForm.valid == 1 && submitForm.id != -1">
+                                <div v-for="(index, item) in ModulesDataLevel1" v-bind:class="{'layui-tab-item': true, 'layui-show': index == 0}">
+                                    <div v-for="(index2, item2) in item.childMenuList" class="layui-collapse" lay-filter="test">
+                                        <!--默认开启第一个面板-->
+                                        <div class="layui-colla-item">
+                                            <h2 class="layui-colla-title" @click.stop="Model2Click($event)">
+                                                {{item2.Name}}
+                                                <!--<i class="layui-icon" @click.stop="modifyTitle(item2.ID)">&#xe642;</i>-->
+                                            </h2>  <!-- 二级模块 -->
+                                            <div class="layui-colla-content isBlock">
+                                                <div class="layui-form">
+                                                    <div class="layui-form-item" pane="">
+                                                        <div class="layui-input-block">
+                                                            <div style="display:inline-block;margin-right: 10px;" v-for="(index3, item3) in item2.ModuleMenuList">
+                                                                <input type="checkbox" lay-filter="hahaha" lay-skin="primary" title="{{item3.Name}}" lay-id="{{item3.ID}}">
+                                                                <i class="layui-icon" style="display: inherit; width:16px; height:17px; position: relative;top: 6px;right: 15px;cursor: pointer;">&nbsp;</i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--end-->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-tab-content" v-if="submitForm.valid == 1 && submitForm.id == -1">
+                                <div v-for="(index, item) in ModulesDataLevel1" v-bind:class="{'layui-tab-item': true, 'layui-show': index == 0}">
+                                    <div v-for="(index2, item2) in item.childMenuList" class="layui-collapse" lay-filter="test">
+                                        <!--默认开启第一个面板-->
+                                        <div class="layui-colla-item">
+                                            <h2 class="layui-colla-title" @click.stop="Model2Click($event)">
+                                                {{item2.Name}}
+                                                <i class="layui-icon" @click.stop="modifyBar(item2.ID)">&#xe642;</i>
+                                            </h2>  <!-- 二级模块 -->
+                                            <div class="layui-colla-content isBlock">
+                                                <div class="layui-form">
+                                                    <div class="layui-form-item" pane="">
+                                                        <div class="layui-input-block">
+                                                            <div style="display:inline-block;margin-right: 10px;" v-for="(index3, item3) in item2.ModuleMenuList">
+                                                                <input type="checkbox" lay-filter="hahaha" lay-skin="primary" title="{{item3.Name}}" lay-id="{{item3.ID}}" checked disabled>
+                                                                <i class="layui-icon" @click="modifyClue(item3.ID,item3.Name)" style="position: relative;top: 6px;right: 15px;cursor: pointer;">&#xe642;</i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--end-->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-tab-content" v-if="submitForm.valid == 0">
+                                <div v-for="(index, item) in ModulesDataLevel1" v-bind:class="{'layui-tab-item': true, 'layui-show': index == 0}">
+                                    <div v-for="(index2, item2) in item.childMenuList" class="layui-collapse" lay-filter="test">
+                                        <!--默认开启第一个面板-->
+                                        <div class="layui-colla-item">
+                                            <h2 class="layui-colla-title" @click.stop="Model2Click($event)">
+                                                {{item2.Name}}
+                                                <i class="layui-icon" style="display: inherit; width:16px; height:17px; position: relative;top: 6px;right: 15px;cursor: pointer;">&nbsp;</i>
+                                            </h2>  <!-- 二级模块 -->
+                                            <div class="layui-colla-content isBlock">
+                                                <div class="layui-form">
+                                                    <div class="layui-form-item" pane="">
+                                                        <div class="layui-input-block">
+                                                            <div style="display:inline-block;margin-right: 10px;" v-for="(index3, item3) in item2.ModuleMenuList">
+                                                                <input type="checkbox" lay-filter="hahaha" lay-skin="primary" title="{{item3.Name}}" lay-id="{{item3.ID}}" disabled>
+                                                                <i class="layui-icon" style="display: inherit; width:16px; height:17px; position: relative;top: 6px;right: 15px;cursor: pointer;">&nbsp;</i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--end-->
+                                    </div>
+                                </div>
+                            </div>
+                            <!--end-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--end-->
+        </div>
+    </div>
+</body>
+</html>
+<script src="../../Resources/js/jquery.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="../../Resources/js/Controls/SortTable.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "element", "linq"],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+            var element = layui.element;
+            var linq = layui.linq;
+
+            GetParentQueryString = function (name) {
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+                var r = window.parent.location.search.substr(1).match(reg);
+                if (r != null) return decodeURIComponent(r[2]);
+                return undefined;
+            };
+            var chbArr;
+            window.rootApp = new Vue({
+                el: "#root",
+                data: {
+                    submitForm: {
+                        title: '',
+                        id: '',
+                        valid: 1
+                    },
+                    chbArr: [],  //多选集合
+                    RolesData: [],  //角色集合
+                    ModulesDataLevel1: [],  //一级模块集合
+                    ModulesDataLevel2: [],   //二级模块集合
+                    ChildModules: [], //选择子模块集合
+                    MenusData: [],  //菜单集合
+                    itemMenuData: [],
+                    menuList: '',
+                    item: {},
+                    ceshiArr: [],
+                },
+                ready: function () {
+                    this.RolesFn(); //加载角色
+                    this.ModulesFn(); //加载模块
+                },
+                methods: {
+                    modifyBar: function (id) {
+                        var self = this;
+                        fnr.openDialog({
+                            title: '菜单修改',
+                            area: ['550px', '200px'],
+                            content: ['./UpdateModuleCustomize.html?ID=' + id],
+                            btn: ['确认修改'],
+                            yes: function (index, layero) {
+                                var iframeWin = window[layero.find('iframe')[0]['name']];
+                                $(iframeWin.document).find(".layui-btn").click();
+                            },
+                            events: {
+                                refresh: function (data) {
+                                    //self.RolesData = [];
+                                    //self.RolesFn();
+                                    linq.from(self.ModulesDataLevel1).where(i => i.ID == id).forEach(function (v) {
+                                        v.Name = data;
+                                    });
+                                    linq.from(self.ModulesDataLevel1).forEach(function (v) {
+                                        linq.from(v.childMenuList).where(i => i.ID == id).forEach(function (_v) {
+                                            _v.Name = data;
+                                        });
+                                    });
+
+                                    self.ModulesFn();
+                                    layer.msg("修改成功");
+                                }
+                            },
+                        });
+                    },
+                    //修改菜单名
+                    modifyClue: function (id, name) {
+                        var self = this;
+                        fnr.openDialog({
+                            title: '菜单修改',
+                            area: ['550px', '360px'],
+                            content: ['./UpdateMenuCustomize.html?ID=' + id + '&Name=' + name + '','no'],
+                            btn: ['确认修改'],
+                                yes: function (index, layero) {
+                                    var iframeWin = window[layero.find('iframe')[0]['name']];
+                                    $(iframeWin.document).find(".layui-btn").click();
+                                },
+                                events: {
+                                refresh: function (data) {
+                                    //self.RolesData = [];
+                                    //self.RolesFn();
+                                    linq.from(self.ModulesDataLevel1).select(x => x.childMenuList).forEach(function (v) {
+                                        v.map(function (v, k) {
+                                            linq.from(v.ModuleMenuList).where(y => y.ID == id).forEach(function (_v) { _v.Name = data; });
+                                        });
+                                    });
+                                    self.ModulesFn();
+                                    layer.msg("修改成功");
+                                }
+                            },
+                        });
+                    },
+
+                    //修改面板title
+                    //modifyTitle: function (id) {
+                    //    var self = this;
+                    //    fnr.openDialog({
+                    //        title: '模块自定义修改',
+                    //        area: ['550px', '200px'],
+                    //        content: ['./UpdateModuleCustomize.html?ID=' + id],
+                    //        btn: ['确认修改'],
+                    //        yes: function (index, layero) {
+                    //            var iframeWin = window[layero.find('iframe')[0]['name']];
+                    //            $(iframeWin.document).find(".layui-btn").click();
+                    //        },
+                    //        events: {
+                    //            refresh: function (data) {
+                    //                //self.RolesData = [];
+                    //                //self.RolesFn();
+                    //                self.ModulesFn();
+                    //                layer.msg("修改成功")
+                    //            }
+                    //        },
+                    //    });
+                    //},
+
+                    Model2Click: function (e) {
+                        var self = this;
+                        var ev = e.target || e.srcElement || e.toElement;
+                        if ($(ev).hasClass('layui-colla-title')) {
+                            $(ev).next().slideToggle();
+                            if (!$(ev).find('i:not(:first-child)').hasClass('open')) {
+                                $(ev).find('i:not(:first-child)').addClass('open');
+                            } else {
+                                $(ev).find('i:not(:first-child)').removeClass('open');
+                            }
+                        } else {
+                            $(ev).parent().next().slideToggle();
+                            if (!$(ev).hasClass('open')) {
+                                $(ev).addClass('open');
+                            } else {
+                                $(ev).removeClass('open');
+                            }
+                        }
+                    },
+
+                    selectChange: function (e, item) {
+                        var self = this;
+                        var ev = e.target || e.srcElement || e.toElement;
+                        if ($(ev).hasClass('tempBox')) {
+
+                            if (!$(ev).parent('li').hasClass('active')) {
+                                $(ev).parent('li').addClass('active').siblings().removeClass('active');
+                                if (item.ID != -1) {
+                                    self.$nextTick(function () {
+                                        self.ModulesFn();
+                                        self.item = item;
+                                        if (item.MenuList != null) {
+                                            self.menuList = '';
+                                            self.menuList = item.MenuList;
+                                            $.each(self.menuList.split(','), function (k, v) {
+                                                if ($("input:checkbox[lay-id='" + v + "']")[0]) {
+                                                    $("input:checkbox[lay-id='" + v + "']")[0].checked = false;
+                                                    $("input:checkbox[lay-id='" + v + "']").next().trigger('click');
+                                                }
+                                            });
+                                        }
+                                    });
+                                } else {
+                                    var s = $("input:checkbox");
+                                    $.each(s, function (k, v) {
+                                        $(v).next().find('i').css({ 'backgroundColor': '#c9c9c9', 'borderColor': '#c9c9c9' });
+                                        $(v)[0].checked = false;
+                                        $(v).next().trigger('click');
+                                        $(v)[0].disabled = false;
+                                    });
+                                }
+                            } else {
+                                return;
+                            }
+                        } else {
+                            if (!$(ev).parents('li').hasClass('active')) {
+                                $(ev).parents('li').addClass('active').siblings().removeClass('active');
+                                if (item.ID != -1) {
+                                    self.$nextTick(function () {
+                                        self.ModulesFn();
+                                        self.item = item;
+                                        if (item.MenuList != null) {
+                                            self.menuList = '';
+                                            self.menuList = item.MenuList;
+                                            $.each(self.menuList.split(','), function (k, v) {
+                                                if ($("input:checkbox[lay-id='" + v + "']")[0]) {
+                                                    $("input:checkbox[lay-id='" + v + "']")[0].checked = false;
+                                                    $("input:checkbox[lay-id='" + v + "']").next().trigger('click');
+                                                }
+                                            });
+                                        }
+                                    });
+                                } else {
+                                    var s = $("input:checkbox");
+                                    $.each(s, function (k, v) {
+                                        $(v)[0].checked = false;
+                                        $(v).next().trigger('click');
+                                        $(v)[0].disabled = false;
+                                    });
+                                }
+                            } else {
+                                return;
+                            }
+                        }
+
+                        //修改线索接口传入的ID
+                        self.submitForm.id = item.ID;
+                        self.submitForm.title = item.Name;
+                        self.submitForm.valid = item.Valid;
+
+                    },
+                    selectLevel2: function (module_id) {
+                        var self = this;
+                        self.ChildModules = [];
+                        $.each(self.ModulesDataLevel2, function (k, v) {
+                            if (v.PID == module_id) {
+                                self.ChildModules.push(v);
+                            }
+                        });
+                        self.$nextTick(function () {
+                            if (self.item.MenuList != null) {
+                                self.menuList = self.item.MenuList;
+                                $.each(self.menuList.split(','), function (k, v) {
+                                    $("input:checkbox[lay-id='" + v + "']").prop("checked", "checked");
+                                });
+                            }
+                            layui.form.render('checkbox');
+                        });
+
+
+                    },
+                    toggleThis: function (e, valid, id) {
+                        var self = this;
+                        var ev = e.target || e.srcElement || e.toElement;
+                        layer.confirm('确认要' + (valid == 1 ? '禁用' : '启用') + '么?', { icon: 3, title: '提示' }, function (index) {
+                            $.post("/service/hr/Role/RoleValid", { Valid: valid == 1 ? 0 : 1, ID: id }, function (res) {
+                                if (res.SuccessResponse) {
+                                    self.RolesData = [];
+                                    self.RolesFn();
+                                }
+                                else {
+                                    layer.msg(res.Message)
+                                }
+                            });
+                            $(ev).siblings('i').toggle();
+                            layer.close(index);
+                        });
+                    },
+                    RolesFn: function (callback) {
+                        var self = this;
+                        $.get("/service/hr/Role/GetAllRole?Valid=-1&Include_Admin=1", function (rsp) {
+                            if (rsp.SuccessResponse) {
+                                if (rsp.Data) {
+                                    $.each(rsp.Data, function (x, y) {
+                                        if (y.Valid)
+                                            self.RolesData.push(y);
+                                    });
+                                    if (typeof callback == 'function') {
+                                        callback();
+                                    }
+                                }
+                            }
+                        });
+                    },
+                    ModulesFn: function () {
+                        var self = this;
+                        if (self.ModulesDataLevel1.length == 0) {
+                            $.get("/service/hr/Module/GetAllModules", function (rsp) {
+                                if (rsp.SuccessResponse) {
+                                    self.ModulesDataLevel1 = [];
+                                    self.ModulesDataLevel2 = [];
+                                    $.each(rsp.Data, function (k, v) {
+                                        if (v.PID == 0) {
+                                            self.ModulesDataLevel1.push(v); //一级模块
+                                        } else {
+                                            self.ModulesDataLevel2.push(v); //二级模块
+                                        }
+                                    });
+                                    $.each(self.ModulesDataLevel1, function (k, v) {
+                                        v.childMenuList = [];
+                                        $.each(self.ModulesDataLevel2, function (_k, _v) {
+                                            if (v.ID == _v.PID) {
+                                                v.childMenuList.push(_v);
+                                            }
+                                        });
+                                    });
+                                    self.selectLevel2(self.ModulesDataLevel1[0].ID);
+                                }
+                            });
+                        } else
+                            self.selectLevel2(self.ModulesDataLevel1[0].ID);
+                    },
+                    addRole: function () {
+                        var self = this;
+                        fnr.openDialog({
+                            title: '添加角色',
+                            area: ['550px', '200px'],
+                            content: ['./addRole.html?Stationproxy_ID=0'],
+                            btn: ['确认添加'],
+                            yes: function (index, layero) {
+                                var iframeWin = window[layero.find('iframe')[0]['name']];
+                                $(iframeWin.document).find(".layui-btn").click();
+                            },
+                            events: {
+                                refresh: function (data) {
+                                    self.RolesData = [];
+                                    self.RolesFn(function () {
+                                        self.$nextTick(function () {
+                                            layui.$("ul.listBox li.active").removeClass("active")
+                                            layui.$("ul.listBox li").eq(1).addClass("active").click();
+                                        });
+                                    });
+                                    layer.msg("添加成功！");
+                                }
+                            },
+                        });
+                    },
+                    doSearch: function (e) {
+
+                    },
+
+                    //删除
+                    deleteThis: function (id) {
+                        var self = this;
+                        layer.confirm('确认要删除么?', { icon: 3, title: '提示' }, function (index) {
+                            $.post("/service/hr/Role/RoleRemove", { ID: id }, function (res) {
+                                if (res.SuccessResponse) {
+                                    self.RolesData = [];
+                                    self.RolesFn();
+                                    layer.msg("删除成功！");
+                                }
+                                else {
+                                    layer.msg(res.Message)
+                                }
+                            });
+                            layer.close(index);
+                        });
+                    },
+
+                    //修改
+                    modifyThis: function (id) {
+                        var self = this;
+                        fnr.openDialog({
+                            title: '修改角色',
+                            area: ['500px', '250px'],
+                            content: ['./addRole.html?ID=' + id + '&Stationproxy_ID=0'],
+                            btn: ['确认修改'],
+                            yes: function (index, layero) {
+                                var iframeWin = window[layero.find('iframe')[0]['name']];
+                                $(iframeWin.document).find(".layui-btn").click();
+                            },
+                            events: {
+                                refresh: function (data) {
+                                    self.RolesData = [];
+                                    self.RolesFn();
+                                    layer.msg("修改成功")
+                                }
+                            },
+                        });
+                    },
+
+                    saveFn: function () {
+                        var self = this;
+                        var s = $('input[type="checkbox"]');
+                        var n = [];
+                        $.each(s, function (k, v) {
+                            if ($(v).next().hasClass('layui-form-checked')) {
+                                n.push($(v).attr('lay-id'));
+                            }
+                        });
+                        $.post('/service/hr/Role/RoleUpdateMenuList', { ID: self.submitForm.id, MenuList: n.join(',') }, function (res) {
+                            if (res.SuccessResponse) {
+                                layer.msg('保存成功');
+
+                                $.each(self.RolesData, function (x, y) {
+                                    if (y.ID == self.submitForm.id) {
+                                        y.MenuList = n.join(',');
+                                    }
+                                })
+                            }
+                        });
+                    }
+                }
+            });
+
+        });
+</script>

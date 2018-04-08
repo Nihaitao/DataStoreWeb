@@ -1,0 +1,681 @@
+﻿@font-face {
+	font-family: 'iconfont';
+	src: url('iconfont.eot');
+	src: url('iconfont.eot?#iefix') format('embedded-opentype'), url('iconfont.woff') format('woff'), url('iconfont.ttf') format('truetype'), url('iconfont.svg#iconfont') format('svg');
+}
+
+.iconfont {
+	font-family: "iconfont" !important;
+	font-size: 16px;
+	font-style: normal;
+	-webkit-font-smoothing: antialiased;
+	-webkit-text-stroke-width: 0.2px;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.jiaofei {
+	margin-right: 5px;
+}
+
+
+/*定位属性*/
+
+.position {
+	position: absolute;
+}
+
+
+/*立即缴费*/
+
+.count {
+	padding: 18px 20px 20px 0px;
+	background: white;
+	border-radius: 5px;
+}
+
+.count_top {
+	margin-top: 20px;
+}
+
+h2.count_title {
+	line-height: 16px;
+	font-size: 16px;
+	text-indent: 17px;
+	border-left: 3px solid #ed4242;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	font-weight: 600;
+}
+
+.count_list {
+	margin: 23px 18px 25px 20px;
+	text-align: center;
+	border-bottom: 2px solid #F1F1F1;
+}
+
+.clearfix_1 {
+	overflow: hidden;
+}
+
+.count_list ul.t_radiusTop {
+	background: #f1f1f1;
+	border-radius: 5px;
+	padding-top: 15px;
+	padding-bottom: 12px;
+	font-weight: 600;
+}
+
+.count_list ul.t_radiusBottom {
+	position: relative;
+	padding-top: 15px;
+	padding-bottom: 18px;
+	font-weight: 500;
+}
+
+.count_list ul.t_list li {
+	width: 130px;
+	float: left;
+}
+
+p.txt {
+	width: 545px;
+	height: 60px;
+	font-size: 14px;
+	color: #999999;
+	margin-left: 18px;
+	font-weight: 500;
+	font-family: "微软雅黑";
+	line-height: 24px;
+}
+
+span._recharge {
+	right: 0px;
+	top: 10px;
+	display: inline-block;
+	padding: 3px 15px;
+	background: #f66401;
+	border-radius: 5px;
+	color: white;
+	float: left;
+	margin-left: 20px;
+    cursor:pointer;
+}
+
+
+/*自学考试本科-人力资源管理(已毕业)*/
+
+.self_taught ul.selfList {
+	background: #F1F1F1;
+	border-radius: 5px;
+	padding-top: 12px;
+	padding-bottom: 12px;
+	font-weight: 600;
+	margin-left: 20px;
+}
+
+ul.selfList {
+	margin: 23px 18px 0px 20px;
+	padding-left: 40px;
+}
+
+.self_taught ul.selfList li {
+	padding-right: 66px;
+	float: left;
+	text-align: center;
+}
+
+.zikaoAll {
+	padding: 0px 20px 0px 20px;
+}
+
+.databox {
+	position: relative;
+	border-bottom: 2px dashed #F1F1F1;
+	margin: 0px 20px 0px 17px;
+	padding-left: 20px;
+	padding-bottom: 8px;
+}
+
+ul.Paytit {
+	position: relative;
+}
+
+ul.Paytit span {
+	right: 0;
+	top: 0px;
+	padding: 2px 10px;
+	background: #f66401;
+	display: inline-block;
+	border-radius: 5px;
+	margin-top: 12px;
+	color: white;
+	cursor: pointer;
+}
+
+ul.Paytit li {
+	width: 120px;
+	float: left;
+	text-align: center;
+	line-height: 50px;
+}
+
+.timeline {
+	position: absolute;
+	top: 21px;
+	left: 7px;
+	width: 9px;
+	height: 9px;
+	margin-bottom: 34px;
+	background: #dddddd;
+	border-radius: 50%;
+}
+
+.datalist .time {
+	position: absolute;
+	top: 18px;
+	left: -13px;
+	width: 8px;
+	height: 8px;
+	background: #dddddd;
+	border: 1px solid #F1F1F1;
+	border-radius: 50%;
+}
+
+.datalist .time:after {
+	position: absolute;
+	top: -39px;
+	left: 3px;
+	content: "";
+	display: block;
+	width: 1px;
+	height: 39px;
+	border-left: 1px solid #dddddd;
+}
+
+.Paylist div.datalist {
+	position: relative;
+	padding: 12px 0px 10px 15px;
+	font-size: 14px;
+	color: #999999;
+}
+
+.Paylist div.datalist time,
+.Paylist div.datalist p {
+	display: inline-block;
+	padding-right: 12px;
+}
+
+.moneyColor {
+	color: #FF4E33;
+}
+
+p.prompt {
+	font-size: 14px;
+	color: black;
+	margin-left: 18px;
+	font-weight: 500;
+	font-family: "微软雅黑";
+	padding-top: 25px;
+}
+
+p.prompt .spanyouyiyi {
+	position: relative;
+	color: #ed4242;
+	padding-left: 27px;
+}
+
+p.prompt .spanquerenwuwu {
+	position: relative;
+	color: #64c677;
+	padding-left: 27px;
+}
+
+.ico {
+	display: inline-block;
+	float: right;
+	padding-right: 10px;
+}
+
+.youyiyi {
+	font-size: 26px;
+	color: #ed4242;
+}
+
+.querenwuwu {
+	font-size: 26px;
+	color: #64c677;
+}
+
+.absoluteIco {
+	position: absolute;
+	left: 0px;
+	top: -4px;
+}
+
+/*有异议 已确认 */
+div.textyouyiyi{
+    font-size: 14px; 
+    padding-right: 18px; 
+    color:#ed4242;
+    font-weight:600;
+}
+div.textyiqueren{
+    font-size: 14px; 
+    padding-right: 18px; 
+    color:#64c677;
+    font-weight:600;
+}
+
+
+/*充值页面*/
+.chongzhiBg{
+	background:#F1F1F1;
+}
+.marginsx{
+	margin: 0px 20px;
+}
+p.icoDitui{
+	font-size: 16px;
+	color: black;
+	font-weight: 500;
+	margin-top: 20px;
+}
+p.icoDitui i{
+	padding-right: 12px;
+}
+div.chongzhi{
+	padding-top:20px;
+	padding-bottom: 10px;
+	margin-top: 20px;
+	border-radius: 5px;
+	background: white;
+}
+div.chongzhi > h3{
+	border-left:3px solid #ed4242;
+	font-size:16px;
+	font-weight:500;
+	text-indent: 17px;
+	line-height:20px;
+	margin-bottom: 20PX;
+}
+div.chongzhi .chongzhiList{
+	margin: 0px 20px;
+	border-bottom: 1px dashed  #D0D0D0;
+}
+div.chongzhi .chongzhiTime time{
+	display: inline-block;
+	padding: 5px 0px;
+	padding-right: 8px;
+	color: #666666;
+}
+div.chongzhiList li{
+	width: 50%;
+	float:left;
+}
+.cztishi{
+	padding: 15px 0px;
+}
+.cztishi span{
+	color: #fe6c00;
+}
+div.money{
+	text-align: right;
+	padding: 15px 0px;
+}
+.num{
+	font-size: 32px; 
+	font-weight: 600;
+	color: #ed4242;
+}
+div.money span.pay{
+	display: inline-block;
+	font-size: 14px;
+	padding: 6px 20px;
+	background: #ed4242;
+	color: white;
+	border-radius:5px;
+	margin: 20px 0px;
+}
+.paytable th{
+	text-align: center;
+	padding: 12px 0px;
+	border-bottom: 1px solid #d0d0d0; 
+	background: #E3E3E3;
+}
+.paytable td{
+	padding-top: 10px;
+}
+.paytable{
+	border:1px solid #D0D0D0; width: 100%;
+	text-align: center;
+}
+input[type=radio]{
+	vertical-align: top;
+	margin-right: 10px;
+	cursor: pointer;
+}
+.paytable input[type=text]{
+	width: 70px;
+	height:26px;
+	margin-left: 12px;
+	border: 1px solid #D4D4D4;
+	text-indent: 8px;
+	border-radius: 3px;
+}
+.paytable .thTd{
+	border-left: 1px solid #D0D0D0; width: 600px
+}
+.paytable td.cssTd div{
+	text-align: left;
+	padding-left: 228px;
+	padding-bottom: 8px;
+}
+.trpayList{
+	height:133px;
+}
+/*我的余额*/
+table.BalanceList {
+	width: 100%;
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+
+table.BalanceList th{
+	width: 5%;
+	line-height: 40px;
+	text-align: center;
+	background: #F1F1F1;
+	border-bottom: 1px solid #F1F1F1;
+}
+table.BalanceList td{
+	width: 5%;
+	line-height: 40px;
+}
+.allBalanceLeft{
+	width: 275px;
+	float: left;
+	border-right: 1px dashed #F1F1F1;
+}
+.allBalanceLeft p{
+	font-size: 12px;
+	font-weight: 600;
+	margin: 5px 0px;
+}
+.RechargeRight{
+	margin: 0px 30px;
+	float: left;
+}
+.RechargeRight p{
+	margin-left: 0px;
+}
+.RechargeRight div.RechargeBnt span{
+	display: inline-block;
+	font-size:16px;
+	padding: 3px 12px;
+	margin: 30px 0px;
+	background: #f66401;
+	border-radius: 5px;
+	color:white;
+}
+.textCenter{
+	text-align: center;
+}
+.allNum{
+	font-size: 32px;
+	color:#ed4242;
+	padding: 0px 8px;
+
+}
+
+
+
+
+/*过程性考核-培养计划*/
+
+.main .blockBgColor{
+	background: white;
+	border-radius:5px;
+}
+.main .courseTitle{
+	width: 100%;
+	line-height: 60px;
+	margin-bottom: 20px;
+	font-size: 16px;
+	text-indent: 18px;
+	color: #ED4242;
+}
+.main .courseBox{
+	padding:18px 18px 288px;
+    margin-bottom:50px;
+}
+ul.listTitle li{
+	float:left;
+	width: calc(100% / 6);
+	line-height: 50px;
+	background: #f7f7f7;
+	text-align: center;
+}
+.main .listKec{
+	text-align: center;
+	border: 1px solid #f7f7f7;
+	border-top:none;
+}
+.listKec > div{
+	line-height: 50px;
+}
+.listKec ul li input[type=checkbox]{
+	width: 15px;
+	height: 15px;
+	vertical-align: sub;
+}
+ul.liX6_list li{
+	width: calc(100% / 6);
+	float:left;
+    overflow:hidden;white-space: nowrap;text-overflow: ellipsis;
+}
+.kecheng ul.list_wu {
+    border-bottom:1px solid #f7f7f7;
+}
+ .kecheng ul.list_wu li{
+	width: calc(100% / 5);
+	float: left;
+    overflow:hidden;white-space: nowrap;text-overflow: ellipsis;
+}
+.kecheng ul.bottomLine li {
+    width: calc(100% / 7);
+	float: left;
+    overflow:hidden;white-space: nowrap;text-overflow: ellipsis;
+}
+.main .signUp{
+	text-align: right;
+}
+.main .signUp span{
+	display: inline-block;
+	padding:8px 20px;
+	margin: 20px 0px;
+	background: #ed4242;
+	color:white;
+	font-size: 14px;
+	border-radius:5px;
+	cursor:pointer;
+}
+.kecheng ul li.L_border{
+	border-left: 1px solid #f7f7f7;
+}
+.bottomLine{
+	border-bottom: 1px solid #f7f7f7;
+}
+.kecheng ul:nth-last-child(1){
+	border-bottom:none;
+}
+.ico_delete{
+	font-size: 20px;
+	color: #ED4242;
+	cursor: pointer;
+}
+
+/*确认报考*/
+
+.list_title li{
+	float:left;
+	width: 137px;
+	line-height: 50px;
+	background: #f7f7f7;
+	text-align: center;
+}
+
+.shenming_txt{
+	position: relative;
+	padding:10px 0px;
+}
+.shenming_txt p{
+	padding-bottom: 20px;
+}
+.shenming_txt span.color_span{
+	color: #f66401;
+}
+.shenming_txt .see{
+	position: absolute;
+	display: inline-block;
+	right: 0px;
+	bottom: 20px;
+	padding: 8px 15px ;
+	background: #0bac52;
+	font-size: 14px;
+	color: white;
+	border-radius: 5px;
+	cursor: pointer;
+}
+/*弹出层*/
+.tanchuBigBox{
+	position: fixed;
+	top: 0;
+	left: 0;width: 100%; height: 100%; background: rgba(0,0,0,.4);
+	display: none;
+}
+
+.tanchuBox{
+	position: fixed;
+	top:50%;
+	left:50%;
+	display: block;
+	width: 1000px; 
+	height: 700px;
+	margin-top: -350px;
+	transform: translateX(-50%);
+	background: white;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+    overflow-y:auto;
+}
+.tanchuBox_tit{
+	font-size: 16px;
+	text-indent: 30px;
+	padding: 15px 20px 15px 0px;
+}
+.tanchuBox ul li{
+	float: left;
+	width: calc(100% / 4);
+	text-align: center;
+}
+.bottomLine_tchu{
+	line-height: 50px;
+	border-bottom: 1px dashed #F1F1F1;
+}
+.Close{
+	position: relative;
+	display: inline-block;
+	width:25px;
+	height: 25px;
+	background: #9a9a9a;
+	border-radius: 50%;
+	float: right;
+	cursor: pointer;
+}
+.Close:hover{
+	background: #ED4242;
+}
+.Close:before {
+    position: absolute;
+    left: 11px;
+    top: 4px;
+    content: "";
+    width: 3px;
+    height: 17px;
+    background: white;
+    transform: rotate(-45deg);
+}
+.Close:after {
+    position: absolute;
+    left: 11px;
+    top: 4px;
+    content: "";
+    width: 3px;
+    height: 17px;
+    background: white;
+    transform: rotate(45deg);
+ }
+
+
+
+
+/*报考支付订单*/
+p.zf_tishi{
+	padding-top: 28px;
+	color: #999999;
+}
+.signUp .moneyNum{
+	font-size: 24px;
+	font-weight: 600;
+	color: #ED4242;
+	margin-left: 15px;
+}
+.signUp span.spanChoice{
+	background: #0bac52;
+	color:white;
+}
+.signUp span.spanPayment{
+	background: #f66401;
+	color:white;
+	margin-left: 20px;
+}
+.signUp_delete{
+	padding: 5px 15px;
+	border:1px solid #e0e0e0;
+	cursor: pointer;
+	border-radius: 5px;
+	color: #999;
+}
+.delete:hover{
+	background: #ED4242;
+	color: white;
+	border: 1px solid #ED4242;
+}
+
+
+
+
+/**/
+.list_box {
+    border:1px solid #f7f7f7;
+}
+.list_box thead tr th{
+    width:137px;
+    line-height:50px;
+    text-align:center;
+    background:#f7f7f7;
+}
+.list_box tbody tr td {
+    line-height:50px;
+}
+.list_box tbody tr {
+    border-bottom:1px solid #f7f7f7;
+}
+.list_box tbody tr td.R_border{
+    border-right:1px solid #f7f7f7;
+}
+.gou{
+    font-size: 22px;
+    color: #0bac52;
+}

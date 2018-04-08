@@ -1,0 +1,345 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我的答疑</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="../../Resources/fonts/iconfont.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../../Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link href="../../Resources/CSS/Font/css/font-awesome.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../../Resources/CSS/PC_css.css">
+    <script src="../../script/artTemplate.js"></script>
+    <link href="../../Resources/CSS/question.css" rel="stylesheet" />
+    <style>
+        .Pro-showList {
+            min-height: 510px;
+        }
+
+        .Pro-pageCount {
+            margin-bottom: 0px;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body style="background-color: #f7f7f7;user-select: none;" id="root">
+    <!--顶部-->
+    <!--#<!--#include file="../UserControl/stepHeader.html"-->
+    <!--学校图标以及当前专业-->
+    <div class="nav">
+        <div class="w1200 clearfix">
+            <div class="nav-header pull-left">
+                <a href="#"><img src="../Resources/images/hd.png" /></a>
+            </div>
+            <div class="nav-bar-right pull-right">
+                <div class="toggle-switch">
+                    <span class="inlineblock subject-label">当前专业</span>
+                    <div class="drowntoggle inlineblock">
+                        <i class="iconfont icon-zuotijilu"></i>
+                        <span class="current">自学考试-本科-人力资源管理</span>
+                        <i class="glyphicon glyphicon-triangle-bottom"></i>
+                    </div>
+                    <div class="drownmenu">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="w1200 clearfix">
+        <!--左侧导航-->
+        <div class="nav-left">
+            <div class="nav-title">
+                <h3>首页</h3>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">我的网课</div>
+                <ul class="sub-nav">
+                    <li><a href="#"><i class="iconfont icon-kechengguanli"></i>课程管理</a></li>
+                    <li><i class="iconfont icon-tingkejilu"></i>听课记录</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">我的题库</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-kaishizuoti"></i>开始做题</li>
+                    <li><i class="iconfont icon-zuotijilu"></i>做题记录</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">我的学费</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-lijijiaofei"></i>立即缴费</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">我的教务</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-wodechengji"></i>我的成绩</li>
+                    <li><i class="iconfont icon-wodebaokao"></i>我的报考</li>
+                    <li><i class="iconfont icon-wodeshuji"></i>我的书籍</li>
+                    <li><i class="iconfont icon-lianxijilu"></i>联系记录</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">我要毕业</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-xuexijindu"></i>学习进度</li>
+                    <li><i class="iconfont icon-lunwendabian"></i>论文答辩</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">个人管理</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-wodedingdan"></i>我的订单</li>
+                    <li><i class="iconfont icon-zhanghaoshezhi"></i>账号设置</li>
+                    <li><i class="iconfont icon-tousuyutiwen"></i>投诉提问</li>
+                    <li><i class="iconfont icon-xiaoxizhongxin"></i>消息中心</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">过程性考核</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-kaishixuexi"></i>开始学习</li>
+                    <li><i class="iconfont icon-peiyangjihua"></i>培养计划</li>
+                    <li><i class="iconfont icon-xuankeguanli"></i>选课管理</li>
+                    <li><i class="iconfont icon-chengjichaxun"></i>成绩查询</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="main" v-cloak>
+            <div class="order-top">
+                <ul class="orderTabs">
+                    <li class="active" data-id="0" style="cursor:pointer">已购课程</li>
+                    <li data-id="1" style="cursor:pointer">我的答疑</li>
+                    <li data-id="2" style="cursor:pointer">我的评论</li>
+                </ul>
+            </div>
+            <div class="order-middle">
+                <b></b>
+                <div class="record-main">
+                    <div class="showPages">
+                        <ul class="course_yes">
+                            <li v-for="item in CourseList">
+                                <div class="recordRight clearfix" style="display: table; width: 100%; padding: 20px 30px; border-bottom: 1px solid #f3f3f3;">
+
+                                    <div class="imgBox">
+                                        <i class="dot"></i>
+                                        <img src="{{item.CoverPath}}" style="width: 100%; height: 100%;" />
+                                    </div>
+                                    <div class="courseDetail">
+                                        <p class="" style="color: #333;font-size: 16px;margin-bottom: 10px;">{{item.Name}}</p>
+                                        <p style="color: #9a9a9a;margin-bottom: 10px;">
+                                            {{item.JobTitle || "讲师"}}
+                                            &nbsp;
+                                            <span class="teacName">{{item.Teacher || "匿名"}}</span>
+                                            &nbsp;
+                                            <span class="courseTime">{{item.TotalHours}}</span>
+                                            课
+                                        </p>
+                                        <div class="">
+                                            <div class="jiantou"></div>
+                                            <p style="color: #666; display: inline-block;">
+                                                已学
+                                                <span style="color: #fb791c">{{item.TotalHours == 0 ? '0.00' :(item.LookHours / item.TotalHours).toFixed(2) }}%</span>
+                                                &nbsp;
+                                                用时
+                                                <span style="color: #fb791c">{{item.LearnTimes}}分</span>
+                                                &nbsp;
+                                                <span v-if="item.WareId > 0">
+                                                    学习至<span style="color: #fb791c;white-space:nowrap; text-overflow:ellipsis;overflow:hidden; display: inline-block;vertical-align: bottom; width: 45%;cursor:pointer" @click="WatchWare(item.WareId)" title="{{item.WareName}}">{{item.WareName}}</span>
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="btnsBox">
+                                        <p class="startBtn" style="cursor:pointer" @click="WatchWare(item.WareId)">{{item.WareId == 0 ? '开始学习' : '继续学习'}}</p>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="showPages  commentQ" style="display: none;">
+                        <div class="item" v-for="item in AnswerList">
+                            <h2>{{item.Content}}</h2>
+                            <p>{{item.NewInterlocution.Content}}</p>
+                            <div style="margin-top: 8px;">
+                                <span style="color: #999;">{{item.AddTime}}</span>
+                                <span style="color: #999;">&emsp;&emsp;{{item.CourseName}}</span>
+                                <div class="buttonBox">
+                                    <p style="cursor:pointer" @click="showAnswer(item.ID)">查看</p>
+                                    <p @click="deleteAnswer(item.ID)" style="cursor:pointer">删除</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="showPages ansQ" style="display: none;">
+                        <div class="item" v-for="item in CommentList">
+                            <p>{{item.Content}}</p>
+                            <div style="margin-top: 8px;">
+                                <span style="color: #999; ">{{item.AddTime}}</span>
+                                <span style="color: #999;">&emsp;&emsp;{{item.CourseName}}</span>
+                                <div class="buttonBox">
+                                    <p @click="deleteComment(item.ID)" style="cursor:pointer">删除</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--分页-->
+                    <div class="Pro-pageCount clearfix" style="overflow: hidden;">
+                        <div class="clearfix" style="margin: 0 auto;width: 100%;text-align: center; " id="pages"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--footer-->
+    <!--#<!--#include file="../UserControl/Footer.html"-->
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <script src="../../script/jquery.js"></script>
+    <script src="../../Resources/js/Page.js"></script>
+
+    <script>
+        require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil'],
+            function (fnr) {
+                var $ = layui.$;
+                var table = layui.table;
+                var tableExt = layui.tableExt;
+                var vm = new Vue({
+                    el: "#root",
+                    data: {
+                        page: {
+                            PageIndex: 1,
+                            PageSize: 5,
+                            PageStatus: 1
+                        },
+                        CourseList: [],
+                        CommentList: [],
+                        AnswerList: [],
+                        TotalCount: 0,
+                        Index: 0,
+                    },
+                    ready: function () {
+                        this.tabsToggle();
+                        this.getCourseList(1);
+                    },
+                    methods: {
+                        tabsToggle: function () {
+                            var self = this;
+                            self.TotalCount = 0;
+                            $('.orderTabs').on('click', 'li', function () {
+                                if (!$(this).hasClass('active')) {
+                                    $(this).addClass('active').siblings().removeClass('active');
+                                    $(".showPages").hide();
+                                    self.Index = $(this).attr("data-id");
+                                    $(".showPages").eq(self.Index).show();
+                                    self.InitPage(1);
+                                }
+                            });
+                        },
+                        getCourseList: function (num) {
+                            var that = this;
+                            that.page.PageIndex = num;
+                            $.get("/service/datastore/Order/GetMyCourseList", that.page, function (rsp) {
+                                if (rsp.SuccessResponse) {
+                                    that.CourseList = rsp.Data;
+                                    if (rsp.TotalCount > 0)
+                                        that.TotalCount = rsp.TotalCount;
+                                    that.paging(num);
+                                }
+                                else
+                                    layer.msg(rsp.Message)
+                            })
+                        },
+                        getCommentList: function (num) {
+                            var that = this;
+                            that.page.PageIndex = num;
+                            $.get("/service/datastore/CourseInterlocution/GetMyCourseComment", that.page, function (rsp) {
+                                if (rsp.SuccessResponse) {
+                                    that.CommentList = rsp.Data;
+                                    if (rsp.TotalCount > 0)
+                                        that.TotalCount = rsp.TotalCount;
+                                    that.paging(num);
+                                }
+                                else
+                                    layer.msg(rsp.Message)
+                            })
+                        },
+                        getAnswerList: function (num) {
+                            var that = this;
+                            that.page.PageIndex = num;
+                            $.get("/service/datastore/CourseInterlocution/GetMyCourseInterlocution", that.page, function (rsp) {
+                                if (rsp.SuccessResponse) {
+                                    that.AnswerList = rsp.Data;
+                                    if (rsp.TotalCount > 0)
+                                        that.TotalCount = rsp.TotalCount;
+                                    that.paging(num);
+                                }
+                                else
+                                    layer.msg(rsp.Message)
+                            })
+                        },
+                        //分页
+                        paging: function (PageIndex) {
+                            var self = this;
+                            return $("#pages").Page({
+                                pageIndex: PageIndex,
+                                totalPages: Math.ceil(self.TotalCount / self.page.PageSize),
+                                totalSize: self.TotalCoun,
+                                callback: function (num) {
+                                    if (num > 0)
+                                        self.InitPage(num);
+                                }
+                            })
+                        },
+                        InitPage: function (num) {
+                            if (this.Index == 0)
+                                this.getCourseList(num);
+                            else if (this.Index == 1)
+                                this.getAnswerList(num);
+                            else if (this.Index == 2)
+                                this.getCommentList(num);
+                        },
+                        deleteAnswer: function (ID) {
+                            var that = this;
+                            $.post("/service/datastore/CourseInterlocution/DeleteCourseInterlocution", { Ids: ID }, function (rsp) {
+                                if (rsp.SuccessResponse) {
+                                    that.getAnswerList(that.page.PageIndex);
+                                }
+                                layer.msg(rsp.Message);
+                            })
+                        },
+                        deleteComment: function (ID) {
+                            var that = this;
+                            $.post("/service/datastore/CourseInterlocution/DeleteCourseComment", { Ids: ID }, function (rsp) {
+                                if (rsp.SuccessResponse) {
+                                    that.getCommentList(that.page.PageIndex);
+                                }
+                                layer.msg(rsp.Message);
+                            })
+                        },
+                        //查看课件
+                        WatchWare: function (ID) {
+                            alert(ID);
+                        },
+                        //查看问答详情
+                        showAnswer: function (ID) {
+
+                        }
+                    }
+                });
+            })
+    </script>
+</body>
+
+</html>

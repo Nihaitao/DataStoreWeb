@@ -1,0 +1,142 @@
+
+//hx add 20180130 富文本框编辑器初始化，其他相关属性请参考 https://www.kancloud.cn/wangfupeng/wangeditor3/335782
+function editorInit(editor) {
+    //自定义菜单
+    editor.customConfig.menus =
+        [
+            //'head',  // 标题
+            'bold',  // 粗体
+            'italic',  // 斜体
+            'underline',  // 下划线
+            'strikeThrough',  // 删除线
+            'foreColor',  // 文字颜色
+            'backColor',  // 背景颜色
+            'link',  // 插入链接
+            'list',  // 列表
+            'justify',  // 对齐方式
+            'quote',  // 引用
+            'emoticon',  // 表情
+            'image',  // 插入图片
+            'table',  // 表格
+            //'video',  // 插入视频
+            //'code',  // 插入代码
+            'undo',  // 撤销
+            'redo',  // 重复
+        ];
+    // 上传图片到服务器
+    // 配置服务器端地址
+    editor.customConfig.uploadImgServer = '/service/public/Upload/WangEdit/2';
+    // 上传图片时刻自定义设置 header
+    editor.customConfig.uploadImgHeaders = {
+        'Accept': 'text/x-json'
+    };
+    // 隐藏掉插入网络图片功能。
+    editor.customConfig.showLinkImg = false;
+    // 限制一次最多上传 5 张图片
+    editor.customConfig.uploadImgMaxLength = 5;
+    // 将图片大小限制为 3M
+    editor.customConfig.uploadImgMaxSize = 3 * 1024 * 1024;
+    //配置编辑区域的 z-index
+    editor.customConfig.zIndex = 0;
+    // 只粘贴纯文本
+    editor.customConfig.pasteText = true;
+
+    editor.create();
+
+    //自定义查看源代码
+    E.source.init('#editor');
+    //自定义全屏
+    E.fullscreen.init('#editor');
+}
+
+/**
+ * 
+ */
+//自定义全屏 hx add 20180130
+window.wangEditor.fullscreen = {
+	// editor create之后调用
+	init: function(editorSelector){
+		$(editorSelector + " .w-e-toolbar").append('<div class="w-e-menu"><a class="_wangEditor_btn_fullscreen" href="###" onclick="window.wangEditor.fullscreen.toggleFullscreen(\'' + editorSelector + '\')">全屏</a></div>');
+	},
+	toggleFullscreen: function(editorSelector){
+		$(editorSelector).toggleClass('fullscreen-editor');
+		if($(editorSelector + ' ._wangEditor_btn_fullscreen').text() == '全屏'){
+			$(editorSelector + ' ._wangEditor_btn_fullscreen').text('退出全屏');
+		}else{
+			$(editorSelector + ' ._wangEditor_btn_fullscreen').text('全屏');
+		}
+	}
+};
+
+//自定义查看源代码 hx add 20180130
+window.wangEditor.source = {
+    // editor create之后调用
+    init: function (editorSelector) {
+        $(editorSelector + " .w-e-toolbar").append('<div class="w-e-menu"><a class="_wangEditor_btn_source" href="###" onclick="window.wangEditor.source.toggleSource(\'' + editorSelector + '\')">查看源代码</a></div>');
+    },
+    toggleSource: function (editorSelector) {
+        var htmlEditor = editor.txt.html();
+        if (htmlEditor.indexOf('<xmp id="xmpEditor">') > -1) {
+            editor.txt.html(HtmlUtil.htmlDecodeByRegExp(htmlEditor.replace('<xmp id="xmpEditor">', '').replace('</xmp>', '')));
+        }
+        else {
+            editor.txt.html('<xmp id="xmpEditor">' + htmlEditor + "</xmp>");
+        }
+
+        if ($(editorSelector + ' ._wangEditor_btn_source').text() == '查看源代码') {
+            $(editorSelector + ' ._wangEditor_btn_source').text('查看视图');
+        } else {
+            $(editorSelector + ' ._wangEditor_btn_source').text('查看源代码');
+        }
+    }
+};
+
+//转码 hx add 20180130
+var HtmlUtil = {
+    /*1.用浏览器内部转换器实现html转码*/
+    htmlEncode: function (html) {
+        //1.首先动态创建一个容器标签元素，如DIV
+        var temp = document.createElement("div");
+        //2.然后将要转换的字符串设置为这个元素的innerText(ie支持)或者textContent(火狐，google支持)
+        (temp.textContent != undefined) ? (temp.textContent = html) : (temp.innerText = html);
+        //3.最后返回这个元素的innerHTML，即得到经过HTML编码转换的字符串了
+        var output = temp.innerHTML;
+        temp = null;
+        return output;
+    },
+    /*2.用浏览器内部转换器实现html解码*/
+    htmlDecode: function (text) {
+        //1.首先动态创建一个容器标签元素，如DIV
+        var temp = document.createElement("div");
+        //2.然后将要转换的字符串设置为这个元素的innerHTML(ie，火狐，google都支持)
+        temp.innerHTML = text;
+        //3.最后返回这个元素的innerText(ie支持)或者textContent(火狐，google支持)，即得到经过HTML解码的字符串了。
+        var output = temp.innerText || temp.textContent;
+        temp = null;
+        return output;
+    },
+    /*3.用正则表达式实现html转码*/
+    htmlEncodeByRegExp: function (str) {
+        var s = "";
+        if (str.length == 0) return "";
+        s = str.replace(/&/g, "&amp;");
+        s = s.replace(/</g, "&lt;");
+        s = s.replace(/>/g, "&gt;");
+        s = s.replace(/ /g, "&nbsp;");
+        s = s.replace(/\'/g, "&#39;");
+        s = s.replace(/\"/g, "&quot;");
+        return s;
+    },
+    /*4.用正则表达式实现html解码*/
+    htmlDecodeByRegExp: function (str) {
+        var s = "";
+        if (str.length == 0) return "";
+        s = str.replace(/&amp;/g, "&");
+        s = s.replace(/&lt;/g, "<");
+        s = s.replace(/&gt;/g, ">");
+        s = s.replace(/&nbsp;/g, " ");
+        s = s.replace(/&#39;/g, "\'");
+        s = s.replace(/&quot;/g, "\"");
+        return s;
+    }
+};

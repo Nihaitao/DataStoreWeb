@@ -1,0 +1,121 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>浏览器图标</title>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <div style="margin-left:10px;position:relative;text-align:left;">
+            <div class="layui-upload">
+                <div class="layui-upload-list" style="">
+                    浏览器图标:
+                    <img class="layui-upload-img" id="StuP" v-bind:src="FaviconSubmitForm.Favicon" style="width:32px;height:32px;">
+                    <button type="button" class="layui-btn" id="FaviconUpStudP" style="margin:15px 0">选择图片</button><span style="color:red;"> * 建议上传文件格式为ico类型，文件大小不能大于32x32</span>
+                    <p id="FaviconStuText" style="margin-left:-15px;margin-top:4px;"></p>
+                </div>
+            </div>
+            <div>
+                <div class="layui-input-block">
+                    <button class="layui-btn" @click="FaviconSaveAdd" lay-submit>保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="/Resources/js/Controls/Common.js"></script>
+
+<script>
+    layui.use('upload', function () {
+        var $ = layui.jquery
+        , upload = layui.upload;
+
+        //普通图片上传
+        var FaviconUploadInst = upload.render({
+            elem: '#FaviconUpStudP'
+          , url: '/service/upload?busType=Browser'
+            , exts: 'ico'
+          , before: function (obj) {
+              //预读本地文件示例，不支持ie8
+              obj.preview(function (index, file, result) {
+                  $('#FaviconStuP').attr('src', result); //图片链接（base64）
+              });
+          }
+          , done: function (res) {
+              //如果上传失败
+              if (res.code > 0) {
+                  return layer.msg('上传失败');
+              }
+              //上传成功
+              rootApp.FaviconSubmitForm.Favicon = res.Message
+              layer.msg('上传成功')
+          }
+          , error: function () {
+              //演示失败状态，并实现重传
+              var demoText = $('#FaviconStuText');
+              demoText.html('<span style="color: #FF5722;">上传失败</span> <a class=" favicon-reload" style="cursor:pointer;">重试</a>');
+              demoText.find('.favicon-reload').on('click', function () {
+                  FaviconUploadInst.upload();
+              });
+          }
+        })
+    })
+
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate"],
+function (fnr) {
+    var $ = layui.jquery;
+
+    window.rootApp = new Vue({
+        el: "#root",
+        data: {
+            FaviconSubmitForm: {
+                Favicon: ''
+            },
+            setting: {
+                tags: {}
+            }
+        },
+        ready: function () {
+            var self = this;
+            var laydate = layui.laydate;
+            $.get("/service/public/Mechanism/GetSetlist", {}, function (rsp) {
+                if (rsp.SuccessResponse) {
+                    if (self.FaviconSubmitForm.Favicon != "") {
+                        self.FaviconSubmitForm.Favicon = self.FaviconSubmitForm.Favicon + '?x-oss-process=image/resize,m_fixed,h_227,w_447';
+                    }
+                    fnr.mergeJson(rsp.Data, self.FaviconSubmitForm);//合并ajax值fnr.closeDialog();
+                }
+                else {
+                    layer.msg(rsp.Message, { icon: 2 });
+                }
+            });
+        },
+        methods: {
+            FaviconSaveAdd: function (e) {
+                var self = this;
+                if (!layui.form.checkInput(e)) {
+                    return false;
+                }
+                $.post("/service/public/Mechanism/HeaderSet", self.FaviconSubmitForm, function (result) {
+                    if (result.SuccessResponse) {
+                        layer.msg(result.Message, { time: 2000, icon: 1 }, function () {
+                            window.parent.layer.close(parent.layer.getFrameIndex(window.name));
+                        });
+                    }
+                    else {
+                        layer.msg(result.Message, { icon: 2 });
+                    }
+                })
+                return false;
+            }
+        }
+    });
+});
+
+</script>

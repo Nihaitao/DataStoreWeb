@@ -1,0 +1,288 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>页尾及营销设置</title>
+</head>
+<body id="root">
+    <blockquote class="layui-elem-quote">
+        <div class="layui-row layui-form">
+            <label class="layui-form-label" style="width:120px">底部公司信息配置</label>
+        </div>
+    </blockquote>
+    <div class="OpenContainer">
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">页尾设置:</label>
+                    <div class="layui-input-inline">
+                        <remote-rad v-bind:setting="Select" v-bind:value.sync="submitForm.FooterLogoOrName" initial="off" style="width:350px;"></remote-rad>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item" v-show="submitForm.FooterLogoOrName == '0'">
+                <label class="layui-form-label">公司名称:</label>
+                <div class="layui-input-inline">
+                    <input type="text" lay-verify="empty|FooterName" autocomplete="off" placeholder="请输入公司名称" class="layui-input"
+                           v-model="submitForm.FooterName" style="width:350px;">
+                </div>
+            </div>
+            <div class="layui-form-item" v-show="submitForm.FooterLogoOrName == '1'">
+                <label class="layui-form-label">页尾Logo:</label>
+                <div class="layui-input-block" style="position:relative; top: -14px; left: 0;">
+                    <img class="layui-upload-img" id="StuP" v-bind:src="submitForm.FooterLogo+'?x-oss-process=image/resize,m_fixed,h_227,w_447'" style="height:40px; width: 180px;">&nbsp;
+                    <button type="button" class="layui-btn layui-btn-normal" id="upStudP" style="margin:15px 0"><i class="layui-icon">&#xe67c;</i>选择图片</button><span style="padding-left:10px; color:red;"> * 建议上传 透明底色的PNG 图片。图像尺寸为:宽180px * 高40px</span>
+                    <p id="StuText" style="margin-left:-15px;margin-top:5px;"></p>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">版权信息:</label>
+                <div class="layui-input-inline">
+                    <input type="text" lay-verify="empty|FooterCopyright" autocomplete="off" placeholder="请输入版权信息" class="layui-input"
+                           v-model="submitForm.FooterCopyright" style="width:350px;">
+                </div>
+            </div>
+            <div div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" @click="saveAdd" lay-submit>保存</button>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    <blockquote class="layui-elem-quote">
+        <div class="layui-row layui-form">
+            <label class="layui-form-label" style="width:110px">营销链接设置</label>
+        </div>
+    </blockquote>
+    <div class="OpenContainer">
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">新浪微博:</label>
+                <div class="layui-input-inline">
+                    <local-switch v-bind:value.sync="submitForm1.SinaOpen" text="开启|禁用" initial="off"></local-switch>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">链接地址:</label>
+                <div class="layui-input-inline">
+                    <input type="text" lay-verify="empty|SinaNo" autocomplete="off" placeholder="请输入链接地址" class="layui-input" v-model="submitForm1.SinaNo" id="id">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label"> 腾讯营销:</label>
+                <div class="layui-input-inline">
+                    <local-switch v-bind:value.sync="submitForm1.TecentOpen" text="开启|禁用"
+                                  initial="off"></local-switch>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">链接地址:</label>
+                <div class="layui-input-inline">
+                    <input type="text" lay-verify="empty|TecentMark" autocomplete="off" placeholder="请输入链接地址" class="layui-input" v-model="submitForm1.TecentMark" id="id1">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">微信:</label>
+                <div class="layui-input-inline">
+                    <local-switch v-bind:value.sync="submitForm1.WxPicOpen" text="开启|禁用" initial="off"></local-switch>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">微信图片:</label>
+                <div class="layui-input-block" style="position:relative; top: -14px; left: 0;">
+                    <button type="button" class="layui-btn layui-btn-normal" id="upStudP1" style="margin:15px 0"><i class="layui-icon">&#xe67c;</i>选择图片</button>
+                    <img class="layui-upload-img" id="StuP1" v-bind:src="submitForm1.WxPic_Mark" style="width:150px;height:150px;">&nbsp;
+                    <p id="StuText1" style="margin-left:-15px;margin-top:5px;"></p>
+                </div>
+            </div>
+            <div class="layui-input-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" @click="saveAdd1" lay-submit>保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="/Resources/js/Controls/Common.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate"],
+function (fnr) {
+    var $ = layui.jquery;
+    window.rootApp = new Vue({
+        el: "#root",
+        data: {
+            Select: {
+                tags: { name: "FooterLogoOrName" },
+                options: [
+                { key: "0", value: "公司" },
+                { key: "1", value: "LOGO" }
+                ]
+            },
+            submitForm: {
+                FooterLogoOrName: '0',
+                FooterLogo: '',
+                FooterName: '',
+                FooterCopyright: ''
+            },
+            submitForm1: {
+                WxPic_Mark: '', //微信
+                SinaNo: '',     //新浪网址
+                TecentMark: '', //腾讯营销
+                WxPicOpen: '',  //微信开关  1开启  0关闭
+                TecentOpen: '', //腾讯营销开关
+                SinaOpen: ''  //新浪网址 开关
+            },
+            setting: {
+                tags: {}
+            }
+        },
+        ready: function () {
+            var self = this;
+            var laydate = layui.laydate;
+            $.get("/service/public/Mechanism/GetSetlist", {}, function (rsp) {
+                if (rsp.SuccessResponse) {
+                    if (self.submitForm.FooterLogo != "") {
+                        self.submitForm.FooterLogo = self.submitForm.FooterLogo + '?x-oss-process=image/resize,m_fixed,h_227,w_447'
+                    }
+                    fnr.mergeJson(rsp.Data, self.submitForm);//合并ajax值fnr.closeDialog();
+                }
+                else {
+                    layer.msg(rsp.Message, { icon: 2 });
+                }
+            });
+            $.get("/service/public/Mechanism/GetSetlist", {}, function (rsp) {
+                if (rsp.SuccessResponse) {
+                    if (self.submitForm1.WxPic_Mark != "") {
+                        self.submitForm1.WxPic_Mark = self.submitForm1.WxPic_Mark + '?x-oss-process=image/resize,m_fixed,h_227,w_447'
+                    }
+                    fnr.mergeJson(rsp.Data, self.submitForm1);//合并ajax值fnr.closeDialog();
+                }
+                else {
+                    layer.msg(rsp.Message, { icon: 2 });
+                }
+            });
+        },
+        methods: {
+            //bianji:function(){
+            //    $("#ID1").css('display', 'block');
+            //    $('#id').attr('disabled', false);
+            //},
+            //bianji1: function () {
+            //    $("#ID2").css('display', 'block');
+            //    $('#id1').attr('disabled', false);
+            //},
+            saveAdd: function (e) {
+                var self = this;
+                if (!layui.form.checkInput(e)) {
+                    return false;
+                }
+                $.post("/service/Public/Mechanism/HeaderSet", this.submitForm, function (result) {
+                    if (result.SuccessResponse) {
+                        layer.msg(result.Message, { time: 2000, icon: 1 }, function () {
+                            window.parent.layer.close(parent.layer.getFrameIndex(window.name));
+                        });
+                    }
+                    else {
+                        layer.msg(result.Message, { icon: 2 });
+                    }
+                })
+                return false;
+            },
+            saveAdd1: function (e) {
+                var self = this;
+                if (!layui.form.checkInput(e)) {
+                    return false;
+                }
+                var data = "";
+                this.submitForm1.WxPicOpen = Number(this.submitForm1.WxPicOpen);
+                this.submitForm1.TecentOpen = Number(this.submitForm1.TecentOpen);
+                this.submitForm1.SinaOpen = Number(this.submitForm1.SinaOpen);
+                $.post("/service/Public/Mechanism/HeaderSet", this.submitForm1, function (result) {
+                    if (result.SuccessResponse) {
+                        layer.msg(result.Message, { time: 2000, icon: 1 }, function () {
+                            window.parent.layer.close(parent.layer.getFrameIndex(window.name));
+                        });
+                    }
+                    else {
+                        layer.msg(result.Message, { icon: 2 });
+                    }
+                })
+                return false;
+            }
+        }
+    });
+});
+    layui.use('upload', function () {
+        var $ = layui.jquery
+        , upload = layui.upload;
+
+        //普通图片上传
+        var uploadInst = upload.render({
+            elem: '#upStudP'
+          , url: '/service/upload?busType=Student'
+          , before: function (obj) {
+              //预读本地文件示例，不支持ie8
+              obj.preview(function (index, file, result) {
+                  $('#StuP').attr('src', result); //图片链接（base64）
+              });
+          }
+          , done: function (res) {
+              //如果上传失败
+              if (res.code > 0) {
+                  return layer.msg('上传失败');
+              }
+              //上传成功
+              rootApp.submitForm.FooterLogo = res.Message
+              layer.msg('上传成功')
+          }
+          , error: function () {
+              //演示失败状态，并实现重传
+              var demoText = $('#StuText');
+              demoText.html('<span style="color: #FF5722;">上传失败</span> <a class=" demo-reload" style="cursor:pointer;">重试</a>');
+              demoText.find('.demo-reload').on('click', function () {
+                  uploadInst.upload();
+              });
+          }
+        })
+    })
+
+    layui.use('upload', function () {
+        var $ = layui.jquery
+        , upload = layui.upload;
+
+        //普通图片上传
+        var uploadInst = upload.render({
+            elem: '#upStudP1'
+          , url: '/service/upload?busType=Student'
+          , before: function (obj) {
+              //预读本地文件示例，不支持ie8
+              obj.preview(function (index, file, result) {
+                  $('#StuP1').attr('src', result); //图片链接（base64）
+              });
+          }
+          , done: function (res) {
+              //如果上传失败
+              if (res.code > 0) {
+                  return layer.msg('上传失败');
+              }
+              //上传成功
+              rootApp.submitForm1.WxPic_Mark = res.Message
+              layer.msg('上传成功')
+          }
+          , error: function () {
+              //演示失败状态，并实现重传
+              var demoText = $('#StuText1');
+              demoText.html('<span style="color: #FF5722;">上传失败</span> <a class=" demo-reload" style="cursor:pointer;">重试</a>');
+              demoText.find('.demo-reload').on('click', function () {
+                  uploadInst.upload();
+              });
+          }
+        })
+    })
+</script>

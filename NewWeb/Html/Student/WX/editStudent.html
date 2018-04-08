@@ -1,0 +1,136 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+
+</head>
+<body id="root">
+
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+    <legend>表单集合演示</legend>
+</fieldset>
+
+<form class="layui-form" action="" onsubmit="return false">
+    <div class="layui-form-item">
+        <label class="layui-form-label">单行输入框</label>
+        <div class="layui-input-block">
+            <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input" v-model="submitForm.singleInput">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">验证必填项</label>
+        <div class="layui-input-block">
+            <input type="text" name="username" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" v-model="submitForm.singleInput">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">验证手机</label>
+            <div class="layui-input-inline">
+                <input type="tel" name="phone" lay-verify="phone" autocomplete="off" class="layui-input" v-model="submitForm.mobile">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">验证邮箱</label>
+            <div class="layui-input-inline">
+                <input type="text" name="email" lay-verify="email" autocomplete="off" class="layui-input" v-model="submitForm.email">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">范围</label>
+            <div class="layui-input-inline" style="width: 100px;">
+                <input type="text" name="price_min" placeholder="￥" autocomplete="off" class="layui-input" v-model="submitForm.minRange">
+            </div>
+            <div class="layui-form-mid">-</div>
+            <div class="layui-input-inline" style="width: 100px;">
+                <input type="text" name="price_max" placeholder="￥" autocomplete="off" class="layui-input" v-model="submitForm.maxRange">
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">单行选择框</label>
+        <div class="layui-input-block">
+            <remote-sel :setting="singleSelectSetting" :value.sync="submitForm.singleSelect"
+                        initial="off"></remote-sel>
+        </div>
+    </div>
+
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">搜索选择框</label>
+            <div class="layui-input-inline">
+                <remote-sel :setting="searchSelectSetting" :value.sync="submitForm.searchSelect"
+                            initial="off"></remote-sel>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">联动选择框</label>
+        <div class="layui-input-inline">
+            <remote-sel :setting="provinceSetting" :value.sync="submitForm.province" :change="provinceChange"
+                        initial="off"></remote-sel>
+        </div>
+        <div class="layui-input-inline">
+            <remote-sel :setting="citySetting" :value.sync="submitForm.city" :change="cityChange" v-ref:city
+                        initial="off"></remote-sel>
+        </div>
+        <div class="layui-input-inline">
+
+            <remote-sel :setting="areaSetting" :value.sync="submitForm.area"  v-ref:area
+                        initial="off"></remote-sel>
+        </div>
+        <div class="layui-form-mid layui-word-aux">此处只是演示联动排版，并未做联动交互</div>
+    </div>
+
+    <div class="layui-form-item" pane="">
+        <label class="layui-form-label">原始复选框</label>
+        <div class="layui-input-block">
+            <remote-chb :setting="multSelSetting" :value.sync="submitForm.multSel"
+                        initial="off"></remote-chb>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">开关</label>
+        <div class="layui-input-block">
+            <local-switch :value.sync="submitForm.chbSwitch" text="开|关"
+                          initial="off"></local-switch>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">单选框</label>
+        <div class="layui-input-block">
+            <remote-rad :setting="radSetting" :value.sync="submitForm.radSelVal"
+                        initial="off"></remote-rad>
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">普通文本域</label>
+        <div class="layui-input-block">
+            <textarea placeholder="请输入内容" class="layui-textarea" v-model="submitForm.plainText"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="demo1" @click="saveUpdate">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+</body>
+
+
+</html>
+
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet"/>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="../../../static/view/student/wx/editStuednt.js"></script>

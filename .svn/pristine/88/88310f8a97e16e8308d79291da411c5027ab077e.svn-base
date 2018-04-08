@@ -1,0 +1,270 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        textarea { resize: none; }
+    </style>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <form class="layui-form" action="" onsubmit="return false">
+            <div class="layui-form-item">
+                <label class="layui-form-label">姓名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="title" v-model="queryFormData.Name" lay-verify="required" placeholder="请输入姓名" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">手机号码</label>
+                <div class="layui-input-block">
+                    <input type="text" name="title" v-model="queryFormData.Phone" lay-verify="phone" placeholder="请输入手机号码" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">所属部门</label>
+                <div class="layui-input-block">
+                    <table cellspacing="0" cellpadding="0" border="0" class="layui-table" lay-even="">
+                        <thead>
+                            <tr>
+                                <th>部门名称</th>
+                                <th>主部门</th>
+                                <th>上级</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(index,item) in queryFormData.Departs">
+
+                                <td><span v-html="item.Name" style="display:inline-table; float:left"></span></td>
+                                <td>
+                                    <input type="radio" name="IsMain" v-model="mainDeptId" v-bind:value="item.DepartmentID" lay-ignore />
+                                </td>
+                                <td>
+                                    <input type="checkbox" name="IsManager" v-bind:checked="item.IsManager==1?true:false" v-model="item.IsManager" lay-ignore />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!--<div v-for="(index,item) in DepartHtml" style="border:1px solid #dadada; float:left; margin-right:10px; padding:0px 10px; display:flex; margin-bottom:10px">
+                        <span v-html="item.Name" style="display:inline-table; float:left"></span>
+                        <i class="layui-icon" data-departmentid="{{item.ID}}" style="cursor:pointer; float:left; margin-left:5px" @click="delDepartment(item.ID)">&#x1006;</i>
+                    </div>-->
+                    <a href="javascript:;" style="float:left" @click="SelectPage">修改</a>
+                </div>
+            </div>
+            <div class="layui-form-item layui-hide">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit @click="formDemo">立即提交</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+
+</body>
+</html>
+
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt"],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+
+
+            function showall(data, CID) {
+                var array = new Array();
+                $.each(data, function (i, x) {
+                    if (x.ID == CID) {
+                        array.push("<a href='javascript:;'>" + this.Name + "</a>>");
+                        array = array.concat(showall(data, x.CID));
+                    }
+                });
+                return array;
+            }
+
+            window.rootApp = new Vue({
+                el: "#root",
+                data: {
+                    DepartHtml: [],
+                    queryFormData: {
+                        ID: 0,
+                        Name: '',
+                        Phone: '',
+                        DepartCount: 0,
+                        Departs: []
+                    },
+                    mainDeptId:0,
+                    Manage: {
+                        tags: { name: "IsManager" },
+                        options: [
+                           { key: "0", value: "否" },
+                           { key: "1", value: "是" },
+                        ],
+                        fields: { key: 'key', value: 'value' },
+                    },
+                    IsMain: {
+                        tags: { name: "IsMain" },
+                        options: [
+                           { key: "0", value: "否" },
+                           { key: "1", value: "是" },
+                        ],
+                        fields: { key: 'key', value: 'value' },
+                    },
+                    _userId: '',
+                    //option: {
+                    //    search: true,
+                    //    options: []
+                    //}
+                    option: {
+                        search: true,
+                        options: [],
+                        fields: { root: 'ReturnData.Data', key: 'ID', value: 'Name' },
+                        remote: { url: "/service/Company/GetListDepartment", options: { method: 'get' } }
+                    }
+                },
+                watch: {
+                    mainDeptId: function (val) {
+                      var  _this = this;
+                      $.each(_this.queryFormData.Departs, function (k, v) {
+                          v.IsMain=v.DepartmentID==val?1:0;
+                      });
+                    }
+                },
+                ready: function () {
+                    _this = this;
+                    _this.queryFormData.ID = fnr.getQueryString("ID");
+                    //请求接口填充数据
+                    if (_this.queryFormData.ID) {
+                        $.get("/service/Station/GetStationAccountNew", { ID: _this.queryFormData.ID }, function (rsp) {
+                            if (rsp.SuccessResponse) {
+                                //fnr.mergeJson(rsp.ReturnData.Data, _this.queryFormData);//合并ajax值
+
+                                _this.queryFormData.Name = rsp.ReturnData.Data.Name;
+                                _this.queryFormData.Phone = rsp.ReturnData.Data.Phone;
+                                //_this.queryFormData.Departs = rsp.ReturnData.Data.DepartData.Departments;
+
+                                $.each(rsp.ReturnData.Data.DepartData.Departments, function (k, v) {
+                                    _this.queryFormData.Departs.push({ "DepartmentID": this.ID, "Name": this.Name, "IsMain": this.IsMain, "IsManager": this.IsManager, "_checked": this.IsMain == 1 });
+                                    if (this.IsMain == 1) {
+                                        _this.mainDeptId = this.ID;
+                                    }
+                                });
+                                //console.log(_this.DepartHtml);
+                            } else {
+                                layer.msg(ReturnData.Message)
+                            }
+
+                        })
+                    }
+                },
+                methods: {
+                    delDepartment: function (ID) {
+                        var self = this;
+                        $.each(this.DepartHtml, function (i, x) {
+                            if (this.ID == ID) {
+                                self.DepartHtml.splice(i, 1);
+                                return false;
+                            }
+                        });
+                    },
+                    SelectPage: function () {
+                        var self = this;
+                        var Json = "";
+                        $.each(self.queryFormData.Departs, function () {
+                            Json += this.DepartmentID + "|" + this.Name + ",";
+                        });
+                        Json = Json.substring(0, Json.length - 1);
+                        fnr.openDialog({
+                            title: '选择用户所在部门',
+                            area: ['500px', '600px'],
+                            content: ['DepartmentSelect.html?json=' + Json],
+                            btn: ['确认'],
+                            events: {
+                                refresh: function (data) {
+                                    var jsondata = [];
+                                    $.each(self.queryFormData.Departs, function (i, x) {
+                                        var flg = false;
+                                        $.each(data, function (ii, xx) {
+                                            if (x.DepartmentID == xx.ID)
+                                                flg = true;
+                                        });
+                                        if (flg)
+                                            jsondata.push(x);
+                                    })
+                                    self.queryFormData.Departs = jsondata;
+
+                                    $.each(data, function (i, x) {
+                                        var flg = false;
+                                        $.each(self.queryFormData.Departs, function (ii, xx) {
+                                            if (xx.DepartmentID == x.ID) {
+                                                flg = true;
+                                            }
+                                        })
+                                        if (!flg)
+                                            self.queryFormData.Departs.push({ "DepartmentID": x.ID, "Name": x.Name, "IsMain": 0, "IsManager": 0 });
+                                    })
+                                }
+                            }
+                        });
+                    },
+                    //保存数据关闭弹窗
+                    formDemo: function (e) {
+                        _this = this;
+                        if (!layui.form.checkInput(e)) {
+                            return false;
+                        }
+
+                        _this.queryFormData.DepartCount = _this.queryFormData.Departs.length;
+                        $.each(_this.queryFormData.Departs, function () {
+                            if (this.IsMain == true)
+                                this.IsMain = 1;
+                            else
+                                this.IsMain = 0;
+                            if (this.IsManager == true)
+                                this.IsManager = 1;
+                            else
+                                this.IsManager = 0;
+
+                        })
+
+                        if (_this.queryFormData.ID) {
+                            $.post("/service/Station/EditStationAccount", _this.queryFormData, function (rsp) {
+                                layer.msg(rsp.Message, { time: 1000 }, function () {
+                                    if (rsp.SuccessResponse) {
+                                        fnr.callDialog('refresh'); //回调打开窗口events中的refresh
+                                        fnr.closeDialog(); //关闭当前的对话框
+                                    }
+                                })
+                                /*if (rsp.SuccessResponse) {
+                                    layer.msg('修改成功', { time: 2000 },function(){
+                                        fnr.callDialog('refresh'); //回调打开窗口events中的refresh
+                                        fnr.closeDialog(); //关闭当前的对话框
+                                    })
+                                } else {
+                                    layer.msg('修改失败')
+                                }*/
+                            })
+                        } else {
+                            $.post("/service/Station/CreateStationAccount", _this.queryFormData, function (rsp) {
+                                layer.msg(rsp.Message, { time: 1000 }, function () {
+                                    if (rsp.SuccessResponse) {
+                                        fnr.callDialog('refresh'); //回调打开窗口events中的refresh
+                                        fnr.closeDialog(); //关闭当前的对话框
+                                    }
+                                })
+                            })
+                            return false;
+                        }
+
+                    },
+                }
+            });
+        });
+</script>

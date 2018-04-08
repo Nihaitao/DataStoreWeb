@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <title>客户列表</title>
+    <link rel="stylesheet" href="../css/iconfont.css">
+    <link rel="stylesheet" href="../js/modules/layer/css/layui.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/client/clientList.css">
+    <script src="../js/jquery.js"></script>
+    <script src="../js/modules/vue/vue.min.js"></script>
+    <script src="../js/modules/layer/layui.js"></script>
+    <script>
+        (function () {
+            document.documentElement.style.fontSize = document.documentElement.clientWidth / 7.5 + 'px';
+            window.onresize = function () {
+                document.documentElement.style.fontSize = document.documentElement.clientWidth / 7.5 + 'px';
+            };
+
+
+        })()
+        document.getElementById('div1').addEventListener('touch');
+    </script>
+</head>
+<body>
+    <div class="appContainer">
+        <div class="selectBtnBox">
+            <div class="layui-row heightMax">
+                <div class="layui-col-xs4 leftDiv">
+                    <span class="btnText">全部客户</span>
+                    <i class="iconfont resetIcon icon-xiajiantou"></i>
+                </div>
+                <div class="layui-col-xs4 leftDiv">
+                    <span class="btnText">跟踪阶段</span>
+                    <i class="iconfont resetIcon icon-xiajiantou"></i>
+                </div>
+                <div class="layui-col-xs4 rightDiv">
+                    <span class="btnText">来源</span>
+                    <i class="iconfont resetIcon icon-xiajiantou"></i>
+                </div>
+            </div>
+        </div>
+        <div class="clientList">
+            <!--分割线-->
+            <div class="lines"></div>
+            <ul class="clientItems">
+                <li class="firstItem">
+                    <p>
+                        共
+                        <span>(10)</span>
+                        条客户数据
+                    </p>
+                </li>
+                <li class="items">
+                    <div id="div1">
+                        <p class="clientName">客户名称：湖南双元云科技有限公司</p>
+                        <p class="degree">
+                            重要程度：
+                            <span>非常重要</span>
+                        </p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="footerBtn">
+            <span>新建</span>
+        </div>
+    </div>
+</body>
+</html>

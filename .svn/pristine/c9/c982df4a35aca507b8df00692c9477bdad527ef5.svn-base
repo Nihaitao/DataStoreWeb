@@ -1,0 +1,156 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>面授</title>
+
+    <!--[if lt IE 9]>
+<script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+<script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<script src="../Resources/js/jquery.js"></script>
+<link href="../Resources/CSS/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+<link href="../Resources/CSS/Font/css/font-awesome.min.css" rel="stylesheet" />
+<script src="../Resources/CSS/bootstrap/js/bootstrap.min.js"></script>
+<link href="../Resources/CSS/PC_css.css" rel="stylesheet" />
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=Mf7LDlEOgHhNb48qO5Sp3oGx3eQUDMem"></script>
+<link href="../Resources/CSS/jquery.mCustomScrollbar.css" rel="stylesheet" />
+<script src="../Resources/js/jquery.mCustomScrollbar.min.js"></script>
+<script src="../Resources/js/jquery.mousewheel.min.js"></script>
+    <script src="../script/artTemplate.js"></script>
+    <script>
+        $.get('/service/WebCourse/GetCourse_ChaptersNodeList', { Course_ID: 95 }, function (data) { console.log(data) }) 
+    </script>
+<script>
+    $(function () {
+        //滚动条美化部分
+        $(".Video-Catalog").mCustomScrollbar({
+            mouseWheel: true,
+        });
+        $(".tab-content .active .Video-sro").mCustomScrollbar({
+            mouseWheel: true,
+        });
+        $(".Video-memberAndTalk-top>li:not(.active)").one("click", function () {
+            setTimeout(function () {
+                $(".tab-content .active .Video-sro").mCustomScrollbar({
+                    mouseWheel: true,
+                });
+            }, 0)
+        });
+    })
+</script>
+</head>
+<body>
+<!--顶部-->
+<div class="clearfix" style="height: 60px;background-color: #fff">
+    <div class="container">
+        <div class="Pro-logo pull-left">
+            <img src="../Resources/images/logo.png" alt="">
+        </div>
+        <div class="Pro-nav pull-right">
+            <ul>
+                <li><a href="#">课程中心</a></li>
+                <li><a href="#">问答</a></li>
+                <li><a href="#">专业</a></li>
+                <li><a href="#">题库</a></li>
+                <li><a href="#">名师</a></li>
+            </ul>
+        </div>
+    </div>
+
+</div>
+<!--迷之部分-->
+<div class="Video-top clearfix">
+   <div class="Video-listButton pull-left">
+       <i class="fa fa-bars"></i>
+       目录
+   </div>
+    <div class="Video-class pull-left">马克思主义基本原理概论精讲班</div>
+    <img src="../Resources/images/photo.png" width="30px" height="30px" style="border-radius: 50%"class="Video-photo">
+        
+    <div class="pull-right Video-span">
+        <span>评论</span>
+        <span>提问</span>
+    </div>
+</div>
+<!--迷之部分2-->
+<div class="Video-body">
+    <div class="Video-Catalog">
+        <ul class="Video-chapter">
+            <li>
+                <h5>绪论&nbsp;马克思主义是关于工人阶级和人类解放的的的额的额</h5>
+                <ul class="Video-Section">
+                    <li>
+                        <i class="fa fa-video-camera"></i>
+                        <span class="Section-name">第一讲：马克思主义的产生和发展</span>
+                        <span class="Section-state">免费</span>
+                    </li>
+                    <li>
+                        <i class="fa fa-video-camera"></i>
+                        <span class="Section-name">第一讲：马克思主义的产生和发展</span>
+                        <span class="Section-time">（9月12号 12:00）</span>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <h5>第一章&nbsp;物质世界及其发展规律</h5>
+                <ul class="Video-Section">
+                    <li class="learning">
+                        <i class="fa fa-youtube-play"></i>
+                        <span class="Section-name">第一讲：马克思主义的产生和发展</span>
+                        <span class=" ">正在学习</span>
+                    </li>
+                    <li>
+                        <i class="fa fa-youtube-play"></i>
+                        <span class="Section-name">第一讲：马克思主义的产生和发展</span>
+                        <span class="Section-state FTF">免费</span>
+                    </li>
+                </ul>
+            </li>
+       
+        </ul>
+    </div>
+    <div class="Video-Main">2</div>
+    <div class="Video-memberAndTalk">
+        <ul class="Video-memberAndTalk-top clearfix">
+            <li  role="presentation" class=""> <a href="#discuss"  role="tab" data-toggle="tab">讨论</a></li>
+            <li  role="presentation" class="active"> <a href="#member"  role="tab" data-toggle="tab"> 成员（201）</a></li>
+        </ul>
+        <div class="tab-content" style="height: calc(100% - 50px)">
+            <!--成员-->
+            <div role="tabpanel" class="tab-pane active" id="member">
+                <div class="search-user">
+                    <input type="text" placeholder="搜索课堂成员" >
+                    <i class="fa fa-search"></i>
+                </div>
+                <div class="Video-user-lise Video-sro" style="padding-right: 0">
+                    <div class="Video-user">
+                        <img src="" alt="" class="Video-teacher"><span>【主讲】张敏</span>
+                    </div>
+                    <div class="Video-user">
+                        <img src="" alt="" class="Video-teacher"><span>【助教】我去你爱神的箭离开时</span>
+                    </div>
+                </div>
+            </div>
+            <!--讨论-->
+            <div role="tabpanel" class="tab-pane " id="discuss">
+                <div class="Video-Notice">
+                    【公告】有问题咨询助教老师，小龙老师班级交流群：3623666666 <br>
+                </div>
+                <div class="discuss-list Video-sro" style="padding-right: 0;padding-bottom: 0">
+                    <div class="Stu-say">
+                        <div class="name">老白金</div>
+                        <div class="con">老师，没听到声音</div>
+                    </div>
+                </div>
+                <div class="discuss-send">
+                    <textarea name="sendMsg" id=""></textarea>
+                    <button class="">发送</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>

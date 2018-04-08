@@ -1,0 +1,145 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>过程性考核-培养计划</title>
+    <!--[if lt IE 9]>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="//at.alicdn.com/t/font_508849_aod4ql1g4s7cik9.css" rel="stylesheet" />
+    <link href="//at.alicdn.com/t/font_514871_9czxk955wqy6i529.css" rel="stylesheet" />
+    <script src="//at.alicdn.com/t/font_514871_z6ne30o81t3mcxr.js"></script>
+    <link rel="stylesheet" href="/Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link href="/Resources/CSS/financelist.css" rel="stylesheet" />
+    <link href="/Resources/CSS/question.css" rel="stylesheet" />
+    <link href="/Resources/CSS/PC_css.css" rel="stylesheet" />
+    <link href="/Resources/CSS/video-js.css" rel="stylesheet" />
+    <link href="/Resources/CSS/super.css" rel="stylesheet" />
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    
+</head>
+<body style="background-color: #f7f7f7;padding-top: 20px;" id="courseList">
+    <!--头部导航 Start-->
+    <!--#<!--#include file="/PublicControl/topmenu.html"-->
+    <!--头部导航 End-->
+    <div class="w1200 clearfix" v-cloak>
+        <!--左侧导航 Start-->
+        <!--#<!--#include file="/PublicControl/leftmenu.html"-->
+        <!--左侧导航 End-->
+        <div class="main">
+            <div class="courseTitle blockBgColor">过程性考核-培养计划</div>
+            <div class="blockBgColor courseBox">
+                <table class="list_box">
+                    <thead>
+                        <tr>
+                            <th>课程类别</th>
+                            <th>序号</th>
+                            <th>课程代码</th>
+                            <th>课程名称</th>
+                            <th>学习时长</th>
+                            <th>能否报考</th>
+                        </tr>
+                    </thead>
+                    <tbody v-for="titl in arr2">
+                        <tr>
+                            <td class="R_border" rowspan="999">{{titl[0].curriculumcategoryName}}</td>
+                        <tr v-for="item in titl">
+                            <td>{{item.Sort}}</td>
+                            <td>{{item.CuCode}}</td>
+                            <td style="width:220px">{{item.CuName}}</td>
+                            <td>{{item.ClassHour}}</td>
+                            <td>
+                                <i v-if="item.IsProcessApply>0 && item.Course_ID>0" class="iconfont icon-wodeshuji-gou gou"></i>
+                                <i v-else class=""></i>
+
+                            </td>
+                        </tr>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!--立即报名缴费-->
+                <div class="signUp" @click="submit"><span>立即报名缴费</span></div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil'],
+           function (fnr) {
+               var $ = layui.$;
+               var table = layui.table;
+               var tableExt = layui.tableExt;
+
+
+               var vm = new Vue({
+                   el: "#courseList",
+                   data: {
+                       arr2:[],
+                       coursePay: {
+                           Specialty_ID: 0,	//int	专业ID
+                           Curriculum_ID: 0,	//int	课程id
+                           Course_ID: 0,	//int	网课ID
+                          
+                       },
+                       aList: []
+
+                   },
+                   ready: function () {
+                       this.getCoursePay();
+                   },
+                   filters: {
+                       format: function (val) {
+                           return fnr.format(val, "yyyy-MM-dd HH:mm");
+                       }
+                   },
+                   methods: {
+                       getCoursePay: function () {
+                           var _this = this;
+                           $.get("/service/edu/Specialty/GetSpecialtyCurriculumList", {
+                               Specialty_ID: fnr.Cookie.get("Specialty_ID"),
+                               Model_ID: fnr.Cookie.get("Model_ID"),
+                               StuDetail_ID: fnr.Cookie.get("StuDetail_ID"),
+                               SpecialtyVersion_ID: fnr.Cookie.get("SpecialtyVersion_ID"),
+                               IsProcess: 4,
+                               StuId: fnr.Cookie.get("StuID"),
+                               batch_ID:2
+                           }, function (rsp) {
+                               if (rsp.SuccessResponse) {
+                                   $.each(rsp.Data, function (index, val) {//遍历当前数组
+                                       if (_this.arr2[val.Category_ID]) {//判断数组内是否包含 index等于当前类别ID的数组
+                                           _this.arr2[val.Category_ID].push(val);//如果有，将当前值放进 index等于当前类别ID的数组
+                                       } else {
+                                           _this.$set('arr2[' + val.Category_ID + ']', []);//如果没有，创建一个 index等于当前类别ID的数组 并存放进去；
+                                           _this.arr2[val.Category_ID].push(val);
+                                       }
+                                   });
+                               }
+                           })
+                       },
+                       submit: function (data) {
+                           $.get("/service/edu/ResultCurriculum/GetProcessCurriculumQuery", { Specialty_ID: fnr.Cookie.get("Specialty_ID") }
+
+                          , function (rsp) {
+                              if (rsp.SuccessResponse) {
+                                  window.location.href = "/usercenter/process/examination.shtml";
+                              } else {
+                                  layer.msg(rsp.Message);
+                              }
+                          })
+                       },
+                   },
+               })
+           })
+    </script>
+
+
+
+</body>
+</html>

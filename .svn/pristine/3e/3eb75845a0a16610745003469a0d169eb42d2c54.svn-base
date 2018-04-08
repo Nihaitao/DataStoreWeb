@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        .isDisplay {
+            display: none;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">分组名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="Name" lay-verify="required" required autocomplete="off" placeholder="请输入分组名称"
+                           class="layui-input" v-model="submitForm.Name">
+                </div>
+            </div>
+            <div class="layui-form-item layui-hide">
+                <button class="layui-btn" lay-submit @click="submit">提交</button> 
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="/Resources/js/Controls/Common.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate"],
+    function (fnr) {
+
+        var laydate = layui.laydate;
+        var $ = layui.jquery;
+
+
+        var followStatusSearchOptions = []
+
+        var importanceSearchOptions = []
+
+        var sourceSearchOptions = []
+
+        var EdSearchOptions = []
+
+        var ConnectionLevelOptions = []
+
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+                submitForm: {
+                    status: 0,
+                    CID: '',
+                    Name: '',
+                }
+            },
+            ready: function () {
+                if( GetQueryString('CID')){
+                    this.submitForm.CID = GetQueryString('CID');
+                }
+            },
+            methods: {
+                submit: function (e) {
+                    if (!layui.form.checkInput(e)) {
+                        return false;
+                    }
+                    $.ajax({
+                        url: '/service/Group/InsertGroup',
+                        type: 'post',
+                        data: this.submitForm,
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.ReturnData.Data) {
+                                if (data.SuccessResponse) {
+                                    fnr.callDialog('refresh', data.ReturnData.Data);
+                                    fnr.closeDialog();
+                                }
+                            } else {
+                                layer.msg('data为空');
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    });
+</script>

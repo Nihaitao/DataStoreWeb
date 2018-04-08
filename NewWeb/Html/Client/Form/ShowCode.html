@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>表单获取代码</title>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <div class="layui-form-item">
+            <div class="prepare">
+                <div class="clearfix" style="padding-left:40px;">
+                    <p>注意事项：</p>
+                    <p class="">1）新建一个记事本，并打开编辑； </p>
+                    <p class="">
+                        2）将下面这段文字复制到记事本：
+                        <div class="prepare">
+                            &lt;!DOCTYPE html&gt;<br />
+                            &nbsp;&nbsp;&nbsp;&nbsp;&lt;html lang="en"&gt;<br/>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&lt;head&gt;<br />
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;meta charset="UTF-8"&gt;<br />
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;title&gt;Title&lt;/title&gt;<br />
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;link href="testHtml.html" ref="s" /&gt;<br />
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;style type="text/css"&gt;&lt;/style&gt;<br />
+                            &nbsp;&nbsp;&nbsp;&nbsp;&lt;/head&gt;<br />
+                            &nbsp;&nbsp;&nbsp;&nbsp;&lt;body&gt;<br />
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/customForm/js/require.js" data-main="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/customForm/js/main" 
+                        data-uuid="<span style="color:red;">生成代码</span>"&gt;&lt;/script&gt;<br />
+                            &nbsp;&nbsp;&nbsp;&nbsp;&lt;/body&gt;<br />
+                        &lt;/html&gt;</div></p>
+                    <p class="">3）将下面生成的脚本覆盖对应脚本处</p>
+                    <p class="">4）选择记事本左上角文件选项，另保存文件，保存格式为.html结尾文件</p>
+                    <p class="">5）最后，打开html文件进行数据提交</p>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">表单脚本</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="js" autocomplete="off" style="width: 150%;"
+                           class="layui-input" v-model="uuid">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "element"],
+   function (fnr) {
+       var table = layui.table;
+       var form = layui.form;
+       var tableExt = layui.tableExt;
+       var $ = layui.$;
+       var element = layui.element;
+       var table = layui.table;
+
+       var $ = layui.jquery;
+
+       window.rootApp = new Vue({
+           el: "#root",
+           data: {
+               uuid:"",
+               js: "",
+                                    
+           },
+           ready: function () {
+               this.uuid= fnr.getQueryString("ID");
+               //this.js="<scr"+"ipt src=\"https://bbsresources.oss-cn-hangzhou.aliyuncs.com/customForm/js/require.js\" data-main=\"https://bbsresources.oss-cn-hangzhou.aliyuncs.com/customForm/js/main\"  data-uuid='"+this.uuid+"'></scr"+"ipt>"
+               //this.js = this.uuid;
+           },
+       })
+   })
+</script>

@@ -1,0 +1,59 @@
+﻿666 -->
+
+<div class="foot">
+    <ul class="clearfix info">
+        <li>eol简介</li>
+        <li>联系方式</li>
+        <li>招聘信息</li>
+        <li>京IC证140769号</li>
+        <li>京IC备12045350号</li>
+        <li>京IC网文[2014]2106-306号</li>
+        <li>京公网安备&nbsp;11010802020236号</li>
+    </ul>
+    <p class="copyright"></p>
+    <a class="favIcon" ></a>
+</div>
+<script src="https://cdn.bootcss.com/jquery/1.10.2/jquery.js"></script>
+<script>
+    getCookie=function (name) {
+        var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+        if (arr = document.cookie.match(reg))
+            return unescape(arr[2]);
+        else
+            return null;
+    },
+
+    setCookie=function (name, value) {
+        var Days = 30;
+        var exp = new Date();
+        exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
+        document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString() + ";path=/";
+    }
+
+    function LayoutFn() {
+        if (getCookie("Setting") != null && getCookie("Setting") != "") {
+            var Setting = JSON.parse(getCookie("Setting"));
+           
+            $('.copyright').html(Setting.FooterCopyright ? Setting.FooterCopyright : '版权所有 赛尔互联（北京）教育科技有限公司 CERNET Corporation');
+            $('.favIcon').attr('href', Setting.Favicon ? Setting.Favicon : 'favicon.ioc');
+
+        } else {
+            var _this = this;
+            $.get('/service/public/Mechanism/GetSetlist', function (res) {
+
+                if (res.SuccessResponse) {
+                    if (res.Data) {
+                       
+
+                        var Setting = { HeaderLogo: res.Data.HeaderLogo ? res.Data.HeaderLogo : '/Resources/images/WxLogo.png', HeaderLogoOrName: res.Data.HeaderLogoOrName, HeaderName: res.Data.HeaderName, FooterCopyright: res.Data.FooterCopyright, Favicon: res.Data.Favicon }
+
+                        _this.setCookie('Setting', JSON.stringify(Setting));
+                    }
+                } else {
+                    layer.msg(res.Message);
+                }
+            });
+        }
+    }
+    LayoutFn();
+</script>

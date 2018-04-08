@@ -1,0 +1,67 @@
+﻿
+       /* .main {
+            padding: 20px;
+            /* width: 50%; 
+            margin: 0 auto;
+            /* background-color: rebeccapurple; 
+            min-width: 400px;
+            width: 400px;
+        }*/
+        .code_btn {
+            
+            color: #ff8a00!important;
+            background-color: rgba(255, 184, 0, 0.07)!important;
+            border: 1px solid #ff8a00!important;
+        }
+        .code_btn_pos {
+            position: relative;
+            left: 410px;
+            bottom: 38px;
+        }
+        .edit_btn {
+            width: 240px;
+            margin-left: 0;
+            
+        }
+a:hover {
+
+text-decoration:none;
+}
+        p.tips {
+            
+        padding-bottom: 15px;
+
+        }
+        .title {
+            color:#FFB800;
+        }
+        .ipt_bg_color {
+            background-color:#f2f2f2!important;
+        }
+        .ipt_bg_color:focus {
+            background-color:#fff!important;
+        }
+        .w_tips {
+            position: relative;
+            left: 410px;
+            bottom: 38px;
+            color:red!important;
+        }
+        .psd_tips {
+            padding: 0;
+            color: #ff8a00;
+            text-align:center;
+            padding:5px 0;
+        }
+        .psd_tip_div {
+            padding: 20px;
+            background-color: rgba(255, 184, 0, 0.07)!important;
+            color: #ff0000;
+            margin: 20px 20px;
+            min-width: 400px;
+        }
+        .psd_wrong_tips {
+
+            padding-top: 5px;
+            color:#ff0000;
+        }

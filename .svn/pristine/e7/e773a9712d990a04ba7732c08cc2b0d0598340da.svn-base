@@ -1,0 +1,159 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="/usercenter/Resources/fonts/iconfont.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/usercenter/Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link href="/usercenter/Resources/CSS/Font/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="/usercenter/Resources/CSS/video-js.css" rel="stylesheet" />
+</head>
+<body style="background-color: #f7f7f7" id="root">
+    <!--顶部-->
+    <!--#<!--#include file="/usercenter/UserControl/header.html"-->
+    <div class="w1200 clearfix">
+        <!--#<!--#include file="/usercenter/UserControl/aside.html"-->
+        <div class="main">
+            <div class="main-header bgwhite">
+                <div class="clearfix" style="padding:0 20px;">
+                    <div class="pull-left">
+                        <span>当前科目：</span>
+                        <span>{{Discipline.Name}}</span>
+                    </div>
+                    <div class="pull-right">
+                        <span>
+                            <i class="setting-subject"></i>
+                            <span>设置科目</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="main-body" style="padding:0;">
+                <div class="mid-l moniti">
+                    <i class="tk-icon free-tk"></i>
+                    <div class="mid-l-con">
+                        <div class="biaoti bgwhite">
+                            <p class="h1">免费题库</p>
+                            <p class="h2">百万试题，免费开放</p>
+                        </div>
+                        <ul class="modify">
+                            <li class="t-zj">
+                                <a href="/usercenter/questionbank/tk/courseList.html?disciplineId={{ID}}">
+                                    <i class="tk-icon tk-zj"></i>
+                                    <p>章节练习</p>
+                                </a>
+                            </li>
+                            <li class="t-mn mr0">
+                                <a href="#">
+                                    <i class="tk-icon tk-mn"></i>
+                                    <p>模拟试卷</p>
+                                </a>
+                            </li>
+                            <li class="t-zt">
+                                <a href="#">
+                                    <i class="tk-icon tk-nn"></i>
+                                    <p>历年真题</p>
+                                </a>
+                            </li>
+                            <li class="t-yl mr0">
+                                <a href="#">
+                                    <i class="tk-icon tk-yc"></i>
+                                    <p>易错题</p>
+                                </a>
+                            </li>
+                            <!--  <li class="t-qd"><a href="#"><i></i>
+                                <p>敬请期待</p>
+                            </a></li>-->
+                        </ul>
+                    </div>
+                </div>
+                <div class="makeinfo bgwhite">
+                    <ul>
+                        <li class="fa-color">
+                            <a href="">
+                                <em class="num">{{Practice.AlreadyCount || 0}}</em>题
+                                <p>我的收藏</p>
+                            </a>
+                        </li>
+                        <li class="fa-color">
+                            <a href="">
+                                <em class="num">{{Practice.AlreadyCount || 0}}</em>题
+                                <p> 我的错题</p>
+                            </a>
+                        </li>
+                        <li class="fa-color">
+                            <a href="">
+                                <em class="num">{{Practice.AlreadyCount || 0}}</em>题
+                                <p>做题记录</p>
+                            </a>
+                        </li>
+                        <li class="fa-color">
+                            <a href="">
+                                <em class="num">{{Practice.AlreadyCount || 0}}</em>题
+                                <p>我的笔记</p>
+                            </a>
+                        </li>
+                        <li class="coun">
+                            <a href="javascript:;" class="btn_jx noborder">
+                                <em></em>
+                                <p>继续上次练习</p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--footer-->
+    <!--#<!--#include file="/usercenter/UserControl/Footer.html"-->
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil'],
+        function (fnr) {
+            var $ = layui.$;
+            var table = layui.table;
+            var tableExt = layui.tableExt;
+            var vm = new Vue({
+                el: "#root",
+                data: {
+                    Discipline: [],
+                    tip: [],
+                    chapterId:fnr.getQueryString('ID'),
+                    Practice:'',
+                    ID:fnr.getQueryString('ID'),
+                    Discipline:''
+                },
+                ready: function () {
+                    this.GetStudentChapterPractice(this.chapterId);
+                    this.GetDisciplineByID(this.ID)
+                },
+                methods: {
+                        
+                    //根据章节ID获取学生章节做题情况
+                    GetStudentChapterPractice: function (chapterId) {
+                        var that = this;
+                        $.get('/service/datastore/Chapter/GetStudentChapterPractice', { chapterId: chapterId }, function (res) {
+                            that.Practice=res.Data[0];
+                        })
+                    },
+                    //根据id查询学科
+                    GetDisciplineByID:function(ID){
+                        var that = this;
+                        $.get('/service/Discipline/GetDisciplineByID', { ID: ID }, function (res) {
+                            that.Discipline=res.ReturnData.Data;
+                        })
+                    }
+                }
+            });
+        })
+    </script>
+</body>
+
+</html>

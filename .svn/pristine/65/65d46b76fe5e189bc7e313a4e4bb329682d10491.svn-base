@@ -1,0 +1,222 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        .isDisplay {
+            display: none;
+        }
+
+        label.layui-form-label {
+            width: 100px;
+        }
+
+        div.layui-input-block {
+            margin-left: 130px;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <div class="layui-form" v-cloak>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">学科</label>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="FirstSetting" v-bind:value.sync="linkage.First" v-bind:change="FirstChange" initial="off" lay-filter="First"></remote-sel>
+                    </div>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="SecondSetting" v-bind:value.sync="linkage.Second" v-bind:change="SecondChange" v-ref:second initial="off" lay-filter="Second"></remote-sel>
+                    </div>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="ThreeSetting" v-bind:value.sync="linkage.Three" v-bind:change="ThreeChange" v-ref:three initial="off" lay-filter="Three"></remote-sel>
+                    </div>
+                </div>               
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">课程</label>
+                <div class="layui-input-inline">
+                    <remote-sel v-bind:setting="Course" laytips="选择课程" v-bind:value.sync="CourseID" v-ref:coursereset></remote-sel>
+                </div>
+            </div>
+            <div class="layui-form-item layui-hide">
+                <button class="layui-btn" lay-submit @click="submit">提交</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="/Resources/js/Controls/Common.js"></script>
+<script>
+
+
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate", ],
+        function (fnr) {
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: "#EffDate"
+            });
+            var $ = layui.jquery;
+            var form = layui.form;
+
+            var rootApp = new Vue({
+                el: "#root",
+                data: {
+                    CourseList: [],
+                    CourseID:'',
+                    FirstSetting: {
+                        search: true,
+                        options: [
+                        ],
+                        remote: {
+                            url: '/service/Discipline/GetDisciplineWithCID',
+                            data: { CID: 0 }
+                        },
+                        fields: { root: 'ReturnData.Data', key: 'ID', value: 'Name' }
+                    },
+                    SecondSetting: {
+                        options: [],
+                        remote: {
+                            url: '',
+                            data: {}
+                        },
+                        fields: { root: 'ReturnData.Data', key: 'ID', value: 'Name' }
+                    },
+                    ThreeSetting: {
+                        options: [],
+                        remote: {
+                            url: '',
+                            data: {}
+                        },
+                        fields: { root: 'ReturnData.Data', key: 'ID', value: 'Name' }
+                    },
+                    Course: {
+                        options: [],
+                        remote: {
+                            url: '',
+                            data: {}
+                        },
+                        fields: { root: 'ReturnData.Data', key: 'ID', value: 'Name' }
+                    },
+                    submitForm: {
+                        DisciplineIDs: ''
+                    },
+                    linkage: {
+                        First: '',
+                        Second: '',
+                        Three:'',
+                    },
+                },
+                watch: {
+                    linkage: {
+                        handler: function (newVal, oldVal) {
+                            if (newVal.Three == '') {
+                                if (newVal.Second == '') {
+                                    this.submitForm.DisciplineIDs = this.linkage.First;
+                                } else {
+                                    this.submitForm.DisciplineIDs =this.linkage.Second;
+                                }
+                            } else {
+                                this.submitForm.DisciplineIDs = this.linkage.Three;
+                            }
+                        },
+                        deep: true
+                    },
+                },
+                ready: function () {
+
+                },
+                methods: {
+                    getCourse: function () {
+                        var self = this;                        
+                        self.Course.remote = {};
+                        self.Course.remote = {
+                            url: "/service/WebCourse/GetCourseList", data: { Discipline_ID: self.submitForm.DisciplineIDs}, ajaxSuccess: function (rsp) {
+                                self.CourseList = rsp;
+                            }
+                        };
+                        self.$refs.coursereset.reset();
+
+                    },
+                    SecondBind: function (ID) {
+                        var data;
+                        if (ID > 0) {
+                            data = {
+                                search: true,
+                                fields: { key: 'ID', value: 'Name' },
+                                options: [],
+                                remote: { url: "", data: { CID: ID } }
+                            }
+                        } else {
+                            data = {
+                                search: true,
+                                fields: { key: 'ID', value: 'Name' },
+                                options: []
+                            }
+                        }
+                        return data;
+                    },
+                    ThreeBind: function (ID) {
+                        var data;
+                        if (ID > 0) {
+                            data = {
+                                search: true,
+                                fields: { key: 'ID', value: 'Name' },
+                                options: [],
+                                remote: { url: "", data: { CID: ID } }
+                            }
+                        } else {
+                            data = {
+                                search: true,
+                                fields: { key: 'ID', value: 'Name' },
+                                options: []
+                            }
+                        }
+                        return data;
+                    },
+                    FirstChange: function () {
+                        var self = this;
+                        this.SecondSetting.remote.url = '/service/Discipline/GetDisciplineWithCID';
+                        this.SecondSetting.remote.data = { CID: this.linkage.First };
+                        fnr.mergeJson(this.SecondBind(this.linkage.Second), this.SecondSetting);
+                        this.$refs.second.reset();
+                        self.getCourse();
+                    },
+                    SecondChange: function () {
+                        var self = this;
+                        this.ThreeSetting.remote.url = '/service/Discipline/GetDisciplineWithCID';
+                        this.ThreeSetting.remote.data = { CID: this.linkage.Second };
+                        fnr.mergeJson(this.ThreeBind(this.linkage.Three), this.ThreeSetting);
+                        this.$refs.three.reset();
+                        self.getCourse();
+                    },
+                    ThreeChange: function () {
+                        var self = this;                        
+                        self.getCourse();
+                    },
+                    submit: function (e) {
+                        var self = this;
+                        if (!layui.form.checkInput(e)) {
+                            return false;
+                        }
+                        if (self.CourseID != null && self.CourseID != "") {
+                            var dataUrl = "/Course/Detail.html?ID=" + self.CourseID
+                            fnr.callDialog('refresh', { status: true, MenuUrl: dataUrl });
+                            fnr.closeDialog();
+                        }
+                    }
+                }
+            });
+        });
+</script>

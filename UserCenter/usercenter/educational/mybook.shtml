@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我的教务</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="/Resources/fonts/iconfont.css" rel="stylesheet" />
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_514871_9czxk955wqy6i529.css">
+    <link rel="stylesheet" href="/Resources/CSS/bootstrap/css/bootstrap.min.css">
+    
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    
+    <script src="/Resources/js/headFootLayout.js"></script>
+    <link href="/Resources/CSS/PC_css.css" rel="stylesheet" />
+    <link href="/Resources/CSS/video-js.css" rel="stylesheet" />
+    <link href="/Resources/CSS/super.css" rel="stylesheet" />
+ 
+</head>
+<body style="background-color: #f7f7f7;user-select: none;">
+    <!--#<!--#include file="/PublicControl/topmenu.html"-->
+    <div class="w1200 clearfix">
+        <!--#<!--#include file="/PublicControl/leftmenu.html"-->
+        <div class="main">
+            <!--<div class="order-top">
+                <ul class="orderTabs">
+                    <li><a href="myeducational.shtml">我的成绩</a></li>
+                    <li ><a href="myexam.shtml">我的报考</a></li>
+                    <li class="active"><a href="mybook.shtml">我的书籍</a></li>
+                    <li><a href="mycontact.shtml">联系记录</a></li>
+                </ul>
+            </div>-->
+            <div class="order-middle" id="myscore">
+                <div class="middle-main" style="text-align: right;">
+                    <p class="score_tips">
+                        温馨提示：功能待开发中...请耐心等待哈
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--#<!--#include file="/PublicControl/bottommenu.html"-->
+</body>
+</html>

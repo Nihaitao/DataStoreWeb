@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="2.css">
+    <script src="https://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <style>
+        .container { position: relative; margin-top: 200px; margin-left: 200px; }
+        .stepUl { position: absolute; top: 0; left: 200px; width: 400px; height: 7px; background-color: #999; list-style: none; display: inline-block; margin: 0; padding: 0; }
+        .stepUl li { display: inline-block; position: absolute;  float:left;  height: 7px; }
+
+        .stepUl li span { position: absolute; top: -7px; left: -10px; display: inline-block; width: 20px; height: 20px; border-radius: 50%; background-color: #000; }
+        .stepUl li:first-child span { left: -10px; }
+        .stepUl li:last-child span { left: 90px; }
+
+        .stepLi.lastStep { width: 0; }
+        .lastStep { left: 300px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <ul class="steptext">
+            <li class="thisStep">
+                第一笔
+            </li>
+            <li>
+                第二笔
+            </li>
+            <li>
+                第三笔
+            </li>
+            <li>
+                第四笔
+            </li>
+        </ul>
+        <ul class="stepUl">
+            <li class="thisStep">
+                <span></span>
+            </li>
+            <li>
+                <span></span>
+            </li>
+            <li>
+                <span></span>
+            </li>
+            <li>
+                <span></span>
+            </li>
+        </ul>
+
+        <button type="button" class="startTime">按钮1</button>
+    </div>
+
+    <script>
+        $(function () {
+            $(".stepUl li").width($(".stepUl").width() / $(".stepUl li").length)
+        })
+        $('.startTime').on('click', function () {
+            var liLength = $('.stepLi').length;
+            var bgStart = 0;
+            var times = setInterval(function () {
+                $('.stepUl .stepLi.step' + (bgStart += 1) + '').css('backgroundColor', '#000');
+                if (bgStart > (liLength - 1)) {
+                    clearInterval(times);
+                }
+            }, 1000);
+        })
+
+    </script>
+</body>
+</html>

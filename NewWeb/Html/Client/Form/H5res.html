@@ -1,0 +1,236 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=320, initial-scale=1.0,maximum-scale=1.0,minimum=1.0,user-scalable=no">
+    <!--<meta name="viewport" id="viewport" content="width=320, initial-scale=1, maximum-scale=1, user-scalable=no">-->
+    <meta name="format-detection" content="telephone=no, email=no">
+    <title></title>
+    <style>
+        .isDisplay {
+            display: none;
+        }
+
+        label.layui-form-label {
+            width: 100px;
+        }
+
+        div.layui-input-block {
+            margin-left: 130px;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+        iframe{
+             border: 0;
+             height: 100%;
+             width: 100%;
+         }
+        html, body{
+            height: 100%;
+        }
+        button.layui-btn:hover{
+             opacity: 1;
+         }
+        div.layui-input-block{
+            margin: 15px;
+        }
+        button.layui-btn{
+            height: 48px;  line-height: 48px;  
+        }
+    </style>
+</head>
+<body id="root">
+    <div style="height: 100%;">
+        <iframe v-show="isShowIframe" id="H5Iframe" v-bind:src="H5Url" scrolling="auto"></iframe>
+        <div v-show="!isShowIframe" class="layui-form">
+            <div class="layui-form-item">
+                <div class="layui-input-block" style="background-color: #dfdfdf; border-radius: 3px;padding-left: 15px;">
+                    <span>{{Title}}</span>
+                </div>
+            </div>
+            <div class="layui-form-item" v-for="item in FieldData">
+                <!--<label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>-->
+                <div class="layui-input-block">
+                    <input type="text" lay-verify="Required" autocomplete="off" placeholder="{{item.Tips}}" class="layui-input" v-model="item.value">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" @click="submitForm" style="width: 100%;">报名</button>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn layui-btn-primary" @click="callbackSubmit" style="width: 100%;">返回预览</button>
+                </div>
+            </div>
+        </div>
+        <button v-show="isShowIframe" class="layui-btn" style="width: 100%;position: absolute; left: 0;bottom: 0;" @click="iframeSubmit">快速报名</button>
+    </div>
+</body>
+</html>
+
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/Controls/Common.js"></script>
+<script>
+    var dictionaryMapping = new Array();
+    dictionaryMapping["Source_ID"] = "Source_ID";
+    dictionaryMapping["PhaseType_ID"] = "PhaseType_ID";
+    dictionaryMapping["Importance_ID"] = "Importance_ID";
+    dictionaryMapping["ConnectionLevel_ID"] = "ConnectionLevel_ID";
+    dictionaryMapping["Education_ID"] = "Education_ID";
+
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate", "customUtil", "upload"],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+            var upload = layui.upload;
+            GetParentQueryString = function (name) {
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+                var r = window.parent.location.search.substr(1).match(reg);
+                if (r != null) return decodeURIComponent(r[2]);
+                return undefined;
+            };
+            //获取地址栏参数
+            function GetQueryString(name) {
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+                var r = window.parent.location.search.substr(1).match(reg);
+                if (r != null) return unescape(r[2]); return null;
+            }
+            function getCookie(name) {
+                var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+                if (arr = document.cookie.match(reg))
+                    return unescape(arr[2]);
+                else
+                    return null;
+            }
+            //function isPhoneNum(str) {
+            //    //return /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/.test(str)
+            //    return /^1[3|4|5|7|8][0-9]{9}$/.test(str)
+            //}
+            window.rootApp = new Vue({
+                el: "#root",
+                data: {
+                    FieldData: [],
+                    H5Url: '',
+                    isShowIframe: true,
+                    Title: '',
+                    submitData: {},
+                    FormType: '',
+                },
+
+                ready: function () {
+                    //setTimeout(function () {
+                    //    this.H5Url = window.parent.vm.BasicInfo.H5Url;
+                    //    console.log(this.H5Url);
+                    //}, 500);
+                    if (fnr.getQueryString('inlinesrc')) {
+                        this.H5Url = fnr.getQueryString('inlinesrc');
+                    }
+                    this.GetClientOrClueListByFormID();
+                    if (window.location.href.split('?FormID=')[0].split('Account_ID=')[1]) {
+                        this.AddFormBrowse();
+                    }
+                },
+                methods: {
+                    //判断是否为手机号
+                    isPhoneNum: function (str) {
+                        return /^1[3|4|5|7|8][0-9]{9}$/.test(str)
+                    },
+                    //基本信息，客服分配
+                    GetClientOrClueListByFormID: function () {
+                        var self = this;
+                        var ID;
+                        if (!!GetParentQueryString('FormID')) {
+                            ID = GetParentQueryString('FormID');
+                        } else {
+                            ID = window.location.href.split('?FormID=')[1];
+                        }
+                        $.get('/service/crm/Form/GetFormDetailInfo', { ID: ID, Status: -1 }, function (res) {
+                            if (res.SuccessResponse) {
+                                if (res.Data) {
+                                    self.Title = res.Data.Remart;
+                                    self.FormType = res.Data.FormType;
+                                    if (self.FormType == 1) {
+                                        $('title').html('添加客户');
+                                    } else {
+                                        $('title').html('添加线索');
+                                    }
+                                    res.Data.FieldData.map(function(val, ind){
+                                        if(val.FieldType == 100 && val.Required == 1){
+                                            val.value = '';
+                                            self.FieldData.push(val);
+                                        }
+                                    });
+                                } else {
+                                    layer.msg('返回值为空')
+                                }
+                            }
+                        });
+                    },
+                    //快速报名
+                    iframeSubmit: function () {
+                        var self = this;
+                        self.isShowIframe = false;
+                    },
+                    callbackSubmit: function () {
+                        var self = this;
+                        self.isShowIframe = true;
+                    },
+                    //浏览量次数
+                    AddFormBrowse: function () {
+                        $.post('/service/crm/Form/AddFormBrowse',
+                            { Form_ID: window.location.href.split('?FormID=')[1], Account_ID: window.location.href.split('?FormID=')[0].split('Account_ID=')[1] },
+                            function (res) {
+                                if (res.SuccessResponse) {
+                                    
+                                }
+                            })
+                    },
+                    //报名
+                    submitForm: function () {
+                        var self = this;
+                        var url = '';
+                        self.FieldData.map(function (val, ind) {
+                            self.submitData[val.FieldName] = val.value;
+                        });
+                        if (self.FormType == 1) {                       //客户
+                            url = '/service/crm/FormSignUp/AddClient';  
+                        } else {                                        //线索
+                            url = '/service/crm/FormSignUp/AddClue';
+                        }
+                        var Account_ID;
+                        var ID;
+                        if (!!getCookie('AccountID')) {
+                            Account_ID = getCookie('AccountID')
+                        } else {
+                            Account_ID = window.location.href.split('?FormID=')[0].split('Account_ID=')[1]
+                        }
+                        if (!!GetParentQueryString('FormID')) {
+                            ID = GetParentQueryString('FormID');
+                        } else {
+                            ID = window.location.href.split('?FormID=')[1];
+                        }
+                        var obj = $.extend(self.submitData, { ID: ID, Account_ID: Account_ID, Form_ID: 1 });
+                        if (self.isPhoneNum(obj.Phone)) {
+                            $.post(url, obj, function (res) {
+                                if (res.SuccessResponse) {
+                                    self.isShowIframe = true;
+                                }
+                                alert(res.Message);
+                            });
+                        } else {
+                            layer.msg('手机号码格式不正确');
+                        }
+                    },
+                }
+            });
+        });
+</script>

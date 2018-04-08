@@ -1,0 +1,340 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我的教务</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="/Resources/fonts/iconfont.css" rel="stylesheet" />
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_514871_9czxk955wqy6i529.css">
+    <link rel="stylesheet" href="/Resources/CSS/bootstrap/css/bootstrap.min.css">
+    
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    
+    <script src="/Resources/js/headFootLayout.js"></script>
+    <link href="/Resources/CSS/PC_css.css" rel="stylesheet" />
+    <link href="/Resources/CSS/video-js.css" rel="stylesheet" />
+    <link href="/Resources/CSS/super.css" rel="stylesheet" />
+    <!--<link href="/Resources/CSS/question.css" rel="stylesheet" />-->
+</head>
+<body style="background-color: #f7f7f7;user-select: none;">
+    <!--#<!--#include file="/PublicControl/topmenu.html"-->
+    <div class="w1200 clearfix">
+        <!--#<!--#include file="/PublicControl/leftmenu.html"-->
+        <div class="main">
+           
+            <div class="order-middle" id="myscore">
+                <div class="middle-main" style="text-align: right;">
+                    <div class="tableContent">
+                        <div class="tableContent_main">
+                            <table class="myTableLay" lay-skin="line">
+                                <thead>
+                                    <tr>
+                                        <th>课程代码</th>
+                                        <th>课程名称</th>
+                                        <th v-for="item in thList">{{item.BatchDate}}</th>
+                                        <th>最终成绩</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="item in curList">
+                                        <td>{{item.CuCode}}</td>
+                                        <td>{{item.CuName}}</td>
+                                        <td v-for="item2 in item.Score">
+                                            <div v-if="item2.CuType===0">{{item2.Scoreal?parseFloat(item2.Scoreal).toFixed(1):''}}</div>
+                                            <div v-if="item2.CuType===1">{{item2.Scoreal?returnRank(item2.Scoreal):''}}</div>
+                                        </td>
+                                        <td>
+                                            <div v-if="item.CuType===0">{{item.finalScore?parseFloat(item.finalScore).toFixed(1):''}}</div>
+                                            <div v-if="item.CuType===1">{{item.finalScore?returnRank(item.finalScore):''}}</div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="2">信息审核状态</td>
+
+                                        <td v-for="item in thList">
+
+                                            <div v-if="item.Valid==0">
+                                                <span style="color:#64C677" @click="inspection(item.ID,1)"><i class="iconfont icon-querenwuwu"></i></span>
+                                                <span style="color:#EE5454" @click="inspection(item.ID,2)"><i class="iconfont icon-youyiyi"></i></span>
+                                            </div>
+                                            <div v-if="item.Valid==1">已确认</div>
+                                            <div style="color:#EE5454" v-if="item.Valid==2">有异议</div>
+                                            <div v-if="item.Valid==3">
+                                                <span><i style="color:#f76500;" class="iconfont icon-goutongjilu" @click="Record(item.ID,item.Valid)"></i></span>
+                                                <span style="color:#64C677" @click="inspection(item.ID,1)"><i class="iconfont icon-querenwuwu"></i></span>
+                                            </div>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <div class="fixed_left" v-if="overflow">
+                            <table class="myTableLay">
+                                <thead>
+                                    <tr>
+                                        <th>课程代码</th>
+                                        <th>课程名称</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="item in curList">
+                                        <td>{{item.CuCode}}</td>
+                                        <td>{{item.CuName}}</td>
+                                    </tr>
+
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="2">信息审核状态:</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <div class="fixed_right" v-if="overflow">
+                            <table class="myTableLay">
+                                <thead>
+                                    <tr>
+                                        <th>最终成绩</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="item in curList">
+                                        <td>
+                                            <div v-if="item.CuType===0">{{item.finalScore?parseFloat(item.finalScore).toFixed(1):''}}</div>
+                                            <div v-if="item.CuType===1">{{item.finalScore?returnRank(item.finalScore):''}}</div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    <p class="score_tips">
+                        温馨提示：请仔细查看自己的成绩记录，如无误请点击
+                        "<span style="color:#64C677"><i class="iconfont icon-querenwuwu"></i>确认无误</span>" ,
+                        如不正确请点击"<span style="color:#EE5454"><i class="iconfont icon-youyiyi"></i>有异议</span>"，
+                        确认完毕显示“已确认”
+                    </p>
+                </div>
+                <div class="Pcard" style="display:none;background:#F8F8F8;height:100%">
+                    <div class="textareaContent">
+                        <textarea placeholder="请输入异议内容......." v-model="ObjectionContent"></textarea>
+                    </div>
+                    <div style="text-align:right;padding-right:20px;">
+                        <div class="layui-btn" style="background-color:#ed4242" @click="haveQ"> 提交</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--#<!--#include file="/PublicControl/bottommenu.html"-->
+</body>
+</html>
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil','wxconfig'],
+        function (fnr) {
+            var $ = layui.$;
+            var table = layui.table;
+            var tableExt = layui.tableExt;
+            var wxconfig = layui.wxconfig;
+            var vm = new Vue({
+                el: "#myscore",
+                data: {
+                    curList: [],
+                    thList: [],
+                    userInfo: {}, //学生信息数据
+                    overflow: false,
+                    ObjectionContent: '',
+                    ID: "",
+                    Ste: ""
+                },
+                ready: function () {
+                    this.userInfo = wxconfig.GetStudentInfo();
+                    this.getcurList(this.getDataList);
+                   
+
+                },
+                watch: {
+                    curList: {
+                        handler: function (val) {
+                            this.overflow = parseFloat($("#myscore .tableContent").width()) < parseFloat($("#myscore .myTableLay").width());
+
+                        },
+                        deep: true
+                    }
+                },
+                methods: {
+                    tabsToggle: function () {
+                        $('.orderTabs').on('click', 'li', function () {
+                            if (!$(this).hasClass('active')) {
+                                $(this).addClass('active').siblings().removeClass('active');
+                            }
+                        });
+                    },
+                    //评分等级返回
+                    returnRank: function (val) {
+                        var data = '' + Number(val).toFixed(0);
+                        console.log(data)
+                        switch (data) {
+                            case "1":
+                                return '不及格';
+                                break;
+                            case "2":
+                                return '及格';
+                                break;
+                            case "3":
+                                return '中';
+                                break
+                            case "4":
+                                return '良';
+                                break;
+                            case "5":
+                                return '优';
+                                break;
+                            default:
+                                return ''
+                        }
+                    },
+                    getcurList: function (cd) {
+
+                        var _this = this;
+                        var url;
+
+                        if ( _this.userInfo.Model_ID === 2) {
+                            url = _this.userInfo.SchoolRoll_ID <= 4 ? "/service/edu/Teachingplan/GetSinschoolCurriculum" : "/service/edu/Specialty/GetSpecialtyCurriculumList";
+                        } else {
+                            url = "/service/edu/Specialty/GetSpecialtyCurriculumList";
+                        }
+
+                        $.get(url, {
+                            Specialty_ID: _this.userInfo.Specialty_ID,
+                            SpecialtyVersion_ID: _this.userInfo.SpecialtyVersion_ID,
+                            Model_ID: _this.userInfo.Model_ID,
+                            StuID: _this.userInfo.StuID,
+
+                        }, function (res) {
+
+                            if (res.Data !=null) {
+                                res.Data.map(function (a, b) {
+                                    _this.curList.push(a);
+                                });
+                            }
+
+                            $.get("/service/edu/StudentScore/GetStudentScoreszhong", {
+
+                                StuDetail_ID: _this.userInfo.StuDetail_ID,
+                                StuID: _this.userInfo.StuID,
+
+                                isID:_this.userInfo.Model_ID ==1?0: _this.userInfo.SchoolRoll_ID <= 4 ? 1 : 0
+
+                            }, function (res) {
+                                if (_this.curList !=null) {
+                                    _this.curList.map(function (a, b) {
+                                        if (res.Data !=null) {
+                                            res.Data.map(function (c, d) {
+                                                if (a.Curriculum_ID === c.Curriculum_ID) {
+                                                    Vue.set(a, 'finalScore', c.Scoreal);
+                                                }
+                                            });
+                                        }
+
+                                    });
+                                }
+
+                                console.log(_this.finalSco);
+                            });
+                            if (typeof cd === 'function') { cd() }
+                        })
+                    },
+                    getDataList: function () {
+                        var _this = this;
+                        _this.thList = [];
+                        $.get("/service/edu/StudentScore/GetStudentScoresli", {
+                            StuID: _this.userInfo.StuID,
+                            StuDetail_ID: _this.userInfo.StuDetail_ID,
+                            isID:_this.userInfo.Model_ID ==1?0:_this.userInfo.SchoolRoll_ID <= 4 ? 1 : 0
+                        }, function (res) {
+
+                            //                                res.Data.data.map(function (a, b) {
+                            //                                    _this.curList.push({ CuCode: a.CuCode, CuName: a.CuName, finalScore: a.Scoreal, Score: [] })
+                            //                                });
+                            if (_this.curList !=null) {
+                                _this.curList.map(function (a, b) {
+                                    Vue.set(a, 'Score', []);
+                                });
+                            }
+                            if (res.Data !=null) {
+                                res.Data.map(function (a, b) {
+                                    _this.thList.push({ BatchDate: a.BatchDate, Valid: a.Valid, ID: a.firmID });
+                                    if (_this.curList !=null) {
+                                        _this.curList.map(function (V, INDEX) {
+                                            a.CurriculumlIst.map(function (C, D) {
+                                                if (C.Curriculum_ID == V.Curriculum_ID) {
+                                                    _this.curList[INDEX].Score.push({ Scoreal: C.Scoreal, CuType: C.CuType });
+                                                }
+                                            })
+                                        });
+                                    }
+
+                                });
+                            }
+
+                        });
+                    },
+                    inspection: function (ID, Ste) {
+                        var _this = this;
+                        if (Ste === 1) {
+                            $.post("/service/edu/Confirm/GetConfirmhfStudatehf", { ID: ID, StuID: _this.userInfo.StuID, }, function () {
+                                _this.getDataList();
+                            });
+                        } else {
+                            layer.open({
+                                type: 1,
+                                area: ['600px', '350px'],
+                                title: '异议',
+                                content: $('.Pcard')
+                            });
+                            _this.ID = ID;
+                            _this.Ste = Ste;
+                        };
+
+                    },
+                    haveQ: function () {
+                        var _this = this;
+                        $.post('/service/edu/Confirm/GetConfirmhfStudateList',
+                          {
+                              StuID: _this.userInfo.StuID,
+                              StuDetail_ID: _this.userInfo.StuDetail_ID,
+                              ID: _this.ID,
+                              Valid: _this.Ste,
+                              BusType: 5,
+                              ObjectionContent: _this.ObjectionContent
+                          },
+                          function (res) {
+                              if (res.SuccessResponse) {
+                                  layer.closeAll();
+                                  _this.getDataList();
+                              }
+                          });
+                    },
+                    Record: function (ID, Ste) {
+
+                        location.href = '../usercenter/usercenter/ObjectionMsgLst.html?ID=' + ID + "&Valid=" + Ste + "&url=" + location.href;
+                    },
+                }
+            });
+        })
+</script>

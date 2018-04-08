@@ -1,0 +1,219 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>提问/投诉详情</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" href="/Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link href="//at.alicdn.com/t/font_514871_9czxk955wqy6i529.css" rel="stylesheet" />
+    <link href="/Resources/usercss/PC_css.css" rel="stylesheet" />
+    <link href="/Resources/CSS/video-js.css" rel="stylesheet" />
+    <link href="/Resources/usercss/question.css" rel="stylesheet" />
+    <link href="/Resources/usercss/super.css" rel="stylesheet" />
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <script src="/Resources/js/headFootLayout.js"></script>
+    <style>
+        .layui-form-item {
+            margin-bottom: 15px;
+            clear: none;
+        }
+        .layui-form-item:after{
+              clear: none;
+        }
+    </style>
+    <script>
+        var activeUrl="usercenter/usermanage/question.shtml";
+    </script>
+</head>
+<body style="background-color: #f7f7f7;user-select: none;">
+    <!--头部导航 Start-->
+    <!--#<!--#include file="/PublicControl/topmenu.html"-->
+    <!--头部导航 End-->
+    <div class="w1200 clearfix" >
+        <!--左侧导航 Start-->
+        <!--#<!--#include file="/PublicControl/leftmenu.html"-->
+        <!--左侧导航 End-->
+        <div class="main" id="root">
+            <!--//评价-->
+            <div class="Pcard" style="display:none;padding-top:15px;background:#F8F8F8;height:100%">
+                <label class="layui-form-label" style="width:220px;">您对此问题处理结果的评价：</label>
+                <div class="layui-input-block" style="margin-left:220px;">
+                    <i v-for="(index,item) in assessList" class="iconfont"
+                       v-bind:class="{'icon-pinglunhuisexingxing':startIndex<index,'icon-pinglunhuangsexingxing':startIndex>=index,'Hcolor':startIndex>=index}"
+                       @click="clickStart(index)"
+                       style="font-size:24px;cursor:pointer;margin-right:10px;">
+                    </i>
+
+                </div>
+                <div class="textareaContent">
+                    <textarea placeholder="请输入评价的内容......." v-model="EvaluationRemark"></textarea>
+                </div>
+                <div style="text-align:right;padding-right:20px;">
+                    <div class="layui-btn" style="background-color:#ed4242" @click="Sworkor"> 提交</div>
+                </div>
+            </div>
+            <div class="order-top">
+                <ul class="orderTabs">
+                    <li v-bind:class="{'active':DataType_ID==2}">提问</li>
+                    <li v-bind:class="{'active':DataType_ID==1}" >投诉</li>
+                </ul>
+            </div>
+            <div class="order-middle" style="margin-top: 20px;">
+                <div class="middle-main" style="padding: 23px 0;">
+                    <div class="detailQuestion">
+                        <h3 class="borderH3">{{DataType_ID==1?'投诉':"提问"}}详情</h3>
+                        <div class="putQ">
+                            <p style="padding-bottom: 24px;">
+                                {{DataType_ID==1?'投诉':"提问"}}内容:
+                                <span>{{baseData.Title}}</span>
+                            </p>
+                            <p>
+                                {{DataType_ID==1?'投诉':"提问"}}时间
+                                <span>{{baseData.AddTime}}</span>
+                            </p>
+                        </div>
+                        <div style="text-align: right; padding: 20px;">
+                            <p>
+                                <a href="javascrip:;" class="goBack" @click="goBack()">返回上一级</a>
+                                <span v-if="baseData.Status<3" style="color: #fff;background-color: #0bac52;padding: 5px 10px;border-radius: 3px;display:inline-block;" @click="closeWorker">关闭{{DataType_ID==1?'投诉':"提问"}}</span>
+                                <span v-else style="display:inline-block;">已关闭</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="commRecord">
+                        <h3 class="borderH3">沟通记录</h3>
+                        <div class="recordItem" v-for="item in dataList">
+
+                            <p style="color: #333; margin-bottom:15px;margin-top:10px;">
+                                {{item.user}}：{{item.Content}}
+                            </p>
+                            <p style="color: #999; margin-bottom:20px;">
+                                <span>{{item.AddTime}}</span>
+                            </p>
+                        </div>
+                        <div class="tw" v-if="baseData.Status<3">
+                            <textarea placeholder="有什么想说的呢？" v-model="ReplyContent"></textarea>
+                            <p style="padding: 10px 35px;color: #fff;border-radius: 3px; display: inline-block; background-color: #ed4242; margin-top: 20px;" @click="Reply">提交</p>
+                        </div>
+                    </div>
+                    <div class=" " style="padding-top:15px;" v-if="baseData.Status>3">
+                        <h3 class="borderH3">评价</h3>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" style="width:220px; text-align:left">您对此问题处理结果的评价：</label>
+                            <div class="layui-input-block" style="margin-left:220px;">
+                                <i v-for="(index,item) in assessList" class="iconfont"
+                                   v-bind:class="{'icon-pinglunhuisexingxing':baseData.EvaluationScore<index,'icon-pinglunhuangsexingxing':baseData.EvaluationScore>=index,'Hcolor':baseData.EvaluationScore>=index}"
+                                   style="font-size:24px;margin-right:10px;">
+                                </i>
+
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" style="width:220px; text-align:left">评价内容：</label>
+                            <div class="layui-input-block" style="margin-left:220px;">
+                                <p>{{baseData.EvaluationRemark}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  
+    <!--footer-->
+    <!--#<!--#include file="/PublicControl/bottommenu.html"-->
+    <script>
+        require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil'],
+            function (fnr) {
+                var $ = layui.$;
+                var table = layui.table;
+                var tableExt = layui.tableExt;
+                var vm = new Vue({
+                    el: "#root",
+                    data: {
+                        Discipline: [],
+                        tip: [],
+                        dataList: [],
+                        baseData: {},
+                        startIndex: 4,
+                        assessList: [true, true, true, true, true],
+                        EvaluationRemark: "",
+                        ReplyContent:"",
+                        DataType_ID:fnr.getQueryString("DataType_ID"),
+
+                    },
+                    ready: function () {
+                        this.getDataList();
+                    },
+                    methods: {
+                        //返回上一级
+                        goBack:function () {
+                            javascript:history.go(-1);
+                            location.reload();
+                        },
+                        getDataList: function () {
+                            var _this = this;
+                            _this.dataList = [];
+                            $.get("/service/edu/Workorders/GetSworkorderdh", { ID: fnr.getQueryString("ID"), DataType_ID: fnr.getQueryString("DataType_ID"), }, function (res) {
+                                res.Data.map(function (a, b) {
+                                    _this.dataList.push({ AddTime: fnr.format(a.AddTime, 'yyyy-MM-dd HH:mm:ss'), user: a.BusType == 1 ? "我" : a.AcName, Content: a.Content });
+                                })
+                            })
+                            $.get("/service/edu/Workorders/GetSworkorderdhxs", { ID: fnr.getQueryString("ID"), DataType_ID: fnr.getQueryString("DataType_ID"), }, function (res) {
+                                _this.baseData = res.Data[0];
+                                _this.baseData.AddTime = fnr.format(res.Data[0].AddTime, 'yyyy-MM-dd HH:mm:ss');
+                            })
+                        },
+                        clickStart: function (index) {
+                            var _this = this;
+                            _this.startIndex = index;
+                        },
+                        closeWorker: function () {
+                            layer.open({
+                                type: 1,
+                                area: ['600px', '400px'],
+                                title: "评价",
+                                content: $('.Pcard')
+                            });
+                        },
+                        Sworkor: function () {
+                            var _this = this;
+                            $.post('/service/edu/Workorders/GetSworkorderpj', { ID: fnr.getQueryString("ID"), EvaluationScore: _this.startIndex + 1, EvaluationRemark: _this.EvaluationRemark }
+                            , function (res) {
+                                console.log(res);
+                                if (res.SuccessResponse) {
+                                    layer.closeAll();
+                                    _this.getDataList();
+                                    layer.msg("评价成功")
+                                } else {
+                                    layer.msg("评价失败")
+                                };
+
+                            });
+                        },
+                        Reply: function () {
+                            var _this = this;
+                            $.post("/service/edu/Workorders/Sworkorderxshf",
+                                { WorkOrder_ID: fnr.getQueryString("ID"), Content: _this.ReplyContent },
+                                function (res) {
+                                    if (res.SuccessResponse) {
+                                        _this.ReplyContent = '';
+                                        _this.getDataList();
+                                        layer.msg("回复成功");
+                                    } else {
+                                        layer.msg("回复失败")
+                                    }
+                                })
+                        },
+                    },
+                });
+            })
+    </script>
+</body>
+</html>

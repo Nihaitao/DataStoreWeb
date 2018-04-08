@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+        <meta name="format-detection" content="telephone=no">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>修改个人信息</title>
+        <link href="../../Resources/css/ba.css" rel="stylesheet" />
+        <link href="../../Resources/css/informationEditor.css" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="http://at.alicdn.com/t/font_420109_2aq20389x5vobt9.css">
+        <script src="../../script/jquery.js"></script>
+        <script src="../../js/comment.js"></script>
+        <script src="../../script/artTemplate.js"></script>
+        <script src="../../script/layer_mobile/layer.js"></script>
+        <script src="../../script/picker.min.js"></script>
+     
+	</head>
+
+	<body>
+		<main>
+            <div class="firstCon">
+                <p class="name edit" data-img="HeadImg">
+                    头像
+                    <img src="../../Resources/img/person-hf.png" class="img">
+                    <input type="file" style="position:absolute;top:0;bottom:0;left:0;opacity:0;width:100%;" onchange="selectImage(this)";>
+                    <i class=" iconfont icon-xiangyou"></i>
+                </p>
+                <p class="name" data-name="Name">
+                    姓名
+                    <span class="txt">符太郜</span>
+                </p>
+                <p class="sex edit" data-name="Sex">
+                    性别
+                    <span class="txt" style="color:#000">男</span>
+                    <i class="iconfont icon-xiangyou"></i>
+                </p>
+
+            </div>
+            <span class="centerbox"></span>
+            <div class="firstCon">
+
+                <p class="name" data-name="CardNumber">
+                    证件号
+                    <span class="txt">43062619765432100</span>
+                </p>
+                <p class="sex edit" data-name="adderess" id="Address">
+                    地址
+                    <span class="txt" style="color:#000">湖南省长沙市</span>
+                    <i class="iconfont icon-xiangyou"></i>
+                </p>
+                <p class="sex edit" data-name="NowAddress">
+                    街道地址
+                    <input type="text" style="color:#000">
+                </p>
+            </div>
+            <span class="centerbox"></span>
+            <div class="firstCon">
+                <p class="nickName edit" data-name="Education">
+                    最高学历
+                    <span class="txt" style="color:#000">本科</span>
+                    <i class="iconfont icon-xiangyou"></i>
+                </p>
+                <p class="name" data-name="Email">
+                    邮箱
+                    <span class="txt">430626197@qq.com</span>
+                </p>
+                <p class="QQ edit" data-name="QQ">
+                    QQ
+                    <input type="text" style="color:#000">
+
+                  
+                </p>
+                <p class="sex" data-name="Phone">
+                    手机号
+                    <span class="txt">13974992180</span>
+                </p>
+                <p class="sex edit" data-name="Phone2">
+                    第二号码
+                    <input type="text" style="color:#000">
+                </p>
+            </div>
+			<button class="saveUp informationSave">保存</button>
+		</main>
+	</body>
+	
+</html>
+<script src="../../js/informEditor.js"></script>

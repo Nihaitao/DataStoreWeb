@@ -1,0 +1,47 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+<body>
+    <div>
+        @{
+            if (Request.QueryString["School_Type"] != null && int.Parse(Request.QueryString["School_Type"]) == 0)
+            {
+                <div class="logo_title">
+                    <p id="titleName" style="color:#000"></p>
+                    <h5 style="color:#000">Examination  Process  Assessment  Learning  Platform</h5>
+                </div>
+            }
+            else
+            {
+                <div class="logo_title">
+                    <p id="titleName"></p>
+                    <h5>Examination  Process  Assessment  Learning  Platform</h5>
+                </div>
+            }
+        }
+        @{
+            if (Request.QueryString["School_Type"] != null && int.Parse(Request.QueryString["School_Type"]) == 0)
+            {
+                <p style="text-align:center; color:#000">
+                    <span style="line-height:1.5;">版权所有 © 山东大学在线教育研究院　地址：中国山东省济南市山大南路27号　邮编：250100　<br />鲁ICP备案 05001952号</span>
+                </p>
+            }
+            else
+            {
+                <p style="text-align:center;">
+                    <span style="line-height:1.5;">版权所有 © 山东大学在线教育研究院　地址：中国山东省济南市山大南路27号　邮编：250100　<br />鲁ICP备案 05001952号</span>
+                </p>
+            }
+        }
+
+    </div>
+</body>
+</html>

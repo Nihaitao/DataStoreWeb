@@ -1,0 +1,308 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <meta charset="UTF-8">
+    <title>介绍</title>
+    <script src="../script/jquery.js"></script>
+    <link rel="shortcut icon" href="" type="image/x-icon" class="favIcon"/>
+    <link href="../Resources/CSS/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../Resources/CSS/Font/css/font-awesome.min.css">
+    <script src="../Resources/CSS/bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../Resources/CSS/PC_css.css">
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body id="root" v-cloak>
+    <!--#<!--#include file="UserControl/Header.html"-->
+    <!--详细介绍-->
+    <div class="Pro-screen">
+        <div class="container clearfix">
+            <div class="Pro-BreadcrumbNavigation">
+                <i class="icon_weizhi"></i>
+                <span>当前位置：</span>
+                <span>首页</span>
+                &gt;
+                <span>专业列表</span>
+                &gt;
+                <span>工商企业管理专业</span>
+            </div>
+            <div class="Pro-showDetail clearfix">
+                <div class="Pro_care pull-left">
+                    <img src="../Resources/images/课程图片.png" alt="" width="329" height="185">
+                </div>
+                <div class="Pro-info pull-right">
+                    <h3 class="Pro-title">
+                        {{CourseDetailData[0].Name}}
+                        <span class="pull-right Pro-code">专业代码：{{CourseDetailData[0].Code}}</span>
+                    </h3>
+                    <p>{{CourseDetailData[0].Info}}</p>
+                    <div style="margin-top: 10px"><span style="font-weight: 600;">层次：</span><span>{{CourseDetailData[0].LevelName}}</span></div>
+                    <div style="margin-top: 10px"><span style="font-weight: 600;">类型：</span><span>{{CourseDetailData[0].CategoryName}}</span></div>
+                    <div style="margin-top: 10px">
+                        <span style="font-weight: 600;">主考院校：</span>
+                        <select class="selected" name="daxue" id="" style="padding-left: 3px;">
+                            <option value="1">湖南林业科技大学</option>
+                            <option value="2">湘潭大学</option>
+                            <option value="3">湖南师范大学</option>
+                            <option value="4">长沙理工大学</option>
+                            <option value="5">中南大学</option>
+                        </select>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--专业课程-->
+    <div class="Pro-course">
+        <div class="container">
+            <h3>专业课程</h3>
+            <div class="course-list clearfix">
+                <template v-for="(index, item) in CourseData">
+                    <div class="Pro-course-care" v-if="item.IsPay == 0" @click="ActiveStatus($event)" v-bind:data-cid="item.Course_ID">
+                        <h5>{{item.CuName}}</h5>
+                        <p><span>课程代码：</span><span>{{item.CuCode}}</span>    <span class="pull-right">学分：{{item.CuCredits}}</span></p>
+                        <p class="Pro-price">￥<span>{{item.Price != null ? item.Price.toFixed(2) : 0}}</span></p>
+                        <!--<i class="fa fa-check"></i>-->
+                    </div>
+                    <div class="Pro-course-care" v-else>
+                        <h5>{{item.CuName}}</h5>
+                        <p><span>课程代码：</span><span>{{item.CuCode}}</span>    <span class="pull-right">学分：{{item.CuCredits}}</span></p>
+                        <p class="Pro-price">已购买</p>
+                    </div>
+                </template>
+                
+            </div>
+        </div>
+    </div>
+    <!--课程总计价格及其说明-->
+    <div class="Pro-detail">
+        <div class="container">
+            <div class="Pro-detail-price" v-if="isActive">
+                <span>选课费用：</span><span class="price">￥<b>0</b></span>
+                <div class="pull-right buyNow-button" @click="submitPay"> 立即购买</div>
+            </div>
+            <div class="Pro-detail-info">
+                <h5>选课说明</h5>
+                <p>根据皖招考函[2010]74号文件规定，该专业将于2013年调整为安徽财经大学主考,2012年年底前毕业的考生仍按中国科学技术大学颁发毕业证书。 1、经济管理类专业专科毕业生报考本专业不需加考； 2、其他专业需加考企业管理概论（00144，5学分）、生产与作业管理（00145，6学分）、市场营销学（00058，5学分）三门课程。</p>
+            </div>
+        </div>
+    </div>
+    <!--课程介绍-->
+    <div class="Pro-introduce">
+        <div class="container">
+            <div class="clearfix">
+
+                <h3>专业介绍</h3>
+            </div>
+            <div class="Pro-introduce-info clearfix">
+                <div>
+                    <p>
+                        工商企业管理专业是自学考试学科调整后产生的新专业。这一专业
+                        的设置是为了培养在社会主义市场经济条件下从事工商业及其他各类企业管理方
+                        面工作的专门人才。经过专业学习，成绩合格者应系统地掌握现代管理理论、有广泛的知识。熟
+                        悉各类管理的基本技能和科学方法，能够胜任企业管理工作。 工商管理是研究工商企业经济管理基本理论和一般
+                        方法的学科，主要包括企业的经营战略制定和内部行为管理两个方面。
+                    </p>
+                </div>
+                <div>
+                    <h5>培养目标</h5>
+                    <p>
+                        本专业主要培养德智体全面发展，掌握现代企业管理理论，具有较强企业管理能力，较强的语言文字表达能力、人际沟通能力，外语水平高，知识面广，能
+                        熟练利用计算机技术、网络技术等现代管理技术，能在工商企业从事各方面管理工作的高级应用性人才，同时具有较大的发展潜力，可以成为企事业单位的各级管理人才。
+                    </p>
+                </div>
+                <div>
+                    <h5>就业方向</h5>
+                    <p>
+                        各大、中型企业、外资企业及跨国企业从事生产管理、营销管理和一般业务管理工作，也可从事人力资源管理、财务管理、营销策划、商品调研、市场预测和经济数量分析等工作。从事的岗位如下：<br>
+                        &nbsp;&nbsp;&nbsp;一般传统管理类岗位<br>
+                        &nbsp;&nbsp;&nbsp;市场营销类岗位<br>
+                        &nbsp;&nbsp;&nbsp;人力资源管理类岗位<br>
+                        &nbsp;&nbsp;&nbsp; 物流管理类岗位<br>
+                    </p>
+                </div>
+                <div>
+                    <h5>就业方向</h5>
+                    <p>
+                        各大、中型企业、外资企业及跨国企业从事生产管理、营销管理和一般业务管理工作，也可从事人力资源管理、财务管理、营销策划、商品调研、市场预测和经济数量分析等工作。从事的岗位如下：<br>
+                        &nbsp;&nbsp;&nbsp;一般传统管理类岗位<br>
+                        &nbsp;&nbsp;&nbsp;市场营销类岗位<br>
+                        &nbsp;&nbsp;&nbsp;人力资源管理类岗位<br>
+                        &nbsp;&nbsp;&nbsp; 物流管理类岗位<br>
+                    </p>
+                </div>
+                <div>
+                    <h5>就业前景</h5>
+                    <p>
+                        工商企业管理专业具有复合性、应用性的特点，具有很广的适用性的、社会经济各领域有广泛需求。我国经济建设的快速发展和现代企业
+                        制度的建立使工商企业管理专业大有用武之地。该专业毕业生可以从事行政管理、人力资源管理、市场营销、生产管理、物流管理、质量管理、财务管理等岗位的工作。
+                    </p>
+                    <p>
+                        因为加入WTO和申奥成功将直接带动我国外经贸的大发展，所以，管理类专业人才社会需求大增将指日可待。在现代企业中，一个优秀企业家
+                        的作用超过了100名优秀工程师、1000名优秀工人目前我国越来越多的转换企业产权、机制以及企业法人实行招标制、年薪制，实际上就是将企业的管理大权
+                        交到职业企业家手中。而据我国近三年的统计资料显示，外方代理人正以每年500%以上的速度递增，在不少大城市已形成一个职业阶层。不管是外企还是国企，高层管理人员的价值越
+                        来越看涨。所以，尽管管理专业的学生刚毕业的时候可能做的并不是管理的工作，但是过几年之后，有管理专业背景的人将会成为抢手货。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--footer-->
+    <!--#<!--#include file="UserControl/Footer.html"-->
+</body>
+</html>
+<link href="../Resources/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="../Resources/js/modules/vue/vue.min.js"></script>
+<script src="../Resources/js/modules/layer/layui.js"></script>
+<script src="../Resources/js/require_config.js"></script>
+<script src="../Resources/js/Page.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt"], function (fnr) {
+        //ele判断元素，clsClass名
+        function hasClass(ele, cls) {
+            return (new RegExp('(\\s|^)' + cls + '(\\s|$)')).test(ele.className);
+        }
+        function removeClass(ele, cls) {
+            if (hasClass(ele, cls)) {
+                var reg = new RegExp('(\\s|^)' + cls + '(\\s|$)');
+                ele.className = ele.className.replace(reg, ' ');
+            }
+        }
+        function addClass(ele, cls) {
+            if (!hasClass(ele, cls)) {
+                ele.className += ' ' + cls;
+            }
+        }
+        ///参数获取
+        function GetQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+        }
+
+        function delAllCookie() {
+            var myDate = new Date();
+            myDate.setTime(-1000);//设置时间
+            var data = document.cookie;
+            var dataArray = data.split("; ");
+            for (var i = 0; i < dataArray.length; i++) {
+                var varName = dataArray[i].split("=");
+                document.cookie = varName[0] + "=''; expires=" + myDate.toGMTString();
+            }
+        }
+
+        window.rootApp = new Vue({
+            el: '#root',
+            data: {
+                loginState: false,
+                headPhoto: '',
+                msg: '',
+                isActive: false,
+                ProvinceData: [],
+                CourseData: [],
+                CourseDetailData: {},
+                layoutData: {},
+                CourseIDData: []
+            },
+            ready: function () {
+                this.requestList();
+                //this.ActiveStatus();
+                this.CourseMsg();
+                this.checkLogin();
+            },
+            methods: {
+                //立即购买
+                submitPay: function(){
+                    var self = this;
+                    var sa = $('.Pro-course-care.active');
+                    self.CourseIDData = [];
+                    $.each(sa, function(k, v){
+                        self.CourseIDData.push($(v).data('cid'));
+                    });
+                    $.post('/service/datastore/Order/PutInShoppingCar', {Course_IDs: self.CourseIDData.join(',')}, function(res){
+                        console.log(res);
+                    });
+                },
+
+                //退出
+                exit: function () {
+                    delAllCookie();
+                    location.href = '../Login.shtml';
+                },
+
+                //查询stuID
+                checkLogin: function () {
+                    _this = this;
+                    if (fnr.Cookie.get('StuId') && fnr.Cookie.get('StuId') != 'undefined') {
+                        _this.loginState = true;
+                        $.get("/service/Student/GetStudentInfo", function (res) {
+                            if (res.SuccessResponse) {
+                                _this.msg = 'hi，' + res.ReturnData.Data.Name;
+                                _this.headPhoto = res.ReturnData.Data.HeadImg ? res.ReturnData.Data.HeadImg : '../Resources/images/photo.png'
+                                _this.loginState = true;
+                            }
+                        });
+                    }
+                },
+                //课程列表active状态切换
+                ActiveStatus: function (e) {
+                    var ev = e.currentTarget;
+                    if (hasClass(ev, 'active')) {
+                        removeClass(ev, 'active');
+                    } else {
+                        addClass(ev, 'active');
+                    }
+                    var money = 0;
+                    var MoneyData = $('.Pro-course-care.active .Pro-price span');
+                    $.each(MoneyData, function (k, v) {
+                        money += parseFloat(v.innerText);
+                    });
+                    $('.Pro-detail-price .price b').text(money.toFixed(2));
+                },
+
+                // 请求课程列表
+                // SpecialtyID专业ID，ModelID模型ID
+                requestList: function () {
+                    var self = this;
+                    $.get('/service/edu/Specialty/GetSpecialtyCurriculumList', { Specialty_ID: GetQueryString('id'), Model_ID: 1 }, function (rsp) {
+                        if (rsp.SuccessResponse) {
+                            if (rsp.Data) {
+                                $.each(rsp.Data, function (k, v) {
+                                    self.CourseData.push(v);
+                                });
+                            }
+                        }
+                        if (self.CourseData.length > 0) {
+                            self.isActive = true;
+                        } else {
+                            self.isActive = false;
+                        }
+                    });
+                },
+
+                //单个课程信息
+                //Specialty_ID专业ID
+                CourseMsg: function () {
+                    var self = this;
+                    $.get('/service/edu/Specialty/GetSpecialtyList', { ID: GetQueryString('id') }, function (rsp) {
+                        if (rsp.Data) {
+                            $.each(rsp.Data, function (k, v) {
+                                Vue.set(window.rootApp.CourseDetailData, k, v);
+                            });
+                        }
+                    });
+                }
+            }
+        });
+    });
+</script>

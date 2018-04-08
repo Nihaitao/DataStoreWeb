@@ -1,0 +1,300 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        div.layui-table-cell {
+            height: 30px;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <blockquote class="layui-elem-quote">
+            <div class="layui-row layui-form">
+                <div class="layui-col-xs6">
+                    <div class="layui-input-inline">
+                        <input type="text" name="SearchValue" class="layui-input" v-model="queryFormData.SearchValue" placeholder="合同名称">
+                    </div>
+                    <div class="layui-input-inline">
+
+                        <remote-sel v-bind:setting="option" lay-verify="required" v-bind:value.sync="queryFormData.ContractStatus_ID"
+                                    initial="off" laytips="合同状态"></remote-sel>
+                    </div>
+
+                    <button class="layui-btn layui-btn-primary" lay-submit lay-filter="btn" @click="doSearch">查询</button>
+                </div>
+                <div class="layui-col-xs6" style="text-align: right">
+                    <button class="layui-btn" @click="addContract"><i class="layui-icon"></i> 新增合同</button>
+                    <button class="layui-btn" @click="importContract"> 导入合同</button>
+                </div>
+            </div>
+        </blockquote>
+        <div>
+            <button class="layui-btn layui-btn-primary layui-btn-small" v-bind:class="{'layui-btn-disabled':releaseClue.length<=0}" v-bind:disabled="releaseClue.length<=0" @click="BatchClue">转移</button>
+            <button class="layui-btn layui-btn-primary layui-btn-small" v-bind:class="{'layui-btn-disabled':deleteClue.length<=0}" v-bind:disabled="deleteClue.length<=0" @click="DatchDeleta">删除</button>
+        </div>
+        <!--操作模板-->
+        <table id="listTable" lay-filter="listTable"></table>
+    </div>
+</body>
+</html>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt'],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+            var s = [
+                         { fixed: true, checkbox: true },
+                        { fixed: true, field: 'ID', title: 'ID', width: 120, sort: true },
+                        { field: 'Name', title: '合同标题', width: 120, sort: true },
+                        {
+                            field: 'TotalAmount', title: '合同总金额', width: 120
+
+                        },
+                        {
+                            field: 'ContractStartDate', title: '合同开始日期', width: 120, templet: function () {
+                                var array = new Array();
+                                array.push("<span>" + fnr.format(this.AddTime, "yyyy-MM-dd HH:mm") + "</span>");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        },
+                        {
+                            field: 'ContractEndDate', title: '合同结束日期', width: 120, templet: function () {
+                                var array = new Array();
+                                array.push("<span>" + fnr.format(this.AddTime, "yyyy-MM-dd HH:mm") + "</span>");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        },
+                        {
+                            field: 'Description', title: '合同状态', width: 120
+                        },
+                        {
+                            field: 'ClientName', title: '客户名称', width: 120
+                        },
+                         {
+                             field: 'AccountName', title: '负责人', width: 120
+                         },
+                       {
+                           fixed: 'right',
+                           field: 'name',
+                           title: '操作',
+                           width: 240,
+                           toolbar: function () {
+                               var array = new Array();
+                               array.push("<button class='layui-btn layui-btn-primary layui-btn-small' href='javascript:;' lay-event='ContactMsg'>查看</button>")
+                               array.push("<button class=\"layui-btn layui-btn-small\" lay-event='edit'>编辑</button>");
+                               return "<div>" + array.join("") + "</div>";
+                           }
+                       }
+            ];
+            //绑定列表
+            var listTable = table.render({
+                elem: '#listTable',
+                id: 'listTable',
+                even: true, //开启隔行背景
+                page: true, //页分
+                cols: [s],
+                url: '/service/crm/Contract/GetContractList',
+                where: { StateofContract: fnr.getQueryString('StateofContract') ? fnr.getQueryString('StateofContract') : 0 }
+            });
+            //搜索条件
+            var rootApp = new Vue({
+                el: '#root',
+                data: {
+                    queryFormData: {
+                        SearchValue: '',
+                        ContractStatus_ID: 0
+                    },
+                    option: {
+                        search: true,
+                        options: [],
+                        fields: { root: 'Data', key: 'ID', value: 'Description' },
+                        remote: { url: '/service/public/HDictionary/GetHDictionaryList', data: { Valid: 6, ColumnName: 'ContractStatus_ID' } }
+                    },
+                    releaseClue: [],
+                    deleteClue: [],
+                    StateofContract: 0,
+                },
+                ready: function () {
+                    if (fnr.getQueryString('StateofContract')) {
+                        this.StateofContract = fnr.getQueryString('StateofContract');
+                    }
+                },
+                mounted: {
+
+                },
+
+                methods: {
+                    importContract: function () {
+                        fnr.openDialog({
+                            title: '导入合同',
+                            area: ['1000px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                            content: ['./ImportContract.html'],
+                            //btn: ['确认添加'],
+                            events: {
+                                add: function () {
+                                    listTable.refresh();
+                                }
+                            }
+                        });
+                    },
+                    //添加合同
+                    addContract: function () {
+                        fnr.openDialog({
+                            title: '添加合同',
+                            area: ['1150px', "800px"],
+                            content: ['./addContract.html'], //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+                            btn: ['确认添加'],
+                            yes: function (index, layero) {
+
+                                var iframeWin = window[layero.find('iframe')[0]['name']];
+                                $(iframeWin.document).find(".layui-btn2").click();
+
+                            },
+                            events: {
+                                refresh: function (data) {
+                                    listTable.refresh();
+                                    layer.msg("添加成功")
+                                }
+                            },
+                        });
+                    },
+                    //删除合同
+                    DatchDeleta: function (data) {
+                        if (this.deleteClue != null) {
+                            var deleteArr = this.deleteClue.join(',');
+                            layer.confirm('确认要删除吗？', function (index) {
+                                $.ajax({
+                                    url: "/service/crm/Contract/DeleteContract",
+                                    data: { IdArray: deleteArr },
+                                    type: 'POST',
+                                    dataType: 'json',
+                                    success: function (data) {
+                                        if (data.SuccessResponse) {
+                                            layer.msg(data.Message);
+                                            listTable.refresh();
+                                        } else {
+                                            layer.msg(data.Message);
+                                        }
+                                    }
+                                });
+                            })
+                        } else {
+                            layer.msg("请选择线索ID");
+                        }
+                    },
+
+                    //转移负责人
+                    BatchClue: function () {
+                        if (this.releaseClue != null) {
+                            fnr.openDialog({
+                                title: '转移负责人',
+                                area: ['400px', '400px'],
+                                content: ['Distribution.html?Other=' + this.releaseClue.join(',')],
+                                btn: ['确认转移'],
+                                events: {
+                                    refresh: function (data) {
+                                        if (data.status) {
+                                            layer.msg(data.msg);
+                                            listTable.refresh();
+                                        } else {
+                                            layer.msg(data.msg);
+                                        }
+                                    }
+                                }
+                            });
+                        } else {
+                            layer.msg("请选择合同");
+                        }
+                    },
+
+                    doSearch: function () {
+                        var _this = this;
+                        listTable.reload({
+                            url: '/service/crm/Contract/GetContractList',
+                            where: {
+                                Name: _this.queryFormData.SearchValue,
+                                ContractStatus_ID: _this.queryFormData.ContractStatus_ID,
+                                StateofContract: fnr.getQueryString('StateofContract') ? fnr.getQueryString('StateofContract') : 0
+                            }
+                        });
+                    },
+                    //修改合同
+                    edit: function (int) {
+                        fnr.openDialog({
+                            title: '修改合同',
+                            area: ['1150px', '650px'],
+                            content: ['./Modify.html?ID=' + int.ID], //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+                            btn: ['确认修改'],
+                            yes: function (index, layero) {
+
+                                var iframeWin = window[layero.find('iframe')[0]['name']];
+                                $(iframeWin.document).find(".layui-btn2").click();
+
+                            },
+                            events: {
+                                refresh: function (data) {
+                                    listTable.refresh();
+                                    layer.msg("修改成功")
+                                }
+                            },
+                        });
+                    },
+
+                }
+            });
+
+
+
+
+
+            //获取选中的行相关数据
+            table.on('checkbox(listTable)', function (obj) {
+                var checkStatus = table.checkStatus('listTable');
+                rootApp.deleteClue = [];
+                rootApp.releaseClue = [];
+                $.each(checkStatus.data, function (k, v) {
+                    rootApp.deleteClue.push(v.ID);
+                    rootApp.releaseClue.push(v.ID);
+
+                });
+                console.log(rootApp.deleteClue);
+            });
+
+            //监听工具栏事件
+            tableExt.addEvent("tool(listTable)",
+                {
+                    //工具栏编辑事件
+                    "edit": function (data, obj) {
+                        rootApp.edit(data)
+                    },
+                    //查看教室
+                    "showRoom": function (data) {
+                        rootApp.showRoom(data)
+                    },
+                    //工具栏删除事件
+                    "delete": function (data, obj) {
+                        layer.confirm('确认要删除么', { icon: 2, title: '提示' }, function (index) {
+                            var params = { ID: data.ID }
+                            $.post("/service/crm/contract/DeleteContract", params, function (res) {
+                                if (res.SuccessResponse) {
+                                    layer.msg(res.Message);
+                                    listTable.refresh();
+                                }
+                                layer.msg(res.Message);
+                            })
+
+                            layer.close(index);
+                        });
+                    }
+                });
+        });
+</script>

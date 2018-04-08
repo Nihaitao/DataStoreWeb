@@ -1,0 +1,158 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        .isDisplay {
+            display: none;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <div class="layui-form">
+            <div class="layui-form-item">
+            
+                <label class="layui-form-label">新浪微博:</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="SinaOpen" lay-skin="switch" lay-text="开|关" value="1" v-model="submitForm.SinaOpen">
+                    <!--<local-switch text="开|关" initial="off" value="1"></local-switch>-->
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">链接地址:</label>
+                    <div class="layui-input-inline">
+                        <input type="text" lay-verify="empty|SinaNo" autocomplete="off" placeholder="请输入链接地址" class="layui-input"
+                               v-model="submitForm.SinaNo">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+               
+                <label class="layui-form-label"> 腾讯营销:</label>
+                <div class="layui-input-block">
+                    <local-switch text="开|关" initial="off" ></local-switch>
+                    <!--<input type="checkbox" name="zzz" lay-skin="switch" lay-text="开|关">-->
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">链接地址:</label>
+                    <div class="layui-input-inline">
+                        <input type="text" lay-verify="empty|TecentMark" autocomplete="off" placeholder="请输入链接地址" class="layui-input"
+                               v-model="submitForm.TecentMark">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">微信:</label>
+                <div class="layui-input-block">
+                    <local-switch  text="开|关" initial="off"></local-switch>
+                </div>
+                <div class="layui-form-item">
+                    <label>图片:</label> &nbsp;
+                    <img class="layui-upload-img" id="StuP">&nbsp;
+                    <button type="button" class="layui-btn" id="upStudP" style="margin:15px 0">上传图片</button>
+                    <p id="StuText" style="margin-left:-15px;margin-top:5px;"></p>
+                </div>
+            </div>
+            <div div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" @click="saveAdd" lay-submit>立即提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="/Resources/js/Controls/Common.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate"],
+    function (fnr) {
+        var laydate = layui.laydate;
+        var $ = layui.jquery;
+        var form = layui.form;
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+                chbSwitch: false,
+                submitForm: {
+                    WxPic_Mark: '', //微信
+                    SinaNo: '',     //新浪网址
+                    TecentMark: '', //腾讯营销
+                    WxPicOpen: '',  //微信开关  1开启  0关闭
+                    TecentOpen: '', //腾讯营销开关
+                    SinaOpen: ''  //新浪网址 开关
+                }
+            },
+            ready: function () {
+                this.submitForm.BusID = GetQueryString('ID');
+                this.submitForm.PhaseTypeID = GetQueryString('PhaseType_ID');
+            },
+            methods: {
+                saveAdd: function (e)
+                {
+                    alert(this.submitForm.SinaOpen);
+                    var self = this;
+                    self.submitForm.Content = trim(self.submitForm.Content);
+                    if (!layui.form.checkInput(e)) {
+                        return false;
+                    }
+                    self.submitForm.status = self.chbSwitch ? '1' : '0';
+                    //$.ajax({
+                    //    url: '/service/Contact/InsertContact',
+                    //    type: 'POST',
+                    //    dataType: 'json',
+                    //    data: self.submitForm,
+                    //    success: function (data) {
+                    //        if (data.ReturnData.Data) {
+                    //            if (data.SuccessResponse) {
+                    //                fnr.callDialog('refresh', { status: data.SuccessResponse, msg: data.Message });
+                    //                fnr.closeDialog();
+                    //            }
+                    //        } else {
+                    //            layer.msg('data为空');
+                    //        }
+                    //    }
+                    //});
+                }
+            }
+        });
+    });
+    layui.use('upload', function () {
+        var $ = layui.jquery
+        , upload = layui.upload;
+
+        //普通图片上传
+        var uploadInst = upload.render({
+            elem: '#upStudP'
+          , url: '/service/upload?busType=Student'
+          , before: function (obj) {
+              //预读本地文件示例，不支持ie8
+              obj.preview(function (index, file, result) {
+                  $('#StuP').attr('src', result); //图片链接（base64）
+              });
+          }
+          , done: function (res) {
+              //如果上传失败
+              if (res.code > 0) {
+                  return layer.msg('上传失败');
+              }
+              //上传成功
+              rootApp.submitForm.WxPic_Mark = res.Message
+              layer.msg('上传成功')
+          }
+          , error: function () {
+              //演示失败状态，并实现重传
+              var demoText = $('#StuText');
+              demoText.html('<span style="color: #FF5722;">上传失败</span> <a class=" demo-reload" style="cursor:pointer;">重试</a>');
+              demoText.find('.demo-reload').on('click', function () {
+                  uploadInst.upload();
+              });
+          }
+        })
+    })
+</script>

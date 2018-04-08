@@ -1,0 +1,185 @@
+﻿<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+        <meta name="format-detection" content="telephone=no">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1, maximum-scale=1, user-scalable=no" />
+		<title>列表首页</title>
+        <link href="../../Resources/css/ba.css" rel="stylesheet" />
+        <link href="../../Resources/css/list.css" rel="stylesheet" />
+        <link rel="stylesheet" href="../../Resources/css/all.css" />
+        <link href="../../Resources/css/swiper.min.css" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="http://at.alicdn.com/t/font_415611_hdz2l2cm02tsxlxr.css" />
+
+        <script src="../../script/jquery.js"></script>
+        <script src="../../js/comment.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../script/artTemplate.js"></script>
+        <script src="../../script/layer_mobile/layer.js"></script>
+        <script>
+            $(function () {
+                //地区按钮点击触发
+                function provinceEvent() {
+                    $('.ProClick').on('click', function () {
+                        if (!$(this).hasClass('active')) {
+                            $(this).addClass('active').siblings().removeClass('active');
+                        }
+                        $.get('/service/edu/Specialty/GetSpecialtyProvince', { Model_ID: 1 }, function (rsp) {
+                            if (rsp.SuccessResponse) {
+                                if (rsp.Data) {
+                                    var data = {
+                                        list: rsp.Data
+                                    }
+                                    var html = template('ProvinceList', data);
+                                    $('#ScreenList').html(html);
+                                } else {
+                                    layer.msg('data为空')
+                                }
+                            } else {
+                                layer.msg(rsp.Message ? rsp.Message : '操作失败')
+                            }
+                        });
+                    });
+                }
+
+                //层次按钮点击触发事件
+                function levelEvent() {
+                    $('.LevClick').on('click', function () {
+                        if (!$(this).hasClass('active')) {
+                            $(this).addClass('active').siblings().removeClass('active');
+                        }
+                        $.get('/service/edu/SpecialtyLevel/GetSpecialtyLevelList', { Valid: -1 }, function (rsp) {
+                            if (rsp.SuccessResponse) {
+                                if (rsp.Data) {
+                                    var data = {
+                                        list: rsp.Data
+                                    }
+                                    var html = template('LevelList', data);
+                                    $('#ScreenList').html();
+                                    $('#ScreenList').html(html);
+                                } else {
+                                    layer.msg('data为空')
+                                }
+                            } else {
+                                layer.msg(rsp.Message ? rsp.Message : '操作失败')
+                            }
+                        });
+                       
+                    });
+                }
+
+                //学科按钮点击触发事件
+                function categoryEvent() {
+                    $('.CatClick').on('click', function () {
+                        if (!$(this).hasClass('active')) {
+                            $(this).addClass('active').siblings().removeClass('active');
+                        }
+                        $.get('/service/edu/Specialty/GetSpecialtyCategoryList', { Province_ID: 18, Level_ID: 1, Model_ID: 1 }, function (rsp) {
+                            if (rsp.SuccessResponse) {
+                                if (rsp.Data) {
+                                    $.each(rsp.Data, function (k, v) {
+                                        self.CategoryData.push(v);
+                                    });
+                                } else {
+                                    layer.msg('data为空')
+                                }
+                            } else {
+                                layer.msg(rsp.Message ? rsp.Message : '操作失败')
+                            }
+                        });
+                    });
+                }
+
+                provinceEvent();
+                levelEvent();
+                categoryEvent();
+            });
+            $(document).ready(function () {
+                $('.ProClick').trigger('click');
+            });
+        </script>
+        <!--获取省份分类信息-->
+        <script type="text/html" id="ProvinceList">
+            <div></div>
+            {{each list}}
+            <i><a href="listcont.html?PID={{$value.ProvinceID}}">{{$value.ProvinceName}}</a></i>
+            {{/each}}
+        </script>
+        <!--获取层次分类信息-->
+        <script type="text/html" id="LevelList">
+            <div></div>
+            {{each list}}
+            <i><a href="listcont.html?LID={{$value.ID}}">{{$value.Name}}</a></i>
+            {{/each}}
+        </script>
+
+</head>
+	<body>
+		<!--头部-->
+		<header>
+			<div class="ipt">
+				<span class="logo">
+                    <img src="../../Resources/img/logo.jpg" />
+				</span>
+				<input type="text" name="" id="" placeholder="搜索课程、专业" />
+				<i class="iconfont icon-sousuo"></i>
+			</div>
+		</header>
+		
+		<main>
+			<nav class="side clr_f">
+				 <div class="side_p">
+                 <div class="bz-bb ProClick">
+                     地区
+                 </div>
+                 <div class="bz-bb LevClick">
+                     层次
+                 </div>
+                 <div class="bz-bb CatClick">
+                     学科
+                 </div>
+				 </div> 
+				 <div class="side_show clr_f">
+				 	<div class="side_p_show">
+                     <div class="fl-r diqu clr_f" id="ScreenList"></div>
+				 	</div>
+				 </div>
+			</nav>
+		</main>
+		
+		<footer>
+			<nav>
+				<ul class="clearfix">
+                    <li>
+                        <a class="footerBtn" href="/index.html">
+                            <i class="iconfont icon-shouye1"></i>
+                            <p>首页</p>
+                        </a>
+                    </li>
+                    <li class="footer_active">
+                        <a class="footerBtn" href="list.html">
+                            <i class="iconfont icon-fenlei1"></i>
+                            <p>分类</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="footerBtn" href="/Center/path.html">
+                            <i class="iconfont icon-wodekecheng"></i>
+                            <p>我的课程</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="footerBtn" href="/Center/personalIndex.html">
+                            <i class="iconfont icon-wode"></i>
+                            <p>我的</p>
+                        </a>
+                    </li>
+				</ul>
+			</nav>
+		</footer>
+        <script>
+            console.log(1);
+        </script>
+	</body>
+	
+</html>

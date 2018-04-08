@@ -1,0 +1,184 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>我的联系记录</title>
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <blockquote class="layui-elem-quote">
+            <div class="layui-row layui-form">
+                <div class="layui-col-xs10">
+                    <div class="layui-input-inline">
+                        <input placeholder="线索名称" type="text" name="SearchValue" class="layui-input" v-model="queryFormData.ModelValue">
+                    </div>
+                    <button class="layui-btn layui-btn-primary" lay-submit lay-filter="btn" @click="doSearch">查询</button>
+                </div>
+            </div>
+        </blockquote>
+        <div>
+            <button class="layui-btn layui-btn-primary layui-btn-small" @click="DatchDeleta">批量删除</button>
+        </div>
+
+        <!--操作模板-->
+        <table id="listTable" lay-filter="listTable"></table>
+    </div>
+</body>
+</html>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'laydate', 'layer'],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+            var layer = layui.layer;
+            function trim(str) {
+                return str.replace(/(^\s*)|(\s*$)/g, "");
+            }
+            //表格基本配置参数
+            var tableColsConfig =
+                [
+                    { fixed: true, checkbox: true },
+                    { fixed: true, field: 'ID', title: 'ID', width: 80, sort: true },
+                    {
+                         title: '联系时间', width: 200, sort: true, templet: function () {
+                             return "<div>" + fnr.format(this.ContactTime, "yyyy-MM-dd HH:mm") + "</div>";
+                         }
+                    },
+                   {
+                       title: '联系时间', width: 200, sort: true, templet: function () {
+                           return "<div>" + fnr.format(this.AddTime, "yyyy-MM-dd HH:mm") + "</div>";
+                       }     
+                   },
+                   {
+                       title: '线索名称', width: 200, sort: true, templet: function () {
+                           var array = new Array();
+                           array.push("<a style='color: #000;' href='javascript:;' lay-event='info'>" + (this.ClientName) + "</a>");
+                           return "<div>" + array.join("") + "</div>";
+                       }
+                   },
+                    { field: 'Content', title: '联系内容', width: 120, sort: true },
+                    { field: 'ContactTypeName', title: '联系类型', width: 120, sort: true },
+                    {
+                        fixed: 'right',
+                        title: '操作',
+                        width: 220,
+                        toolbar: function () {
+                            var array = new Array();
+                            array.push("<a class='layui-btn layui-btn-danger layui-btn-small' href='javascript:;' lay-event='detail2'>删除</a>");
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    }
+                ];
+            var searchKeySettingOptions = [];
+            var statusSettingOptions = [];
+            //搜索条件
+            window.rootApp = new Vue({
+                el: '#root',
+                data: {
+                    //搜索选择的参数列表
+                    queryFormData: {
+                        ModelValue: ''
+                    },
+                },
+                methods: {
+                    //查询条件
+                    doSearch: function () {
+                        var self = this;
+                        self.queryFormData.ModelValue = trim(self.queryFormData.ModelValue);
+                        listTable.reload({
+                            where: this.queryFormData
+                        })
+                    },
+                    DatchDeleta: function (data) {
+                        if (this.deleteClue != null) {
+                            var deleteArr = this.deleteClue.join(',');
+                            layer.confirm('确认要删除吗？', function (index) {
+                                $.ajax({
+                                    url: "/service/Contact/DeleteContact",
+                                    data: { Other: deleteArr },
+                                    type: 'POST',
+                                    dataType: 'json',
+                                    success: function (data) {
+                                        if (data.SuccessResponse) {
+                                            layer.msg(data.Message);
+                                            listTable.refresh();
+                                        } else {
+                                            layer.msg(data.Message);
+                                        }
+                                    }
+                                });
+                            })
+                        } else {
+                            layer.msg("请选择线索ID");
+                        }
+                    },
+                    ClueMsg: function (data) {
+                        fnr.openDialog({
+                            title: '线索信息',
+                            area: ['1000px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                            content: ['Info.html?ID=' + data.ID + "&ClueStatus_ID=" + data.ClueStatus_ID],
+                            events: {
+                                add: function () {
+                                    listTable.refresh();
+                                }
+                            }
+                        });
+                    },
+                }
+            });
+            //绑定列表
+            var listTable = table.render({
+                elem: '#listTable',
+                even: true, //开启隔行背景
+                page: true, //页分,
+                id: 'listTable',
+                cols: [tableColsConfig],
+                url: "/service/Contact/GetClueListContact",
+            });
+            //获取选中的行相关数据
+            table.on('checkbox(listTable)', function (obj) {
+                var checkStatus = table.checkStatus('listTable');
+                rootApp.deleteClue = [];
+                $.each(checkStatus.data, function (k, v) {
+                    rootApp.deleteClue.push(v.ID);
+                });
+            });
+
+            //监听工具栏事件
+            tableExt.addEvent("tool(listTable)",
+                {
+                    //删除一行
+                    "detail2": function (data, obj) {
+                        layer.confirm('确定删除吗，删除后将无法恢复', function (index) {
+                            $.ajax({
+                                url: '/service/Contact/DeleteContact',
+                                type: 'POST',
+                                data: { Other: data.ID },
+                                dataType: 'json',
+                                success: function (data) {
+                                    if (data.SuccessResponse) {
+                                        obj.del();
+                                        layer.close(index);
+                                        layer.msg(data.Message)
+                                    } else {
+                                        layer.msg(data.Message)
+                                    }
+                                }
+                            });
+                        })
+                    },
+
+                    //修改一行
+                    "modifyClue": function (data, obj) {
+                        rootApp.modifyClue(data);
+                    }
+                });
+        });
+</script>

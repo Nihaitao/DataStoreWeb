@@ -1,0 +1,327 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>客户公海</title>
+    <style>
+        div.layui-unselect{
+            width: 62px;
+        }
+        div.layui-form-switch em{
+            width: 44px;
+        }
+        div.layui-form-onswitch i{
+            left: 51px;
+        }
+        div.layui-form-switch{
+            margin-top: 0;
+        }
+        .maxNum{
+            color: #5d5d5d;
+            line-height: 24px;
+            display: inline-block;
+            vertical-align: top;
+            padding-left: 10px;
+            border-left: 1px solid #e8e8e8;
+            margin-left: 10px;
+        }
+        .whiteNowrap{
+            white-space:nowrap;text-overflow:ellipsis;overflow:hidden;
+        }
+        [v-cloak]{
+            display: none;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <div class="layui-tab">
+            <ul class="layui-tab-title">
+                <li class="layui-this">客户公海列表</li>
+                <li>最大客户数限制</li>
+            </ul>
+            <div class="layui-tab-content">
+
+                <!--客户公海列表-->
+                <div class="layui-tab-item layui-show">
+                    <button class="layui-btn " @click="AddHighSea">新增客户公海</button>
+                    <table id="listTable" lay-filter="listTable"></table>
+
+                    <!--<table class="layui-table">
+                        <colgroup>
+                            <col width="100">
+                            <col width="200">
+                            <col width="300">
+                            <col width="400">
+                            <col width="100">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>客户公海名称</th>
+                                <th>客户公海管理员</th>
+                                <th>客户公海成员</th>
+                                <th>客户公海规则</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody v-cloak>
+                            <tr v-for="item in HighSeaListData">
+                                <td>
+                                    <p class="whiteNowrap" style="width: 150px;">{{item.Name}}</p>
+                                </td>
+                                <td>
+                                    <p class="whiteNowrap" style="width: 200px;" v-bind:title="item.AdminNameString">{{item.AdminNameString}}</p>
+                                </td>
+                                <td>
+                                    <p class="whiteNowrap" style="width: 300px;" v-bind:title="item.UserNameString">{{item.UserNameString}}</p>
+                                </td>
+                                <td>
+                                    <p class="whiteNowrap" style="width: 400px;" v-bind:title="item.RulesNameString">{{item.RulesNameString}}</p>
+                                </td>
+                                <td>
+                                    <button class="layui-btn layui-btn-small layui-btn-danger">删除</button>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>-->
+
+                </div>
+
+                <!--最大客户数限制-->
+                <div class="layui-tab-item">
+                    <div class="layui-form">
+                        <div class="layui-form-item" style="background-color: #f8f8f8;padding: 4px 0; padding-left: 5px;">
+                            <input type="checkbox" name="switch" lay-skin="switch" lay-text="已启用|已停用">
+                            <span class="maxNum">限制每个员工拥有的最大客户数</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--操作模板-->
+    </div>
+</body>
+</html>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'laydate', 'layer', 'element'],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+            var layer = layui.layer;
+            var element = layui.element;
+            var listTable;
+            function trim(str) {
+                return str.replace(/(^\s*)|(\s*$)/g, "");
+            }
+            //表格基本配置参数
+            var tableColsConfig =
+                [
+                    { field: 'Name', title: '客户公海名称', width: 150, sort: true },
+                    { field: 'AdminNameString', title: '客户公海管理员', width: 250, sort: true, toolbar: function () {
+                        var array = new Array();
+                        array.push("<p class='whiteNowrap' style='width: 300px;' title='" + this.AdminNameString + "'>" + this.AdminNameString + "</p>");
+                        return "<div>" + array.join("") + "</div>";
+                    }
+                    },
+                    {
+                        field: 'UserNameString', title: '客户公海管理员', sort: true, toolbar: function () {
+                            var array = new Array();
+                            array.push("<p class='whiteNowrap' style='width: 300px;' title='" + this.UserNameString + "'>" + this.UserNameString + "</p>");
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    },
+                    {
+                        field: 'RulesNameString', title: '客户公海规则', sort: true, toolbar: function () {
+                            var array = new Array();
+                            array.push("<p class='whiteNowrap' style='width: 300px;' title='" + this.RulesNameString + "'>" + this.RulesNameString + "</p>");
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    },
+                    {
+                        fixed: 'right',
+                        title: '操作',
+                        width: 200,
+                        toolbar: function () {
+                            var array = new Array();
+                            array.push("<button type='button' class='layui-btn layui-btn-primary layui-btn-small' lay-event='modifyClient'>修改</button>");
+                            array.push("<button type='button' class='layui-btn layui-btn-danger layui-btn-small' lay-event='deleteClient'>删除</button>");
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    }
+                ];
+            //搜索条件
+            window.rootApp = new Vue({
+                el: '#root',
+                data: {
+                    HighSeaListData: [],
+                },
+                ready: function () {
+                    this.aaa();
+                },
+                methods: {
+                    //新增客户公海
+                    AddHighSea: function () {
+                        var self = this;
+                        fnr.openDialog({
+                            title: '新增客户公海',
+                            area: ['1200px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                            content: ['Add.html'],
+                            btn: ['确认添加'],
+                            events: {
+                                refresh: function (data) {
+                                    if (data.status) {
+                                        layer.msg('添加成功');
+                                        self.aaa();
+                                    } else {
+                                        layer.msg('添加失败');
+                                    }
+                                }
+                            }
+                        });
+                    },
+                    //修改
+                    modifyC1: function (data) {
+                        fnr.openDialog({
+                            title: '修改客户信息',
+                            area: ['1200px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                            content: ['Modify.html?ID=' + data.ID],
+                            btn: ['确认修改'],
+                            events: {
+                                refresh: function (data) {
+                                    if (data.status) {
+                                        layer.msg(data.msg);
+                                        self.aaa();
+                                    } else {
+                                        layer.msg(data.msg ? '操作失败' : data.msg);
+                                    }
+                                }
+                            }
+                        });
+                    },
+                    aaa: function () {
+                        var self = this;
+                        $.get('/service/crm/PublicClient/GetPublicClientList', function (res) {
+                            if (res.SuccessResponse) {
+                                if (res.Data) {
+                                    res.Data.map(function (val, ind) {
+                                        val['AdminNameString'] = '';
+                                        val['RulesNameString'] = '';
+                                        val['UserNameString'] = '';
+                                        if (val.AdminName != null && val.AdminName != '') {
+                                            if (val.AdminName.split(',').length > 0) {
+                                                val.AdminName.split(',').map(function (_v, _i) {
+                                                    if (_i < val.AdminName.split(',').length - 1) {
+                                                        val['AdminNameString'] += _v.split("|")[1] + '、';
+                                                    } else {
+                                                        val['AdminNameString'] += _v.split("|")[1];
+                                                    }
+                                                });
+                                            }
+                                        }
+                                        if (val.RulesName != null && val.RulesName != '') {
+                                            if (val.RuleType == 0) {
+                                                val['RulesNameString'] = '不自动划入';
+                                            } else if (val.RuleType == 1) {
+                                                if (val.UniformRules == 0) {
+                                                    val['RulesNameString'] = '超过' + val.RulesName.split('|')[1] + '天“未跟进”的客户，由系统定时划入公海';
+                                                } else {
+                                                    if (val.RulesName.split(',').length > 0) {
+                                                        val.RulesName.split(',').map(function (_v, _i) {
+                                                            if (_i < val.RulesName.split(',').length - 1) {
+                                                                val['RulesNameString'] += '(' + _v.split('|')[0] + ')超过' + _v.split('|')[1] + '天“未跟进”的客户，由系统定时划入公海' + '，';
+                                                            } else {
+                                                                val['RulesNameString'] += '(' + _v.split('|')[0] + ')超过' + _v.split('|')[1] + '天“未跟进”的客户，由系统定时划入公海';
+                                                            }
+                                                        });
+                                                    }
+                                                }
+                                            } else {
+                                                if (val.UniformRules == 0) {
+                                                    val['RulesNameString'] = '超过' + val.RulesName.split('|')[1] + '天“未成交”的客户，由系统定时划入公海';
+                                                } else {
+                                                    if (val.RulesName.split(',').length > 0) {
+                                                        val.RulesName.split(',').map(function (_v, _i) {
+                                                            if (_i < val.RulesName.split(',').length - 1) {
+                                                                val['RulesNameString'] += '(' + _v.split('|')[0] + ')超过' + _v.split('|')[1] + '天“未成交”的客户，由系统定时划入公海' + '，';
+                                                            } else {
+                                                                val['RulesNameString'] += '(' + _v.split('|')[0] + ')超过' + _v.split('|')[1] + '天“未成交”的客户，由系统定时划入公海';
+                                                            }
+                                                        });
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        if (val.UserName != null && val.UserName != '') {
+                                            if (val.UserName.split(',').length > 0) {
+                                                val.UserName.split(',').map(function (_v, _i) {
+                                                    if (_i < val.UserName.split(',').length - 1) {
+                                                        val['UserNameString'] += _v.split("|")[1] + '、';
+                                                    } else {
+                                                        val['UserNameString'] += _v.split("|")[1];
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+                                    self.HighSeaListData = res.Data;
+                                    listTable = table.render({
+                                        elem: '#listTable',
+                                        even: true, //开启隔行背景
+                                        page: true, //页分,
+                                        //height: 'full-140',
+                                        id: 'listTable',
+                                        data: self.HighSeaListData,
+                                        cols: [tableColsConfig],
+                                    })
+                                }
+                            }
+                        })
+                    }
+                }
+            });
+
+            
+
+            //监听工具栏事件
+            tableExt.addEvent("tool(listTable)",
+                {
+                    //删除一行
+                    "deleteClient": function (data, obj) {
+                        layer.confirm('确定删除吗，删除后将无法恢复', function (index) {
+                            $.ajax({
+                                url: '/service/crm/PublicClient/DeletePublicClient',
+                                type: 'POST',
+                                data: { Other: data.ID },
+                                dataType: 'json',
+                                success: function (data) {
+                                    if (data.Data) {
+                                        if (data.SuccessResponse) {
+                                            layer.close(index);
+                                            layer.msg(data.Message);
+                                            rootApp.aaa();
+                                        } else {
+                                            layer.msg(data.Message)
+                                        }
+                                    } else {
+                                        layer.msg('data为空');
+                                    }
+                                }
+                            });
+                        })
+                    },
+
+                    "modifyClient": function (data, obj) {
+                        rootApp.modifyC1(data);
+                    }
+                });
+        });
+</script>

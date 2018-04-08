@@ -1,0 +1,268 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        .layui-layer-molv .layui-layer-btn .layui-layer-btn1 {
+            border-color: #009f95;
+            background: #009f95 !important;
+            color: #fff;
+        }
+        div.layui-table-cell {
+            height: 30px;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <div class="layui-col-xs12">
+            <blockquote class="layui-elem-quote">
+                <div class="layui-row layui-form">
+                    <div class="layui-col-xs8">
+                        <div class="layui-inline">
+                            <div class="layui-input-inline">
+                                <remote-sel v-bind:setting="StoreSetting" v-bind:value.sync="queryFormData.Store" laytips="题库列表" initial="off"></remote-sel>
+                            </div>
+                            <div class="layui-input-inline">
+                                <remote-sel v-bind:setting="TypeSetting" v-bind:value.sync="queryFormData.Type" laytips="题型列表" initial="off"></remote-sel>
+                            </div>
+                            <div class="layui-input-inline">
+                                <remote-sel v-bind:setting="LevelSetting" v-bind:value.sync="queryFormData.Level" laytips="难度列表" initial="off"></remote-sel>
+                            </div>
+                            <div class="layui-input-inline">
+                                <input type="text" autocomplete="off" placeholder="题目名称" class="layui-input" v-model="queryFormData.Title">
+                            </div>
+                            <button class="layui-btn layui-btn-primary" lay-submit lay-filter="btn" @click="doSearch">查询</button>
+                        </div>
+
+                    </div>
+                    <div class="layui-col-xs4" style="text-align:right;">
+                        <button class="layui-btn" @click="addNormQuestion"><i class="layui-icon"></i> 添加普通题</button>
+                        <button class="layui-btn" @click="addCombinationQuestion"><i class="layui-icon"></i> 添加组合题</button>
+                        <button class="layui-btn" @click="importQuestion"><i class="layui-icon"></i> 导入</button>
+                    </div>
+                </div>
+            </blockquote>
+            <!--操作模板-->
+            <table id="listTable" lay-filter="listTable"></table>
+        </div>
+    </div>
+</body>
+</html>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(['table', 'jquery', 'tableExt', 'laydate'],
+        function (fnr) {
+            var $ = layui.jquery;
+            var table = layui.table;
+            var tableExt = layui.tableExt;
+
+            window.rootApp = new Vue({
+                el: '#root',
+                data: {
+                    StoreSetting: {//题库
+                        search: true,
+                        defaultValue: 0,
+                        fields: { root: 'Data', key: 'ID', value: 'Name' },
+                        options: [],
+                        remote: { url: "/service/datastore/Question/GetQuestionStoreList", data: { Valid: 1 } }
+                    },
+                    LevelSetting: {//难度
+                        search: true,
+                        defaultValue: 0,
+                        options: [
+                            { key: '1', value: '难度一' },
+                            { key: '2', value: '难度二' },
+                            { key: '3', value: '难度三' },
+                            { key: '4', value: '难度四' },
+                            { key: '5', value: '难度五' }
+                        ]
+                    },
+                    TypeSetting: {//题型
+                        defaultValue: 0,
+                        search: true,
+                        options: [
+                           { key: '1', value: '单选题' },
+                           { key: '2', value: '多选题' },
+                           { key: '3', value: '填空题' },
+                           { key: '4', value: '判断题' },
+                           { key: '5', value: '问答题' },
+                           { key: '6', value: '计算题' },
+                           { key: '7', value: '组合题' }
+                        ]
+                    },
+                    queryFormData: {
+                        Store: "",
+                        Type: "",
+                        Level: "",
+                        Name: ""
+                    },
+                },
+                ready: function () {
+                },
+                methods: {
+                    doSearch: function () {
+                        tableIns.reload({
+                            where: this.queryFormData
+                        });
+                    },
+                    //添加普通题
+                    addNormQuestion: function () {
+                        fnr.openDialog({
+                            title: '添加普通题',
+                            area: ['800px', '700px'],
+                            content: ['/Html/ResourcesCenter/Question/Add.html'],
+                            btn: ['保存', '保存并继续'],
+                            yes: function (index, layero) {
+                                layer.getChildFrame("*[lay-submit1]", index).click();
+                                return false
+                            },
+                            btn2: function (index, layero) {
+                                layer.getChildFrame("*[lay-submit2]", index).click();
+                                return false
+                            },
+                            events: {
+                                refresh: function (data) {
+                                    layer.msg(data.Message);
+                                    if (data.SuccessResponse) {
+                                        tableIns.refresh();
+                                    }
+                                }
+                            },
+                        });
+                    },
+                    //添加组合题
+                    addCombinationQuestion: function () {
+                        fnr.openDialog({
+                            title: '添加组合题',
+                            area: ['800px', '700px'],
+                            content: ['/Html/ResourcesCenter/Question/ModifyCombination.html'],
+                            btn: ['关闭'],
+                            yes: function (index, layero) {
+                                layer.close(index);
+                                tableIns.refresh();
+                            }
+                        });
+                    },
+                    //修改题目
+                    modifyData: function (data) {
+                        var content = '/Html/ResourcesCenter/Question/Modify.html?ID=' + data.ID;
+                        if (data.QuestionData_ID > 0)//组合题
+                            content = '/Html/ResourcesCenter/Question/ModifyCombination.html?ID=' + data.ID;
+                        fnr.openDialog({
+                            title: '修改题目信息',
+                            area: ['800px', '700px'],
+                            content: [content],
+                            btn: ['确认修改'],
+                            events: {
+                                refresh: function (data) {
+                                    layer.msg(data.Message);
+                                    if (data.SuccessResponse) {
+                                        tableIns.refresh();
+                                    }
+                                }
+                            }
+                        });
+                    },
+                    //查看题目
+                    viewData: function (data) {
+                        var content = '/Html/ResourcesCenter/Question/View.html?ID=' + data.ID;
+                        if (data.QuestionData_ID > 0)//组合题
+                            content = '/Html/ResourcesCenter/Question/ViewCombination.html?ID=' + data.ID;
+                        fnr.openDialog({
+                            title: '查看题目信息',
+                            area: ['800px', '700px'],
+                            content: [content],
+                            btn: ['关闭'],
+                            yes: function (index, layero) {
+                                layer.close(index);
+                            }
+                        });
+                    },
+                    importQuestion: function (data) {
+                        fnr.openDialog({
+                            title: '浏览试卷',
+                            area: ['1000px', '750px'],
+                            content: ['/Html/ResourcesCenter/ExamPaper/ViewExamPaper.html?ID=' + data.ID],
+                            btn: ['关闭'],
+                            yes: function (index, layero) {
+                                layer.close(index);
+                            },
+                        });
+                    }
+                }
+            });
+
+            var tableIns = table.render({
+                elem: '#listTable',
+                even: true, //开启隔行背景
+                page: true, //页分
+                cols: [
+                    [
+                        { field: 'ID', fixed: true, title: 'ID', width: 80 },
+                        { field: 'Title', title: '题目', width: 500 },
+                        { field: 'QuestionTypeName', title: '题型', width: 140 },
+                        {
+                            field: 'Level', title: '难度', width: 140, templet: function () {
+                                var str = "<span style='color:orange;font-size:20px;'>★</span>"
+                                return str.repeat(this.Level)
+                            }
+                        },
+                        { field: 'QuestionStoreName', title: '所属题库', width: 220 },
+                        {
+                            field: 'AddTime', title: '添加时间', width: 200, templet: function () {
+                                var array = new Array();
+                                array.push("<span>" + fnr.format(this.AddTime, "yyyy-MM-dd HH:mm") + "</span>");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        },
+                        { field: 'AddPersonName', title: '添加人', width: 120 },
+                        {
+                            fixed: 'right',
+                            field: 'Valid',
+                            title: '操作',
+                            width: 180,
+                            toolbar: function () {
+                                var array = new Array();
+                                array.push("<button class=\"layui-btn layui-btn-small layui-btn-primary\" lay-event='view'>查看</button>");
+                                array.push("<button class=\"layui-btn layui-btn-small\" lay-event='edit'>编辑</button>");
+                                array.push("<button class=\"layui-btn layui-btn-small layui-btn-danger \" lay-event='delete'>删除</button>");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        }
+                    ]
+                ],
+                url: '/service/datastore/Question/GetQuestionList',
+                response: {
+                    dataName: 'Data'
+                }
+            });
+            tableExt.addEvent("tool(listTable)",
+                {
+                    //工具栏查看事件
+                    "view": function (data, obj) {
+                        rootApp.viewData(data)
+                    },
+                    //工具栏编辑事件
+                    "edit": function (data, obj) {
+                        rootApp.modifyData(data)
+                    },
+                    //工具栏删除事件
+                    "delete": function (data, obj) {
+                        layer.confirm('确认要删除吗?', { icon: 3, title: '提示' }, function (index) {
+                            $.post("/service/datastore/Question/DeleteQuestion", { ID: data.ID }, function (res) {
+                                layer.msg(res.Message);
+                                if (res.SuccessResponse) {
+                                    tableIns.reload();
+                                }
+                            })
+                            layer.close(index);
+                        });
+                    }
+                });
+        });
+</script>

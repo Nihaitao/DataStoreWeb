@@ -1,0 +1,220 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <style>
+        a {
+            color: #459df5;
+        }
+
+            a:hover {
+                color: #459df5;
+            }
+
+        .marl20 {
+            margin-left: 20px;
+        }
+
+        .marl5 {
+            margin-left: 15px;
+        }
+
+        .clearfix {
+            margin-top: 10px;
+            clear: both;
+            line-height: 200%;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li v-bind:class="showIndex==0?'layui-this':''">上传文档</li>
+                <li v-bind:class="showIndex==1?'layui-this':''">错误列表</li>
+                <li v-bind:class="showIndex==2?'layui-this':''">完成</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item" v-bind:class="showIndex==0?'layui-show':''">
+                    <div class="prepare">
+                        <div class="clearfix">
+                            <p>
+                                1、
+                                <a href="javascript:void(0)" @click="ExcelTemplateStudentList">点击下载导入数据模板</a>
+                                将要导入的数据填充到数据导入模板文件中。
+                            </p>
+                            <div class="marl20">
+                                <p>注意事项：</p>
+                                <p class="">1）模板中的表头不可更改，表头行不可删除； </p>
+                                <p class="">2）有指定的列需在Excel文件的其他工作簿中查找； </p>
+                                <p class="">3）单次导入的数据不超过1000条。</p>
+                            </div>
+                        </div>
+                        <div class="clearfix">
+                            <p>2、选择要导入的数据文件。</p>
+                            <div class=" marl20 layui-form">
+                                <button type="button" class="layui-btn" id="uploadchoice"><i class="layui-icon"></i>上传文件</button> <button class="layui-btn" id="upload" lay-submit>立即导入</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-tab-item" v-bind:class="showIndex==1?'layui-show':''">
+                    <table class="layui-table">
+                        <tr>
+                            <td v-for="(index,item ) in biaotou">{{item}}</td>
+
+                        </tr>
+                        <tr v-for="(index,item ) in errList" v-if="index=1">
+                            <td v-for="value in item">{{value}}</td>
+
+                        </tr>
+                    </table>
+                </div>
+                <div class="layui-tab-item" v-bind:class="showIndex==2?'layui-show':''">
+                    <div class="clearfix" style="margin-top:50px">
+                        <p style="text-align:center">
+                            导入完成，共{{dataTable.length}}条，导入成功<span class="layui-bg-green">{{SucessCount}}</span>条，导入失败<span class="layui-bg-red">{{FailCount}}</span>条
+                        </p>
+                    </div>
+                    <div class="clearfix" style="margin-top:50px">
+                        <p>
+                            下载错误报告，查看失败原因：
+                        </p>
+                        <p><a href="javascript:void(layer.msg('下载成功'));" @click="dowlown">点击下载错误报告</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="../../../Resources/js/Excel.js"></script>
+
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate", "element", "upload"],
+
+function (fnr) {
+    var table = layui.table;
+    var form = layui.form;
+    var tableExt = layui.tableExt;
+    var $ = layui.$;
+    var layer = layui.layer;
+    var element = layui.element;
+    var upload = layui.upload;
+    //搜索条件
+    var rootApp = new Vue({
+        el: '#root',
+        data: {
+            dataTable: [],
+            showIndex: 0,
+            SucessCount: 0,
+            FailCount: 0,
+            errList: [],
+            biaotou: [],
+            loadIndex:''
+        },
+        methods: {
+            dowlown: function () {
+
+                JsonToExcel(this.errList, '测试');
+            },
+            /*学生Excel模版下载*/
+            ExcelTemplateStudentList: function () {
+                fnr.download("/service/crm/Clue/GetUploadExcelTemplate?SystemType=1");
+            },
+            show: function () {
+                
+            },
+            uploadRow: function (rowIndex) {
+                var self = this;
+                if (rowIndex >= self.dataTable.length) {
+                    layer.alert("上传完成");
+                    self.showIndex = 2;
+                    layer.close(self.loadIndex);
+                    self.biaotou[self.biaotou.length] = '说明';
+                    self.errList.unshift(self.biaotou);
+                    return;
+                }
+                //self.dataTable[rowIndex].data.Model = 3;
+                self.dataTable[rowIndex].data.SystemType = 1;
+                $.post("/service/crm/Client/ImportClientExcel", self.dataTable[rowIndex].data, function (result) {
+                    if (result.SuccessResponse) {
+                        self.SucessCount++;
+                        self.dataTable[rowIndex].model.Status = 1;
+                    }
+                    else {
+                        self.FailCount++;
+                        var obj = [];
+                        if (typeof result.Data != 'object') {
+                            return;
+                        }
+                        for (var key in result.Data) {
+                            var arr = key.split("_");
+                            if (arr[0] == "$$") {
+                                obj[arr[1]] = result.Data[key];
+                                self.biaotou[arr[1]] = arr[2];
+                            }
+                        }
+                        obj[obj.length] = result.Data.Magg;
+                        self.errList.push(obj);
+
+                    }
+                    self.uploadRow(++rowIndex);
+                });
+
+            },
+            startUpload: function () {
+                this.FailCount = 0;
+                this.SucessCount = 0;
+                this.loadIndex = layer.msg("导入中", {
+                    icon: 16, shade: 0.01, time: 0
+                });
+                this.uploadRow(0);
+            },
+            getStatus: function (status) {
+                switch (status) {
+                    case 0:
+                        {
+                            return "未上传";
+                        } break;
+                    case 1:
+                        {
+                            return "上传成功";
+                        } break;
+                    case 2:
+                        {
+                            return "上传失败";
+                        } break;
+                }
+                return "-";
+            }
+        }
+    });
+    /*学生Excel上传 Start*/
+    upload.render({
+        elem: '#uploadchoice'
+           , url: '/excel/ImportExcel?SystemType=1'
+           , auto: false
+           , accept: 'file' //普通文件
+           , exts: "xls|xlsx"
+           , bindAction: '#upload'
+           , done: function (res) {
+               //循环遍历json集合
+               $.each(res, function (i, v) {
+                   rootApp.dataTable.push({ data: this, model: { Status: 0, Remark: "" } });
+               });
+               rootApp.startUpload();
+           }
+    });
+    /*学生Excel上传 End*/
+});
+
+</script>

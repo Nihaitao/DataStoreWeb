@@ -1,0 +1,200 @@
+﻿
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>公共线索</title>
+    <style>
+        div.layui-table-cell { height: 30px; }
+        .layui-table-cell div.layui-form-checkbox { top: 6px; }
+    </style>
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <blockquote class="layui-elem-quote">
+            <div class="layui-row layui-form">
+                <div class="layui-col-xs10">
+                    <div class="layui-input-inline">
+                        <remote-sel class="" v-bind:setting="searchKeySetting" laytips="线索状态" v-bind:value.sync="queryFormData.ClueStatus_ID"
+                                    initial="off"></remote-sel>
+                    </div>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="statusSetting" laytips="来源" v-bind:value.sync="queryFormData.Source_ID"
+                                    initial="off"></remote-sel>
+                    </div>
+                    <div class="layui-input-inline">
+                        <input placeholder="线索名称/手机号" type="text" name="SearchValue" class="layui-input" v-model="queryFormData.ModelValue">
+                    </div>
+                    <button class="layui-btn layui-btn-primary" lay-submit lay-filter="btn" @click="doSearch">查询</button>
+                </div>
+            </div>
+        </blockquote>
+        <div>
+            <button class="layui-btn layui-btn-primary layui-btn-small" v-bind:class="{'layui-btn-disabled':DistributionClueData.length<=0}" v-bind:disabled="DistributionClueData.length<=0" @click="BatchClue">批量分配</button>
+        </div>
+
+        <!--操作模板-->
+        <table id="listTable" lay-filter="listTable"></table>
+    </div>
+</body>
+</html>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'laydate', 'layer'],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+            var layer = layui.layer;
+            function trim(str) {
+                return str.replace(/(^\s*)|(\s*$)/g, "");
+            }
+            //表格基本配置参数
+            var tableColsConfig =
+                [
+                    { fixed: true, checkbox: true },
+                    { fixed: true, field: 'ID', title: 'ID', width: 80, sort: true },
+                    {
+                        title: '线索名称', width: 150, sort: true, templet: function () {
+                            var array = new Array();
+                            array.push("<a href='javascript:;' lay-event='info' style='display: inline-block; width: 100%;white-space: nowrap; text-overflow: ellipsis;overflow: hidden;' title=" + (this.ClueName) + ">" + (this.ClueName) + "</a>");
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    },
+                    { field: 'ClueStatusName', title: '状态', width: 150, sort: true },
+                    { field: 'Phone', title: '手机号', width: 120, sort: true },
+                    { field: 'Tel', title: '电话号码', width: 120, sort: true },
+                    { field: 'SourceName', title: '来源', width: 120, sort: true },
+                    {
+                        title: '添加时间', width: 160, sort: true, templet: function () {
+                            var array = new Array();
+                            array.push("<span>" + fnr.format(this.AddTime, "yyyy-MM-dd HH:mm") + "</span>");
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    },
+                    {
+                        title: '最新跟进记录', width: 300, sort: true, templet: function () {
+                            var array = new Array();
+                            array.push("<span>" + (this.Content == null || this.Content == '' ? "-" : this.Content) + "</span>");
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    }
+                ];
+            var searchKeySettingOptions = [];
+            var statusSettingOptions = [];
+            //搜索条件
+            window.rootApp = new Vue({
+                el: '#root',
+                data: {
+                    searchKeySetting: {
+                        search: true,
+                        options: searchKeySettingOptions,
+                        fields: { root: 'Data', key: 'ID', value: 'Description' },
+                        remote: { url: '/service/public/HDictionary/GetHDictionaryList', data: { Valid: 1, ColumnName: 'ClueStatus_ID' } }
+                    },
+                    //搜索选择框 --- 来源
+                    statusSetting: {
+                        search: true,
+                        options: statusSettingOptions,
+                        fields: { root: 'Data', key: 'ID', value: 'Description' },
+                        remote: { url: '/service/public/HDictionary/GetHDictionaryList', data: { Valid: 1, ColumnName: 'Source_ID' } }
+                    },
+                    //搜索选择的参数列表
+                    queryFormData: {
+                        ClueStatus_ID: 0,
+                        Source_ID: 0,
+                        ModelValue: ''
+                    },
+                    //分配客户参数列表
+                    DistributionClueData: [],
+                },
+                methods: {
+                    //查询条件
+                    doSearch: function () {
+                        var self = this;
+                        self.queryFormData.ModelValue = trim(self.queryFormData.ModelValue);
+                        listTable.reload({
+                            where: this.queryFormData
+                        })
+                    },
+
+                    //分配客户
+                    BatchClue: function () {
+                        if (this.DistributionClueData != null) {
+                            fnr.openDialog({
+                                title: '分配客户',
+                                area: ['400px', '400px'],
+                                content: ['Distribution.html?Other=' + this.DistributionClueData.join(',')],
+                                btn: ['确认分配'],
+                                events: {
+                                    refresh: function (data) {
+                                        if (data.status) {
+                                            layer.msg(data.msg);
+                                            listTable.refresh();
+                                        } else {
+                                            layer.msg(data.msg);
+                                        }
+                                    }
+                                }
+                            });
+                        } else {
+                            layer.msg("请选择线索ID");
+                        }
+                    },
+
+                    ClueMsg: function (data) {
+                        fnr.openDialog({
+                            title: '线索信息',
+                            area: ['1000px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                            content: ['Info.html?ID=' + data.ID + "&ClueStatus_ID=" + data.ClueStatus_ID],
+                            events: {
+                                add: function () {
+                                    listTable.refresh();
+                                }
+                            }
+                        });
+                    },
+                }
+            });
+            //绑定列表
+            var listTable = table.render({
+                elem: '#listTable',
+                even: true, //开启隔行背景
+                page: true, //页分,
+                id: 'listTable',
+                height: 'full-140',
+                cols: [tableColsConfig],
+                url: "/service/crm/Clue/PublicClueList"
+            });
+            //获取选中的行相关数据
+            table.on('checkbox(listTable)', function (obj) {
+                var checkStatus = table.checkStatus('listTable');
+                //rootApp.deleteClue = [];
+                rootApp.DistributionClueData = [];
+                $.each(checkStatus.data, function (k, v) {
+                    //rootApp.deleteClue.push(v.ID);
+                    rootApp.DistributionClueData.push(v.ID);
+                });
+            });
+
+            //监听工具栏事件
+            tableExt.addEvent("tool(listTable)",
+                {
+                    "info": function (data, obj) {
+                        rootApp.ClueMsg(data);
+                    },
+
+                    "detai2": function (data, obj, e) {
+                        rootApp.TurnClient(data)
+                    },
+                    //修改一行
+                    "modifyClue": function (data, obj) {
+                        rootApp.modifyClue(data);
+                    }
+                });
+        });
+</script>

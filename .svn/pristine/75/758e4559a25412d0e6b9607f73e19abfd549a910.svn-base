@@ -1,0 +1,446 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <link href="//at.alicdn.com/t/font_514871_9czxk955wqy6i529.css" rel="stylesheet" />
+    <script src="//at.alicdn.com/t/font_514871_z6ne30o81t3mcxr.js"></script>
+    <link rel="stylesheet" href="/Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link href="/Resources/CSS/question.css" rel="stylesheet" />
+    <link href="/Resources/CSS/PC_css.css" rel="stylesheet" />
+    <link href="/Resources/CSS/video-js.css" rel="stylesheet" />
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <link href="../Resources/CSS/super.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <style>
+ 
+    </style>
+</head>
+<body style="background-color: #f7f7f7;">
+    <!--头部导航 Start-->
+    <!--#<!--#include file="/PublicControl/topmenu.html"-->
+    <!--头部导航 End-->
+    <div class="w1200 clearfix">
+        <!--左侧导航 Start-->
+        <!--#<!--#include file="/PublicControl/leftmenu.html"-->
+        <!--左侧导航 End-->
+        <div class="main" id="root">
+            <div class="Index_top">
+                <div class="Index_photoContent">
+                    <img src="../Resources/images/404Stu.png" alt="" width="90px" />
+                </div>
+                <div class="Index_infoContent">
+                    <h1>
+                        <span>{{stuData.Name}}</span>
+                        <span class="welcomeWord">欢迎你!</span>
+                    </h1>
+                    <div class="infoPersonal">
+                        <ul class="infoList">
+                            <li>报考类别:{{stuData.Model_Name}}</li>
+                            <li>学校:{{stuData.SchoolName}}</li>
+                            <li>层次：{{stuData.SpecialtyLevel_Name}}</li>
+                            <li>专业：{{stuData.SpecialtyName}}</li>
+                            <li>批次：{{stuData.BatchName}}</li>
+                            <li>身份证：{{stuData.CardNumber}}</li>
+                        </ul>
+                    </div>
+                    <a class="showMoreInfo">查看更多 &gt;&gt;</a>
+                </div>
+                <div class="Index_teacherContent">
+                    <h3>班主任信息</h3>
+                    <div class="teaherInfo">
+                        <img src="../Resources/images/404Teaher.png" alt="" style=" margin-right:20px;width:70px;" />
+                        <ul>
+                            <li>{{teaher.Name}} <span class="welcomeWord">(学业导师)</span></li>
+                            <!--<li><i class="iconfont icon-qq1"></i>:740448379</li>-->
+                            <li><i class="iconfont icon-shouji1"></i>:{{teaher.Phone}}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="Index_notice">
+                <h5 class="topHead">通知公告</h5>
+                <div class="notic_content">
+                    <ul class="layui-anim-upbit">
+                        <li v-if="!newsItem" style="text-align:center">暂无公告</li>
+                        <li v-else class="scrollLI">
+                            <i class="iconfont icon-tongzhigonggao"></i>: <span class="content_msg">{{newsItem.AddTime}}，{{newsItem.Title}}</span>
+                            <a class="showMoreInfo" style="float:right;margin:0" @click="clickNew(newsItem)">点击查看&gt;&gt;</a>
+                        </li>
+                    </ul>
+                    
+                </div>
+            </div>
+            <div class="Index_ready" v-if="stuData.SchoolRoll_ID<=4 && stuData.Model_ID ==2">
+                <h5 class="topHead">
+                    入学考试准备 <span style="font-size: 12px;margin-left: 10px; color: #999">您报的是[专升本 - 理工类 - 机电一体化专业]</span>
+                </h5>
+                <div class="readyTabale">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>考试科目名称</th>
+                                <th>章节练习</th>
+                                <th>模拟考场</th>
+                                <th>视频课程</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="item in curList[0].child">
+                                <td>{{item.CuName}}</td>
+                                <td>
+                                    <div class="layui-progress" style="height:10px;">
+                                        <div class="layui-progress-bar layui-bg-orange" style="height:10px;" v-bind:lay-percent="item.Counts"></div>
+                                    </div>
+                                    <span class="number_span"><i>{{item.yiCount}}</i>/{{item.zCount}}</span>
+                                    <i class="iconfont icon-ruxuezhunbei-kaishizuoti"></i>开始做题
+                                </td>
+                                <td>
+                                    <div class="round_block"><i class="iconfont icon-ruxuezhunbei-jinrukaochang"></i>进入考场</div>
+                                </td>
+                                <td>
+                                    <div class="round_block"><i class="iconfont icon-ruxuezhunbei-shiting"></i>试听</div>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="Pro_plan" v-if="stuData.SchoolRoll_ID>4 || stuData.Model_ID ==1">
+                <h5 class="topHead">专业计划</h5>
+                <div class="plan_content" style="height: 310px">
+                    <table class="plan_table">
+                        <thead>
+                            <tr>
+                                <th>课程类别</th>
+                                <th>课程代码</th>
+                                <th>课程名称</th>
+                                <th>学分</th>
+                                <th>视频播放</th>
+                                <th>章节练习</th>
+                                <th>模拟考试</th>
+                                <th>资料下载</th>
+                            </tr>
+                        </thead>
+                        <tbody v-for="item in curList" v-if="item.child.length>1">
+                            <tr>
+                                <td v-bind:rowspan="item.child.length+1">{{item.Name}}</td>
+                            </tr>
+                            <tr v-for="item2 in item.child">
+                                <td>{{item2.CuCode}}</td>
+                                <td>{{item2.CuName}}</td>
+                                <td>8</td>
+                                <td>
+                                    <svg class="icon" aria-hidden="true">
+                                        <use xlink:href="#icon-bofanganniu1"></use>
+                                    </svg>
+                                </td>
+                                <td>
+                                    <svg class="icon" aria-hidden="true">
+                                        <use xlink:href="#icon-zhangjielianxi"></use>
+                                    </svg>
+                                </td>
+                                <td>
+                                    <svg class="icon" aria-hidden="true">
+                                        <use xlink:href="#icon-monikaoshi"></use>
+                                    </svg>
+                                </td>
+                                <td>
+                                    <svg class="icon" aria-hidden="true">
+                                        <use xlink:href="#icon-xiazaiziliao"></use>
+                                    </svg>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                        <tbody v-for="item in curList" v-if="item.child.length==1">
+                            <tr v-for="item2 in item.child">
+                                <td v-bind:rowspan="item.child.length">{{item.name}}</td>
+                                <td>{{item2.CuCode}}</td>
+                                <td>{{item2.CuName}}</td>
+                                <td>8</td>
+                                <td>
+                                    <svg class="icon" aria-hidden="true">
+                                        <use xlink:href="#icon-bofanganniu1"></use>
+                                    </svg>
+                                </td>
+                                <td>
+                                    <svg class="icon" aria-hidden="true">
+                                        <use xlink:href="#icon-zhangjielianxi"></use>
+                                    </svg>
+                                </td>
+                                <td>
+                                    <svg class="icon" aria-hidden="true">
+                                        <use xlink:href="#icon-monikaoshi"></use>
+                                    </svg>
+                                </td>
+                                <td>
+                                    <svg class="icon" aria-hidden="true">
+                                        <use xlink:href="#icon-xiazaiziliao"></use>
+                                    </svg>
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+                    <div class="showAll">
+                        <div class="showMoreInfo" style="margin: 0">显示全部 <span class="R90">&gt;&gt;</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="Index_order" v-if="orderData.length>0">
+                <h5 class="topHead">待支付订单 <a class="showMoreInfo" style="float:right;margin:0">点击查看&gt;&gt;</a></h5>
+                <div class="orderContent">
+                    <table class="orderTable" v-for="item in orderData">
+                        <thead>
+                            <tr>
+                                <th colspan="4">
+                                    <span class="order_number">订单编号：{{item.OrderNo}}</span>
+                                    <span class="order_time">{{item.PayTime}}</span>
+                                    <a class="order_question">我有疑问，需要反馈？</a>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <img class="cur_picture" v-bind:src="item.CoverPath?item.CoverPath:'Resources/images/test3.png'" alt="">
+                                    <div class="cur_info">
+                                        <h3>{{item.Name}}</h3>
+                                        <p>一级会计师 赵晓 {{item.TotalHours}}时</p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="red_price">
+                                        ￥{{item.Price}}
+                                    </div>
+
+                                </td>
+                                <td>
+                                    等待付款
+                                </td>
+                                <td>
+                                    <div class="layui-btn layui-btn-danger layui-btn">立即支付</div>
+                                </td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="Index_course">
+                <h5 class="topHead">我的网课</h5>
+                <div class="course_content">
+                    <ul class="course_list">
+                        <li>
+                            <img class="cur_picture" src="../Resources/images/test3.png" alt="">
+                            <div class="cur_info">
+                                <h3>组织行为学</h3>
+                                <p>一级会计师 赵晓 488课</p>
+                                <div class="cur_info_detail">
+                                    <span class="line_xiu"></span>
+                                    已学 <span style="color: #f97a1e">12%</span> 用时 <span style="color: #f97a1e">10分</span>
+                                    学习至 1-1 课程介绍 <span style="color: #f97a1e"><i class="iconfont icon-bofanganniu"></i> 继续学习</span>
+                                </div>
+                            </div>
+                            <div class="btn_group">
+                                <div class="grid_btn">
+                                    进入我的课程
+                                </div>
+                            </div>
+
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="Index_course">
+                <h5 class="topHead">我的题库</h5>
+                <div class="course_content">
+                    <!--<ul class="course_list">-->
+                    <!--<li class="clearfix">-->
+                    <!--<img class="cur_picture" src="../Resources/images/test3.png" alt="">-->
+                    <!--<div class="cur_info">-->
+                    <!--<h3>组织行为学</h3>-->
+                    <!--<p>一级会计师  赵晓  488课</p>-->
+                    <!--<div class="cur_info_detail">-->
+                    <!--<i class="iconfont icon-jibiji"></i>-->
+                    <!--做题时间 2017-11-15-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="btn_group">-->
+                    <!--<div class="grid_btn orgBtn">-->
+                    <!--重新做题-->
+                    <!--</div>-->
+                    <!--<div class="grid_btn">-->
+                    <!--查看解析-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <!--</li>-->
+                    <!--</ul>-->
+                    <div class="NoData">
+                        <h3><i class="iconfont icon-youyiyi"></i>你还没有选择过题库，找些感兴趣的课程吧！</h3>
+                        <div style="margin-bottom:25px" class="grid_btn orgBtn">题库分类</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--左侧导航 Start-->
+    <!--#<!--#include file="/PublicControl/bottommenu.html"-->
+    <!--左侧导航 End-->
+    <script>
+        require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil'],
+            function (fnr) {
+                var $ = layui.$;
+                var table = layui.table;
+                var tableExt = layui.tableExt;
+                var vm = new Vue({
+                    el: "#root",
+                    data: {
+                        stuData: {
+                            Name: "",
+                            Model_Name: "",
+                            SchoolName: "",
+                            SpecialtyLevel_Name: "",
+                            SpecialtyName: "",
+                            BatchName: "",
+                            CardNumber: "",
+                            SchoolRoll_ID: "",
+                            Model_ID:"",
+
+                        },
+                        orderData: [],
+                        curList: [],
+                        teaher: {
+                            Name: "",
+                            Phone: "",
+                        },
+                        newsList:[],
+                        newsItem:"",
+                        page:{
+                        PageIndex:1,
+                        PageSize:5,
+                        PageStatus:1,
+                        }
+
+                    },
+                    ready: function () {
+                        var _this = this;
+                        $.get("/service/edu/StudentinfoDetail/GetStudentRegDetail", {}, function (res) {
+
+                            fnr.mergeJson(res.Data, _this.stuData);
+                            if(res.Data.SchoolRoll_ID<=4 && res.Data.Model_ID ==2)
+                            {
+                               _this.getCurData(1);
+                             }else{
+                                _this.getCurData(0);
+                             }
+
+
+
+                        })
+                        $.get('/service/datastore/Order/GetOrderDetailListByStuId', {}, function (res) {
+
+                            _this.orderData = res.Data
+                        })
+                        $.get('/service/hr/Station/GetStationAccount', { ID: 97 }, function (res) {
+                            fnr.mergeJson(res.Data, _this.teaher)
+                        })
+                        var _this = this;
+                        $.get("/service/edu/S_NewsStudeList/SNewsStudeList", { PageIndex:_this.page.PageIndex,PageSize:_this.page.PageSize,PageStatus:_this.page.PageStatus},
+                            function (res) {
+                                //console.log(res.TotalCount)
+                                res.Data.map(function (a, b) {
+                                    var isread=false;
+                                    if(a.Counts==0){
+                                        isread=true
+                                    }
+                                    _this.newsList.push({ID:a.ID, Title: a.Title, Description: a.Description, Station_IDNmae: a.Station_IDNmae, AddTime: fnr.format(a.AddTime, 'yyyy-MM-dd HH:mm:ss'),isread: isread,IsWithout: a.IsWithout,Contents:a.Contents})
+                                    if(_this.newsList.length>0){
+                                    _this.newsItem= _this.newsList[0];
+                                    var i=0;
+                                    setInterval(function(){
+                                        if(i<_this.newsList.length-1){
+
+                                            _this.newsItem= _this.newsList[++i];
+                                        }else{
+                                            i=0;
+                                            _this.newsItem= _this.newsList[0];
+                                        }
+                                    }, 5000);
+
+                                    }
+                                });
+                            })
+
+                    },
+                    methods: {
+                        clickNew: function (data) {
+
+                            if(data.IsWithout==1){
+                            //外部新闻
+                            window.open(data.Contents);
+                            return;
+                            }
+                            $.post('/service/edu/S_NewsStudeList/SNewsStudecLiKe', { ID: data.ID}, function (res) {
+                                if (res.SuccessResponse) {
+                                    location.href = 'usermanage/newsDetail.shtml?ID='+data.ID
+                                }
+                            })
+                        },
+                        getCurData: function (data) {
+                            var _this = this;
+                            $.get('/service/edu/Teachingplan/GetSinschoolCurriculum', { StuID: fnr.Cookie.get("StuID"), Specialty_ID:fnr.Cookie.get("Specialty_ID"), SpecialtyVersion_ID:fnr.Cookie.get("SpecialtyVersion_ID"), Model_ID: fnr.Cookie.get("Model_ID"), isID:data }, function (resR) {
+                                //if(resR.Data){
+
+
+                                resR.Data.map(function (a, b) {
+                                    var rept = false;
+                                    _this.curList.map(function (c, d) {
+                                        if (a.Category_ID == c.Category_ID) {
+                                            c.child.push(a);
+                                            rept = true;
+                                        }
+                                    });
+                                    if (!rept) {
+                                        a.child = [];
+                                        _this.curList.push({ name: a.CategoryName, Category_ID: a.Category_ID, child: [a] });
+                                    }
+                                });
+                                 //}
+                               _this.$nextTick(function(){
+                                   var height = $(".plan_table").height() > 310 ? 310 : +function () {
+
+                                            $(".showAll").hide();
+                                            return $(".plan_table").height() + 40;
+                                        }();
+                                        $(".plan_content").height(height + 'px')
+                                        $(".showAll").on("click", function () {
+                                            var _this = $(this);
+                                            var height = $(".plan_table").height() + 40;
+                                            $(".plan_content").animate({ height: height + 'px' }, function () {
+                                                _this.hide();
+                                            });
+                                        });
+                                        $(".plan_content").on("mouseleave", function () {
+                                            $(".plan_content").animate({ height: height + 'px' }, function () {
+                                                $('.showAll').show();
+                                            });
+                                        })
+                                });
+                            })
+                        }
+                    }
+
+                });
+
+
+            })
+    </script>
+</body>
+
+</html>

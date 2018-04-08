@@ -1,0 +1,183 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        textarea{
+            resize:none;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <form class="layui-form" action="" onsubmit="return false" lay-filter="WC">
+            <div class="layui-form-item">
+                <label class="layui-form-label">教室名称</label>
+                <div class="layui-input-block">
+                    <input type="text" v-model="queryFormData.Name" name="title" lay-verify="required" placeholder="请输入教室名称" autocomplete="off" class="layui-input">
+                </div>
+
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">教室容量</label>
+                <div class="layui-input-block">
+                    <remote-sel v-bind:setting="Capacity_ID" layverify="required" v-bind:value.sync="queryFormData.Capacity_ID"
+                                initial="off" lay-filter="Education_ID"></remote-sel>
+                </div>
+
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">教室类型</label>
+                <div class="layui-input-block">
+                    <remote-rad v-bind:setting="ClassRoomType" v-bind:value.sync="queryFormData.ClassRoomType_ID" initial="off"></remote-rad>
+                </div>
+
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">地址</label>
+                <div class="layui-input-block">
+                    <input type="text" name="title" v-model="queryFormData.Address" placeholder="请输入教室地址" autocomplete="off" class="layui-input">
+                </div>
+
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">公交车线路</label>
+                <div class="layui-input-block">
+                    <textarea name="BusRoute" rows="2" v-model="queryFormData.BusRoute" placeholder="请输入公交车线路" class="layui-input" style="height:auto;padding:5px 5px 5px 10px"></textarea>
+                </div>
+
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">备注</label>
+                <div class="layui-input-block">
+                    <textarea name="Remark" rows="3" v-model="queryFormData.Remark" class="layui-input" style="height:auto"></textarea>
+                </div>
+
+            </div>
+            <div class="layui-form-item layui-hide">
+                <div class="layui-input-block">
+                    <button class="layui-btn" @click="formDemo">立即提交</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+    
+</body>
+</html>
+
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt"],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+          
+            window.rootApp = new Vue({
+                el: "#root",
+                data: {
+                    queryFormData: {
+                        ID: 0,
+                        CampusID: "",
+                        Name: "",
+                        ClassRoomType_ID: '',
+                        Capacity_ID: "",
+                        Address: "",
+                        BusRoute: "",
+                        Remark:""
+                    },
+                    ClassRoomType: {
+                        tags: { name: "aaa" },
+                        options: [
+                            { key: "1", value: "普通教室" },
+                            { key: "2", value: "机房" },
+                        ],
+                        fields: { key: 'key', value: 'value' }
+                    },
+                    Capacity_ID: {
+                        options: [
+                         {
+                             key: '1',
+                             value: '1-49人 '
+                         }, {
+                             key: '2',
+                             value: '50-99人'
+                         },{
+                             key: '3',
+                             value: '100-199人'
+                         }, {
+                             key: '4',
+                             value: '200-299人'
+                         }, {
+                             key: '5',
+                             value: '300人以上'
+                         }
+                        ]
+                    }
+                },
+                ready: function () {
+                    _this = this;
+                    _this.queryFormData.CampusID = fnr.getQueryString("CampusID")
+                    _this._userId = fnr.getQueryString("ID");
+                    //请求借口填充数据
+                    if (_this._userId) {
+                        $.get("/service/datastore/Campus/GetClassRoomByID", { ID: _this._userId }, function (rsp) {
+                            if (rsp.SuccessResponse) {
+                                _this.queryFormData.Name = rsp.Data[0].Name;
+                                _this.queryFormData.CampusID = rsp.Data[0].CampusID;
+                                _this.queryFormData.ClassRoomType_ID = rsp.Data[0].ClassRoomType_ID;
+                                _this.queryFormData.Capacity_ID = rsp.Data[0].Capacity_ID;
+                                _this.queryFormData.Address = rsp.Data[0].Address;
+                                _this.queryFormData.BusRoute = rsp.Data[0].BusRoute;
+                                _this.queryFormData.Remark = rsp.Data[0].Remark;
+                                _this.queryFormData.ID = rsp.Data[0].ID;
+                            } else {
+                                layer.msg(Message)
+                            }
+                        })
+                    }
+
+
+
+                    //请求校区相关ID
+                    //$.get("/service/Campus/GetCampusList", function (rsp) {;
+                    //    if (rsp.SuccessResponse) {
+                    //        _this.option = rsp.ReturnData.Data;
+                    
+                    //    } else {
+                    //        layer.msg(Message);
+                    //    }
+
+                    //})
+
+
+                },
+                methods: {
+                 
+                    //保存数据关闭弹窗
+                    formDemo: function (e) {
+                        _this = this;
+                        if (!layui.form.checkInput(e)) {
+                            return false;
+                        }
+                        //if (!this.queryFormData.Capacity_ID || !this.queryFormData.CampusID) { layer.msg("请选择校区"); return };
+                        $.post("/service/datastore/Campus/SaveClassRoom", this.queryFormData, function (rsp) {
+                            if (rsp.SuccessResponse) {
+                                fnr.callDialog('refresh'); //回调打开窗口events中的refresh
+                                fnr.closeDialog(); //关闭当前的对话框
+                            } else {
+                                layer.msg(rsp.Message)
+                            }
+                        })
+                        return false;
+                    },
+                }
+            });
+        });
+</script>

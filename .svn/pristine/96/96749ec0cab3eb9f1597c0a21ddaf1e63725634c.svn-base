@@ -1,0 +1,561 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>修改客户</title>
+    <style>
+        .isDisplay {
+            display: none;
+        }
+
+        .required {
+            color: red;
+            margin-right: 5px;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <div class="layui-form" v-cloak>
+            <div v-for="(index,item) in formData.common">
+                <!--100 单行文本-->
+                <div class="layui-form-item" v-if="item.FieldType==100">
+                    <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                    <div class="layui-input-block">
+                        <input type="text" lay-verify="{{item.Required == 1 ? 'required' : ''}}" autocomplete="off" placeholder="{{item.Tips}}" class="layui-input" v-model="item.value">
+                    </div>
+                </div>
+
+                <!--101 邮箱-->
+                <div class="layui-form-item" v-if="item.FieldType==101">
+                    <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="email" lay-verify="{{item.Required == 1 ? 'required|email' : ''}}" autocomplete="off" placeholder="{{item.Tips}}" class="layui-input" v-model="item.value">
+                    </div>
+                </div>
+
+                <!--102 多行文本-->
+                <div class="layui-form-item" v-if="item.FieldType==102">
+                    <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                    <div class="layui-input-block">
+                        <textarea placeholder="{{item.Tips}}" lay-verify="{{item.Required == 1 ? 'required' : ''}}" class="layui-textarea" v-model="item.value"></textarea>
+                    </div>
+                </div>
+
+                <!--103 单选框-->
+                <div class="layui-form-item" v-if="item.FieldType==103">
+                    <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                    <div class="layui-input-block">
+                        <custom-rad v-bind:setting="item.DataSource" v-bind:value.sync="item.value"
+                                    initial="off" v-bind:layverify="item.Required == 1 ? 'required' : ''"></custom-rad>
+                    </div>
+                </div>
+
+                <!--104 整数-->
+                <div class="layui-form-item" v-if="item.FieldType==104">
+                    <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                    <div class="layui-input-block">
+                        <input type="text" lay-verify="{{item.Required == 1 ? 'required' : ''}}" autocomplete="off" placeholder="{{item.Tips}}" class="layui-input" v-model="item.value">
+                    </div>
+                </div>
+
+                <!--105 小数-->
+                <div class="layui-form-item" v-if="item.FieldType==105">
+                    <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                    <div class="layui-input-block">
+                        <input type="text" lay-verify="{{item.Required == 1 ? 'required' : ''}}" autocomplete="off" placeholder="{{item.Tips}}" class="layui-input" v-model="item.value">
+                    </div>
+                </div>
+
+                <!--106 金额-->
+                <div class="layui-form-item" v-if="item.FieldType==106">
+                    <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                    <div class="layui-input-block">
+                        <input type="text" lay-verify="{{item.Required == 1 ? 'required' : ''}}" autocomplete="off" placeholder="{{item.Tips}}" class="layui-input" v-model="item.value">
+                    </div>
+                </div>
+
+                <!--107 图片-->
+                <div class="layui-form-item" v-if="item.FieldType==107">
+                    <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                    <img class="layui-upload-img" v-bind:src="item.value" style="height:60px; width: 232px;">&nbsp;
+                    <button type="button" class="layui-btn layui-btn-normal uploadBtn" style="margin:15px 0;" data-fieldname="{{item.FieldName}}"><i class="layui-icon">&#xe67c;</i>选择图片</button><span style="padding-left:10px; color:red;"></span>
+                    <p v-bind:id="'upLoadText' + item.ID" style="margin-left:-15px;margin-top:5px;"></p>
+                </div>
+
+                <!--108 时间-->
+                <div class="layui-form-item" v-if="item.FieldType==108">
+                    <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                    <div class="layui-input-block">
+                        <lay-date placeholder="请选择日期" v-bind:layverify="item.Required==1:'required':''" v-bind:value.sync="item.value"></lay-date>
+                    </div>
+                </div>
+
+                <!--1088 日期+时间-->
+                <div class="layui-form-item" v-if="item.FieldType==1088">
+                    <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                    <div class="layui-input-block">
+                        <lay-date placeholder="请选择日期+时间" type="datetime" v-bind:layverify="item.Required==1:'required':''" v-bind:value.sync="item.value"></lay-date>
+                    </div>
+                </div>
+
+                <!--109 下拉列表-->
+                <div class="layui-form-item" v-if="item.FieldType==109">
+                    <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                    <div class="layui-input-block">
+                        <custom-sel v-bind:setting="item.DataSource" v-bind:value.sync="item.value" initial="off" v-bind:layverify="item.Required == 1 ? 'required' : ''"></custom-sel>
+                    </div>
+                </div>
+
+                <!--110 多选-->
+                <div class="layui-form-item" v-if="item.FieldType==110">
+                    <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                    <div class="layui-input-block">
+                        <custom-chb v-bind:setting="item.DataSource" v-bind:layverify="item.Required == 1 ? 'required' : ''" v-bind:value.sync="item.value"
+                                    initial="off"></custom-chb>
+                    </div>
+                </div>
+
+                <!--111 手机-->
+                <div class="layui-form-item" v-if="item.FieldType==111">
+                    <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                    <div class="layui-input-block">
+                        <input type="tel" lay-verify="{{item.Required == 1 ? 'phone' : ''}}" autocomplete="off" placeholder="{{item.Tips}}" class="layui-input" v-model="item.value">
+                    </div>
+                </div>
+
+                <!--2 来源-->
+                <div class="layui-form-item" v-if="item.FieldType==2">
+                    <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                    <div class="layui-input-block">
+                        <remote-sel v-bind:layverify="item.Required == 1 ? 'required' : ''" v-bind:setting="createSetting(item.FieldName)" v-bind:value.sync="item.value"
+                                    initial="off"></remote-sel>
+                    </div>
+                </div>
+
+                <!--3 阶段-->
+                <div class="layui-form-item" v-if="item.FieldType==3">
+                    <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                    <div class="layui-input-block">
+                        <remote-sel v-bind:layverify="item.Required == 1 ? 'required' : ''" v-bind:setting="createSetting(item.FieldName)" v-bind:value.sync="item.value"
+                                    initial="off"></remote-sel>
+                    </div>
+                </div>
+
+                <!--4 重要性-->
+                <div class="layui-form-item" v-if="item.FieldType==4">
+                    <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                    <div class="layui-input-block">
+                        <remote-sel v-bind:layverify="item.Required == 1 ? 'required' : ''" v-bind:setting="createSetting(item.FieldName)" v-bind:value.sync="item.value"
+                                    initial="off"></remote-sel>
+                    </div>
+                </div>
+
+                <!--5 关系等级-->
+                <div class="layui-form-item" v-if="item.FieldType==5">
+                    <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                    <div class="layui-input-block">
+                        <remote-sel v-bind:layverify="item.Required == 1 ? 'required' : ''" v-bind:setting="createSetting(item.FieldName)" v-bind:value.sync="item.value"
+                                    initial="off"></remote-sel>
+                    </div>
+                </div>
+                <!--41 产品分类-->
+                <div class="layui-form-item" v-if="item.FieldType==41">
+                    <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                    <div class="layui-input-block">
+                        <input @dblclick="ChoiceDepart()" class=" layui-input" type="text" placeholder="请选择产品类别" v-model="submitNewForm.ProductTypeName" readonly />
+                     
+                    </div>
+                </div>
+                <!--6 学历-->
+                <div class="layui-form-item" v-if="item.FieldType==6">
+                    <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                    <div class="layui-input-block">
+                        <remote-sel v-bind:layverify="item.Required == 1 ? 'required' : ''" v-bind:setting="createSetting(item.FieldName)" v-bind:value.sync="item.value"
+                                    initial="off"></remote-sel>
+                    </div>
+                </div>
+
+              
+               
+            </div>
+            <a href="javascript:;" @click="toggleDisplay">点击展开更多({{formData.other.length}})</a>
+            <div v-show="isDisplay">
+                <div v-for="(index,item) in formData.other">
+                    <!--100 单行文本-->
+                    <div class="layui-form-item" v-if="item.FieldType==100">
+                        <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                        <div class="layui-input-block">
+                            <input type="text" lay-verify="{{item.Required == 1 ? 'required' : ''}}" autocomplete="off" placeholder="{{item.Tips}}" class="layui-input" v-model="item.value">
+                        </div>
+                    </div>
+
+                    <!--101 邮箱-->
+                    <div class="layui-form-item" v-if="item.FieldType==101">
+                        <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="email" lay-verify="{{item.Required == 1 ? 'required|email' : ''}}" autocomplete="off" placeholder="{{item.Tips}}" class="layui-input" v-model="item.value">
+                        </div>
+                    </div>
+
+                    <!--102 多行文本-->
+                    <div class="layui-form-item" v-if="item.FieldType==102">
+                        <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                        <div class="layui-input-block">
+                            <textarea placeholder="{{item.Tips}}" lay-verify="{{item.Required == 1 ? 'required' : ''}}" class="layui-textarea" v-model="item.value"></textarea>
+                        </div>
+                    </div>
+
+                    <!--103 单选框-->
+                    <div class="layui-form-item" v-if="item.FieldType==103">
+                        <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}{{item.Required}}</label>
+                        <div class="layui-input-block">
+                            <custom-rad v-bind:setting="item.DataSource" v-bind:value.sync="item.value"
+                                        initial="off" v-bind:layverify="item.Required == 1 ? 'required' : ''"></custom-rad>
+                        </div>
+                    </div>
+
+                    <!--104 整数-->
+                    <div class="layui-form-item" v-if="item.FieldType==104">
+                        <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                        <div class="layui-input-block">
+                            <input type="text" lay-verify="{{item.Required == 1 ? 'required' : ''}}" autocomplete="off" placeholder="{{item.Tips}}" class="layui-input" v-model="item.value">
+                        </div>
+                    </div>
+
+                    <!--105 小数-->
+                    <div class="layui-form-item" v-if="item.FieldType==105">
+                        <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                        <div class="layui-input-block">
+                            <input type="text" lay-verify="{{item.Required == 1 ? 'required' : ''}}" autocomplete="off" placeholder="{{item.Tips}}" class="layui-input" v-model="item.value">
+                        </div>
+                    </div>
+
+                    <!--106 金额-->
+                    <div class="layui-form-item" v-if="item.FieldType==106">
+                        <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                        <div class="layui-input-block">
+                            <input type="text" lay-verify="{{item.Required == 1 ? 'required' : ''}}" autocomplete="off" placeholder="{{item.Tips}}" class="layui-input" v-model="item.value">
+                        </div>
+                    </div>
+
+                    <!--107 图片-->
+                    <div class="layui-form-item" v-if="item.FieldType==107">
+                        <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                        <img class="layui-upload-img" v-bind:src="item.value" style="height:60px; width: 232px;">&nbsp;
+                        <button type="button" class="layui-btn layui-btn-normal uploadBtn" style="margin:15px 0;" data-fieldname="{{item.FieldName}}"><i class="layui-icon">&#xe67c;</i>选择图片</button><span style="padding-left:10px; color:red;"></span>
+                        <p v-bind:id="'upLoadText' + item.ID" style="margin-left:-15px;margin-top:5px;"></p>
+                    </div>
+
+                    <!--108 时间-->
+                    <div class="layui-form-item" v-if="item.FieldType==108">
+                        <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                        <div class="layui-input-block">
+                            <lay-date placeholder="请选择日期" v-bind:layverify="item.Required==1:'required':''" v-bind:value.sync="item.value"></lay-date>
+                        </div>
+                    </div>
+
+                    <!--1088 日期+时间-->
+                    <div class="layui-form-item" v-if="item.FieldType==1088">
+                        <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                        <div class="layui-input-block">
+                            <lay-date placeholder="请选择日期+时间" type="datetime" v-bind:layverify="item.Required==1:'required':''" v-bind:value.sync="item.value"></lay-date>
+                        </div>
+                    </div>
+
+                    <!--109 下拉列表-->
+                    <div class="layui-form-item" v-if="item.FieldType==109">
+                        <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                        <div class="layui-input-block">
+                            <custom-sel v-bind:setting="item.DataSource" v-bind:value.sync="item.value" initial="off" v-bind:layverify="item.Required == 1 ? 'required' : ''"></custom-sel>
+                        </div>
+                    </div>
+
+                    <!--110 多选-->
+                    <div class="layui-form-item" v-if="item.FieldType==110">
+                        <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                        <div class="layui-input-block">
+                            <custom-chb v-bind:setting="item.DataSource" v-bind:layverify="item.Required == 1 ? 'required' : ''" v-bind:value.sync="item.value"
+                                        initial="off"></custom-chb>
+                        </div>
+                    </div>
+                    <!--41 产品分类-->
+                    <div class="layui-form-item" v-if="item.FieldType==41">
+                        <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                        <div class="layui-input-block">
+                            <input @dblclick="ChoiceDepart()" class=" layui-input" type="text" placeholder="请选择产品类别" v-model="submitNewForm.ProductTypeName" />
+                        </div>
+                    </div>
+                    <!--111 手机-->
+                    <div class="layui-form-item" v-if="item.FieldType==111">
+                        <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                        <div class="layui-input-block">
+                            <input type="tel" lay-verify="{{item.Required == 1 ? 'phone' : ''}}" autocomplete="off" placeholder="{{item.Tips}}" class="layui-input" v-model="item.value">
+                        </div>
+                    </div>
+
+                    <!--2 来源-->
+                    <div class="layui-form-item" v-if="item.FieldType==2">
+                        <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                        <div class="layui-input-block">
+                            <remote-sel v-bind:layverify="item.Required == 1 ? 'required' : ''" v-bind:setting="createSetting(item.FieldName)" v-bind:value.sync="item.value"
+                                        initial="off"></remote-sel>
+                        </div>
+                    </div>
+
+                    <!--3 阶段-->
+                    <div class="layui-form-item" v-if="item.FieldType==3">
+                        <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                        <div class="layui-input-block">
+                            <remote-sel v-bind:layverify="item.Required == 1 ? 'required' : ''" v-bind:setting="createSetting(item.FieldName)" v-bind:value.sync="item.value"
+                                        initial="off"></remote-sel>
+                        </div>
+                    </div>
+
+                    <!--4 重要性-->
+                    <div class="layui-form-item" v-if="item.FieldType==4">
+                        <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                        <div class="layui-input-block">
+                            <remote-sel v-bind:layverify="item.Required == 1 ? 'required' : ''" v-bind:setting="createSetting(item.FieldName)" v-bind:value.sync="item.value"
+                                        initial="off"></remote-sel>
+                        </div>
+                    </div>
+
+                    <!--5 关系等级-->
+                    <div class="layui-form-item" v-if="item.FieldType==5">
+                        <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                        <div class="layui-input-block">
+                            <remote-sel v-bind:layverify="item.Required == 1 ? 'required' : ''" v-bind:setting="createSetting(item.FieldName)" v-bind:value.sync="item.value"
+                                        initial="off"></remote-sel>
+                        </div>
+                    </div>
+
+                    <!--6 学历-->
+                    <div class="layui-form-item" v-if="item.FieldType==6">
+                        <label class="layui-form-label"><span v-if="item.Required == 1" style="color: red;margin-right: 5px;">*</span>{{item.ShowName}}</label>
+                        <div class="layui-input-block">
+                            <remote-sel v-bind:layverify="item.Required == 1 ? 'required' : ''" v-bind:setting="createSetting(item.FieldName)" v-bind:value.sync="item.value"
+                                        initial="off"></remote-sel>
+                        </div>
+                    </div> 
+                </div>
+            </div>
+            <div class="layui-form-item layui-hide">
+                <button class="layui-btn" lay-submit @click="submit">提交</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/Controls/Common.js"></script>
+<script>
+    var dictionaryMapping = new Array();
+    dictionaryMapping["Source_ID"] = "Source_ID";
+    dictionaryMapping["PhaseType_ID"] = "PhaseType_ID";
+    dictionaryMapping["Importance_ID"] = "Importance_ID";
+    dictionaryMapping["ConnectionLevel_ID"] = "ConnectionLevel_ID";
+    dictionaryMapping["Education_ID"] = "Education_ID";
+
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate", "customUtil", "upload"],
+    function (fnr) {
+
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: "#EffDate"
+        });
+        var $ = layui.jquery;
+        var upload = layui.upload;
+        function trim(str) {
+            return str.replace(/(^\s*)|(\s*$)/g, "");
+        }
+        function isEmail(str) {
+            return /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/.test(str)
+        }
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+                isDisplay: false,
+                submitNewForm: {
+                    ProductType_ID:"",
+                    ProductTypeName: ''
+                },
+                //submitForm: {
+                //    ID: ''
+                //},
+                submitModify: {
+                    ID: GetQueryString('ID'),
+                   
+                    //SystemGroup_ID: GetQueryString('SystemGroup_ID') ? GetQueryString('SystemGroup_ID') : 0
+                },
+                formData: {
+                    common: [],
+                    other: []
+                },
+                SelectSex: SelectSex(),
+             
+                //NewInfoData: [],
+                //modifyArr: [],
+                uploadElements: [],
+                isEmailBool: true
+            },
+            ready: function () {
+                //this.submitForm.ID = GetQueryString('ID');
+                this.submitNewForm.ProductTypeName = fnr.getQueryString("ProductTypeName");
+                this.modifyClients();
+            },
+            methods: {
+                createSetting: function (fieldName) {
+                    return {
+                        search: true,
+                        options: [],
+                        fields: { root: 'Data', key: 'ID', value: 'Description' },
+                        remote: { url: '/service/public/HDictionary/GetHDictionaryList', data: { Valid: 1, ColumnName: dictionaryMapping[fieldName] } }
+                    }
+                },
+
+                toggleDisplay: function () {
+                    this.isDisplay = this.isDisplay ? false : true
+                },
+                ChoiceDepart: function () {
+                    var self = this;
+                    fnr.openDialog({
+                        title: "选择产品类别",
+                        content: ["Product.html", "yes"],
+                        area: ["500px", "620px"],
+                        events: {
+                            new: function (data) {
+                                self.submitNewForm.ProductType_ID = data.ID;
+                                self.submitNewForm.ProductTypeName = data.Name; 
+                            }
+                        }
+                    });
+                },
+                //修改产品
+                submit: function (e) {
+                    var self = this;
+                    if (!layui.form.checkInput(e)) {
+                        return false;
+                    }
+                    var list = [];
+                    $.each(self.formData.common, function (k, v) {
+                        if (v.FieldName.toString().indexOf("customField_") == 0) {
+                            if (v.FieldType == 101 && v.value != '' && v.value != null) {
+                                if (!isEmail(v.value)) {
+                                    //layer.msg('邮箱格式不正确，请重新输入!');
+                                    self.isEmailBool = false;
+                                } else {
+                                    self.isEmailBool = true;
+                                }
+                            }
+                            list.push({ ItemName: v.FieldName, ItemValue: v.value });
+                        }
+                        self.submitModify[v.FieldName] = trim(v.value + '');
+                    });
+
+                    $.each(self.formData.other, function (k, v) {
+                        if (v.FieldName.toString().indexOf("customField_") == 0) {
+                            if (v.FieldType == 101 && v.value != '' && v.value != null) {
+                                if (!isEmail(v.value)) {
+                                    //layer.msg('邮箱格式不正确，请重新输入!');
+                                    self.isEmailBool = false;
+                                } else {
+                                    self.isEmailBool = true;
+                                }
+                            }
+                            list.push({ ItemName: v.FieldName, ItemValue: v.value });
+                        }
+                        self.submitModify[v.FieldName] = trim(v.value + '');
+                    });
+                    self.submitModify.ProductType_ID = self.submitNewForm.ProductType_ID;
+                    self.submitModify.ListExtData = list;
+                    if (self.isEmailBool) {
+                        $.ajax({
+                            url: '/service/crm/Product/UpdateProduct',
+                            type: 'post',
+                            data: self.submitModify,
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data.SuccessResponse) {
+                                    layer.msg(data.Message);
+                                    fnr.callDialog('refresh', { status: data.SuccessResponse, msg: data.Message });
+                                    setTimeout(function () { fnr.closeDialog(); }, 700);
+                                }
+                            }
+                        });
+                    } else {
+                        layer.msg('邮箱格式不正确')
+                    }
+                },
+                
+                //获取客户详细信息
+                modifyClients: function () {
+                    var self = this;
+                    $.ajax({
+                        url: '/service/crm/Product/GetProductInfoSet',
+                        type: 'GET',
+                        dataType: 'json',
+                        data: { ID: GetQueryString('ID') },
+                        success: function (data) {
+                            if (data.SuccessResponse) {
+                                var Datas = data.Data;
+                                var childArr = [];
+                                $.each(Datas, function (k, v) {
+                                    if (v.Childs.length > 0) {
+                                        $.each(v.Childs, function (_k, _v) {
+                                            if (_v.FieldType == 107) {
+                                                self.uploadElements[_v.FieldName] = _v;
+                                            }
+                                            if (_v.DataSource != null) {
+                                                _v.DataSource = eval(_v.DataSource);
+                                            }
+                                            childArr.push(_v);
+                                            if (_v.FieldName !== null) {
+                                                if (_v.FieldName.split('_').length > 1 && _v.FieldName.toString().indexOf('customField_') != 0) {
+                                                    if (_v.Value!=null){
+                                                        self.submitNewForm[_v.FieldName] = parseFloat(_v.Value.split(',')[1]);
+                                                    }
+                                                } else if (_v.FieldName !== 'Sex') {
+                                                    self.submitNewForm[_v.FieldName] = _v.Value == 0 ? '' : _v.Value;
+                                                } else {
+                                                    self.submitNewForm[_v.FieldName] = _v.Value;
+                                                }
+                                            }
+                                        })
+                                    }
+                                })
+                                $.each(childArr, function (k, v) {
+                                    if (v.FieldType > 0) {
+
+                                        v["value"] = self.submitNewForm[v.FieldName];
+                                        if (isNaN(v["value"])) {
+
+                                            v["Value"] = '';
+                                        }
+                                        if (v.IsEnable == 1) {
+                                            (v.Common == 1 ? self.formData.common : self.formData.other)
+                                                .push(v);
+                                        }
+                                    }  
+
+                                });
+                              
+                            }
+                        },
+                        error: function () {
+                            alert("error");
+                        }
+                    });
+                }
+            }
+        });
+    });
+</script>

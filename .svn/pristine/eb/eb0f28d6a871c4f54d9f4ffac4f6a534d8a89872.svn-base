@@ -1,0 +1,47 @@
+.box li{
+    border-bottom: 0.01rem solid #E0E0E0;
+    box-sizing: border-box;
+    height: 0.88rem;
+    padding: 0 0.26rem;
+}
+.box{
+    margin-bottom: 1rem;
+}
+.box li span{
+    display: inline-block;
+    font-size: 0.28rem;
+    vertical-align: middle;
+    line-height: 0.88rem;
+}
+.box li span:first-child{
+    color: #666;
+}
+.box li span:last-child{
+    color: #333;
+    float: right;
+}
+.footerBtnBox{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: 1rem;
+    width: 100%;
+    z-index: 999;
+}
+.footerBtnBox ul{
+    font-size: 0;
+}
+.footerBtnBox ul li{
+    width: 50%;
+    font-size: 0.32rem;
+    color: #fff;
+    text-align: center;
+    line-height: 1rem;
+    display: inline-block;
+}
+.footerBtnBox ul li:first-child{
+    background-color: #f76260;
+}
+.footerBtnBox ul li:last-child{
+    background-color: #ffbe00;
+}

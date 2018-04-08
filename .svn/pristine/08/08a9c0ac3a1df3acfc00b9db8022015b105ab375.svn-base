@@ -1,0 +1,136 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <style>
+        .layui-tree li i { color: #7da4d1; }
+        .selected { position: absolute; width: 100%; height: 26px; background: #4A77AC; left: 0px; z-index: -1; }
+        .this > a { color: #fff; }
+        .this > a:hover { color: #fff; }
+        .layui-tree li a { width: 100%; }
+        .iconmenu { cursor: pointer; display: inline-block; width: 18px; height: 26px; position: absolute; right: 0px; background: url("https://rescdn.qqmail.com/node/ww/wwmng/style/images/independent/status/DotsWhiteSmall$33adf86f.png") no-repeat; background-size: 100%; font-size: 0; }
+    </style>
+</head>
+<body>
+    <div style="float:left; width:200px">
+        <ul id="demo" style="width:200px; position:relative"></ul>
+    </div>
+    <div>
+        <table id="listTable" lay-filter="listTable"></table>
+    </div>
+</body>
+</html>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(["table", 'tree', "form", "jquery", "tableExt"],
+    function (fnr) {
+        var $ = layui.$;
+        var table = layui.table;
+        var treeList = [];
+
+        //查询所有数据
+        $.get("/service/Company/GetListDepartment", function (rsp) {
+            Bind(rsp.ReturnData.Data)
+        })
+        function Bind(data) {
+            $.get("/service/Company/GetCompanyList", function (rsp) {
+                rsp.ReturnData.Data.map(function (a, b) {
+                    treeList.push({ name: a.Name, id: undefined, Company_ID: a.ID, Department_ID: null, spread: true, children: [] });
+                    var newData = treeList[treeList.length - 1];
+                    showall(0, "CID", data, newData.children, a.ID);
+                })
+
+                layui.tree({
+                    elem: '#demo' //传入元素选择器
+                    //, drag: true
+                    , nodes: treeList
+                    , click: function (item, e) {
+                        console.log(e);
+                        console.log(item);
+                        $(".selected").remove();
+                        $(".iconmenu").remove();
+                        $(".this").removeClass("this");
+                        e.prepend("<div class='selected'></div>");
+                        e.prepend("<span class=\"iconmenu\"></span>");
+                        e.addClass("this");
+                        console.log(item);
+                        listTable.reload({
+                            where: { CompanyID: item.Company_ID, DepartmentID: item.Department_ID },
+                        });
+                    }
+                });
+            })
+        }
+        //这是一个假递归
+        function showall(number, C, data, target, CompanyID) {
+            data.map(function (a, b) {
+                if (a[C] == number && a.Company_ID == CompanyID) {
+                    target.push({ name: a.Name, id: a.ID, Company_ID: a.Company_ID, Department_ID: a.ID, spread: false, children: [] });
+                    var newData = target[target.length - 1];
+                    showall(newData.id, "CID", data, newData.children, CompanyID)
+                } else {
+                    return false;
+                }
+            });
+        }
+
+
+        console.log(treeList)
+
+
+
+        //绑定列表
+        var listTable = table.render({
+            elem: '#listTable',
+            even: true, //开启隔行背景
+            page: true, //页分
+            id: "listTable",
+            cols: [
+                [
+                    { fixed: true, checkbox: true },
+                    { field: 'ID', title: 'ID', width: 120, sort: true },
+                    { field: 'Name', title: '姓名', width: 120, sort: true },
+                    { field: 'Phone', title: '手机号码', width: 120, sort: true },
+                     {
+                         title: '用户状态', width: 120, templet: function () {
+                             var array = new Array();
+                             array.push("<a href='javascript:;'>" + (this.Valid ? "启用" : "禁用") + "</a>");
+                             return "<div>" + array.join("") + "</div>";
+                         }
+                     },
+                     {
+                         title: '超级管理员', width: 120, templet: function () {
+                             var array = new Array();
+                             array.push("<a href='javascript:;'>" + (this.IsAdministrator ? "是 " : "否") + "</a>");
+                             return "<div>" + array.join("") + "</div>";
+                         }
+                     },
+                     { field: 'LoginTime', title: '登录时间', width: 220, sort: true },
+                     { field: 'LoginCount', title: '登录次数', width: 120, sort: true },
+                    {
+                        fixed: 'right',
+                        field: 'name',
+                        title: '操作',
+                        width: 180,
+                        toolbar: function () {
+                            var array = new Array();
+                            array.push("<button class=\"layui-btn layui-btn-small\" lay-event='edit'>修改</button>");
+                            array.push("<button class=\"layui-btn layui-btn-small " + (this.Valid == 1 ? "layui-btn-warm" : "layui-btn-normal") + " \" lay-event='editisenable'>" + (this.Valid == 1 ? "禁用" : "启用") + "</button>");
+                            array.push("<button class=\"layui-btn layui-btn-small layui-btn-danger \" lay-event='delete'>删除</button>");
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    }
+                ]
+            ],
+            url: '/service/Station/GetListStationAccount',
+            response: {
+                dataName: 'ReturnData.data'
+            }
+        });
+
+    });
+</script>

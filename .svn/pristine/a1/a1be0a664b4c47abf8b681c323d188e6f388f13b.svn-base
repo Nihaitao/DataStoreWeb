@@ -1,0 +1,134 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>自定义工作台</title>
+    <style>
+        .divClass {
+            border-right: 1px solid #d2d2d2;
+            text-align: center;
+        }
+
+        .divLeft {
+            border-left: 1px solid #d2d2d2;
+            border-collapse: collapse;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="mainContainer divLeft" id="root" v-cloak>
+    <div class="layui-tab-content">
+        <form class="layui-form" >
+            <div class="layui-row custom-title divLeft">
+                <div class="layui-col-md4 divClass">模块名称</div>
+                <div class="layui-col-md4 divClass">启用</div>
+                <div class="layui-col-md4 divClass">排序</div>
+            </div>
+            <div class="custom-field divLeft">
+                <div class="tree" v-for="item in formList">
+                    <div class="tree-content">                        
+                        <div class="layui-row custom-ele" >
+                            <div class="layui-col-md4 divClass">
+                                {{item.Name}}
+                            </div>
+                            <div class="layui-col-md4 divClass">
+                                <input type="checkbox" name="Valid" v-bind:checked="item.Valid==1" v-model="queryForm" value="{{item.ID}}" lay-ignore  />
+                            </div>
+                            <div class="layui-col-md4 divClass">
+                                <a href="javascript:;" class="handle">
+                                    <i class="layui-icon">&#xe647;</i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="layui-form-item layui-show" style="background-color:#F5F5F5;height:100px;"> 
+        <div class="layui-input-block" style="background-color:#F5F5F5;height:100px;line-height:100px;">
+            <button class="layui-btn" style="width:92px;background-color:DodgerBlue" @click="AddSave">保存</button>
+            <button type="reset" style="width:92px;background-color:#F5F5F5" class="layui-btn layui-btn-primary" @click="Rese">重置</button>
+            <button type="reset" style="width:92px;background-color:#F5F5F5" class="layui-btn layui-btn-primary" @click="Cancel">取消</button>
+        </div>
+    </div>
+</div>
+
+
+
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+
+<style>
+    .custom-title {
+        line-height: 45px;
+        background: #f5f5f5;
+        padding-left: 10px;
+    }
+
+    .custom-ele, .custom-empty {
+        line-height: 45px;
+        height: 45px;
+        border-bottom: 1px solid #ebebeb;
+        padding-left: 10px;
+    }
+
+        .custom-ele:hover {
+            line-height: 45px;
+            height: 45px;
+            background: #f5f5f5;
+        }
+
+    [v-cloak] {
+        display: none;
+    }
+</style>
+<script>
+    require_js_file(['table', 'form', 'jquery',],
+        function (fnr) {
+         var $ = layui.jquery;
+            var vm = new Vue({
+                el: "#root",
+                data: {
+                    formList: [],
+                    queryForm: [],
+                    resetData:[],
+                },
+                ready: function () {
+                    this.reload();
+                },
+                methods: {
+                    //加载
+                    reload: function () {
+                        var self = this;
+                        //查询所有工作台数据
+                        $.get("/service/crm/Workbench/GetWorkbenchInfo", function (rsp) {
+                            if (rsp.SuccessResponse) {
+                                self.formList = rsp.Data;                             
+                            }
+                        })
+                    },
+                    //重置
+                    Rese: function () {
+                             alert(this.queryForm.join(','));
+                    },
+                    //保存crm工作台明细
+                    AddSave: function () {
+                        $.post("/service/crm/Workbench/AddWorkbenchDetial", { IdArray: this.queryForm.join(',') }, function (rsp) {
+                            if (rsp.SuccessResponse) {
+                                layer.msg("操作成功");
+                            }
+                        })
+                    }
+                }
+            });
+        });
+</script>
+</body>
+</html>

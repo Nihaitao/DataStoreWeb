@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        .courseList ul { 
+            margin: 70px 50px;
+        }
+        .courseList ul li{
+            float: left;
+            padding: 65px 54px;
+            margin: 10px 10px 0 0;
+            border: none;
+            border-radius: 5px;
+            position: relative;
+            color: #fff;
+            cursor: pointer;
+            font-size: 15px;
+        }
+        .courseList ul li.a { 
+           background: #24b0cf;
+        }
+        .courseList ul li.a:hover { 
+           background: #24b0cf;
+        }
+        .courseList ul li.b { 
+           background: #ec5f41;
+        }
+        .courseList ul li.b:hover { 
+           background: #f28d78;
+        }
+        .courseList ul li.c { 
+           background: #6cc3a0;
+        }
+        .courseList ul li.c:hover { 
+           background: #8dfed1;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <div class="courseList">
+            <ul>
+                <li class="c" data-id="1" @click="switchCourse($event)">录播</li>
+                <li class="a" data-id="2" @click="switchCourse($event)">直播</li>
+                <li class="b" data-id="3" @click="switchCourse($event)">面授</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
+
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/Controls/Common.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt"],
+    function (fnr) {
+        var $ = layui.$;
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+
+            },
+            ready: function () {
+                if (!!fnr.getQueryString('ID')) {
+                    var ID = GetQueryString('ID')
+                    var param={'ID':ID}
+                    this.GetCourseInfoByID(param);
+                }
+            },
+            methods: {
+                //选择授课方式
+                switchCourse: function (event) {
+                    fnr.callDialog('addSource', { TeachingMethod: event.target.dataset.id });
+                    fnr.closeDialog();
+                }
+            }
+        });
+    });
+</script>

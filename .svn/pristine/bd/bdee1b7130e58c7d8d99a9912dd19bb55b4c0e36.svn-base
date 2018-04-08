@@ -1,0 +1,199 @@
+﻿<div id="root" class="OpenContainer">
+    <form class="layui-form" onsubmit="return false;">
+        <div class="layui-form-item">
+            <label class="layui-form-label">字段类型</label>
+            <div class="layui-input-block" v-if="isnew == 'false'">
+                <remote-sel v-bind:setting="elementDataSource" v-bind:value.sync="elementType" v-bind:disabled="!!ID">
+                </remote-sel>
+            </div>
+            <div class="layui-input-block" v-else>
+                <remote-sel v-bind:setting="elementDataSource" v-bind:value.sync="elementType" v-bind:disabled="true" initial=" off">
+                </remote-sel>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">显示名称</label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" placeholder="请填写显示名称，最长12个字符" v-model="showName" />
+            </div>
+        </div>
+        <div class="layui-row" v-show="elementType!=0">
+            <div class="layui-form-item"> 
+                <label class="layui-form-label">输入提示</label>
+                <div class="layui-input-block">
+                    <input class="layui-input" type="text" placeholder="输入提示，不超过25个字符" v-model="Tips" />
+                </div>
+            </div>
+        </div>
+        <div class="layui-row" v-show="elementType==109||elementType==110||elementType==103">
+            <div class="layui-form-item">
+                <label class="layui-form-label"></label>
+                <div class="layui-input-block">
+                    <button class="layui-btn layui-btn-primary" @click="addItem">添加选择项</button>
+                </div>
+            </div>
+            <div class="layui-form-item" v-for="(index,item) in dataSource">
+                <div class="layui-input-block layui-col-space10">
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                        <input class="layui-input" type="text" placeholder="请填写选择项，最长60个字符" v-model="item.text" />
+                    </div>
+
+                    <div class="layui-col-xs4 layui-col-sm5 layui-col-md4">
+                        <a href="javascript:;" @click="deleteItem(item)">
+                            <i class="layui-icon">&#xe640;</i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="layui-btn layui-hide" lay-submit @click="submit"></button>
+    </form>
+</div>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'jqueryui'],
+        function (fnr) {
+            var $ = layui.$;
+            var rootApp = new Vue({
+                el: "#root",
+                data: {
+                    elementDataSource: {
+                        options: [
+                            {
+                                key: '100',
+                                value: '单行文本'
+                            }, {
+                                key: '101',
+                                value: '邮箱'
+                            }, {
+                                key: '102',
+                                value: '多行文本'
+                            }, {
+                                key: '103',
+                                value: '单选框'
+                            }, {
+                                key: '104',
+                                value: '整数'
+                            }, {
+                                key: '105',
+                                value: '小数'
+                            }, {
+                                key: '106',
+                                value: '金额'
+                            }, {
+                                key: '107',
+                                value: '图片'
+                            }, {
+                                key: '108',
+                                value: '时间'
+                            }, {
+                                key: '109',
+                                value: '下拉框'
+                            }, {
+                                key: '110',
+                                value: '多选框'
+                            }, {
+                                key: '111',
+                                value: '手机'
+                            }, {
+                                key: '0',
+                                value: '区块'
+                            }
+                        ]
+                    },
+                    elementType: '0',
+                    dataSource: [],
+                    Tips: "",
+                    showName: "",
+                    ID: fnr.getQueryString("ID"),
+                    BusType:fnr.getQueryString("BusType"),
+                    isnew:'',
+                    fieldTypeText: '',
+
+                },
+                watch:{
+                    dataSource:function(val){
+                        console.log(val) 
+                    }
+                },
+                ready: function () {
+                    this.isnew= fnr.getQueryString("isnew");
+                    if (this.ID != undefined) {
+                        this.load();
+                    } else {
+                        this.addItem();
+                    }
+                },
+                methods: {
+                    load: function () {
+                        var self=this;
+                        $.get("/service/CustomSettings/GetLayoutOne",
+                            { ID: this.ID ,BusType:this.BusType},
+                            function (resp) {
+                                if (resp.ReturnData.Data) {
+                                    self.showName = resp.ReturnData.Data.ShowName;
+                                    self.Tips = resp.ReturnData.Data.Tips
+                                    self.elementType = resp.ReturnData.Data.FieldType;
+                                } else {
+                                    layer.msg('data为空');
+                                }
+                            },
+                            "json");
+                    },
+                    getFieldTypeText: function (fieldType) {
+                        var self = this;
+                        var ret = undefined;
+                        $.each(self.elementDataSource.options, function () {
+                            if (this.key == fieldType) {
+                                ret = this.value;
+                                return true;
+                            }
+                        });
+                        return ret;
+                    },
+                    deleteItem: function (item) {
+                        if (this.dataSource.length == 1) {
+                            fnr.msg("至少要保留一行数据");
+                            return;
+                        }
+                        fnr.deleteItem(this.dataSource, item);
+                    },
+                    addItem: function () {
+                        this.dataSource.push({ text: "" });
+                    },
+                    submit: function () {
+                        var self = this;
+                        var returlValue = {
+                            'Required':1,
+                            'Common':1,
+                            'IsEnable':1,
+                            "ID": self.ID,
+                            "name": self.showName,
+                            "showName": self.showName,
+                            "Tips": self.Tips,
+                            "fieldType": self.elementType,
+                            "dataSource": self.getDataSource()
+                        };
+                        fnr.callDialog("new", returlValue);
+                        fnr.closeDialog();
+                    },
+                    getDataSource: function () {
+                        if (this.elementType == '109' || this.elementType == '110' || this.elementType == '111' || this.elementType == '103') {
+                            var ds = [];
+                            $.each(this.dataSource,
+                                function () {
+                                    ds.push(this.text);
+                                });
+                            return JSON.stringify(ds);
+                        } else {
+                            return null;
+                        }
+                    }
+                }
+            });
+        });
+</script>

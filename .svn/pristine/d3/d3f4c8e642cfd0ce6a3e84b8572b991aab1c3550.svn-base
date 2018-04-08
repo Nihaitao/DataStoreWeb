@@ -1,0 +1,344 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心</title>
+    <link rel="stylesheet" href="../Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../Resources/CSS/Font/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../Resources/CSS/PC_css.css">
+    <style>
+    .baseData-save input:hover { background-color: #F9F9F9; }
+    .data-save-button { cursor: pointer; }
+    .baseData-save input:focus { background-color: #fff; }
+    .data-save-button.active { background-color: #df1813; }
+    .upload {display:none;cursor:pointer; position: absolute; top: 0; margin: 0; width: 100%; border-radius: 50%; b      ackground-color: rgba(0,0,0,0.5); line-height: 80px; width: 80px; height: 80px; color: #fff; }
+    .imagebox:hover .upload { display:block;}
+    </style>
+    <style>
+        img.logo{
+            margin: 0;
+        }
+    </style>
+</head>
+<body style="background-color: rgb(232, 232, 232);">
+    <!--顶部-->
+    <!--#<!--#include file="../UserControl/stepHeader.html"-->
+    <!--logo and search-->
+    <div style="background: #fff" class="top_search">
+        <div class="container" style="height: 100%;">
+            <a href="../index.shtml" class="pull-left" style="display: inline-block; width: 232px; height: 60px; margin: 30px 0;">
+                <img src="" alt="" class="logo" style="width: 100%; height: 100%; display: none;">
+                <span style="width: 100%; display: none; height: 100%;line-height: 60px;margin-left: 15px;" class="textLogo"></span>
+            </a>
+            <div class="search pull-left">
+                <span class="TOP-selected">课程 <i class=" fa fa-angle-down" style="position: absolute;right: 10px;top: 0"></i></span>
+                <input type="text" class="search_input" placeholder="2017年10月考期自考报名时间">
+                <div class="gary">搜索</div>
+            </div>
+        </div>
+    </div>
+    <!--个人中心主体部分-->
+    <div class="Ps-advertisement">
+        <div class="container">
+            <img src="../Resources/images/addBanner.png" alt="404" style="width: 100%; height: 100%;">
+        </div>
+    </div>
+    <div class="Ps-body">
+        <div class="container">
+            <div class="Ps-nav pull-left">
+                <ul>
+                    <li class=""><a href="./indexs.shtml"><i class="fa fa-home"></i>首页 <span class="Ps-down-icon"></span></a>  </li>
+                    <li class="active"><a href="./baseInfos.shtml"><i class="fa fa-user-circle"></i>基本资料 <span class="Ps-down-icon"></span></a>  </li>
+                    <li class=""><a href="/Center/Setting.shtml"><i class="fa fa-cog"></i>账户设置 <span class="Ps-down-icon"></span></a>  </li>
+                    <li class=""><a href="./myCourse.shtml"><i class="fa fa-book"></i>我的课程 <span class="Ps-down-icon"></span></a>  </li>
+                    <li class=""><a href="./Order.shtml"><i class="fa fa-jpy"></i>我的订单 <span class="Ps-down-icon"></span></a>  </li>
+                    <!--<li class=""><a href=""><i class="fa fa-question-circle"></i>我的问答 <span class="Ps-down-icon"></span></a>  </li>-->
+                    <!--<li class=""><a href=""><i class="fa fa-bell-o"></i>我的消息 <span class="Ps-down-icon"></span></a>  </li>-->
+                    <!--<li><a href=""><i class="fa fa-pencil-square-o"></i>我的评论   <span class="Ps-down-icon"></span></a>  </li>-->
+                </ul>
+            </div>
+            <div class="tab-content pull-right">
+                <!--基本资料-->
+                <div role="tabpanel" class="tab-pane active" id="Ps-section">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--footer-->
+    <!--#<!--#include file="../UserControl/Footer.html"-->
+    <script type="text/html" id="baseinfo">
+        <div class="Ps-sectionBlock">
+            <h3>基本资料</h3>
+            <div style="" class="baseData-save">
+                <div class="Ps-user-photo" style="text-align: center;">
+                    <div style="position:relative;display:inline-block" class="imagebox">
+                        <img class="HeadImg" src="{{Userinfo.HeadImg ? Userinfo.HeadImg:'../Resources/images/head.png'}}" a alt="" width="80" height="80" style="border-radius: 50%;margin-bottom: 40px">
+                        <div class="upload">
+                            <label>更换头像</label>
+                            <input type="file" value="" style="position:absolute;top:0;bottom:0;left:0;opacity:0;width:100%;" onchange="selectImage(this);" />
+                        </div>
+
+                    </div>
+                </div>
+                <div class="">
+                    <span class="Base-from-name">真实姓名：</span>
+                    <span class="Base-from-value Name">{{Userinfo.Name}}</span>
+                </div>
+                <div class="">
+                    <span class="Base-from-name">手机号：</span>
+                    <span class="Base-from-value Phone">{{Userinfo.Phone | phoneFormat }}</span>
+                    <a href="./Setting.shtml">修改</a>
+
+                </div>
+                <div class="">
+                    <span class="Base-from-name">第二号码：</span>
+                    <input type="text" class="Phone2" value="{{Userinfo.Phone2 ? Userinfo.Phone2 :'' }}" name="phone2" data-validate="required" />
+                </div>
+                <div class="">
+                    <span class="Base-from-name">QQ：</span>
+                    <input type="text" class="QQ" name="{{Userinfo.QQ}}" value="{{Userinfo.QQ}}" data-validate="num1">
+                </div>
+                <div class="">
+                    <span class="Base-from-name">身份证号码：</span>
+                    <span class="Base-from-value cardnumber">{{Userinfo.CardNumber}}</span>
+                </div>
+                <div class="">
+                    <span class="Base-from-name">学历：</span>
+                    <select name="Education" class="Education" id="Education" style="border: 1px solid #DDDDDD;background-color: #F9F9F9;color: #666;border-radius: 4px;padding: 12px 20px;line-height: 1em;margin-right: 20px;">
+                        {{each Education as value index}}
+                        <option value="{{value.ID}}" {{value.ID == Userinfo.Education_ID ? "selected" :""}}>{{value.Description}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div class="">
+                    <span class="Base-from-name">邮箱：</span>
+                    <span class="Base-from-value"></span>
+                    <span class="Base-from-value Email">{{Userinfo.Email}}</span>
+                </div>
+                <div class="">
+                    <span class="Base-from-name">性别：</span>
+                    <input type="radio" name="sex" {{Userinfo.Sex==1 ? "checked" :""}} value=" 1">男
+                    <input type="radio" name="sex" {{Userinfo.Sex==0 ? "checked" :""}} value="0">女
+                </div>
+                <div class="">
+                    <span class="Base-from-name">现居：</span>
+                    <select name="province" id="province" onchange="ChangeProvince()">
+                        {{each Province as value index}}
+                        <option value="value.ProvinceID">{{value.ProvinceName}}</option>
+                        {{/each}}
+                    </select>
+                    <select name="city" id="city" onchange="ChangeCity()">
+                        {{each City as value index}}
+                        <option value="value.CityID">{{value.CityName}}</option>
+                        {{/each}}
+                    </select>
+                    <select name="district" id="district">
+                        {{each DistrictList as value index}}
+                        <option value="value.DistrictID">{{value.DistrictName}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div class="">
+                    <span class="Base-from-name"></span>
+                    <input type="text" id="detail-address" name="{{Userinfo.NowAddress}}" value="{{Userinfo.NowAddress}}">
+                </div>
+            </div>
+            <div style="text-align: center">
+                <button class="data-save-button" disabled onclick="InsertStudentInfo()">保存</button>
+            </div>
+        </div>
+    </script>
+    <script src="../Resources/js/jquery.js"></script>
+    <script src="../Resources/js/bootstrap.min.js"></script>
+    <script src="../script/artTemplate.js"></script>
+    <script src="../Resources/js/Center/Center.js"></script>
+    <script src="../Resources/js/validate.js"></script>
+    <script src="../script/layer/layer.js"></script>
+    <script src="../Resources/js/Center/Center.js"></script>
+    <script>
+        var Phone;
+        var Image="";
+        $(function () {
+            function ImgFn() {
+                $.get('/service/public/Mechanism/GetSetlist', function (res) {
+                    if (res.SuccessResponse) {
+                        if (res.Data) {
+                            console.log(res.Data);
+                            if (res.Data.HeaderLogoOrName == 1) {
+                                $('.logo').attr('src', res.Data.HeaderLogo ? res.Data.HeaderLogo : 'Resources/images/wxdef.png')
+                                $('.logo').css('display', 'block');
+                                $('.textLogo').css('display', 'none');
+                            } else {
+                                $('.textLogo').html(res.Data.HeaderName);
+                                $('.logo').css('display', 'none');
+                                $('.textLogo').css('display', 'block');
+                            }
+                        }
+                    }
+                });
+            }
+            ImgFn();
+
+            GetStudentInfo(function (res) {
+                var List = {
+                    "Userinfo": res.ReturnData.Data,
+                }
+                if (res.ReturnData.Data.HeadImg) {
+                    $(".top_head  img").attr('src', res.ReturnData.Data.HeadImg)
+                }
+                Phone = res.ReturnData.Data.Phone;
+                var html = template('baseinfo', List);
+                $('#Ps-section').html(html);
+
+                $(".baseData-save").on("input propertychange", "input", function () {
+                    $(".data-save-button").prop("disabled", false).addClass("active")
+                })
+                $(".baseData-save").on("click", "input[type='radio']", function () {
+                    $(".data-save-button").prop("disabled", false).addClass("active")
+                })
+                $(".baseData-save").on("change", 'select', function () {
+                    $(".data-save-button").prop("disabled", false).addClass("active")
+                })
+                $(".baseData-save").on("change", 'select', function () {
+                    $(".data-save-button").prop("disabled", false).addClass("active")
+                })
+                //$(".HeadImg").mouseover(function () {
+                //    $(".upload").slideUp();
+                //}).mouseout(function () {
+                //    $(".upload").slideDown();
+                //})
+                var data = res.ReturnData.Data;
+                GetProvince(function (res) {
+                    var res = res.ReturnData.Data;
+                    $("#province").append("<option>请选择省份</option>");
+                    for (var i = 0; i < res.length; i++) {
+                        $("#province").append("<option value='" + res[i].ProvinceID + "'" + (List.Userinfo.NowProvince_ID == res[i].ProvinceID ? 'selected' : '') + ">" + res[i].ProvinceName + "</option>")
+                    }
+                });
+                GetCity(data.NowProvince_ID, function (res) {
+                    var res = res.ReturnData.Data;
+                    $("#city").append("<option>请选择城市</option>");
+                    for (var i = 0; i < res.length; i++) {
+                        $("#city").append("<option value='" + res[i].CityID + "'" + (List.Userinfo.NowCity_ID == res[i].CityID ? 'selected' : '') + ">" + res[i].CityName + "</option>")
+                    }
+                });
+                GetDistrict(data.NowCity_ID, function (res) {
+                    var res = res.ReturnData.Data;
+                    $("#district").append("<option>请选择区</option>");
+                    for (var i = 0; i < res.length; i++) {
+                        $("#district").append("<option value='" + res[i].DistrictID + "'" + (List.Userinfo.NowArea_ID == res[i].DistrictID ? 'selected' : '') + ">" + res[i].DistrictName + "</option>")
+                    }
+                });
+                GetEducation(data.EducationName, function (res) {
+                    var res = res.ReturnData.Data;
+                    $("#Education").append("<option>请选择学历</option>");
+                    for (var i = 0; i < res.length; i++) {
+                        $("#Education").append("<option value='" + res[i].ID + "'" + (List.Userinfo.Education_ID == res[i].ID ? 'selected' : '') + ">" + res[i].Description + "</option>")
+                    }
+                });
+
+            })
+
+        })
+        function ChangeProvince() {
+            $("#city,#district").empty();
+            $("#city").append("<option>请选择城市</option>");
+            $("#district").append("<option>请选择区</option>");
+            var ProvinceID = $("#province").val();
+            GetCity(ProvinceID, function (res) {
+                var res = res.ReturnData.Data;
+                for (var i = 0; i < res.length; i++) {
+                    $("#city").append("<option value='" + res[i].CityID + "'>" + res[i].CityName + "</option>")
+                }
+                $(".data-save-button").prop("disabled", false).addClass("active")
+            })
+        }
+        function ChangeCity() {
+            $("#district").empty();
+            $("#district").append("<option>请选择区</option>");
+            var CityID = $("#city").val();
+            GetDistrict(CityID, function (res) {
+                var res = res.ReturnData.Data;
+                for (var i = 0; i < res.length; i++) {
+                    $("#district").append("<option value='" + res[i].DistrictID + "'>" + res[i].DistrictName + "</option>")
+                }
+                $(".data-save-button").prop("disabled", false).addClass("active")
+            })
+        };
+
+
+
+        //学生信息录入学生信息录入
+        function InsertStudentInfo() {
+            var po = $(".baseData-save").validator({
+                submit: "",
+                blur: false,
+                ok: function () {
+                    $(".data-save-button").prop("disabled", false).addClass("active")
+                }
+            })
+            if (!po.validate()) {
+                return false;
+            }
+            var data = {
+                "HeadImg": Image || $(".HeadImg").attr("src"),
+                "Name": $(".Name").text(),
+                "CardNumber": $(".cardnumber").text(),
+                "Sex": $("input[name='sex']:checked").val(),
+                "Phone": Phone,
+                "Education_ID": $(".Education").val(),
+                "Email": $(".Email").text(),
+                "QQ": $(".QQ").val(),
+                "Phone2": $(".Phone2").val(),
+                "NowProvince_ID": $("#province").val(),
+                "NowCity_ID": $("#city").val(),
+                "NowArea_ID": $("#district").val(),
+                "NowAddress": $("#detail-address").val(),
+                "Remark": $(".Remark").text(),
+            }
+            $.post("/service/Student/EditStudentInfoByStuId", data, function (res) {
+                if (res.SuccessResponse) {
+                    layer.msg("修改成功")
+                }else{
+                    layer.msg("修改失败")
+                }
+            })
+        }
+        var formData = new FormData();
+        function selectImage(file) {
+            if (!file.files || !file.files[0]) {
+                return;
+            }
+            formData.append("file", file.files[0]);
+            uploadImage();
+        }
+        function uploadImage() {
+            $.ajax({
+                type: 'POST',
+                url: '/service/upload',
+                data: formData,
+                processData: false,
+                contentType: false,
+                async: false,
+                dataType: 'json',
+                success: function (res) {
+                    if (res.SuccessResponse) {
+                        Image = res.Message;
+                        $(".HeadImg").attr("src", res.Message);
+                        InsertStudentInfo();
+                        $(".data-save-button").prop("disabled", false).addClass("active")
+                    } else {
+                        layer.msg("上传失败,请重新上传")
+                    }
+                },
+                error: function (err) {
+                    alert('网络故障');
+                }
+
+            });
+
+        }
+    </script>
+</body>
+</html>

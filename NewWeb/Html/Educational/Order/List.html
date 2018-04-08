@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>订单开课列表</title>
+    <style>
+        div.layui-table-cell {
+            height: 30px;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <blockquote class="layui-elem-quote">
+            <div class="layui-row layui-form">
+                <div class="layui-col-xs10">
+                    <div class="layui-input-inline" style="width:150px">
+                        <remote-sel v-bind:setting="searchKeySetting" v-bind:value.sync="queryFormData.SearchName" initial="off"></remote-sel>
+                    </div>
+                    <div class="layui-input-inline">
+                        <input type="text" name="SearchValue" class="layui-input" v-model="queryFormData.SearchValue">
+                    </div>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="paystatusSetting" laytips="支付状态" v-bind:value.sync="queryFormData.PayStatus" initial="off"></remote-sel>
+                    </div>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="paytypeSetting" laytips="支付方式" v-bind:value.sync="queryFormData.PayType" initial="off"></remote-sel>
+                    </div>
+                    <div class="layui-input-inline">
+                        <!--<input type="text" name="PayStartTime" id="PayStartTime" placeholder="支付开始时间" class="layui-input" v-model="queryFormData.PayStartTime" />-->
+                        <lay-date v-bind:value.sync="queryFormData.PayStartTime" placeholder="支付开始时间" type='datetime' initial="off"></lay-date>
+                    </div>
+                    <div class="layui-input-inline">
+                        <!--<input type="text" name="PayEndTime" id="PayEndTime" placeholder="支付结束时间" class="layui-input" v-model="queryFormData.PayEndTime">-->
+                        <lay-date v-bind:value.sync="queryFormData.PayEndTime" type='datetime' placeholder="支付结束时间" initial="off"></lay-date>
+                    </div>
+                    <button class="layui-btn layui-btn-primary" lay-submit lay-filter="btn" @click="doSearch">查询</button>
+                </div>
+            </div>
+        </blockquote>
+        <div>
+            <button class="layui-btn layui-btn-small layui-btn-primary" @click="ExcelExportStudent">导出Excel</button>
+        </div>
+        <!--操作模板-->
+        <table id="listTable" lay-filter="listTable"></table>
+    </div>
+</body>
+</html>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/Excel.js"></script>
+<script src="/Resources/js/Controls/Order/OrderList.js?v=1.0"></script>

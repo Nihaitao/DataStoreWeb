@@ -1,0 +1,221 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+    </style>
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <blockquote class="layui-elem-quote">
+            <div class="layui-row layui-form">
+                <div class="layui-col-xs6">
+                    <div class="layui-input-inline">
+                        <div class="layui-inline">
+                            <remote-sel v-bind:setting="option" v-bind:value.sync="queryFormData.Valid"
+                                        initial="off"></remote-sel>
+                        </div>
+                    </div>
+                    <div class="layui-input-inline">
+                        <input placeholder="学生关键字" type="text" name="1" class="layui-input" v-model="queryFormData.StudentInfo">
+                    </div>
+                    <button class="layui-btn layui-btn-primary" lay-submit lay-filter="btn" @click="doSearch">查询</button>
+                </div>
+                <!--<div class="layui-col-xs6" style="text-align: right">
+                    <button class="layui-btn" @click="addStudent"><i class="layui-icon"></i> 添加联系</button>
+                </div>-->
+            </div>
+        </blockquote>
+        <div>
+            <button class="layui-btn layui-btn-primary layui-btn-small" @click="deleteList">批量删除</button>
+        </div>
+        <!--操作模板-->
+        <table id="listTable" lay-filter="listTable"></table>
+    </div>
+</body>
+</html>
+<script src="../../..//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="../../..//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="../../..//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="../../..//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt'],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+
+
+            //搜索条件
+            var rootApp = new Vue({
+                el: '#root',
+                data: {
+                    queryFormData: {
+                        StudentInfo: '',
+                        Valid: ''
+                    },
+                    option: {
+                        search: true,
+                        options: [{ ID: "", Description: '全部' }],
+                        fields: { root: "ReturnData.Data", key: 'ID', value: 'Description' },
+                        remote: { url: '/service/HDictionary/GetHDictionaryList', data: { Valid: 1, ColumnName: 'ContactType_ID' } }
+
+                    }
+
+                },
+                ready: function () {
+
+                },
+                mounted: {
+
+                },
+
+                methods: {
+                    AddAppointmentReminder: function (data) {
+                        fnr.openDialog({
+                            title: '添加提醒',
+                            area: ['800px', '300px'],
+                            content: ['../Remind/Modify.html?StuID=' + data.Student_ID],
+                            btn: ['确认添加'],
+                            yes: function (index, layero) {
+
+                                var iframeWin = window[layero.find('iframe')[0]['name']];
+                                $(iframeWin.document).find(".layui-btn").click();
+
+                            },
+                            events: {
+                                refresh: function (data) {
+                                    listTable.reload();
+                                    layer.msg("添加成功")
+                                }
+                            },
+                        });
+                    },
+                    doSearch: function () {
+                        var _this = this;
+                        listTable.reload({
+                            where: {
+                                StudentInfo: _this.queryFormData.StudentInfo
+                            }
+                        });
+                    },
+                    //批量删除
+                    deleteList: function () {
+                        var arr = [];
+                        var checkStatus = table.checkStatus('listTable')
+                        checkStatus.data.map(function (a, b) {
+                            arr.push(a.ID)
+                        })
+                        this.deleteA(arr.join(","))
+                    },
+                    //删除
+                    deleteA: function (data) {
+                        layer.confirm('确认要删除么', { icon: 2, title: '提示' }, function (index) {
+                            var params = { Ids: data }
+                            $.post("/service/ContactRecord/DeleteContactReminder", params, function (res) {
+                                if (res.SuccessResponse) {
+                                    this.CourseInfoList = res.ReturnData.Data;
+                                    listTable.reload();
+                                }
+                            })
+
+                            layer.close(index);
+                        });
+                    },
+                    //修改校区
+                    edit: function (int) {
+                        fnr.openDialog({
+                            title: '修改',
+                            area: ['800px', '300px'],
+                            content: ['./addContact.html?ID=' + int.ID], //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+                            btn: ['确认修改'],
+                            yes: function (index, layero) {
+
+                                var iframeWin = window[layero.find('iframe')[0]['name']];
+                                $(iframeWin.document).find(".layui-btn").click();
+
+                            },
+                            events: {
+                                refresh: function (data) {
+                                    listTable.reload();
+                                    layer.msg("添加成功")
+                                }
+                            },
+                        });
+                    },
+
+                }
+            });
+
+
+
+
+            //绑定列表
+            var listTable = table.render({
+                elem: '#listTable',
+                even: true, //开启隔行背景
+                page: true, //页分
+                id: "listTable",
+                cols: [
+                    [
+                        { fixed: true, checkbox: true },
+                        { field: 'ID', title: 'ID', width: 120, sort: true },
+                        { field: 'StudentName', title: '学生姓名', width: 220, sort: true },
+                        { field: 'ContactTypeDesc', title: '联系方式', width: 220, sort: true },
+                        { field: 'Content', title: '内容', width: 220, sort: true },
+                        {
+                            field: 'ContactTime', title: '联系时间', width: 220, sort: true, templet: function () {
+                                return '<div>' + fnr.format(this.ContactTime, "yyyy-MM-dd") + '</div>';
+                            }
+                        },
+
+
+
+                        {
+                            fixed: 'right',
+                            field: 'name',
+                            title: '操作',
+                            width: 240,
+                            toolbar: function () {
+                                var array = new Array();
+                                array.push("<button class=\"layui-btn layui-btn-small layui-btn-normal \" lay-event='AddAppointmentReminder'>提醒</button>");
+                                array.push("<button class=\"layui-btn layui-btn-small\" lay-event='edit'>编辑</button>");
+                                array.push("<button class=\"layui-btn layui-btn-small layui-btn-danger \" lay-event='delete'>删除</button>");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        }
+                    ]
+                ],
+                url: '/service/ContactRecord/GetContactReminderList',
+                response: {
+                    dataName: 'ReturnData.data'
+                }
+            });
+
+
+            //监听工具栏事件
+            tableExt.addEvent("tool(listTable)",
+                {
+                    //添加跟进
+                    'AddAppointmentReminder': function (data) {
+                        rootApp.AddAppointmentReminder(data)
+                    },
+                    //工具栏编辑事件
+                    "edit": function (data, obj) {
+                        rootApp.edit(data)
+
+                    },
+                    //查看教室
+                    "showRoom": function (data) {
+                        rootApp.showRoom(data)
+                    },
+
+                    //工具栏删除事件
+                    "delete": function (data, obj) {
+                        rootApp.deleteA(data.ID)
+                    }
+                });
+        });
+</script>

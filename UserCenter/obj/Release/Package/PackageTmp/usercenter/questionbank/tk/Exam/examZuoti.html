@@ -1,0 +1,410 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="/Resources/fonts/iconfont.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/usercenter/Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link href="/Resources/CSS/Font/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="/Resources/CSS/video-js.css" rel="stylesheet" />
+    <style>
+        a { text-decoration: none !important; }
+        a:hover { text-decoration: none; }
+    </style>
+</head>
+<body style="background-color: #f7f7f7" id="root">
+    <!--顶部-->
+    <!--#<!--#include file="../UserControl/stepHeader.html"-->
+    <div class="masthead">
+        <div class="w1200 clearfix">
+            <div class="nav-header pull-left">
+                <a href="#"><img src="/usercenter/Resources/images/hd.png" /></a>
+            </div>
+        </div>
+    </div>
+    <div class="w1200 clearfix">
+        <div class="content">
+            <div class="containers" id="container1" style="width: 1200px;">
+                <!-- 试卷头部 开始 -->
+                <div class="m-examHead bor ">
+                    <!--试卷头信息-->
+                    <h2 class="h2" id="title">{{PaperInfo.Title}}</h2>
+                    <div class="info" id="info"><p>◇ 本卷共分为2大题30小题，作答时间为90分钟，总分100.0分， {{PaperInfo.PassScore}}分及格。</p> <p>◇ 试卷来源：出头教育 </p> </div>
+                    <div class="info-two"> 本套试卷含有主观题，针对主观题请自行参考解析评分 </div>
+                </div>
+                <div class="ui-progress f-shadow clearfix" style="position:relative;z-index:10;">
+                    <div id="m__ruleInfo" class="ui-progress-sub" style="z-index: 1001; position: static; top: auto; bottom: auto; left: auto;">
+                        <div class="navBox" id="page-rules">   <a href="#page-rules-head-6409" class="btn" data-value="6409">单选题</a>    <a href="#page-rules-head-6410" class="btn" data-value="6410">多选题</a> </div>
+                    </div>
+                </div>
+                <!--试卷头部 结束-->
+                <!--题型 开始-->
+                <div class="dopra-con clearfix">
+                    <div class="pra-left-con pra-right-font16">
+
+                        <!-- 练习模式做题-->
+                        <style>
+                            #questionModule { width: 100%; min-height: 300px; background: none; overflow: hidden; position: relative; }
+
+                            #questionModule > ul { width: 100%; height: auto; }
+
+                            #questionModule.cross-range { margin-bottom: 20px; }
+
+                            #questionModule.cross-range > ul { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
+
+                            #questionModule.cross-range > ul > li { float: left; width: 100%; overflow: hidden; }
+                        </style>
+
+                        <!---->
+                        <div id="RulesTab" class="" style="min-height: 905px;">
+                            <!--单选题-->
+                            <div v-for="(index,item) in QuestionType">
+                                <div class="m__ruleTitle">
+                                    <div class="m-secpart f-f14 linheight180" v-if="item.QuestionType_ID==1"> 1、(单选题)本题共20小题，每小题3分，共60分，在每小题给出的几个选项中，只有一项是符合题目要求的。</div>
+                                    <div class="m-secpart f-f14 linheight180" v-if="item.QuestionType_ID==2"> 2、(多选题)本题共20小题，每小题3分，共60分，在每小题给出的几个选项中，只有一项是符合题目要求的。</div>
+                                    <div class="m-secpart f-f14 linheight180" v-if="item.QuestionType_ID==3"> 3、(填空题)本题共20小题，每小题3分，共60分，在每小题给出的几个选项中，只有一项是符合题目要求的。</div>
+                                    <div class="m-secpart f-f14 linheight180" v-if="item.QuestionType_ID==4"> 4、(判断题)本题共20小题，每小题3分，共60分，在每小题给出的几个选项中，只有一项是符合题目要求的。</div>
+                                    <div class="m-secpart f-f14 linheight180" v-if="item.QuestionType_ID==5"> 5、(问答题)本题共20小题，每小题3分，共60分，在每小题给出的几个选项中，只有一项是符合题目要求的。</div>
+                                    <div class="m-secpart f-f14 linheight180" v-if="item.QuestionType_ID==6"> 6、(计算题)本题共20小题，每小题3分，共60分，在每小题给出的几个选项中，只有一项是符合题目要求的。</div>
+                                    <div class="m-secpart f-f14 linheight180" v-if="item.QuestionType_ID==7"> 7、(组合题)本题共20小题，每小题3分，共60分，在每小题给出的几个选项中，只有一项是符合题目要求的。</div>
+                                </div>
+                                <!--单选-->
+                                <div class="Rulesclass" v-if="item.QuestionType_ID==1">
+                                    <ul class="m__ruleQuest">
+                                        <li v-for="(idx,item2) in item.QuestionList">
+                                            <div class="subject-con bor clearfix m-question">
+                                                <div class="subject-con">
+                                                    <div class="sub-content2 sub-conanswer">
+                                                        <div class="sub-dotitle" v-if="item2.TitleImg"><em>{{idx+1}}、</em><div v-html="item2.TitleImg"></div></div>
+                                                        <div class="sub-dotitle" v-else> <em>{{idx+1}}、</em>{{item2.Title}}</div>
+                                                        <answer-singles v-bind:list="item2.Body" v-bind:value.sync="item2.MyAnswer" v-bind:answer="item2.Answer" v-bind:showanswer="item2.ShowAnswer"></answer-singles>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <!--多选-->
+                                <div class="Rulesclass" v-if="item.QuestionType_ID==2">
+                                    <ul class="m__ruleQuest">
+                                        <li v-for="(idx,item2) in item.QuestionList">
+                                            <div class="subject-con bor clearfix m-question">
+                                                <div class="subject-con">
+                                                    <div class="sub-content2 sub-conanswer">
+                                                        <div class="sub-dotitle" v-if="item2.TitleImg"><em>{{idx+1}}、</em><div v-html="item2.TitleImg"></div></div>
+                                                        <div class="sub-dotitle" v-else> <em>{{idx+1}}、</em>{{item2.Title}}</div>
+                                                        <answer-mult v-bind:list="item2.Body" v-bind:value.sync="item2.MyAnswer" v-bind:answer="item2.Answer" v-bind:showanswer="item2.ShowAnswer"></answer-mult>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <!--判断-->
+                                <div class="Rulesclass" v-if="item.QuestionType_ID==4">
+                                    <ul class="m__ruleQuest">
+                                        <li v-for="(idx,item2) in item.QuestionList">
+                                            <div class="subject-con bor clearfix m-question">
+                                                <div class="subject-con">
+                                                    <div class="sub-content2 sub-conanswer">
+                                                        <div class="sub-dotitle" v-if="item2.TitleImg"><em>{{idx+1}}、</em><div v-html="item2.TitleImg"></div></div>
+                                                        <div class="sub-dotitle" v-else> <em>{{idx+1}}、</em>{{item2.Title}}</div>
+                                                        <answer-judge v-bind:list="item2.Body" v-bind:value.sync="item2.MyAnswer" v-bind:answer="item2.Answer" v-bind:showanswer="item2.ShowAnswer"></answer-judge>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <!--填空-->
+                                <div class="Rulesclass" v-if="item.QuestionType_ID==3 || item.QuestionType_ID==6">
+                                    <ul class="m__ruleQuest">
+                                        <li v-for="(idx,item2) in item.QuestionList">
+                                            <div class="subject-con bor clearfix m-question">
+                                                <div class="subject-con">
+                                                    <div class="sub-content2 sub-conanswer">
+                                                        <div class="sub-dotitle" v-if="item2.TitleImg"><em>{{idx+1}}、</em><div v-html="item2.TitleImg"></div></div>
+                                                        <div class="sub-dotitle" v-else> <em>{{idx+1}}、</em>{{item2.Title}}</div>
+                                                        <div class="mater-respond">
+                                                            <input type="text" v-model="item.MyAnswer" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <!--问答-->
+                                <div class="Rulesclass" v-if="item.QuestionType_ID==5">
+                                    <ul class="m__ruleQuest">
+                                        <li v-for="(idx,item2) in item.QuestionList">
+                                            <div class="subject-con bor clearfix m-question">
+                                                <div class="subject-con">
+                                                    <div class="sub-content2 sub-conanswer">
+                                                        <div class="sub-dotitle" v-if="item2.TitleImg"><em>{{idx+1}}、</em><div v-html="item2.TitleImg"></div></div>
+                                                        <div class="sub-dotitle" v-else> <em>{{idx+1}}、</em>{{item2.Title}}</div>
+                                                        <div class="mater-respond">
+                                                            <textarea placeholder="请在此输入您的答案" v-model="item.MyAnswer"></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <!--组合题-->
+                                <!--<div class="Rulesclass" v-if="item.QuestionType_ID==5">
+                                    <ul class="m__ruleQuest">
+                                        <li v-for="(idx,item2) in item.QuestionList">
+                                            <div class="subject-con bor clearfix m-question">
+                                                <div class="subject-con">
+                                                    <div class="sub-content2 sub-conanswer">
+                                                        <div class="sub-dotitle" v-if="item2.TitleImg"><em>{{idx+1}}、</em><div v-html="item2.TitleImg"></div></div>
+                                                        <div class="sub-dotitle" v-else> <em>{{idx+1}}、</em>{{item2.Title}}</div>
+                                                        <div class="mater-respond">
+                                                            <input type="text" v-model="item.MyAnswer" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>-->
+                            </div>
+                        </div>
+
+                        <!-- 题目切换栏 -->
+                    </div>
+                    <!--右侧设置-->
+                    <div class="pra-right-con">
+                        <div id="m_rightPart" class="pra-right-con-sub" style="z-index: 1001; position: static; top: auto; bottom: auto; left: auto;">
+                            <div id="m_rightBtnLine" class="pra-r-set bor clearfix">
+                                <ul class="f-f14">
+                                    <li>
+                                        <a href="/Course/MyCourseList.cshtml?Type=1&amp;CuId=6096" class="btn_backList fhlb" id="retUrl">
+                                            <i></i>
+                                            <p>返回列表</p>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;" class="btn_jsq jsq" onclick="jisuanqi()">
+                                            <i></i>
+                                            <p>计算器</p>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;" class="btn_fontsize font" data-type="0">
+                                            <i></i> <!--选择时添加 this-->
+                                            <p>字体</p>
+                                        </a>
+                                        <!-- 字体设置-->
+                                        <div class="m_fontsize pop" style="display: none;">
+                                            <i></i>
+                                            <div class="txt-size clearfix">
+                                                <a href="javascript:;" data-value="18" class="f-f18">大</a>
+                                                <a href="javascript:;" data-value="16" class="f-f16 ">中</a>
+                                                <a href="javascript:;" data-value="14" class="f-f14 this">小</a>
+                                            </div>
+                                        </div>
+                                        <!-- 字体设置 end-->
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="time-card bor mt20" style="width:265px" id="datika">
+                                <div class="y-time"> <span class="f-fl"><i></i>剩余时间：<em id="e_timer">01:29:19</em></span> <span class="btn_pause stop f-fr"><a href=""><i></i>暂停</a></span> </div>
+                                <!--答题卡区域-->
+                                <div class="rightArea-answer clear">
+                                    <div id="answerCard">
+                                        <div class="hd clearfix"> <span class="title f-fl">答题卡 </span> </div>
+
+
+                                        <div class="bd clear" style="min-height:350px; max-height: 8px;" id="page_card"><dl class="panel-item" data-rulesid="{3}" id="6409" val="单选题" allnum="30" donenum="20"><dt>单选题<span style="font-weight: normal; margin-left: 5px"></span></dt><dd class="panel-order"><a href="#139711" class="e_answerCard page-card-item " id="card_139711" c-id="139711">1</a><a href="#139712" class="e_answerCard page-card-item " id="card_139712" c-id="139712">2</a><a href="#139713" class="e_answerCard page-card-item " id="card_139713" c-id="139713">3</a><a href="#139714" class="e_answerCard page-card-item " id="card_139714" c-id="139714">4</a><a href="#139715" class="e_answerCard page-card-item " id="card_139715" c-id="139715">5</a><a href="#139716" class="e_answerCard page-card-item " id="card_139716" c-id="139716">6</a><a href="#139717" class="e_answerCard page-card-item " id="card_139717" c-id="139717">7</a><a href="#139718" class="e_answerCard page-card-item " id="card_139718" c-id="139718">8</a><a href="#139719" class="e_answerCard page-card-item " id="card_139719" c-id="139719">9</a><a href="#139721" class="e_answerCard page-card-item " id="card_139721" c-id="139721">10</a><a href="#139722" class="e_answerCard page-card-item " id="card_139722" c-id="139722">11</a><a href="#139724" class="e_answerCard page-card-item " id="card_139724" c-id="139724">12</a><a href="#139725" class="e_answerCard page-card-item " id="card_139725" c-id="139725">13</a><a href="#139726" class="e_answerCard page-card-item " id="card_139726" c-id="139726">14</a><a href="#139728" class="e_answerCard page-card-item " id="card_139728" c-id="139728">15</a><a href="#139729" class="e_answerCard page-card-item " id="card_139729" c-id="139729">16</a><a href="#139731" class="e_answerCard page-card-item " id="card_139731" c-id="139731">17</a><a href="#139732" class="e_answerCard page-card-item " id="card_139732" c-id="139732">18</a><a href="#139733" class="e_answerCard page-card-item " id="card_139733" c-id="139733">19</a><a href="#139752" class="e_answerCard page-card-item " id="card_139752" c-id="139752">20</a></dd></dl><br><dl class="panel-item" data-rulesid="{3}" id="6410" val="多选题" allnum="30" donenum="10"><dt>多选题<span style="font-weight: normal; margin-left: 5px"></span></dt><dd class="panel-order"><a href="#139735" class="e_answerCard page-card-item " id="card_139735" c-id="139735">1</a><a href="#139736" class="e_answerCard page-card-item " id="card_139736" c-id="139736">2</a><a href="#139737" class="e_answerCard page-card-item " id="card_139737" c-id="139737">3</a><a href="#139739" class="e_answerCard page-card-item " id="card_139739" c-id="139739">4</a><a href="#139740" class="e_answerCard page-card-item " id="card_139740" c-id="139740">5</a><a href="#139742" class="e_answerCard page-card-item " id="card_139742" c-id="139742">6</a><a href="#139743" class="e_answerCard page-card-item " id="card_139743" c-id="139743">7</a><a href="#139744" class="e_answerCard page-card-item " id="card_139744" c-id="139744">8</a><a href="#139745" class="e_answerCard page-card-item " id="card_139745" c-id="139745">9</a><a href="#139747" class="e_answerCard page-card-item " id="card_139747" c-id="139747">10</a></dd></dl><br></div>
+
+                                    </div>
+                                    <div class="cad-color clear">
+                                        <div class="panel-order-notice panel-notice-t"> <em>已做</em><i class="a doit"></i> <em>未做</em><i class="a normal"></i> </div>
+                                    </div>
+                                    <div class="ft">
+                                        <div class="btn2 btn-one" id="d_jxzt"><a href="javascript:" class="btn_nextGoon" onclick="SaveAnswer()">保存当前进度</a></div>
+                                        <div class="btn2"><a href="javascript:" class="btn_submit" @click="tijiao">交卷</a></div>
+                                    </div>
+                                </div>
+                                <!--答题卡区域 end-->
+                            </div>
+                        </div>
+                    </div>
+                    <!--右侧设置 end-->
+                </div>
+                <!--题型 结束-->
+
+            </div>
+        </div>
+
+    </div>
+    <!--footer-->
+    <!--#<!--#include file="../UserControl/Footer.html"-->
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <script>
+        //单选
+        Vue.component('answer-singles', {
+            props: ['list', 'value', 'answer', 'showanswer'],
+            template: '<dl class="sub-answer sub-answer-no"><dd class="m-question-option" v-bind:class="{\'cho-this\':key==value,\'right-this\':isRigght(key)}" v-for="(key,val) in list" @click="choice(key,val)"><i></i><span>{{key}}.</span>{{val}}</dd></dl>',
+            data: function () {
+
+            },
+            methods: {
+                isRigght: function (key) {
+                    return this.answer.indexOf(key) > -1 && this.showanswer
+                },
+                choice: function (key, val) {
+                    this.value.splice(0, 1, key)
+                    this.value.sort();
+                }
+            }
+        })
+        //判断
+        Vue.component('answer-judge', {
+            props: ['list', 'value', 'answer', 'showanswer'],
+            template: '<dl class="sub-answer"><dd class="m-question-option" @click=handleClick(1) v-bind:class="{\'cho-this\':1===value}"> <i></i><span>是</span> </dd><dd class="m-question-option" @click=handleClick(0) v-bind:class="{\'cho-this\':0===value}"><i></i><span>否</span></dd></dl>',
+            methods: {
+                handleClick: function (val) {
+                    this.value = val;
+                }
+            }
+        })
+        //多选
+        Vue.component('answer-mult', {
+            props: ['list', 'value', 'answer', 'showanswer'],
+            template: '<dl class="sub-answer sub-answer-double"><dd class="m-question-option" v-bind:class="{\'cho-this\':idx(key),\'right-this\':isRigght(key)}" v-for="(key,val) in list" @click="choice(key,val)"><i></i><span>{{key}}.</span>{{val}}</dd></dl>',
+            data: function () {
+                return {
+                }
+            },
+            methods: {
+                isRigght: function (key) {
+                    return this.answer.indexOf(key) > -1 && this.showanswer
+                },
+                idx: function (key) {
+                    return this.value.indexOf(key) > -1
+                },
+                choice: function (key, val) {
+                    if (this.value.indexOf(key) > -1) {
+                        this.value.splice(this.value.indexOf(key), 1)
+                    } else {
+                        this.value.push(key)
+                    }
+                    this.value.sort();
+                }
+            }
+        })
+        require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil'],
+            function (fnr) {
+                var $ = layui.$;
+                var table = layui.table;
+                var tableExt = layui.tableExt;
+                var vm = new Vue({
+                    el: "#root",
+                    data: {
+                        ID: fnr.getQueryString('ID'),
+                        PaperInfo: '',
+                        QuestionType: ''
+                    },
+                    ready: function () {
+                        this.CombinationExamPaper(this.ID)
+                    },
+                    methods: {
+                        //做题
+                        CombinationExamPaper: function (examPaperId) {
+                            var that = this;
+                            $.get('/service/datastore/ExamPaper/GetExamPaperQuestions', { examPaperId: examPaperId }, function (res) {
+                                if (res.SuccessResponse) {
+                                    var DataList = res.Data.QuestionType;
+                                    for (var i = 0; i < DataList.length; i++) {
+                                        var Question = DataList[i].Question;
+                                        for (var j = 0; j < Question.length; j++) {
+                                            if (Question[j].Body) {
+                                                Question[j].Body = JSON.parse(Question[j].Body)
+                                            }
+                                            if (Question[j].AnswerCount) {
+                                                Question[j].AnswerList = []
+                                                for (var k = 0; k < Question[j].AnswerCount; k++) {
+                                                    Question[j].AnswerList.push({ key: j, val: String.fromCharCode(k + 65) });
+                                                    if (/^<img/ig.test(Question[j].Title)) {
+                                                        Question[j].TitleImg = Question[j].Title;
+                                                    };
+                                                }
+                                            }
+                                            Question[j].MyAnswer = [];
+                                            Question[j].Answer = Question[j].Answer.split(',').sort();
+                                        }
+                                        DataList[i].TypeInfo.QuestionList = Question;
+                                        DataList[i] = DataList[i].TypeInfo
+                                        delete DataList[i].Question
+                                    }
+                                    that.QuestionType = DataList;
+                                    that.PaperInfo = res.Data.PaperInfo;
+                                    console.log(that.QuestionType)
+                                }
+                            })
+                        },
+                        //判断试题是否正确
+                        Judge: function (Answer, MyAnswer) {
+                            return Number(Answer.sort().toString() == MyAnswer.sort().toString());
+                        },
+                        //交卷
+                        tijiao: function () {
+                            var list=this.QuestionType.map(function(item){
+                                        return item.QuestionList.map(function(item2){
+                                            var ID=item2.ID;
+                                            var MyAnswer=item2.MyAnswer.join();
+                                            var Judge;
+                                            if(item.QuestionType_ID==3 || item.QuestionType_ID==5 || item.QuestionType_ID==6 || item.QuestionType_ID==7){
+                                                Judge=0;
+                                            }else{
+                                                Judge=that.Judge(item2.Answer, item2.MyAnswer); 
+                                            }
+                                            return {ID:ID,MyAnswer:MyAnswer,Judge:Judge}
+                                        })
+                                    });
+                            layer.confirm(msg, {
+                                btn: ['确定交卷', '暂不交卷，我还要做'] //按钮       
+                            }, function () {
+                                jiaojuan(977,list);
+                            }, function () {
+
+                            });
+
+                        },
+                        //交卷
+                        jiaojuan:function(resultId,list){
+                            $.post('/service/datastore/Chapter/SubmitPractice',
+                                {
+                                    resultId: resultId,
+                                    list:list
+                                },
+                                function (res) {
+                                    if(res.SuccessResponse){
+                                        layer.confirm("交卷成功！是否查看解析", {
+                                            btn: ['确定', '取消'] //按钮       
+                                        }, function () {
+                                            location.href = "/usercenter/questionbank/tk/Exam/examZuoti.html?ID=" + ID + "&PaperType=" + PaperType;
+                                        }, function () {
+                                            location.href = '/usercenter/index.cshtml';
+                                        });
+                                    }
+                                })
+                        }
+                    }
+                });
+            })
+    </script>
+</body>
+
+</html>

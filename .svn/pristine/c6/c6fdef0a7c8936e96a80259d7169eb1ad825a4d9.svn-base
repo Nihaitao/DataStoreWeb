@@ -1,0 +1,224 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+    <style>
+        label.layui-form-label{
+            width: 130px;
+        }
+        div.layui-input-block{
+            margin-left: 160px;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">表单名称：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="FormName" lay-verify="required" autocomplete="off"
+                               class="layui-input" v-model="submitForm.FormName">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">当前分配客服：</label>
+                <div class="layui-input-block">
+                    <remote-sel2 v-bind:setting="TransferSetting" laytips="" v-bind:value.sync="submitForm.Account_ID" initial="off"></remote-sel2>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">分配方式：</label>
+                    <div class="layui-input-block">
+                        <remote-rad v-bind:setting="FormAllotSetting" v-bind:value.sync="submitForm.FormAllot" initial="off"></remote-rad>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">表单分类：</label>
+                    <div class="layui-input-block">
+                        <remote-rad v-bind:setting="FormSetting" v-bind:value.sync="submitForm.FormType" initial="off"></remote-rad>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">是否启用验证码：</label>
+                    <div class="layui-input-block">
+                        <remote-rad v-bind:setting="IsVerificationSetting" v-bind:value.sync="submitForm.IsVerification" initial="off"></remote-rad>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">表单类别：</label>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="Setting" v-bind:value.sync="submitForm.FormTypeID"
+                                    initial="off"></remote-sel>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">提交成功文字提示：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="TipMsg" lay-verify="required" autocomplete="off"
+                               class="layui-input" v-model="submitForm.TipMsg">
+                    </div>
+                </div>
+            </div>
+            <div style="display: inline-block;position: fixed;bottom: 20px;right: 20px;" class="layui-form-item">
+                <button class="layui-btn" lay-submit @click="Addsubmit">保存</button>
+
+            </div>
+        </div>
+    </div>
+   
+</body>
+</html>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+
+<script src="/Resources/js/Controls/Common.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/select2.min.css" rel="stylesheet" />
+<style>
+     .custom-title { line-height: 45px; background: #f5f5f5; padding-left: 10px; }
+
+    .custom-block { line-height: 45px; height: 45px; background: #e0e0e0; padding-left: 10px; }
+
+    .custom-ele, .custom-empty { line-height: 45px; height: 45px; border-bottom: 1px solid #ebebeb; padding-left: 10px; }
+
+    .custom-ele:hover { line-height: 45px; height: 45px; background: #f5f5f5; }
+
+    [v-cloak] { display: none; }
+    .spical { font-size: 12px; position: relative; display: inline-block; vertical-align: middle; height: 22px; line-height: 22px; padding: 0 5px; margin-top: 8px; color: #C9C9C9;}
+    .layui-checkbox-disbaled {
+        border-color: #c9c9c9 !important;
+        background-color: #c9c9c9 !important;
+    }
+     .select2-container--default.select2-container--focus .select2-selection--multiple {
+        border-color: #C9C9C9 !important;
+    }
+
+    .select2-container--default .select2-selection--multiple {
+        border: 1px solid #e6e6e6 !important;
+        line-height: 27px;
+    }
+</style>
+<script>
+   
+    
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'jqueryui', "select2", "customUtil","laydate"],
+        function (fnr) {
+            var $ = layui.$;
+            var jqueryui = layui.jqueryui;
+            var $ = layui.jquery;
+            var form = layui.form;
+
+            var laydate = layui.laydate;
+            var TransferOptions = [];
+            var provinceOptions = [];
+            var cityOptions = [];
+            fnr.findComponent = function (currComponent, tagName) {
+                console.log(currComponent)
+                if (currComponent.$children) {
+                    var childComponent = undefined;
+                    $.each(currComponent.$children, function (k, v) {
+                        if (v.tag == tagName) {
+                            childComponent = v;
+                            return false;
+                        }
+                    })
+                    return childComponent;
+                }
+            };
+            var vm = new Vue({
+                el: "#root",
+                data:
+                {
+                    provinceSetting: SelectProvinceBind(),//省份                 
+                    citySetting: SelectCityBind(),//城市
+                    areaSetting: SelectDistrictBind(),//区域
+                    FormAllotSetting: {
+                        tags: { name: "FormAllot" },
+                        options: [
+                        { key: "0", value: "随机分配 " },
+                        { key: "1", value: "循环分配" }
+                        ]
+                    },
+                    IsVerificationSetting: {
+                        tags: { name: "IsVerification" },
+                        options: [
+                        { key: "0", value: "不启动 " },
+                        { key: "1", value: "启动" }
+                        ]
+                    },
+                    FormSetting: {
+                        tags: { name: "FormType" },
+                        options: [
+                        { key: "1", value: "客户" },
+                        { key: "2", value: "线索" }
+                        ]
+                    },
+                    Setting: {
+                        search: true,
+                        options: TransferOptions,
+                        fields: { root: "Data", key: 'ID', value: 'TypeName' },
+                        remote: { url: '/service/crm/Form/GetFormList' }
+                    },
+                    TransferSetting: {
+                        search: true,
+                        options: [],
+                        //options: TransferOptions,
+                        fields: { root: "Data", key: 'Account_ID', value: 'AccountName' },
+                        remote: { url: '/service/crm/Form/GetCustomerlist' },
+                        sel2Opts: {
+                            width: "100%",
+                            multiple: true
+                        }
+                    },
+                },
+                submitForm: {
+                    ID: 0,
+                    Account_ID: '',
+                    FormName: '',
+                    FormAllot: '',
+                    IsVerification: '',
+                    FormTypeID: '',
+                    FormType:"",
+                    TipMsg: ''
+                   
+                },
+                ready: function () {
+                    this.reload(1);
+                },
+                methods: { 
+                    reloade:function()
+                    {
+                        var self = this;
+                        $.get()
+                    },
+                    
+                    Addsubmit: function () {
+                        var self = this;
+                        $.ajax({
+                            url: '/service/crm/Form/AddFormSignUp',
+                            type: 'post',
+                            data: self.submitForm,
+                            dataType: 'json',
+                            success: function (data) {
+                                
+                            }
+                        });
+                    }
+                },
+            });
+        });
+</script>

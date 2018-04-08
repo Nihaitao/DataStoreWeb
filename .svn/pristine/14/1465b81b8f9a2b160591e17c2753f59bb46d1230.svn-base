@@ -1,0 +1,123 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <!--操作模板-->
+        <table id="listTable" lay-filter="listTable"></table>
+    </div>
+</body>
+</html>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt'],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+
+
+            //搜索条件
+            var rootApp = new Vue({
+                el: '#root',
+                data: {
+                   
+                },
+                ready: function () {
+
+                },
+                mounted: {
+
+                },
+
+                methods: {
+                    //修改校区
+                    edit: function (int) {
+                        fnr.openDialog({
+                            title: '修改自定义业务',
+                            area: ['670px', '400px'],
+                            content: ['./EditSystemModule.html?ID=' + int.ID], //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+                            btn: ['确认修改'],
+                            yes: function (index, layero) {
+
+                                var iframeWin = window[layero.find('iframe')[0]['name']];
+                                $(iframeWin.document).find(".layui-btn").click();
+
+                            },
+                            events: {
+                                refresh: function (data) {
+                                    listTable.refresh();
+                                    layer.msg("修改成功")
+                                }
+                            },
+                        });
+                    },
+                    
+                }
+            });
+
+
+
+
+            //绑定列表
+            var listTable = table.render({
+                elem: '#listTable',
+                even: true, //开启隔行背景
+                page: false, //页分
+                cols: [
+                    [
+                        { field: 'ID', title: 'ID', width: 120, sort: true },
+                        { field: 'Name', title: '系统名称', width: 220, sort: true },
+                        {
+                            field: 'ShowName', title: '显示名称', width: 120, sort: true, templet: function () {
+                                var array = new Array();
+                                array.push("<a href='javascript:;'>" + (this.ShowName == null ? this.Name : this.ShowName) + "</a>");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        }, {
+                            field: 'IsSystem', title: '启用状态', width: 120, sort: true, templet: function () {
+                                var array = new Array();
+                                array.push("<a href='javascript:;'>" + (this.ShowName != null ? "启用" : "禁用") + "</a>");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        },
+           
+                        {
+                            fixed: 'right',
+                            field: 'name',
+                            title: '操作',
+                            width: 240,
+                            toolbar: function () {
+                                var array = new Array();
+                                array.push("<button class=\"layui-btn layui-btn-small\" lay-event='edit'>编辑</button>");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        }
+                    ]
+                ],
+                url: '/service/hr/Module/GetCustomBusiness',
+                where: { ID: 1 },
+                response: {
+                    dataName: 'Data'
+                }
+            });
+
+
+            //监听工具栏事件
+            tableExt.addEvent("tool(listTable)",
+                {
+                    //工具栏编辑事件
+                    "edit": function (data, obj) {
+                        rootApp.edit(data)
+
+                    },
+                });
+        });
+</script>

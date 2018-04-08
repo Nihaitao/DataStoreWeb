@@ -1,0 +1,321 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="/Resources/fonts/iconfont.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link href="/Resources/CSS/Font/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="/Resources/CSS/video-js.css" rel="stylesheet" />
+</head>
+<body style="background-color: #f7f7f7;user-select: none;" id="root">
+    <!--#<!--#include file="/usercenter/UserControl/header.html"-->
+    <div class="w1200 clearfix">
+        <!--#<!--#include file="/usercenter/UserControl/aside.html"-->
+        <!--<div class="nav-left">
+            <div class="nav-title">
+                <h3>首页</h3>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">我的网课</div>
+                <ul class="sub-nav">
+                    <li><a href="#"><i class="iconfont icon-kechengguanli"></i>课程管理</a></li>
+                    <li><i class="iconfont icon-tingkejilu"></i>听课记录</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">我的题库</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-kaishizuoti"></i>开始做题</li>
+                    <li><i class="iconfont icon-zuotijilu"></i>做题记录</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">我的学费</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-lijijiaofei"></i>立即缴费</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">我的教务</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-wodechengji"></i>我的成绩</li>
+                    <li><i class="iconfont icon-wodebaokao"></i>我的报考</li>
+                    <li><i class="iconfont icon-wodeshuji"></i>我的书籍</li>
+                    <li><i class="iconfont icon-lianxijilu"></i>联系记录</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">我要毕业</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-xuexijindu"></i>学习进度</li>
+                    <li><i class="iconfont icon-lunwendabian"></i>论文答辩</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">个人管理</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-wodedingdan"></i>我的订单</li>
+                    <li><i class="iconfont icon-zhanghaoshezhi"></i>账号设置</li>
+                    <li><i class="iconfont icon-tousuyutiwen"></i>投诉提问</li>
+                    <li><i class="iconfont icon-xiaoxizhongxin"></i>消息中心</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">过程性考核</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-kaishixuexi"></i>开始学习</li>
+                    <li><i class="iconfont icon-peiyangjihua"></i>培养计划</li>
+                    <li><i class="iconfont icon-xuankeguanli"></i>选课管理</li>
+                    <li><i class="iconfont icon-chengjichaxun"></i>成绩查询</li>
+                </ul>
+            </div>
+        </div>-->
+        <div class="main">
+            <div class="order-top">
+                <ul class="orderTabs">
+                    <li class="active">章节练习</li>
+                    <li>模拟试卷</li>
+                    <li>历年真题</li>
+                </ul>
+            </div>
+            <div class="taber-body">
+                <div class="course-charpters">
+                    <div class="tab-con item" style="display: block;">
+                        <div class="course-fast bgwhite">
+                            <div class="selection inlineblock">
+                                题库:
+                            </div>
+                            <ul class="course-choise inlineblock clearfix">
+                                <li class="pull-left"
+                                    v-for="(index,item) in TypeList"
+                                    v-bind:class="{'active':index==selected}"
+                                    @click="choice(index,item)">
+                                    {{item.Name}}
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="chapters bgwhite">
+                            <div class="charpter-title">
+                                <span class="sub-title1">章节</span>
+                                <span class="sub-title2">已做/总题</span>
+                            </div>
+                            <!--章节目录-->
+                            <div class="chapter-item" v-for="item in ChapterList">
+                                <h3 class="f-f18">
+                                    <b>
+                                        <i class="icon-chapter"></i>
+                                        {{item.Name}}
+                                    </b>
+                                </h3>
+                                <ul class="video">
+                                    <li v-for="subItem in item.Children">
+                                        <a>
+                                            {{subItem.Name}}
+                                            <div class="text-center statistics f-f14">
+                                                <div class="all">{{subItem.AlreadyCounts || 0}}/{{subItem.QuestionCounts || 0}}</div>
+                                                <div class="start"><button type="button" class="btn btn-default" @click="jumpDoCharter(subItem.ID)">开始做题</button></div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-con item">
+                        <div class="course-fast bgwhite">
+                            <div class="selection inlineblock">
+                                题库:
+                            </div>
+                            <ul class="course-choise inlineblock clearfix">
+                                <li class="pull-left"
+                                    v-for="(index,item) in TypeList"
+                                    v-bind:class="{'active':index==selected}"
+                                    @click="choice1(index,item)">
+                                    {{item.Name}}
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <div class="label-item bgwhite" v-for="item in TestPaper">
+                                <div class="chapter-collec" style="display:table" v-if="item.ExamPaperType==0">
+                                    <div class="table-cell">
+                                        <div class="tag mo-tag">模</div>
+                                    </div>
+                                    <div class="table-cell" style="width:672px;">
+                                        <h1>{{item.Title}}</h1>
+                                        <p class="f-f12">
+                                            <span>总题：{{item.TotalQuestions || 0}}</span>
+                                            <span>考试时长：{{item.Time | toMinute}}分钟</span>
+                                            <span>总分：{{item.TotalScore || 0}}</span>
+                                        </p>
+                                    </div>
+                                    <div class="table-cell">
+                                        <button class="btn btn-default">继续做题</button>
+                                        <button class="btn btn-default" @click="enterExam(item.ID)">进入考场</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-con item">
+                        <div class="course-fast bgwhite">
+                            <div class="selection inlineblock">
+                                题库:
+                            </div>
+                            <ul class="course-choise inlineblock clearfix">
+                                <li class="pull-left"
+                                    v-for="(index,item) in TypeList"
+                                    v-bind:class="{'active':index==selected}"
+                                    @click="choice2(index,item)">
+                                    {{item.Name}}
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <div class="label-item bgwhite" v-for="item in ExamPaper">
+                                <div class="chapter-collec" style="display:table" v-if="item.ExamPaperType==1">
+                                    <div class="table-cell">
+                                        <div class="tag mo-tag">模</div>
+                                    </div>
+                                    <div class="table-cell" style="width:672px;">
+                                        <h1>{{item.Title}}</h1>
+                                        <p class="f-f12">
+                                            <span>总题：{{item.TotalQuestions || 0}}</span>
+                                            <span>考试时长：{{item.Time | toMinute}}分钟</span>
+                                            <span>总分：{{item.TotalScore || 0}}</span>
+                                        </p>
+                                    </div>
+                                    <div class="table-cell">
+                                        <button class="btn btn-default">继续做题</button>
+                                        <button class="btn btn-default">进入考场</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <script>
+        require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil'],
+            function (fnr) {
+                var $ = layui.$;
+                var table = layui.table;
+                var tableExt = layui.tableExt;
+                Vue.filter('toMinute', function (value) {
+                    if (!value) return 0;
+                    return (value/60).toFixed(0)
+                });
+                var vm = new Vue({
+
+                    el: "#root",
+                    data: {
+                        Discipline: [],
+                        tip: [],
+                        disciplineId:fnr.getQueryString('disciplineId'),
+                        TypeList:'',
+                        selected:0, //默认选择第一个学科
+                        ChapterList:'',
+                        TestPaper:'',
+                        ExamPaper:''
+                    },
+                    ready: function () {
+                        //选项卡单击事件
+                        $(".course-charpters").find('.tab-con:not(:first-child)').hide();
+                        $(".orderTabs").on('click','li',function(){
+                            var index=$(this).index();
+                            $(this).addClass('active').siblings().removeClass('active');
+                            $(".course-charpters").find('.tab-con').eq(index).show().siblings().hide();
+                        })
+
+                        //获取章节列表
+                        var that=this;
+                        this.GetQuestionStoreList(this.disciplineId,function(res){
+                            that.GetChapterQuestion(res.Data[that.selected].ID);
+                            that.GetExamPaperList(res.Data[that.selected].ID,0,function(resp){
+                                this.TestPaper=resp.Data;
+                            });
+                            that.GetExamPaperList(res.Data[that.selected].ID,1,function(resp){
+                                this.ExamPaper=resp.Data;
+                            });
+                        });
+                    },
+                    computed:{
+                        selectedID:function(){
+                            return this.TypeList[this.selected].ID;
+                        }
+                    },
+                    methods: {
+                        //切换选择的科目
+                        choice:function(index,item){
+                            this.selected=index;
+                            this.GetChapterQuestion(this.selectedID)
+                        },
+                        //切换选择的科目
+                        choice1:function(index,item){
+                            var that=this;
+                            this.selected=index;
+                            this.GetExamPaperList(this.selectedID,0,function(resp){
+                                that.TestPaper=resp.Data;
+                            });
+                        },
+                        //切换选择的科目
+                        choice2:function(index,item){
+                            var that=this;
+                            this.selected=index;
+                            this.GetExamPaperList(this.selectedID,1,function(resp){
+                                that.ExamPaper=resp.Data;
+                            });
+                        },
+                        //获取章节列表
+                        GetChapterQuestion: function (storeId) {
+                            var that = this;
+                            $.get('/service/datastore/Chapter/GetChapterQuestion', { storeId: storeId }, function (res) {
+                                that.ChapterList=res.Data;
+                            })
+                        },
+                        //获取试卷列表
+                        //Type=0,模拟试卷,1:历年真题,
+                        GetExamPaperList:function(Store,Type,cb){
+                            var that = this;
+                            $.get('/service/datastore/ExamPaper/GetExamPaperList',{Store:Store,Type:Type,DoType:-1},function (res) {
+                                if(res.SuccessResponse){
+                                    cb && cb(res)
+                                }
+                            })
+                        },
+                        //获取题目类型列表
+                        GetQuestionStoreList: function (disciplineId,cb) {
+                            var that = this;
+                            $.get('/service/datastore/Question/GetQuestionStoreList',{disciplineId:disciplineId},function (res) {
+                                if(res.SuccessResponse){
+                                    that.TypeList=res.Data;
+                                    cb && cb(res);
+                                }
+                            })
+                        },
+                        //跳转做题
+                        jumpDoCharter:function(ID){
+                            location.href="/usercenter/questionbank/tk/setting.html?chapterId="+ID+'&storeId='+this.selectedID;
+                        },
+                        //进入考场
+                        enterExam:function(ID){
+                            location.href="/usercenter/questionbank/tk/Exam/examGetInto.html?ID="+ID;
+                        }
+                    }
+                });
+            })
+    </script>
+</body>
+
+</html>

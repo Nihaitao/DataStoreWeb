@@ -1,0 +1,241 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body id="root">
+    <div class="mainContainer">
+
+        <div class="layui-tab layui-tab-card" lay-filter="demo">
+            <ul class="layui-tab-title">
+                <li class="layui-this" data-method="Source_ID">客户来源</li>
+                <li data-method="PhaseType_ID">跟进状态</li>
+                <li data-method="Education_ID">学历</li>
+                <li data-method="Importance_ID">重要程度</li>
+                <li data-method="AppointmentType_ID">预约类型</li>
+                <li data-method="ContactType_ID">联系方式</li>
+            </ul>
+            <div class="layui-tab-content">
+                <!--来源-->
+                <div class="layui-tab-item layui-show">
+                    <table id="Source_ID" lay-filter="listTable"></table>
+                    <button class="layui-btn addnextlist" data-method="addlist" value="来源">
+                        添加
+                    </button>
+                </div>
+                <!--阶段-->
+                <div class="layui-tab-item">
+                    <table id="PhaseType_ID" lay-filter="listTable"></table>
+                    <button class="layui-btn addnextlist" data-method="addlist" value="阶段">
+                        添加
+                    </button>
+                </div>
+                <!--学历-->
+                <div class="layui-tab-item">
+                    <table id="Education_ID" lay-filter="listTable"></table>
+                    <button class="layui-btn addnextlist" data-method="addlist" value="学历">
+                        添加
+                    </button>
+                </div>
+                <!--重要程度-->
+                <div class="layui-tab-item">
+                    <table id="Importance_ID" lay-filter="listTable"></table>
+                    <button class="layui-btn addnextlist" data-method="addlist" value="重要程度">
+                        添加
+                    </button>
+                </div>
+                <!--预约类型-->
+                <div class="layui-tab-item">
+                    <table id="AppointmentType_ID" lay-filter="listTable"></table>
+                    <button class="layui-btn addnextlist" data-method="addlist" value="预约类型">
+                        添加
+                    </button>
+                </div>
+                <!--联系方式-->
+                <div class="layui-tab-item">
+                    <table id="ContactType_ID" lay-filter="listTable"></table>
+                    <button class="layui-btn addnextlist" data-method="addlist" value="联系方式">
+                        添加
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(['form', 'jquery', 'element', 'table', 'tableExt', 'layer'],
+         function (fnr) {
+             var table = layui.table;
+             var tableExt = layui.tableExt;
+             var form = layui.form;
+             var $ = layui.$;
+             var element = layui.element;
+             var layer = layui.layer;
+
+
+             var tableContent = [
+                         { field: 'ID', title: 'ID', width: 120, sort: true, },
+                         {
+                             field: 'Description', title: '描述', width: 200, edit: function () {
+                                 return this.System_Station_ID > 0;
+                             }
+                         },
+                         {
+                             field: 'Valid', title: '状态', width: 120, templet: function () {
+                                 var array = new Array();
+                                 array.push("<input lay-filter='checkbox' type='checkbox' lay-skin='primary' " + (this.Valid ? 'checked' : '') + " title = '启用'/>");
+                                 return "<div>" + array.join("") + "</div>";
+                             }, align: 'center'
+                         },
+                         {
+                             fixed: 'right',
+                             field: '',
+                             title: '操作',
+                             width: 200,
+                             templet: function () {
+                                 var array = new Array();
+                                 array.push("<a class='layui-btn  layui-btn-mini layui-btn-danger' style='display:" + (this.System_Station_ID ? "" : "none") + "' lay-event='delete'>删除</a>");
+                                 return "<div>" + array.join("") + "</div>";
+                             },
+                             align: 'center'
+                         }
+             ]
+
+             var listTable;
+             var listTableArry = new Array();
+             //监听选项卡切换
+             element.on('tab(demo)', function (data) {
+                 var mothod = $(this).attr("data-method");
+                 if (listTableArry[mothod] == null) {
+                     listTable = table.render({
+                         elem: '#' + mothod,
+                         even: true, //开启隔行背景
+                         cols: [tableContent],
+                         url: "/service/HDictionary/GetHDictionaryList",
+                         where: { ColumnName: mothod },
+                         id: 'listTable',
+                     });
+                     listTableArry[mothod] = listTable;
+
+                 } else {
+                     listTable = listTableArry[mothod];
+                 }
+             });
+
+
+             //初始化第一个列表
+             listTable = table.render({
+                 elem: '#Source_ID',
+                 even: true, //开启隔行背景
+                 cols: [tableContent],
+                 url: "/service/HDictionary/GetHDictionaryList",
+                 where: { ColumnName: 'Source_ID' },
+                 id: 'listTable',
+             });
+             listTableArry["Source_ID"] = listTable;
+
+             //监听启用框勾选
+             form.on('checkbox(checkbox)', function (data) {
+                 var self = data;
+                 var that_ID = $(self.othis).parent().parent().parent().parent().find("td").eq(0).text()
+                 $.post("/service/HDictionary/HDictionarySetValid", { ID: that_ID, Valid: data.elem.checked ? 1 : 0 }, function (data) {
+                     if (data.SuccessResponse) {
+                         layer.msg('操作成功')
+                     } else {
+                         layer.msg('操作失败')
+                         if (self.elem.checked) {
+                             $(self.othis).removeClass("layui-form-checked")
+                         } else {
+                             $(self.othis).addClass("layui-form-checked")
+                         }
+                         self.elem.checked = !self.elem.checked
+                     }
+                 })
+             });
+
+             //添加
+             $('.addnextlist').on('click', function () {
+                 var self = this;
+                 layer.open({
+                     title: '添加',
+                     content: '<div class="layui-form"><div class="layui-form-item"><div class="depict"><input type="text" name="describe" lay-verify="required"autocomplete="off"class="layui-input" v-model="submitForm.username"></div></div></div>',
+                     btn: ['保存'],
+                     success: function () {
+                         $(".layui-layer-title").css({ "color": "#fff", "background": "#009f95" })
+                         $(".layui-layer-btn0").css({ "background": "#009688", "border-color": "#009688" })
+                         that_ColumnName = $(self).val()
+                         if (that_ColumnName == '来源') {
+                             that_ColumnName = 'Source_ID'
+                         } else if (that_ColumnName == '阶段') {
+                             that_ColumnName = 'PhaseType_ID '
+                         } else if (that_ColumnName == '学历') {
+                             that_ColumnName = 'Education_ID'
+                         } else if (that_ColumnName == '重要程度') {
+                             that_ColumnName = 'Importance_ID'
+                         } else if (that_ColumnName == '预约类型') {
+                             that_ColumnName = 'AppointmentType_ID'
+                         } else if (that_ColumnName == '联系方式') {
+                             that_ColumnName = 'ContactType_ID'
+                         }
+                         console.log(that_ColumnName)
+                     },
+                     yes: function (index, layero) {
+                         var txt = $(".depict").find("input").val()
+                         console.log(txt)          //获取ipt 的内容
+                         if (txt == '') {
+                             layer.msg('描述框不能为空', { icon: 5 })
+                             return
+                         } else {
+                             $.post("/service/HDictionary/HDictionarySet", { ID: 0, ColumnName: that_ColumnName, Description: txt }, function (res) {
+                                 if (res.SuccessResponse) {
+                                     layer.msg('添加成功')
+                                     listTable.reload();
+                                 }
+                             })
+                         }
+                     },
+                 });
+             });
+
+             //监听单元格编辑
+             table.on('edit(listTable)', function (obj) {
+                 var value = obj.value //得到修改后的值
+                 , data = obj.data //得到所在行所有键值
+                 , field = obj.field; //得到字段
+                 $.post("/service/HDictionary/HDictionarySet", { ID: data.ID, ColumnName: data.ColumnName, Description: value }, function (data) {
+                     if (data.SuccessResponse) {
+                         layer.msg("修改成功")
+                     } else {
+                         layer.msg("修改失败")
+                     }
+                 })
+                 //layer.msg('[ID: ' + data.ID + '] ' + field + ' 字段更改为：' + value);
+             });
+
+             //监听工具栏事件
+             tableExt.addEvent("tool(listTable)", {
+                 //删除
+                 "delete": function (data, obj) {
+                     layer.confirm('确定要删除吗？', {
+                         btn: ['确定', '取消'] //按钮
+                     }, function () {
+                         var del_id = $(obj.tr).find("td").eq(0).text()
+                         $.post("/service/HDictionary/DeleteHDictionaryByID", { ID: del_id }, function (data) {
+                             if (data.SuccessResponse) {
+                                 layer.msg("删除成功")
+                                 $(obj.tr).remove()
+                             } else {
+                                 layer.msg("删除失败")
+                             }
+                         })
+                     });
+                 },
+             });
+         });
+</script>

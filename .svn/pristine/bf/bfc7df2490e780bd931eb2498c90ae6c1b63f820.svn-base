@@ -1,0 +1,112 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="" type="image/x-icon" class="favIcon" />
+    <title>纠错</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="/Resources/fonts/iconfont.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link href="/Resources/CSS/Font/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="/Resources/CSS/video-js.css" rel="stylesheet" />
+    <style>
+        /*jiucuo*/
+.pop-error{ width:520px; line-height:23px; margin-left:5px; color:#333;  font-size:12px; padding:0 15px; padding:25px;}
+.pop-error p{ margin:0; padding:5px 0; text-align:left; font-size:14px; margin-top:5px;}
+.pop-error .txt{color:#666; font-size:14px; text-align:left; line-height:26px; border-bottom:1px dotted #ddd; padding-bottom:15px;}
+.pop-error label{ vertical-align: middle; margin:0 25px 10px 0; font-size:14px; color:#666; text-align:left;}
+.option{ text-align:left; margin-top:10px;}
+.pop-error input{vertical-align:middle}
+.pop-error span{vertical-align: middle}
+.pop-error textarea{width:495px;height:90px; line-height:24px; border-radius:6px;box-shadow: 0 2px 2px #dedede inset; overflow:auto; padding:4px 10px; background:#fff; font-size:14px; margin-top:20px; border:#d3d3d3 solid 1px;outline: none; resize: none}
+.warn{ font-family:"\u5b8b\u4f53"; color:#cc3333; font-size:12px; padding-top:10px;padding-left:25px; background:url(//img.233.com/wx/uc/mk/v1/skin/a/tk_gd.png) -182px -155px no-repeat}
+    </style>
+</head>
+<body id="root" v-cloak>
+    <div class="tanchuan_box" style="padding:20px;background-color:#fff;">
+        <div id="dialog-question-jc" class="pop-error ">
+            <div class="txt">一直在完善，从未停歇过，但有些题目可能仍然存在瑕疵，对您造成的不便我们深表歉意！</div>
+            <div class="option">
+                <p>为方便我们排查错误，请您详细描述本题错误，例如：</p>
+                <label>
+                    <input class="radioz" v-model="ErrorType" value="1" type="radio" />
+                    <span>含有错别字</span>
+                </label>
+                <label>
+                    <input class="radioz" v-model="ErrorType" value="2" type="radio" />
+                    <span>答案不正确</span>
+                </label>
+                <label>
+                    <input class="radioz" v-model="ErrorType" value="3" type="radio" />
+                    <span>题目不完整</span>
+                </label>
+                <label>
+                    <input class="radioz" v-model="ErrorType" value="4" type="radio" />
+                    <span>图片不存在</span>
+                </label>
+                <label>
+                    <input class="radioz" v-model="ErrorType" value="5" type="radio" />
+                    <span>解析不正确</span>
+                </label>
+                <label>
+                    <input class="radioz" v-model="ErrorType" value="6" type="radio" />
+                    <span>其他错误</span>
+                </label>
+            </div>
+            <textarea placeholder="请输入内容" name="question-error-content" v-model="Remart"></textarea>
+        </div>
+
+        <div i="button" class="ui-dialog-button text-center">
+            <button class="layui-btn layui-btn-primary" @click="exit">取消</button>
+            <button class="layui-btn layui-btn-danger" @click="tijiao">提交错误</button>
+        </div>
+        <!--footer-->
+        <!--#<!--#include file="/PublicControl/bottommenu.html"-->
+        <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+        <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+        <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+        <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+        <script>
+            require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil'],
+                function (fnr) {
+                    var $ = layui.$;
+                    var table = layui.table;
+                    var tableExt = layui.tableExt;
+                    var vm = new Vue({
+                        el: "#root",
+                        data: {
+                            Question_ID: fnr.getQueryString('Question_ID'),
+                            ErrorType:1,
+                            Remart:''
+                        },
+                        methods: {
+                            tijiao:function(){
+                                var that=this;
+                                $.post('/service/datastore/Question/AddQuestionerrorCorrection',
+                                    {
+                                        Question_ID:that.Question_ID,
+                                        ErrorType:that.ErrorType,
+                                        Remart:that.Remart,
+                                    }
+                                    ,function(res){
+                                    if(res.SuccessResponse){
+                                        layer.msg('提交成功');
+                                        setTimeout(function(){
+                                            fnr.closeDialog()
+                                        },2000)
+                                    }
+                                })
+                            },
+                            exit:function(){
+                                fnr.closeDialog();
+                            }
+                        }
+                    });
+                })
+        </script>
+</body>
+
+</html>

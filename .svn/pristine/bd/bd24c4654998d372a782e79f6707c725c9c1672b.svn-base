@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        .layui-row {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+        }
+
+        textarea {
+            resize: none;
+        }
+
+        .teacher {
+            float: right;
+            text-align: right;
+        }
+
+        .studnent {
+            float: left;
+        }
+
+        .stuName {
+            font-size: 16px;
+        }
+
+        .addtime {
+            font-size: 12px;
+            color: #666;
+            margin-left: 10px;
+        }
+
+        .content {
+            padding: 5px;
+            background-color: #ddd;
+            border-radius: 4px;
+            margin-top: 15px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <div v-for="item in queryData" class="layui-row">
+            <div class="layui-col-xs8" style="float:left" v-if="item.StudentId">
+                <div class="studnent">
+                    <div>
+                        <span class="stuName" v-text="item.StudentName"></span><span class="addtime" v-text="item.AddTime"></span>
+                    </div>
+                    <p class="content" v-text="item.Content"></p>
+                </div>
+
+            </div>
+            <div class="layui-col-xs8" style="float:right" v-if="!item.StudentId">
+                <div class="teacher">
+                    <div>
+                        <span class="stuName" v-text="item.TeacherName"></span><span class="addtime" v-text="item.AddTime"></span>
+                    </div>
+                    <p class="content" v-text="item.Content"></p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
+
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt"],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+
+
+            window.rootApp = new Vue({
+                el: "#root",
+                data: {
+                    PID: '',
+                    queryData: {
+
+                    }
+                },
+                ready: function () {
+                    _this = this;
+                    _this.PID = fnr.getQueryString("ID");
+                    if (_this.PID) {
+                        $.get("/service/CourseInterlocution/GetCourseInterlocutionList", { PID: _this.PID }, function (rsp) {
+                            if (rsp.SuccessResponse) {
+                                _this.queryData = rsp.ReturnData.Data;
+                            } else {
+                                layer.msg(ReturnData.Message)
+                            }
+
+                        })
+                    }
+                },
+                methods: {
+
+                }
+            });
+        });
+</script>

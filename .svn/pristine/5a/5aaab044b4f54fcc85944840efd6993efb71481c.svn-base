@@ -1,0 +1,210 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body id="root" v-cloak>
+    <div class="OpenContainer">
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">所属题库</label>
+                <div class="layui-input-block">
+                    <remote-sel v-bind:setting="StoreSetting" v-bind:value.sync="queryFormData.QuestionStore_ID" laytips="所属题库" initial="off"></remote-sel>
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">试卷名称</label>
+                <div class="layui-input-block">
+                    <input type="text" autocomplete="off" placeholder="试卷名称" class="layui-input" v-model="queryFormData.Title">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">所属地区</label>
+                <div class="layui-input-block">
+                    <remote-sel v-bind:setting="ProvinceSetting" v-bind:value.sync="queryFormData.Province_ID" laytips="省份" initial="off"></remote-sel>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">试卷类型</label>
+                <div class="layui-input-block">
+                    <remote-sel v-bind:setting="ExamPaperTypeSetting" v-bind:value.sync="queryFormData.ExamPaperType" laytips="试卷类型" initial="off"></remote-sel>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">组卷类型</label>
+                <div class="layui-input-block">
+                    <remote-sel v-bind:setting="DoTypeSetting" v-bind:value.sync="queryFormData.ExamPaperDo" laytips="组卷类型" initial="off"></remote-sel>
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">作答时间</label>
+                <div class="layui-input-block">
+                    <input type="text" autocomplete="off" placeholder="作答时间" class="layui-input" v-model="queryFormData.Time">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">及格分数</label>
+                <div class="layui-input-block">
+                    <input type="text" autocomplete="off" placeholder="及格分数" class="layui-input" v-model="queryFormData.PassScore">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">试卷难度</label>
+                <div class="layui-input-block">
+                    <remote-sel v-bind:setting="LevelSetting" v-bind:value.sync="queryFormData.Level" laytips="试卷难度" initial="off"></remote-sel>
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">年份</label>
+                <div class="layui-input-block">
+                    <input type="text" id="Year" placeholder="年份" class="layui-input" v-model="queryFormData.Year">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">是否公开</label>
+                <div class="layui-input-block">
+                    <remote-rad layverify="required" v-bind:setting="IsOpensetting" v-bind:value.sync="queryFormData.IsOpen"
+                                initial="off"></remote-rad>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item layui-hide">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-filter="demo1" lay-submit @click="saveUpdate">提交</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="/Resources/js/Controls/Common.js"></script>
+<script>
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#Year',
+            type: 'year',
+            change: function (value, date, endDate) {
+                rootApp.queryFormData.Year = value;
+            }
+        });
+    });
+</script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt"],
+    function (fnr) {
+        var $ = layui.$;
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+                queryFormData: {
+                    ID: fnr.getQueryString('ID'),
+                    Title: '',
+                    Province_ID: '',
+                    ExamPaperType: '',
+                    ExamPaperDo: '',
+                    Time: '',
+                    PassScore: '',
+                    Level: '',
+                    Year: '',
+                    IsOpen: ''
+                },
+                StoreSetting: {
+                    search: true,
+                    defaultValue: 0,
+                    fields: { root: 'Data', key: 'ID', value: 'Name' },
+                    options: [],
+                    remote: { url: "/service/datastore/Question/GetQuestionStoreList", data: { Valid: 1 } }
+                },
+                ProvinceSetting: {
+                    search: true,
+                    fields: { root: 'ReturnData.Data', key: 'ProvinceID', value: 'ProvinceName' },
+                    options: [],
+                    remote: { url: "/service/ProvinceCityDistrict/GetProvinceList" }
+                },
+                DoTypeSetting: {
+                    search: true,
+                    defaultValue: -1,
+                    options: [
+                        { key: '0', value: '自动' },
+                        { key: '1', value: '手动' }
+                    ]
+                },
+                ExamPaperTypeSetting: {
+                    search: true,
+                    options: [
+                        { key: '0', value: '模拟试卷' },
+                        { key: '1', value: '历年真题' }
+                    ]
+                },
+                IsOpensetting: {
+                    tags: { name: "name" },
+                    options: [
+                        { key: "1", value: "公开" },
+                        { key: "0", value: "不公开" }
+                    ]
+                },
+                LevelSetting: {
+                    search: true,
+                    defaultValue: 0,
+                    options: [
+                        { key: '1', value: '难度一' },
+                        { key: '2', value: '难度二' },
+                        { key: '3', value: '难度三' },
+                        { key: '4', value: '难度四' },
+                        { key: '5', value: '难度五' }
+                    ]
+                },
+                TypeSetting: {
+                    defaultValue: 0,
+                    search: true,
+                    fields: { root: 'Data', key: 'ID', value: 'Name' },
+                    options: [],
+                    remote: { url: "/service/datastore/Question/GetQuestionTypeList" }
+                },
+            },
+            ready: function () {
+                if (!!fnr.getQueryString('ID')) {
+                    var ID = fnr.getQueryString('ID')
+                    this.GetCourseInfoByID(ID);
+                }
+            },
+            methods: {
+                //根据id查询试卷
+                GetCourseInfoByID: function (ID) {
+                    var self = this;
+                    $.get("/service/datastore/ExamPaper/GetExamPaper", { id: ID }, function (res) {
+                        self.queryFormData.QuestionStore_ID = res.Data[0].QuestionStore_ID;
+                        self.queryFormData.Title = res.Data[0].Title;
+                        self.queryFormData.Province_ID = res.Data[0].Province_ID;
+                        self.queryFormData.ExamPaperType = res.Data[0].ExamPaperType;
+                        self.queryFormData.ExamPaperDo = res.Data[0].ExamPaperDo;
+                        self.queryFormData.Time = res.Data[0].Time;
+                        self.queryFormData.PassScore = res.Data[0].PassScore;
+                        self.queryFormData.Level = res.Data[0].Level;
+                        self.queryFormData.Year = res.Data[0].Year;
+                        self.queryFormData.IsOpen = res.Data[0].IsOpen;
+                    })
+                },
+                //提交表单
+                saveUpdate: function (e) {
+                    if (!layui.form.checkInput(e)) {
+                        return false;
+                    }
+                    $.post("/service/datastore/ExamPaper/UpdateExamPaper", this.queryFormData, function (res) {
+                        fnr.callDialog('refresh', { status: res.SuccessResponse });
+                        if (res.SuccessResponse) {
+                            fnr.closeDialog();
+                        }
+                    });
+                }
+            }
+        });
+    });
+</script>

@@ -1,0 +1,420 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        .isDisplay {
+            display: none;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <!--学员注册-->
+        <div class="layui-tab layui-tab-card">
+            <ul class="layui-tab-title">
+                <li class="layui-this">学员注册设置</li>
+                <li>学员登录设置</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">
+                    <!--<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                        <legend>注册设置</legend>
+                    </fieldset>-->
+                    <form class="layui-form" action="" onsubmit="return false">
+
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">注册方式</label>
+                                <div class="layui-input-inline" style="width:107px;">
+                                    <input type="radio" name="phone" value="手机号" title="手机号">
+                                    <input type="radio" name="phone" value="用户名" title="用户名">
+                                    <input type="radio" name="phone" value="关闭注册" title="关闭注册">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">协议</label>
+                            <div class="layui-input-block protocol" >
+                                <local-switch v-bind:value.sync="chbSwitch" text="开启|关闭"
+                                              initial="off"></local-switch>
+                            </div>
+                        </div>
+
+
+
+                        <div class="offToOn_area" v-bind:class="{ isDisplay: !chbSwitch}">
+                            <textarea id="demo"></textarea>
+                        </div>
+
+
+                        <div class="layui-form-item">
+                            <div class="layui-input-block" style="margin-top:30px;" id="layerDemo">
+                                <button class="layui-btn" lay-submit="" lay-filter="demo1" data-method="offset" data-type="auto" @click="saveUpdate(0)">保存</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!--学员登录-->
+                <div class="layui-tab-item">
+                    <!--<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                        <legend>登录设置</legend>
+                    </fieldset>-->
+                    <form class="layui-form" action="" onsubmit="return false">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" style="width:150px">同一账号多处同时登录</label>
+                            <div class="layui-input-block otherPlace">
+                                <local-switch v-bind:value.sync="manySwitch" text="开启|关闭"
+                                              initial="off"></local-switch>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">第三方登录</label>
+                                    <div class="layui-input-block under-switch">
+                                        <local-switch v-bind:value.sync="loginSwitch" text="开启|关闭"
+                                                      initial="off"></local-switch>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item" v-bind:class="{ isDisplay: !loginSwitch}">
+                                    <div class="site-demo-laydate" style="padding-top:38px;width:800px">
+                                        <div class="layui-row layui-col-space30" style="text-align:center;margin:0;">
+                                            <div class="layui-col-md3" style="border:1px solid #ccc;margin:10px;">
+                                                <p class="layui-icon">&#xe657;</p>
+                                                <p>QQ登录</p>
+                                                <button class="layui-btn layui-btn-primary layui-btn-mini QQSet" @click="changeQQ">启用</button>
+                                                <button class="layui-btn layui-btn-mini layui-btn-normal LoginSet" data-method="QQSet">设置</button>
+                                            </div>
+                                            <div class="layui-col-md3" style="border:1px solid #ccc;margin:10px;">
+                                                <p class="layui-icon">&#xe6c7;</p>
+                                                <p>微信登录</p>
+                                                <button class="layui-btn layui-btn-primary layui-btn-mini VXSet" @click="changeVX">启用</button>
+                                                <button class="layui-btn layui-btn-mini layui-btn-normal LoginSet" data-method="VXSet">设置</button>
+                                            </div>
+                                            <div class="layui-col-md3" style="border:1px solid #ccc;margin:10px;">
+                                                <p class="layui-icon">&#xe612;</p>
+                                                <p>所有登录用户</p>
+                                                <button class="layui-btn layui-btn-primary layui-btn-mini">启用</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label" style="width:123px">独立登录/注册页面</label>
+                                    <div class="layui-input-block loginPageConfig" @click="changeLoginConfig" style="margin-left:160px">
+                                        <local-switch v-bind:value.sync="LoginPageSwitch" text="开启|关闭"
+                                                      initial="off"></local-switch>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-input-block site-demo-button" id="layerDemo">
+                                <button class="layui-btn" lay-submit="" data-method="offset" data-type="auto" lay-filter="demo1" @click="saveUpdate(1)"> 保存 </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</body>
+</html>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    var layedit, index;
+    //建立编辑器
+    layui.use('layedit', function () {
+        layedit = layui.layedit;
+        layedit.set({
+            uploadImage: {
+                url: '/service/upload?busType=Course&src=editor' //接口url
+              , type: 'post' //默认post
+            }
+        });
+        index = layedit.build('demo');
+    });
+    require_js_file(['form', 'jquery', 'element', 'layer', 'layedit'],
+        function (fnr) {
+            var form = layui.form;
+            var $ = layui.$;
+            var element = layui.element;
+            var layer = layui.layer;
+            var layedit = layui.layedit;
+
+
+            //搜索条件
+            var rootApp = new Vue({
+                el: '#root',
+                data: {
+                    manySwitch: '',
+                    chbSwitch: '',
+                    loginSwitch: '',
+                    LoginPageSwitch:'',
+                },
+                ready: function () {
+                    var self = this ;
+                    $.get("/service/datastore/HConfiguration/GetConfiguration", function (data) {
+                        //注册方式
+                        var that = data.Data
+
+                        //获取的数据0为手机 1为用户名
+                        //console.log(that.RegisterValid + '0关闭注册;' + that.RegisterType + '0手机号;' + that.RegisterType + '1用户名')
+                        if (that.RegisterValid == 0) {
+                            text = '关闭注册'
+                        } else if (that.RegisterType == 0) {
+                            text = "手机号"
+                        } else if (that.RegisterType == 1) {
+                            text = "用户名"
+                        }
+
+                        //text为选中的值
+
+                        $("span:contains('" + text + "')").parent().addClass("layui-form-radioed")
+                        $("span:contains('" + text + "')").parent().find('i').addClass("layui-anim-scaleSpring")
+                        $("span:contains('" + text + "')").parent().find('i').html('&#xe643;')
+
+                        //协议开关
+                        rootApp.chbSwitch = that.RegisterProtocolValid == 1 ? true : false;
+
+                        //同时登录
+                        rootApp.manySwitch = that.MultiOnline == 1 ? true : false;
+
+                        //第三方
+                        rootApp.loginSwitch = that.ThirdLoginValid == 1 ? true : false;
+
+                        //独立登录
+                        rootApp.LoginPageSwitch = that.LoginPageConfig == 1 ? true : false;
+
+                        //QQ
+                        if (that.QQValid == 1) {
+                            $(".QQSet").html('禁用')
+                            $(".QQSet").next().show()
+                        } else {
+                            $(".QQSet").html('启用')
+                            $(".QQSet").next().hide()
+                        }
+                        //VX
+                        if (that.WxValid == 1) {
+                            $(".VXSet").html('禁用')
+                            $(".VXSet").next().show()
+                        } else {
+                            $(".VXSet").html('启用')
+                            $(".VXSet").next().hide()
+                        }
+                    });
+                    
+                },
+                methods: {
+                    saveUpdate: function (num) {
+                        var self = this
+                        var that_RegisterType;
+                        var that_RegisterValid;
+                        if (num == 0) {
+                            //注册方式版块
+                            var checkbox = $(".layui-anim-scaleSpring").next().html()              // 获取页面上的选框值 0为手机 1为名字
+                            if (checkbox != '关闭注册') {
+                                that_RegisterValid = 1
+                                if (checkbox == '手机号') {
+                                    that_RegisterType = 0
+                                } else if (checkbox == '用户名') {
+                                    that_RegisterType = 1
+                                }
+
+                            } else {
+                                that_RegisterValid = 0
+                            }
+
+                            //协议版块
+                            var Protocol = self.chbSwitch == true ? '1' : "0"
+
+                            $.post("/service/datastore/HConfiguration/SetConfiguration1", { RegisterProtocolValid: Protocol, RegisterType: that_RegisterType, RegisterValid: that_RegisterValid }, function (data) {
+                                if (data.SuccessResponse) {
+                                    layer.msg("保存成功")
+                                } else {
+                                    layer.msg("保存失败")
+                                }
+                            })
+                            return false;
+                        } else if (num == 1) {
+                            //学员登录版块
+                            var QQhtml = $(".QQSet").html()
+                            var VXhtml = $(".VXSet").html()
+
+
+                            var MultiOnline = self.manySwitch == true ? '1' : "0"//多处登录
+                            //console.log(MultiOnline)
+
+                            var ThirdLoginValid = self.loginSwitch == true ? '1' : '0'//第三方登录
+                            //console.log(ThirdLoginValid)
+
+                            var LoginPageConfig = self.LoginPageSwitch == true ? '1' : '0'//独立登录
+                            //console.log(LoginPageConfig)
+
+                            if (QQhtml == '启用') {//QQ登录
+                                that_QQhtml = 0
+                            } else if (QQhtml == '禁用') {
+                                that_QQhtml = 1
+                            }
+
+                            if (VXhtml == '启用') {//VX登录
+                                that_VXhtml = 0
+                            } else if (VXhtml == '禁用') {
+                                that_VXhtml = 1
+                            }
+
+                            $.post("/service/datastore/HConfiguration/SetConfiguration2", { MultiOnline: MultiOnline, ThirdLoginValid: ThirdLoginValid, LoginPageConfig: LoginPageConfig, WxValid: that_VXhtml, QQValid: that_QQhtml }, function (data) {
+                                if (data.SuccessResponse) {
+                                    layer.msg("保存成功")
+                                } else {
+                                    layer.msg("保存失败")
+                                }
+                            })
+                        }
+                    },
+
+
+                    //QQ弹窗的禁用启用按钮
+                    changeQQ: function () {
+                        var QQhtml = $(".QQSet").html()
+                        if (QQhtml == '启用') {
+                            $(".QQSet").html('禁用')
+                            $(".QQSet").next().show()
+                        } else {
+                            $(".QQSet").html('启用')
+                            $(".QQSet").next().hide()
+                        }
+                    },
+                    //VX弹窗的禁用启用按钮
+                    changeVX: function () {
+                        var VXhtml = $(".VXSet").html()
+                        if (VXhtml == '启用') {
+                            $(".VXSet").html('禁用')
+                            $(".VXSet").next().show()
+                        } else {
+                            $(".VXSet").html('启用')
+                            $(".VXSet").next().hide()
+                        }
+                    },
+                }
+            });
+
+            var active = {
+                //QQ登录的弹框
+                QQSet: function () {
+                    layer.open({
+                        title: 'QQ登录设置',
+                        area: ['800px', '500px'],
+                        content: '<div class="layui-form"><div class="layui-form-item"><label class="layui-form-label">APP ID</label><div class="layui-input-block app_id"><input type="text" name="describe" lay-verify="required" autocomplete="off"class="layui-input" v-model="submitForm.username"/></div></div><div class="layui-form-item"><label class="layui-form-label">APP Key</label><div class="layui-input-block app_key"><input type="text" name="describe" lay-verify="required" autocomplete="off"class="layui-input" v-model="submitForm.username"/></div></div><div class="layui-btn" @click="saveUpdata"style="width:0px;height:0px;"></div></div>',
+                        btn: ['保存'],
+                        success: function () {
+                            $(".layui-layer-title").css({ "color": "#fff", "background": "#009f95" })
+                            $(".layui-layer-btn0").css({ "background": "#009688", "border-color": "#009688" })
+                            $.get("/service/HConfiguration/GetConfiguration", function (data) {
+                                var that = data.Data
+                                $(".app_id").find("input").val(that.QQAppID)
+                                $(".app_key").find("input").val(that.QQAppKey)
+                            })
+                        },
+                        yes: function (index, layero) {
+                            var that_QQAppID = $(".app_id").find("input").val()
+                            var that_QQAppKey = $(".app_key").find("input").val()
+                            $.post("/service/datastore/HConfiguration/SetConfiguration3", { QQAppID: that_QQAppID, QQAppKey: that_QQAppKey }, function (data) {
+                                if (data.SuccessResponse) {
+                                    layer.msg("保存成功")
+                                } else {
+                                    layer.msg("保存失败")
+                                }
+                            })
+                            layer.closeAll()
+                        },
+                    });
+                },
+                //VX登录弹框
+                VXSet: function () {
+                    layer.open({
+                        title: '微信登录设置',
+                        area: ['800px', '500px'],
+                        content: '<div class="layui-form"><div class="layui-form-item"><label class="layui-form-label" style="width:158px">微信.开放平台 AppID</label><div class="layui-input-block vx_id"><input type="text" style="width:500px" name="describe" lay-verify="required" autocomplete="off"class="layui-input" v-model="submitForm.username"/></div></div><div class="layui-form-item"><label class="layui-form-label" style="width:158px">微信.开放平台 AppSecret</label><div class="layui-input-block vx_key"><input type="text" style="width:500px" name="describe" lay-verify="required" autocomplete="off"class="layui-input" v-model="submitForm.username"/></div></div><div class="layui-btn" @click="saveUpdata"style="width:0px;height:0px;"></div></div>',
+                        btn: ['保存'],
+                        success: function () {
+                            $(".layui-layer-title").css({ "color": "#fff", "background": "#009f95" })
+                            $(".layui-layer-btn0").css({ "background": "#009688", "border-color": "#009688" })
+                            $.get("/service/datastore/HConfiguration/GetConfiguration", function (data) {
+                                var that = data.Data
+                                $(".vx_id").find("input").val(that.WxAppID)
+                                $(".vx_key").find("input").val(that.WxAppSecret)
+                            })
+                        },
+                        yes: function (index, layero) {
+                            var that_WxAppID = $(".vx_id").find("input").val()
+                            var that_WxAppSecret = $(".vx_key").find("input").val()
+                            $.post("/service/datastore/HConfiguration/SetConfiguration4", { WxAppID: that_WxAppID, WxAppSecret: that_WxAppSecret }, function (data) {
+                                if (data.SuccessResponse) {
+                                    layer.msg("保存成功")
+                                } else {
+                                    layer.msg("保存失败")
+                                }
+                            })
+                            layer.closeAll()
+                        },
+                    });
+                },
+            };
+
+            //上传封面
+            var uploadInst = upload.render({
+                elem: '#test1'
+              , url: '/service/upload?busType=Course'
+              , before: function (obj) {
+                  //预读本地文件示例，不支持ie8
+                  obj.preview(function (index, file, result) {
+                      $('#demo1').attr('src', result); //图片链接（base64）
+                  });
+              }
+              , done: function (res) {
+                  if (!res.SuccessResponse) {
+                      return layer.msg('上传失败')
+                  }
+                  rootApp.baseInfoForm.CoverPath = res.Message
+                  layer.msg('上传成功')
+                  //上传成功
+              }
+              , error: function () {
+                  //演示失败状态，并实现重传
+                  var demoText = $('#demoText');
+                  demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                  demoText.find('.demo-reload').on('click', function () {
+                      uploadInst.upload();
+                  });
+              }
+            });
+
+            $('#layerDemo .layui-btn').on('click', function () {
+                var othis = $(this), method = othis.data('method');
+                active[method] ? active[method].call(this, othis) : '';
+            });
+            $('.LoginSet').on('click', function () {
+                var othis = $(this), method = othis.data('method');
+                active[method] ? active[method].call(this, othis) : '';
+            });
+        });
+</script>
+

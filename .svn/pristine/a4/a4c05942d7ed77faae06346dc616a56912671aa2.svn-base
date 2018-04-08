@@ -1,0 +1,216 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>轮播图设置</title>
+    <style>
+        .isDisplay {
+            display: none;
+        }
+
+        .layui-form-item {
+            margin-bottom: 10px !important;
+        }
+    </style>
+</head>
+<body id="root">
+    <blockquote class="layui-elem-quote">
+        <div class="layui-row layui-form">
+            <div class="layui-col-xs12" style="text-align:right">
+                <button class="layui-btn" @click="addItem"><i class="layui-icon"></i> 添加一张轮播图</button>
+            </div>
+        </div>
+    </blockquote>
+    <div class="OpenContainer">
+        <div class="layui-form layui-row" v-for="(index,item) in submitForm" style="width:1000px;margin-bottom:20px;">
+            <div class="layui-col-md6">
+                <img class="layui-upload-img" id="Stu1" v-bind:src="item.PicUrl+'?x-oss-process=image/resize,m_fixed,h_227,w_447'" style="width:447px;height:227px">
+            </div>
+            <div class="layui-col-md6">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">上传图片:</label>
+                    <div class="layui-input-inline">
+                        <uploadbutton v-bind:value.sync="item.PicUrl"></uploadbutton>
+                        <p id="StuText" style="margin-left:-15px;margin-top:5px;"></p>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">链接地址:</label>
+                    <div class="layui-input-inline">
+                        <input type="text" lay-verify="empty|TecentMark" autocomplete="off" placeholder="请输入链接地址" class="layui-input" v-model="item.Url">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">是否启用:</label>
+                    <div class="layui-input-block">
+                        <local-switch v-bind:value.sync="item.Valid" text="开启|关闭"
+                                      initial="off"></local-switch>
+
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">排序:</label>
+                    <div class="layui-input-inline">
+                        <input type="text" lay-verify="empty|TecentMark" autocomplete="off" placeholder="请输入排序" class="layui-input" v-model="item.Sort">
+                    </div>
+                </div>
+                <div class="layui-form-item" v-if="false">
+                    <label class="layui-form-label">广告图类型:</label>
+                    <div class="layui-input-block">
+                        <remote-rad v-bind:setting="Select" v-bind:value.sync="item.Type" initial="off"></remote-rad>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">&nbsp;</label>
+                    <button class="layui-btn layui-btn-small" @click="Add(item)">保存</button>
+                    <button class="layui-btn layui-btn-small" @click="Delete(item)">删除设置</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>
+
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="/Resources/js/Controls/Common.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate", "upload"],
+    function (fnr) {
+        var laydate = layui.laydate;
+        var $ = layui.jquery;
+        var form = layui.form;
+        var upload = layui.upload;
+
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+                Select: {
+                    tags: { name: "HeaderLogoOrName" },
+                    options: [
+                    { key: "1", value: "首页的广告图" },
+                    { key: "2", value: "登陆页面的广告图" }
+                    ]
+                },
+                chbSwitch: false,
+                submitForm: [
+                    {
+                        ID: '',
+                        PicUrl: '', //图片上传地址
+                        Url: '',     //跳转网址
+                        Valid: '', //状态  1启用 0禁用
+                        Type: '',  // 1 首页的广告图  2 登陆页面的广告图
+                        Sort: ''//排序
+                    }
+                ],
+            },
+            components: {
+                "uploadbutton": {
+                    "template": '<button type="button" class="layui-btn layui-btn-small" v-bind:id="login">选择图片</button>',
+                    props: ["value"],
+                    ready: function () {
+                        var self = this;
+                        upload.render({
+                            elem: this.$el,
+                            url: '/service/upload?busType=Carouse',
+                            before: function (obj) {
+
+                            },
+                            done: function (res) {
+                                //如果上传失败
+                                if (res.code > 0) {
+                                    return layer.msg('上传失败');
+                                }
+                                //上传成功
+                                self.value = res.Message
+                                layer.msg('上传成功')
+                            },
+                            error: function () {
+                                //演示失败状态，并实现重传
+                                var demoText = $('#StuText');
+                                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class=" demo-reload" style="cursor:pointer;">重试</a>');
+                                demoText.find('.demo-reload').on('click',
+                                function () {
+                                    uploadInst.upload();
+                                });
+                            }
+                        })
+                        console.log(this);
+                    }
+                }
+            },
+            ready: function () {
+                var self = this;
+                var laydate = layui.laydate;
+                $.get("/service/public/Mechanism/GetBannerList", {}, function (rsp) {
+                    if (rsp.SuccessResponse) {
+                        self.submitForm = rsp.Data;
+                    }
+                    else {
+                        layer.msg(rsp.Message, { icon: 2 });
+                    }
+                });
+            },
+            methods: {
+                addItem: function () {
+                    this.submitForm.push({
+                        PicUrl: '', //图片上传地址
+                        Url: '',     //跳转网址
+                        Valid: '', //状态  1启用 0禁用
+                        Type: '',  //1 首页的广告图  2 登陆页面的广告图
+                        Sort: ''//排序
+                    });
+                },
+                Delete: function (item) {
+                    if (item.ID > 0) {
+                        layer.confirm('确定删除吗，删除后将无法恢复', function () {
+                            $.ajax({
+                                url: '/service/Public/Mechanism/DeleteBanner',
+                                type: 'POST',
+                                data: { ID: item.ID },
+                                dataType: 'json',
+                                success: function (data) {
+                                    if (data.SuccessResponse) {
+                                        layer.msg(data.Message)
+                                    } else {
+                                        layer.msg(data.Message)
+                                    }
+                                }
+                            });
+                        })
+                    } else {
+                        rootApp.submitForm.pop();
+                    }
+                },
+                Add: function (item) {
+                    var data = { PicUrl: item.PicUrl, Url: item.Url, Valid: Number(item.Valid), Sort: item.Sort, ID: item.ID }
+
+                    if (data.PicUrl != "") {
+                        $.ajax({
+                            url: '/service/Public/Mechanism/AddBanner',
+                            type: 'POST',
+                            dataType: 'json',
+                            data: data,
+                            success: function (data) {
+                                if (data.Data) {
+                                    if (data.SuccessResponse) {
+                                        layer.msg(data.Message)
+                                    }
+                                } else {
+                                    layer.msg('data为空');
+                                }
+                            }
+                        });
+                    } else {
+                        layer.msg("图片不能为空，请选择要上传的图片！");
+                    }
+                },
+            },
+        });
+
+    });
+
+</script>

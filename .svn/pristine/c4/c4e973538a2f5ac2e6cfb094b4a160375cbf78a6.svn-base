@@ -1,0 +1,287 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>励弘在线-励弘计划,长沙启航</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script src="script/jquery.js"></script>
+    <link rel="stylesheet" href="Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="Resources/CSS/Font/css/font-awesome.min.css">
+    <script src="Resources/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="Resources/CSS/PC_css.css">
+    <link href="Resources/CSS/login.css" rel="stylesheet" />
+    <style>
+        .login-tabs li {
+            list-style:none;
+        }
+        .M15{
+            margin-bottom:15px;
+        }
+        .form-group{
+            position:relative;
+        }
+        .form-group>span.register_name{
+            position:absolute;
+            left:15px;
+            line-height:48px;
+            color:#666;
+        }
+        .p_l80{
+            padding-left:80px;
+        }
+        .register-Block {
+            width: 400px;
+            text-align: center;
+            position: fixed;
+            top: 40%;
+            left: 50%;
+            margin-top: -291.5px;
+            margin-left: -200px;
+        }
+        .err{
+                position: absolute;
+                bottom: 4px;
+                left: 0;
+                right: 0;
+                font-size: 14px;
+                color: #999;
+                height: 30px;
+                background-color: #ffd1ca;
+                line-height: 30px;
+                border-radius: 4px;
+                text-align: left;
+                padding: 0 5px;
+                font-family: sans-serif;
+        }
+    </style>
+
+</head>
+<body id="root">
+    <div class="login" v-cloak>
+        <div class="register-Block">
+            <img src="Resources/images/lhlogo.png" width="300" />
+            <div class="login-form">
+                <h5 style="padding: 38px;font-size: 18px;line-height: 18px;position:relative;">注册网校账号
+                    <span class="err" v-if="errShow"> <i class="fa fa-exclamation-circle" style="margin-right:20px;color:#ff5500"></i> <span>{{errmsg}}</span></span>
+                </h5>
+                <div v-if="submitData.RegisterType==1">
+                    <div class="form-group">
+                        <span class="register_name">姓名</span>
+                        <input type="text" v-model="submitData.Name" class="form-control p_l80" placeholder="您的登录名">
+                    </div>
+                    <div class="form-group">
+                        <span class="register_name">身份证</span>
+                        <input type="text" v-model="submitData.CardNumber" class="form-control p_l80" @blur="cardnumber" placeholder="请输入你的身份证号码">
+                    </div>
+                    <div class="form-group">
+                        <span class="register_name">设置密码</span>
+                        <input type="password" v-model="submitData.Password" class="form-control p_l80" placeholder="建议至少使用2种字符">
+                    </div>
+                    <div class="form-group">
+                        <span class="register_name">确认密码</span>
+                        <input type="password" v-model="rePassword" class="form-control p_l80" @blur="checkPW" placeholder="请再次密码">
+                    </div>
+                </div>
+                <div v-if="submitData.RegisterType==2">
+                    <div class="form-group">
+                        <input type="text" v-model="submitData.Phone" class="form-control " placeholder="请输入手机号码">
+                    </div>
+                    <div class="form-code form-group">
+                        <input type="password" v-model="submitData.Code" class="form-control " placeholder="验证码">
+                        <span @click="SendPhoneCode" v-bind:disabled="status.disabled">{{status.tipText}}</span>
+                    </div>
+                </div>
+                
+                <button class="loginButton" @click="submit" v-if="registerData.RegisterValid == 1">立即注册</button>
+                <button class="loginButton" style="background-color: rgb(221, 221, 221);" disabled v-else>系统未开启注册功能</button>
+                <div class="clearfix" style="text-align: left;margin-bottom: 10px;font-size: 12px" v-if="registerData.RegisterProtocolValid == 1">
+                    点击立即注册，即表示您同意并愿意遵守 <a style="color: #e60012; cursor: pointer;" @click="protocolContent">网校服务协议</a>
+                    <!--和 <a href="#" style="color: #e60012">法律声明</a>-->
+                </div>
+                <div style="padding: 30px">
+                    <a href="Login.shtml">已有账号,马上登录</a>
+                </div>
+            </div>
+        </div>
+        <!--footer-->
+        <div class="foot">
+            <p class="copyright">Copyright @2017　励弘在线　湖南八方科技有限公司　版权所有　湘ICP备10201076号-1</p>
+        </div>
+    </div>
+</body>
+</html>
+<link href="Resources/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="Resources/js/modules/vue/vue.min.js"></script>
+<script src="Resources/js/modules/layer/layui.js"></script>
+<script src="Resources/js/require_config.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt"],
+    function (fnr) {
+        var $ = layui.$;
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+                errShow:false,
+                errmsg:'q',
+                rePassword: '',
+                phoneState: false,
+                cardState: false,
+                code: "",
+                xcode:'',
+                submitData: {
+                    RegisterType: '1',
+                    Name: '',
+                    CardNumber: '',
+                    Password: '',
+                    Phone: '',
+                    Code: ''
+                },
+                registerData: {
+                    RegisterProtocolContent: '',
+                    RegisterProtocolValid: '',
+                    RegisterValid: ''
+                },
+                status: {
+                    disabled: false, 
+                    tipText: '获取验证码'
+                }
+            },
+            ready: function () {
+                this.GetConfiguration();
+
+            },
+            methods: {
+                protocolContent: function () {
+                    var _this = this;
+                    layer.open({
+                        type: 1
+                        , title: false //不显示标题栏
+                        , closeBtn: false
+                        , area: '300px;'
+                        , shade: 0.8
+                        , btn: ['关闭']
+                        , btnAlign: 'c'
+                        , moveType: 1 //拖拽模式，0或者1
+                        , content: '<div style="padding: 20px 30px;">' + _this.registerData.RegisterProtocolContent + '</div>'
+                        
+                    });
+                },
+
+                cardnumber: function () {
+                    _this = this;
+                    var reg = /^\d{6}(18|19|20)?\d{2}(0[1-9]|1[12])(0[1-9]|[12]\d|3[01])\d{3}(\d|X)$/i;
+                    if (reg.test(_this.submitData.CardNumber) === false) {
+                        this.errShow = true;
+                        this.errmsg = '请输入正确的身份证号码';
+                    } else {
+                        _this.cardState = true;
+                        if (_this.phoneState) {
+                            _this.errShow = false;
+                        } else {
+                            this.errmsg = '请输入相同的密码';
+                        }
+                        return true;
+                    }
+                },
+                checkPW: function () {
+                    if (this.rePassword != this.submitData.Password) {
+                        this.errShow = true;
+                        this.errmsg = '请输入相同的密码';
+                    } else {
+                        _this.phoneState = true;
+                        if (_this.cardState) {
+                            _this.errShow = false;
+                        } else {
+                            this.errmsg = '请输入正确的身份证号码';
+                        }
+                        return true;
+                    }
+                },
+                GetConfiguration: function () {
+                    _this = this;
+                    $.get("/service/HConfiguration/GetConfiguration", function (res) {
+                        if (res.SuccessResponse) {
+                            _this.submitData.RegisterType = res.ReturnData.Data.RegisterType ? 1 : 2;
+                            _this.registerData.RegisterProtocolValid = res.ReturnData.Data.RegisterProtocolValid;
+                            _this.registerData.RegisterProtocolContent = res.ReturnData.Data.RegisterProtocolContent; 
+                            _this.registerData.RegisterValid = res.ReturnData.Data.RegisterValid;
+                        }
+                    })
+                },
+                setCodeTime: function (Seconds, e) {
+                    var self = this;
+                    if (Seconds > 0) {
+                        self.status.disabled = true;
+                        self.status.tipText = Seconds + "秒";
+                        var timer = setInterval(function () {
+                            Seconds = Seconds - 1;
+                            if (Seconds > 0)
+                                self.status.tipText = Seconds + "秒";
+                            else {
+                                clearInterval(timer);
+                                self.status.tipText = "获取验证码";
+                                self.status.disabled = false;
+                            }
+                        }, 1000);
+                    } else
+                        self.status.disabled = false;
+                    return false;
+                },
+                SendPhoneCode: function (e) {
+
+                    var self = this;
+                    if (self.submitData.Phone == '') {
+
+                    }
+                    if (self.status.disabled) {
+                        return;
+                    }
+                    self.status.disabled = true;
+                    $.post("/service/NiceStudent/RegisterStudentInfoPhone", { Phone: self.submitData.Phone }, function (rsp) {
+                        if (rsp.SuccessResponse) {
+                            self.xcode = rsp.ReturnData.Data.Code;
+                            self.setCodeTime(rsp.ReturnData.Data.Seconds, e)
+                            layer.msg(rsp.Message, { icon: 1 });
+                        }
+                        else {
+                            self.setCodeTime(rsp.ReturnData.Data.Seconds, e)
+                            layer.msg(rsp.Message, { icon: 2 });
+                        }
+                    })
+                    return false;
+                },
+                submit: function () {
+                    _this=this;
+                    if (_this.submitData.RegisterType == 1) {
+                        if (!_this.submitData.Name || !_this.submitData.CardNumber || !_this.submitData.Password || !_this.rePassword) {
+                            _this.errmsg = '请完善注册信息';
+                            _this.errShow = true;
+                            return;
+                        } 
+                    } else if (_this.submitData.RegisterType == 2) {
+                        if (!_this.submitData.Phone || !_this.submitData.Code) {
+                            _this.errmsg = '请完善注册信息';
+                            _this.errShow = true;
+                            return;
+                        } 
+                    }
+                    if(_this.errShow ==true){return false}
+                    $.post("/service/NiceStudent/RegisterStudentInfo", _this.submitData, function (res) {
+                        if (res.SuccessResponse) {
+                            layer.confirm("注册成功", function () {
+                                fnr.Cookie.set('StuId');
+                                location.href='Login.shtml'
+                            })
+                        } else {
+                            layer.msg(res.Message)
+                        }
+                    })
+                },
+            }
+        });
+    });
+</script>

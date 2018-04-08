@@ -1,0 +1,163 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>支付成功</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="../Resources/fonts/iconfont.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link href="../Resources/CSS/Font/css/font-awesome.min.css" rel="stylesheet" /> 
+    <link rel="stylesheet" href="../Resources/CSS/PC_css.css">
+    <script src="../script/artTemplate.js"></script>
+    <link href="../Resources/CSS/question.css" rel="stylesheet" />
+</head>
+<body style="background-color: #f7f7f7;user-select: none;" id="root">
+    <!--顶部-->
+    <!--#<!--#include file="../UserControl/stepHeader.html"-->
+    <!--学校图标以及当前专业-->
+    <div class="nav">
+        <div class="w1200 clearfix">
+            <div class="nav-header pull-left">
+                <a href="#"><img src="../Resources/images/hd.png" /></a>
+            </div>
+            <div class="nav-bar-right pull-right">
+                <div class="toggle-switch">
+                    <div class="fhsy inlineblock">
+                        <i class="iconfont icon-fanhuishouye1"></i>
+                        <span class="current">返回首页</span>
+                    </div>
+                    <div class="drownmenu">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="w1200 clearfix">
+        <div class="payMain">
+            <div class="navTabs">
+                <i class="iconfont icon-ditu"></i>&nbsp;&nbsp;&nbsp;
+                <span>个人管理>>我的订单>>提交订单</span>
+            </div>
+            <div class="middle-main" style="padding: 23px 0;">
+                <h3 class="borderH3">提问详情</h3>
+
+                <!--订单集合-->
+                <ul class="ordersList">
+                    <li style="background-color: #fafafa;">
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="width: 70%; padding: 21px 18px 18px;">
+                                    <img src="../Resources/images/dianshang.png" style="width: 160px; height: 90px;" />
+                                    <div class="courseWarp">
+                                        <h3 class="courseName">金融市场学</h3>
+                                        <p class="teacherMsg">
+                                            一级会计师 
+                                            <span class="teacName">赵西</span> 
+                                            <span class="courseNum">488</span>
+                                            课
+                                        </p>
+                                    </div>
+                                </td>
+                                <td style="width: 15%;">
+                                    <p style="color: #9a9a9a;">
+                                        <i class="iconfont icon-shanchu"></i>
+                                        删除
+                                    </p>
+                                </td>
+                                <td style="width: 15%;">
+                                    <p style="color: #9a9a9a;">
+                                        实付款：
+                                        &nbsp;&nbsp;
+                                        <span style="color: #ef4141;">￥299</span>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </li>
+
+                    <li style="background-color: #fafafa;">
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="width: 70%; padding: 21px 18px 18px;">
+                                    <img src="../Resources/images/dianshang.png" style="width: 160px; height: 90px;" />
+                                    <div class="courseWarp">
+                                        <h3 class="courseName">金融市场学</h3>
+                                        <p class="teacherMsg">
+                                            一级会计师 
+                                            <span class="teacName">赵西</span> 
+                                            <span class="courseNum">488</span>
+                                            课
+                                        </p>
+                                    </div>
+                                </td>
+                                <td style="width: 15%;">
+                                    <p style="color: #9a9a9a;">
+                                        <i class="iconfont icon-shanchu"></i>
+                                        删除
+                                    </p>
+                                </td>
+                                <td style="width: 15%;">
+                                    <p style="color: #9a9a9a;">
+                                        实付款：
+                                        &nbsp;&nbsp;
+                                        <span style="color: #ef4141;">￥299</span>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </li>
+
+                    <li class="clearfix">
+                        <p style="color: #9a9a9a; display: inline-block;">
+                            提示：请在30分钟内支付完成，如未完成此订单讲自动关闭，需重新购买！
+                        </p>
+                        <div class="submitOrderBox pull-right">
+                            <p style="color: #333; margin-bottom: 16px;">
+                                共
+                                <span>2</span>
+                                件商品，商品总额：
+                                &emsp;&nbsp;
+                                ￥598
+                            </p>
+                            <p style="color: #333; margin-bottom: 16px;">
+                                应付总额：
+                                <span style="font-size: 22px;font-weight:bold;color: #ef4141;">￥598</span>
+                            </p>
+                            <p class="subBtn">提交订单</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--footer-->
+    <!--#<!--#include file="../UserControl/Footer.html"-->
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil'],
+        function (fnr) {
+            var $ = layui.$;
+            var table = layui.table;
+            var tableExt = layui.tableExt;
+            var vm = new Vue({
+                el: "#root",
+                data: {
+                },
+                ready: function () {
+                },
+                methods: {
+                    
+                }
+            });
+        })
+    </script>
+</body>
+
+</html>

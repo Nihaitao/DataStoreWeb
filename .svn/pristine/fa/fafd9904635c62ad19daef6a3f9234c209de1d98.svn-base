@@ -1,0 +1,197 @@
+﻿<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>设置接收人</title>
+    <style>
+        div.layui-table-cell {
+            height: 30px;
+        }
+    </style>
+</head>
+<div class="mainContainer" id="root">
+    <div class="layui-tab layui-tab-card">
+       
+        <div class="layui-tab-content">
+            <div class="layui-form" style="margin-bottom:30px;">
+                <div class="layui-row custom-title">
+                    <div class="layui-col-md3">序号</div>
+                    <div class="layui-col-md3">名称</div>
+                    <div class="layui-col-md2">状态</div>
+                   
+                 
+                </div>
+                <div class="custom-field">
+                    <div class="tree">
+                        <div class="tree-content" v-for="(index,item) in formList" >
+                            <div class="layui-row custom-ele" v-cloak>
+                                <div class="layui-col-md3">{{item.Account_ID}}</div>
+                                <div class="layui-col-md3">{{item.Name}}</div>
+                                <div class="layui-col-md2"> 
+                                    <local-chb class="chbClass" v-bind:value.sync="item.Check" ></local-chb>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="layui-btn" @click="addField">保存设置</button>
+        </div>
+    </div>
+</div>
+
+
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+
+
+<style>
+    .custom-title {
+        line-height: 45px;
+        background: #f5f5f5;
+        padding-left: 10px;
+    }
+
+    .custom-block {
+        line-height: 45px;
+        height: 45px;
+        background: #e0e0e0;
+        padding-left: 10px;
+    }
+
+    .custom-ele, .custom-empty {
+        line-height: 45px;
+        height: 45px;
+        border-bottom: 1px solid #ebebeb;
+        padding-left: 10px;
+    }
+
+        .custom-ele:hover {
+            line-height: 45px;
+            height: 45px;
+            background: #f5f5f5;
+        }
+
+    .sort-icon {
+        cursor: move;
+    }
+
+    .spical {
+        color: #C9C9C9;
+        font-size: 12px;
+        position: relative;
+        display: inline-block;
+        vertical-align: middle;
+        height: 22px;
+        line-height: 22px;
+        padding: 0 5px;
+        margin-top: 8px;
+    }
+
+    [v-cloak] {
+        display: none;
+    }
+</style>
+<script>
+    Vue.component('local-switch1',
+    {
+        template:
+            '<input type="checkbox" id="{{setting.tags.id}}" name="{{setting.tags.name}}" item="" lay-skin="switch" lay-filter="{{layfilter}}" lay-text="{{text||\'ON|OFF\'}}" v-model="value" />',
+        props: ['setting', 'value', "text", "item"],
+        data: function () {
+            return {
+                layfilter: ""
+            };
+        },
+        watch: {
+           
+        },
+        ready: function () {
+            
+            
+        },
+        methods: {
+          
+        }
+    });
+
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'jqueryui'],
+        function (fnr) {
+            var $ = layui.$;
+            var jqueryui = layui.jqueryui;
+            var form = layui.form;
+            var vm = new Vue({
+                el: "#root",
+                data:
+                {
+                    isChecked: false,
+                    selected: 0,
+                    isnew: '',
+                   
+                    formList: [],
+                    content: ''
+                },
+                events: {
+                   
+                },
+                computed: {
+                    ColumnNames: function () {
+                        return this.ColumnName[this.selected].val
+                    },
+                },
+                ready: function () {
+                    this.GetHDictionaryList();
+
+                  
+
+                },
+                methods: {
+                    choose: function (index, item) {
+                        this.selected = index;
+                        this.GetHDictionaryList();
+                    },
+                    addField: function () {
+                        var that = this;
+                        CustomerData = [];
+                        //保存设置数据
+                        $.each(that.formList, function (k, v) {
+                            if (v.Check) {
+                                CustomerData.push(v.Account_ID)
+                            }
+                        })
+                        $.ajax({
+                            url: '/service/crm/Client/SetUpRecipient',
+                            type: 'post',
+                            data: { "CustomerData": CustomerData },
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data) {
+                                     layer.msg(data.Message);
+                                   
+                                } else {
+                                    layer.msg(data.Message);
+                                }
+                            }
+                        });
+                    },
+                   
+                    GetHDictionaryList: function () {
+                        var that = this;
+                        $.get("/service/crm/Client/GetBenRecipientList", {}, function (res) {
+                            if (res.SuccessResponse) {
+                                $.each(res.Data, function (k, v) {
+                                    if (v.AccountID > 0) {
+                                        v.Check = true;
+                                    }
+                                    else {
+                                        v.Check = false;
+                                    }
+                                })
+                                that.formList = res.Data;
+                            }
+                        });
+                    },
+                }
+            });
+        });
+</script>

@@ -1,0 +1,195 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body id="root">
+    <div class="mainContainer">
+
+        <blockquote class="layui-elem-quote">
+            <div class="layui-row layui-form">
+                <div class="layui-col-xs6">
+                    
+                    <div class="layui-input-inline">
+                        <input type="text" name="SearchValue" class="layui-input" v-model="queryFormData.SearchValue" placeholder="名称/手机号">
+                    </div>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="statusSetting" value.sync="queryFormData.SearchIsEnable"
+                                    initial="off"></remote-sel>
+                    </div>
+                    <button class="layui-btn layui-btn-primary" lay-submit lay-filter="btn" @click="doSearch">查询</button>
+                </div>
+                <div class="layui-col-xs6" style="text-align: right">
+                    <button class="layui-btn" @click="addStudent"><i class="layui-icon"></i> 添加用户</button>
+                    <button class="layui-btn layui-btn-primary">导入</button>
+                </div>
+            </div>
+        </blockquote>
+
+        
+      
+
+        <!--操作模板-->
+        <table id="listTable" lay-filter="listTable"></table>
+    </div>
+</body>
+</html>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-mini" lay-event="detail">修改</a>
+    <a class="layui-btn layui-btn-mini" lay-event="edit">登录记录</a>
+    <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">禁用</a>
+    <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="set">设置为部门负责人</a>
+
+</script>
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'layedit','layer'],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+            var layer = layui.layer;
+    
+
+            //搜索条件
+            var rootApp = new Vue({
+                el: '#root',
+                data: {
+                   
+                    statusSetting: {
+                        options: [
+                            {
+                                "id": -1,
+                                "name": "ABC"
+                            }
+                        ],
+                        fields: { root: 'data', key: 'id', value: 'name' ,},
+                        remote: { url: "/Base/Aciton?urlData=Station/CreateStationAccount" }
+                    },
+                    queryFormData: {
+                        //SearchValue: 'StuName|Phone',
+                        placeholder: '姓名|手机号',
+                        SeaechValue:"姓名|手机号",
+                        //SearchValue: '名称/手机号',
+                        SearchIsEnable: 5                    }
+                },
+                methods: {
+                    doSearch: function () {
+                        var self = this;
+                        //$.get("/service/Station/CreateStationAccount", self.queryFormData, function (data) {
+                           // console.log(data)
+                        //})
+                    },
+                    addStudent: function () {
+                        fnr.openDialog({
+                            title: '添加用户',
+                            area: ['800px', '700px'],
+                            content: ['/Html/HR/add.html'], //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+                            //btn: ['保存'],
+                            yes: function (index, layero) {
+
+                                var iframeWin = window[layero.find('iframe')[0]['name']];
+                                $(iframeWin.document).find(".layui-btn").click();
+
+                            }, cancel: function () {
+                               // paging.Refresh(); //重新加载当前页面
+                                //location.href = location.href;
+                            }
+                        });
+                    },
+                }
+            });
+
+
+
+
+            //绑定列表
+            var listTable = table.render({
+                elem: '#listTable',
+                even: true, //开启隔行背景
+                page: true, //页分
+                cols: [
+                    [
+                        { fixed: true, checkbox: true },
+                        //{ fixed: true, field: 'name', title: '姓名', width: 120, sort: true },
+                        {
+                            fixed: true, field: 'name', title: '姓名', width: 150, sort: true, templet: function () {
+                                var array = new Array();
+                                array.push("<a href='javascript:;' lay-event='detail1'>" + (this.job_bool ? this.name+"(部门负责人)" : this.name) + "</a>");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        },
+                        {
+                            field: 'id', title: '性别', width: 120, sort: true, templet: function () {
+                                var array = new Array();
+                                array.push("<a href='javascript:;' lay-event='detail1'>" + (this.status ? "男" : "女") + "</a>");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        },
+                        { field: 'phone', title: '手机号码', width: 120, sort: true },
+                        { field: 'department', title: '部门', width: 120, sort: true },
+                        { field: 'id', title: '登录次数', width: 120, sort: true },
+                        { field: 'id', title: '上次登录时间', width: 120, sort: true },
+                        {
+                            fixed: 'right',
+                            field: 'Valid',
+                            title: '操作',
+                            width: 350,
+                            toolbar: '#barDemo',
+                            align:'center'
+                        }
+                    ]
+                ],
+                data: [
+                    { "id": 1, "name": "小白", job_bool: true, status: false ,"phone":13111111111 , "department":"人事"},
+                    { "id": 2, "name": "小黑", job_bool: true, status: true, "phone": 13111111111, "department": "财务" },
+                    { "id": 3, "name": "小黄", job_bool: false, status: false, "phone": 13111111111, "department": "行政" }
+                ]
+            });
+
+               
+
+            //监听工具栏事件
+            tableExt.addEvent("tool(listTable)",
+                {
+                    //修改标签
+                    "detail": function (data, obj) {
+                        
+                        alert("修改当前标签")
+
+           
+
+                    },
+                    //登录记录
+                    "edit": function (data, obj) {
+                        alert("登录记录标签")
+                       
+                    },
+                    //禁用
+                    "del": function (data, obj) {
+                        alert("禁用当前标签")
+                       
+                    },
+                    //通过判断obj_bool值设置为部门负责人
+                    "set": function (data, obj) {
+                        data.name = data.name + "(部门负责人)";
+                        if (data.job_bool == true) {
+                            data.job_bool = false;
+                        } else {
+                            data.job_bool = true;
+                        }
+                        var that = $(".layui-table-body").eq(0).find("tbody").find(".layui-table-click").find("td[data-field='name']")
+                            
+                        alert("设置为部门负责人" + data.name);
+
+                    },
+                   
+                });
+        });
+</script>
+

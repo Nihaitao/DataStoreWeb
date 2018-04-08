@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>联系记录详情</title>
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <link href="/Resources/CSS/super.css" rel="stylesheet" />
+</head>
+<body style="user-select: none;" id="root" v-cloak>
+    <div style="padding:20px;">
+        <table class="layui-table tdCenter secondLeft" lay-skin="line">
+            <colgroup>
+                <col width="160">
+            </colgroup>
+            <tbody>
+                <tr>
+                    <td>学生名称</td>
+                    <td>{{datalist.Name}}</td>
+                </tr>
+                <tr>
+                    <td>联系记录</td>
+                    <td>{{datalist.ContactTypeName}}</td>
+                </tr>
+                <tr>
+                    <td>联系时间</td>
+                    <td>{{datalist.ContactTime}}</td>
+                </tr>
+                <tr style="background-color:#FAFAFA">
+                    <td>聊天记录</td>
+                    <td>
+
+                        <div class="Chat_record">
+                            {{datalist.Content}}
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <script src="/Resources/js/headFootLayout.js"></script>
+    <script>
+        require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil'],
+            function (fnr) {
+                var $ = layui.$;
+                var table = layui.table;
+                var tableExt = layui.tableExt;
+                var vm = new Vue({
+                    el: "#root",
+                    data: {
+                        datalist: []
+                    },
+                    ready: function () {
+                        var _this = this;
+                        $.get('/service/edu/StudentContact/GetStudentContactli', { ID: fnr.getQueryString("ID"), StuID: fnr.getQueryString("StuID"), StuDetail_ID: fnr.getQueryString("StuDetail_ID") }
+                        , function (res) {
+                            console.log(res.Data)
+                            res.Data.ContactTime = fnr.format(res.Data.ContactTime, 'yyyy-MM-dd HH:mm:ss')
+                            _this.datalist = res.Data;
+                        })
+
+                    },
+                    methods: {
+
+                    }
+                });
+            })
+    </script>
+</body>
+</html>

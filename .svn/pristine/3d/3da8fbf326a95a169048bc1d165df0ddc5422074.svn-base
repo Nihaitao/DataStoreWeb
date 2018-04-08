@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <title>客户分配</title>
+    <link rel="stylesheet" href="../css/iconfont.css">
+    <link rel="stylesheet" href="../js/modules/layer/css/layui.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/client/distribution.css">
+    <script src="../js/jquery.js"></script>
+    <script src="../js/modules/vue/vue.min.js"></script>
+    <script src="../js/modules/layer/layui.js"></script>
+    <script>
+        (function () {
+            document.documentElement.style.fontSize = document.documentElement.clientWidth / 7.5 + 'px';
+            window.onresize = function () {
+                document.documentElement.style.fontSize = document.documentElement.clientWidth / 7.5 + 'px';
+            };
+        })()
+    </script>
+</head>
+<body>
+    <div class="appContainer">
+        <div class="head">
+            <div class="headInput">
+                <input type="text" placeholder="请输入搜索内容">
+                <i class="iconfont icon-sousuo searchIcon"></i>
+            </div>
+        </div>
+        <div class="main">
+            <ul>
+                <li>
+                    A
+                </li>
+                <li class="item active">
+                    <i class="iconfont icon-xuanze-gou"></i>
+                    <div>
+                        <img src="../images/feipei.png" />
+                        <span>A-王小明</span>
+                    </div>
+                </li>
+                <li class="item">
+                    <i class="iconfont icon-weixuanze-gou"></i>
+                    <div>
+                        <img src="../images/feipei.png" />
+                        <span>A-王小明</span>
+                    </div>
+                </li>
+            </ul>
+            <ul>
+                <li>
+                    B
+                </li>
+                <li class="item active">
+                    <i class="iconfont icon-xuanze-gou"></i>
+                    <div>
+                        <img src="../images/feipei.png" />
+                        <span>B-王小明</span>
+                    </div>
+                </li>
+                <li class="item">
+                    <i class="iconfont icon-weixuanze-gou"></i>
+                    <div>
+                        <img src="../images/feipei.png" />
+                        <span>B-王小明</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="footerBtnBox">
+            <p>确认</p>
+        </div>
+    </div>
+</body>
+</html>

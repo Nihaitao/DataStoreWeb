@@ -1,0 +1,543 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery-1.4.4.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery.ztree.core.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery.ztree.excheck.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery.ztree.exedit.js"></script>
+
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <style>
+        div.layui-table-cell { height: 30px; }
+
+        textarea { resize: none; }
+
+        [v-cloak] { display: none; }
+    </style>
+
+    <script>
+        require_js_file(["table", 'tree', "form", "jquery", "tableExt", "linq"],
+            function (fnr) {
+                var zTreeObj;
+                var treeId, treeNode, clickFlag;
+                var linq = layui.linq;
+                // zTree 的参数配置，深入使用请参考 API 文档（setting 配置详解）
+                var setting = {
+                    async: {
+                        enable: true,
+                        autoParam: ["Department_ID"],
+                        type: "get",
+                        dataFilter: ajaxDataFilter,
+                        url: "/service/hr/Station/GetListDepartment"
+                    },
+                    edit: {
+                        enable: true,
+                        editNameSelectAll: true,
+                        showRemoveBtn: showRemoveBtn,
+                        showRenameBtn: showRenameBtn
+                    },
+                    data: {
+                        key: {
+                            name: "Name"
+                        },
+                        simpleData: {
+                            enable: true,
+                            idKey: "ID",
+                            pIdKey: "CID"
+                        }
+                    },
+                    view: {
+                        addHoverDom: addHoverDom,  //添加事件
+                        removeHoverDom: removeHoverDom, //鼠标移开移除添加按钮
+                        nameIsHTML: true,
+                        showTitle: false
+                    },
+                    callback: {
+                        beforeEditName: beforeEditName,//修改
+                        beforeRemove: beforeRemove,//删除
+                        beforeClick: beforeClick, //点击事件
+                    }
+                };
+
+                //公司节点去掉删除
+                function showRemoveBtn(treeId, treeNode) {
+                    return treeNode.Department_ID;
+                }
+                //公司节点去掉修改
+                function showRenameBtn(treeId, treeNode) {
+                    return treeNode.Department_ID;
+                }
+                //修改
+                function beforeEditName(treeId, treeNode) {
+                    zTreeObj.selectNode(treeNode);
+                    rootApp.$data.queryFormData.Department_ID = treeNode.Department_ID;
+                    rootApp.$data.queryFormData.Department_Name = treeNode.NewName;
+                    rootApp.$data.queryFormData.Organization = treeNode.Organization;
+                    rootApp.$data.queryFormData.IsGeneralManager = treeNode.IsGeneralManager;
+                    if (rootApp.$data.workstatus == 1) {
+                        fnr.openDialog({
+                            title: '修改部门',
+                            area: ['470px', '300px'],
+                            content: ['DepartmentEdit.html?ID=' + treeNode.ID + '&Name=' + treeNode.NewName + '&Organization=' + treeNode.Organization + '&IsGeneralManager=' + treeNode.IsGeneralManager],
+                            btn: ['确认修改'],
+                            yes: function (index, layero) {
+                                var iframeWin = window[layero.find('iframe')[0]['name']];
+                                $(iframeWin.document).find(".layui-btn").click();
+                            },
+                            events: {
+                                refresh: function (data) {
+                                    var nodes = zTreeObj.getSelectedNodes();
+                                    if (data.IsGeneralManager == 0)
+                                        nodes[0].Name = data.Name + '[' + treeNode.ExistOrganization + '/' + data.Organization + ']';
+                                    else
+                                        nodes[0].Name = data.Name;
+                                    treeNode.NewName = data.Name;
+                                    treeNode.Organization = data.Organization;
+                                    treeNode.IsGeneralManager = data.IsGeneralManager;
+                                    zTreeObj.updateNode(nodes[0]);
+                                    zTreeObj.reAsyncChildNodes(nodes[0], "refresh");
+                                }
+                            }
+                        });
+                    }
+                    return false;
+                }
+
+                //删除节点事件
+                function beforeRemove(treeId, treeNode) {
+                    zTreeObj.selectNode(treeNode);
+                    rootApp.$data.queryFormData.Department_ID = treeNode.Department_ID;
+
+                    if (treeNode.IsExistChild == 1) {
+                        layer.msg("请删除此部门下的成员或子部门后，再删除此部门")
+                        return false;
+                    }
+
+                    if (rootApp.$data.workstatus == 1) {
+                        layer.confirm('确定删除吗？删除后不可恢复！', function () {
+
+                            $.post("/service/work/api/delDepartment", { Department_ID: treeNode.Department_ID }, function (res) {
+                                if (res.SuccessResponse) {
+                                    $.ajax({
+                                        url: '/service/hr/Department/DepartmentDelete',
+                                        type: 'POST',
+                                        data: {
+                                            ID: treeNode.Department_ID,
+                                        },
+                                        success: function (data) {
+                                            layer.msg(data.Message)
+                                            if (data.SuccessResponse) {
+
+                                                var nodes = zTreeObj.getNodesByParam("ID", treeNode.CID, null);
+                                                zTreeObj.selectNode(nodes[0]);
+                                                rootApp.$data.queryFormData.Department_ID = nodes[0].Department_ID;
+                                                rootApp.$data.queryFormData.Department_Name = nodes[0].Name
+
+                                                zTreeObj.removeNode(treeNode);
+                                            }
+                                        }
+                                    });
+                                }
+                            })
+                        })
+                    }
+                    return false;
+                }
+                //添加部门
+                function addHoverDom(treeId, treeNode) {
+
+                    if (treeNode.isParent || treeNode.IsGeneralManager != 1) {
+                        var sObj = $("#" + treeNode.tId + "_span");
+                        if (treeNode.editNameFlag || $("#addBtn_" + treeNode.tId).length > 0) return;
+                        var addStr = "<span class='button add'  id='addBtn_" + treeNode.tId + "' title='添加子部门' onfocus='this.blur();'></span>";
+                        sObj.after(addStr);
+                        var btn = $("#addBtn_" + treeNode.tId);
+                        if (btn)
+                            btn.bind("click", function () {
+                                zTreeObj.selectNode(treeNode);
+                                rootApp.$data.queryFormData.Department_ID = treeNode.Department_ID;
+                                rootApp.$data.queryFormData.Department_Name = treeNode.Name
+                                if (rootApp.$data.workstatus == 1) {
+                                    fnr.openDialog({
+                                        title: '添加部门',
+                                        area: ['470px', '300px'],
+                                        content: ['DepartmentEdit.html?IsGeneralManager=0&CID=' + treeNode.Department_ID],
+                                        btn: ['确认添加'],
+                                        yes: function (index, layero) {
+
+                                            var iframeWin = window[layero.find('iframe')[0]['name']];
+                                            $(iframeWin.document).find(".layui-btn").click();
+
+                                        },
+                                        events: {
+                                            refresh: function (data) {
+                                                var nodes = zTreeObj.getSelectedNodes();
+                                                if (!nodes[0].isParent) {
+                                                    nodes[0].isParent = true;
+                                                    zTreeObj.updateNode(nodes[0]);
+                                                }
+                                                zTreeObj.reAsyncChildNodes(nodes[0], "refresh");
+                                            }
+                                        }
+                                    });
+                                }
+                                return false;
+                            });
+                    }
+                    if (!rootApp.$data.workstatus == 1) {
+                        $(".add").css("filter", "grayscale(1)")
+                        $(".edit").css("filter", "grayscale(1)")
+                        $(".remove").css("filter", "grayscale(1)")
+                    }
+
+                };
+                function removeHoverDom(treeId, treeNode) {
+                    $("#addBtn_" + treeNode.tId).unbind().remove();
+                };
+
+                function ajaxDataFilter(treeId, parentNode, rsp) {
+                    rsp.Data.map(function (a, b) {
+                        a.Company_ID = parentNode.Company_ID;
+                        a.Department_ID = a.ID;
+                        a.isParent = a.IsExistChild;
+                        a.NewName = a.Name;
+                        if (a.IsGeneralManager == 0)
+                            a.Name = a.Name + '[' + a.ExistOrganization + '/' + a.Organization + ']';
+                    });
+                    return rsp.Data;
+                };
+                function beforeClick(treeId, treeNode, clickFlag) {
+                    treeId = treeId;
+                    treeNode = treeNode;
+                    clickFlag = clickFlag;
+                    rootApp.$data.queryFormData.Department_ID = treeNode.Department_ID;
+                    rootApp.$data.queryFormData.Department_Name = treeNode.Name
+                    listTable.reload({
+                        where: { Department_ID: treeNode.Department_ID },
+                    });
+                }
+
+                function showall(data, CID) {
+                    var array = new Array();
+                    $.each(data, function (i, x) {
+                        if (x.ID == CID) {
+                            array.push("<a href='javascript:;'>" + this.Name + "</a> > ");
+                            array = array.concat(showall(data, x.CID));
+                        }
+                    });
+                    return array;
+                }
+
+                var table = layui.table;
+                var tableExt = layui.tableExt;
+                //绑定列表
+                var listTable = table.render({
+                    elem: '#listTable',
+                    even: true, //开启隔行背景
+                    height: 'full-110',
+                    page: true, //页分
+                    id: "listTable",
+                    cols: [
+                        [
+                            //{ fixed: true, checkbox: true },
+                            { field: 'Account_ID', title: 'ID', width: 80, sort: true },
+                            { field: 'Name', title: '姓名', width: 120, sort: true },
+                            {
+                                title: '性别', width: 60, templet: function () {
+                                    var array = new Array();
+                                    array.push("<span>" + (this.Sex == 1 ? "男" : "女") + "</span>");
+                                    return "<div>" + array.join("") + "</div>";
+                                }, sort: false
+                            },
+                            { field: 'Phone', title: '手机号码', width: 120, sort: true },
+                            {
+                                field: 'DepartData', title: '部门', width: 400, templet: function () {
+                                    var self = this;
+                                    var array = new Array();
+                                    $.each(self.DepartData.Departments, function () {
+                                        array = array.concat(showall(self.DepartData.Data, this.CID).reverse());
+                                        array.push("<a href='javascript:;'>" + this.Name + "</a>");
+                                        array.push(" ； ");
+                                    });
+
+                                    return array.join("");
+                                }
+                            },
+                            {
+                                title: '在职状态', width: 100, templet: function () {
+                                    var array = new Array();
+                                    array.push("<span>" + (this.Valid == 1 ? "在职" : "离职") + "</span>");
+                                    return "<div>" + array.join("") + "</div>";
+                                }, sort: true
+                            },
+                            {
+                                field: 'LoginTime', title: '登录时间', width: 160, templet: function () {
+                                    var array = new Array();
+                                    array.push("<span>" + (fnr.format(this.LoginTime, "yyyy-MM-dd HH:mm") == "2001-01-01 00:00" ? "" : fnr.format(this.LoginTime, "yyyy-MM-dd HH:mm")) + "</span>");
+                                    return array.join("")
+                                }
+                            },
+                            { field: 'LoginCount', title: '登录次数', width: 100, sort: true },
+                            {
+                                field: 'WorkValid', title: '企微绑定状态', width: 120, templet: function () {
+                                    var array = new Array();
+                                    array.push("<span>" + (this.WorkValid == 1 ? "已绑定" : "未绑定") + "</span>");
+                                    return array.join("")
+                                }
+                            },
+                            {
+                                fixed: 'right',
+                                field: 'name',
+                                title: '操作',
+                                width: 180,
+                                toolbar: function () {
+                                    var array = new Array();
+                                    if (rootApp.$data.workstatus == 1) {
+                                        array.push("<button class=\"layui-btn layui-btn-small\" lay-event='edit'>修改</button>");
+                                        array.push("<button class=\"layui-btn layui-btn-small " + (this.Valid == 1 ? "layui-btn-warm" : "layui-btn-normal") + " \" lay-event='editisenable'>" + (this.Valid == 1 ? "离职" : "在职") + "</button>");
+                                        array.push("<button class=\"layui-btn layui-btn-small layui-btn-danger \" lay-event='delete'>删除</button>");
+                                    } else {
+                                        //判断微信通讯录是否绑定
+                                        array.push("<button class=\"layui-btn-disabled layui-btn layui-btn-small\">修改</button>");
+                                        array.push("<button class=\"layui-btn-disabled layui-btn layui-btn-small " + (this.Valid == 1 ? "layui-btn-warm" : "layui-btn-normal") + " \">" + (this.Valid == 1 ? "离职" : "在职") + "</button>");
+                                        array.push("<button class=\"layui-btn-disabled layui-btn layui-btn-small layui-btn-danger \">删除</button>");
+                                    }
+                                    return "<div>" + array.join("") + "</div>";
+                                }
+                            }
+                        ]
+                    ],
+                    url: '',
+                });
+
+                //监听工具栏事件
+                tableExt.addEvent("tool(listTable)",
+                    {
+                        "edit": function (data, obj) {
+                            fnr.openDialog({
+                                title: '修改用户',
+                                area: ['750px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                                content: ['UserEdit.html?ID=' + data.Account_ID],
+                                btn: ['确认修改'],
+                                events: {
+                                    refresh: function (data) {
+                                        listTable.refresh();
+                                    }
+                                }
+                            });
+                        },
+                        //工具栏禁用启用事件
+                        "editisenable": function (data, obj) {
+                            var departIds = "";
+                            $.each(data.DepartData.Departments, function (k, v) {
+                                departIds += v.ID + ",";
+                            });
+                            if (departIds.length > 0)
+                                departIds = departIds.substring(0, departIds.length - 1);
+
+                            layer.confirm('确定' + (data.Valid == 0 ? '在职' : '离职'), { icon: 3, title: '提示' }, function (index) {
+                                var params = { Account_ID: data.Account_ID, Valid: data.Valid == 1 ? 0 : 1, Departments: departIds }
+                                $.post("/service/hr/StationAccount/UpdateStationAccountValid", params, function (res) {
+                                    if (res.SuccessResponse) {
+
+                                        $.post("/service/work/api/UpdateAccount", { Account_ID: data.Account_ID }, function (res) {
+                                            layer.msg(res.Message, {
+                                                time: 2000
+                                            }, function () {
+                                                if (res.SuccessResponse) {
+                                                    listTable.reload();
+                                                }
+                                            });
+                                        })
+
+                                    } else { layer.msg(res.Message) }
+                                })
+                                layer.close(index);
+                            });
+
+                        },
+                        //工具栏删除事件
+                        "delete": function (data, obj) {
+                            layer.confirm('确认要删除么?', { icon: 3, title: '提示' }, function (index) {
+                                if (data.Valid == 1) {
+                                    layer.msg("该用户是在职状态，禁止删除！");
+                                }
+                                else {
+                                    var params = { Other: data.Account_ID }
+                                    $.post("/service/hr/StationAccount/StationAccountDelete", params, function (res) {
+                                        if (res.SuccessResponse) {
+
+                                            $.post("/service/work/api/delAccount", { Account_ID: data.Account_ID }, function (res) {
+                                                layer.msg(res.Message, {
+                                                    time: 2000
+                                                }, function () {
+
+                                                    listTable.reload();
+                                                });
+                                            })
+
+                                        } else {
+                                            layer.msg(res.Message)
+                                        }
+                                    });
+                                }
+                                layer.close(index);
+                            });
+                        }
+                    });
+
+
+                //搜索条件
+                window.rootApp = new Vue({
+                    el: '#root',
+                    data: {
+                        workstatus: 0,
+                        Isworkstatus: 0,
+                        workstatusdisabled: 0,
+                        //搜索选择的参数列表
+                        queryFormData: {
+                            SearchValue: '',
+                            Department_ID: 0,
+                            Department_Name: ''
+                        },
+                        deleteClients: []
+                    },
+                    ready: function () {
+                        _this = this;
+
+                    },
+                    methods: {
+                        //按条件查询
+                        doSearch: function () {
+                            listTable.reload({
+                                where: this.queryFormData
+                            })
+                        },
+                        //添加客户
+                        addClient: function () {
+                            if (this.workstatus == 1) {
+                                fnr.openDialog({
+                                    title: '添加用户',
+                                    area: ['750px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                                    content: ['UserEdit.html?Department_ID=' + this.queryFormData.Department_ID + '&Department_Name=' + this.queryFormData.Department_Name],
+                                    btn: ['确认添加'],
+                                    events: {
+                                        refresh: function (data) {
+                                            listTable.refresh();
+                                        }
+                                    }
+                                });
+                            }
+                        },
+                        //同步通讯录
+                        synchronize: function () {
+                            if (this.workstatusdisabled == 1) {
+                                fnr.openDialog({
+                                    title: '从"企业微信"同步',
+                                    area: ['600px', "500px"],
+                                    content: ['synchronize.html'],
+                                    btn: ['开始同步'],
+                                    events: {
+                                        refresh: function (data) {
+                                            location.href = location.href;
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
+
+                table.on('checkbox(listTable)', function (obj) {
+                    var checkStatus = table.checkStatus('listTable');
+                    rootApp.deleteClients = [];
+                    $.each(checkStatus.data, function (k, v) {
+                        rootApp.deleteClients.push(v.Account_ID);
+                    });
+                });
+
+                $(document).ready(function () {
+                    //判断通讯录是否可用
+                    $.get("/service/work/api/GetStationWork", function (rsp) {
+                        if (rsp.SuccessResponse) {
+                            if (rsp.Data != null && rsp.Data.length > 0) {
+                                var authcount = linq.from(rsp.Data).where(i => i.AuthValid == 1 && i.SuiteID == "wx9442aeaaf2e85529").count();
+                                if (authcount == 0) {
+                                    _this.workstatus = 0;
+                                } else {
+                                    _this.workstatus = 1;
+                                    _this.workstatusdisabled = 1;
+                                }
+                            } else {
+                                _this.workstatus = 1;
+                                _this.Isworkstatus = 1;
+                            }
+                            listTable.config.url = '/service/hr/Station/GetListStationAccount';
+                            listTable.refresh();
+
+                            $.get("/service/public/Station/GetStationInfoByID", function (rsp) {
+                                if (rsp.SuccessResponse) {
+                                    rsp.Data.isParent = true;
+                                    rsp.Data.Department_ID = null;
+                                    rsp.Data.System_Station_ID = rsp.Data.ID;
+                                    rsp.Data.Department_Name = "";
+                                    rsp.Data.Organization = 0;
+                                    zTreeObj = $.fn.zTree.init($("#treeDemo"), setting, rsp.Data);
+
+                                    var nodes = zTreeObj.getNodes();
+                                    if (nodes.length > 0) {
+                                        zTreeObj.selectNode(nodes[0]);
+                                        zTreeObj.expandNode(nodes[0], true, null, true, true);
+                                    }
+                                    if (!rootApp.$data.workstatus == 1) {
+                                        $(".add").css("filter", "grayscale(1)")
+                                        $(".edit").css("filter", "grayscale(1)")
+                                        $(".remove").css("filter", "grayscale(1)")
+                                    }
+                                }
+                            });
+                        }
+                    });
+                });
+            });
+    </script>
+    <style>
+        .trust_tip { float: right; font-size: 12px; padding: 10px 24px; margin-bottom: -1px; color: #999; background-color: #e9eaeb; border-radius: 20px; }
+    </style>
+</head>
+<body id="root" v-cloak>
+    <div class="mainContainer">
+        <div class="layui-col-xs2">
+            <ul id="treeDemo" class="ztree"></ul>
+        </div>
+        <div class="layui-col-xs10">
+            <blockquote class="layui-elem-quote">
+                <div class="layui-row layui-form">
+                    <div class="layui-col-xs6">
+                        <div class="layui-input-inline">
+                            <input placeholder="姓名" type="text" name="SearchValue" class="layui-input" v-model="queryFormData.SearchValue">
+                        </div>
+                        <button class="layui-btn layui-btn-primary" lay-submit lay-filter="btn" @click="doSearch">查询</button>
+                        <p v-if="workstatus==0" class="layui-btn layui-btn-disabled layui-btn-radius">未安装企微通讯录，无法管理，<a href="/service/work/api/AddWorkApp?SuiteID=wx9442aeaaf2e85529" target="_blank" style="color:#009688">马上安装</a></p>
+                        <p v-if="Isworkstatus==1" class="layui-btn layui-btn-disabled layui-btn-radius">安装企微通讯录,一键同步通讯录，<a href="/service/work/api/AddWorkApp?SuiteID=wx9442aeaaf2e85529" target="_blank" style="color:#009688">马上安装</a></p>
+                    </div>
+                    <div class="layui-col-xs6" style="text-align: right">
+                        <button class="layui-btn layui-btn-primary" v-bind:class="workstatusdisabled==1?'layui-btn layui-btn-primary':'layui-btn layui-btn-disabled'" @click="synchronize">一键同步</button>
+                        <button class="layui-btn" v-bind:class="workstatus?'layui-btn':'layui-btn layui-btn-disabled'" @click="addClient"><i class="layui-icon"></i> 添加用户</button>
+                    </div>
+                </div>
+            </blockquote>
+            <!--<div>
+                <button class="layui-btn layui-btn-primary layui-btn-small" @click="deleteClientFn" style="display:none">批量删除</button>
+            </div>-->
+            <table lay-filter="listTable" id="listTable"></table>
+        </div>
+    </div>
+</body>
+</html>

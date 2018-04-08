@@ -1,0 +1,221 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>立即缴费</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="//at.alicdn.com/t/font_514871_9czxk955wqy6i529.css" rel="stylesheet" />
+    <script src="//at.alicdn.com/t/font_514871_z6ne30o81t3mcxr.js"></script>
+    <link rel="stylesheet" href="/Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link href="../../Resources/CSS/financelist.css" rel="stylesheet" />
+    <link href="/Resources/CSS/question.css" rel="stylesheet" />
+    <link href="/Resources/CSS/PC_css.css" rel="stylesheet" />
+    <link href="/Resources/CSS/video-js.css" rel="stylesheet" />
+    <link href="../../Resources/CSS/super.css" rel="stylesheet" />
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    
+</head>
+<body style="background-color: #f7f7f7;user-select: none;padding-top: 20px;" id="finance">
+    <!--头部导航 Start-->
+    <!--#<!--#include file="/PublicControl/topmenu.html"-->
+    <!--头部导航 End-->
+    <div class="w1200 clearfix" v-cloak>
+        <!--左侧导航 Start-->
+        <!--#<!--#include file="/PublicControl/leftmenu.html"-->
+        <!--左侧导航 End-->
+        <!--立即缴费-->
+        <div class="main">
+            <div class="count">
+                <h2 class="count_title">总缴费统计</h2>
+                <div class="count_list">
+                    <ul class="t_list clearfix_1 t_radiusTop">
+                        <li>应缴费用</li>
+                        <li>优惠</li>
+                        <li>实缴费用</li>
+                        <li>欠缴费用</li>
+                        <li>缴费次数</li>
+                        <li>账户余额</li>
+                        <li></li>
+                    </ul>
+                    <ul class="t_list clearfix_1 t_radiusBottom">
+                        <li>{{ItemCount.allYingJiao}}</li>
+                        <li>{{ItemCount.allYouHui}}</li>
+                        <li>{{ItemCount.allShiJiao}}</li>
+                        <li class="moneyColor">{{ItemCount.QianJiao}}</li>
+                        <li>{{ItemCount.allYJCount}}</li>
+                        <li>0</li>
+                        <li><span class="_recharge position" style="cursor:pointer">充值</span></li>
+                    </ul>
+                </div>
+                <p class="txt">
+                    注：请仔细查看自己的缴费记录，如无误请点击"确定无误"，如不正确请点击"有异议"。 其中缴费项目缴费说明相同，相加后的起来对比
+                </p>
+            </div>
+
+            <!--自学考试本科-人力资源管理(已毕业)-->
+            <div class="self_taught count count_top">
+                <h2 class="count_title">自学考试本科-人力资源管理(已毕业)</h2>
+                <ul class="selfList clearfix_1 t_radiusTop">
+                    <li>缴费项目</li>
+                    <li>缴费说明</li>
+                    <li>应交金额</li>
+                    <li>优惠金额</li>
+                    <li>已交金额</li>
+                    <li>欠缴金额</li>
+                    <li style="text-indent: 12px;">状态</li>
+                </ul>
+                <div class="Paylist">
+                    <div class="databox" v-for="itme in financeList">
+                        <div class="timeline"></div>
+                        <ul class="Paytit clearfix_1">
+                            <li>{{itme.PorjectName}}</li>
+                            <li>{{itme.PayInfo}}</li>
+                            <li>{{itme.LeftMoney}}</li>
+                            <li>{{itme.YouHui}}</li>
+                            <li>{{itme.ShiJiao}}</li>
+                            <li class="moneyColor">{{itme.QianJiao}}</li>
+                            <li>{{itme.QianJiao>0?"欠缴":"费用缴清"}}</li>
+                            <span class="position">在线支付</span>
+                        </ul>
+                        <div class="datalist" v-for="childItme in itme.YiJiaoList">
+                            <div class="time"></div>
+                            <time>{{childItme.ShouFeiTime | format}}</time>
+                            <p><i class="iconfont icon-shijijiaofei jiaofei"></i>实交：{{childItme.Money}}</p>
+                            <p>说明：{{childItme.PayInfo}}</p>
+                            <p>支付方式：{{childItme.PayName}}</p>
+                            <div v-if="childItme.ConfirmValid==0" class="ico">
+                                <i class="iconfont icon-youyiyi youyiyi" title="有异议" @click="confirmYes(childItme.ConfirmID,2)"></i>
+                                <i class="iconfont icon-querenwuwu querenwuwu" title="已确认" @click="confirmYes(childItme.ConfirmID,1)"></i>
+                            </div>
+                            <div v-if="childItme.ConfirmValid==1" class="ico textyiqueren">已确认</div>
+                            <div v-if="childItme.ConfirmValid==2" class="ico textyouyiyi">有异议</div>
+
+                            <div v-if="childItme.ConfirmValid==3" class="ico">
+                                <i style="color:#f47c2a" class="iconfont icon-goutongjilu youyiyi" title="沟通记录" @click="Record(childItme.ConfirmID,2)"></i>
+                                <i class="iconfont icon-querenwuwu querenwuwu" title="已确认" @click="confirmYes(childItme.ConfirmID,1)"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="prompt">
+                        温馨提示：请仔细查看自己的书籍记录，如无误请点击"<span class="spanquerenwuwu"><i class="iconfont icon-querenwuwu querenwuwu absoluteIco"></i>确认无误</span>"，
+                        如不正确请点击"<span class="spanyouyiyi"><i class="iconfont icon-youyiyi youyiyi absoluteIco"></i>有异议</span>"，确认完毕显示"已确认"。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="Pcard_Exam" style="display:none;background:#F8F8F8;height:100%">
+        <div class="textareaContent">
+            <textarea placeholder="请输入异议内容......." v-model="ObjectionContent"></textarea>
+        </div>
+        <div style="text-align:right;padding-right:20px;">
+            <div class="layui-btn" style="background-color:#ed4242" @click="saveConfirm">提交</div>
+        </div>
+    </div>
+    <!--左侧导航 Start-->
+    <!--#<!--#include file="/PublicControl/bottommenu.html"-->
+    <!--左侧导航 End-->
+    <script>
+        require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil', 'wxconfig'],
+           function (fnr) {
+               var $ = layui.$;
+               var table = layui.table;
+               var tableExt = layui.tableExt;
+               var wxconfig = layui.wxconfig;
+
+               var vm = new Vue({
+                   el: "#finance",
+                   data: {
+                       ItemCount: {
+                           allYingJiao: 0,
+                           QianJiao: 0,
+                           allShiJiao: 0,
+                           allYJCount: 0,
+                           allYouHui: 0
+                       },
+                       financeList: [],
+                       userInfo: {}, //学生信息数据
+                   },
+                   ready: function () {
+                       this.userInfo = wxconfig.GetStudentInfo();
+                       this.getFinanceCount();
+                       this.getPay();
+                   },
+                   filters: {
+                       format: function (val) {
+                           return fnr.format(val, "yyyy-MM-dd HH:mm");
+                       },
+                   },
+                   methods: {
+                       getFinanceCount: function () {
+                           var _self = this;
+                           $.get("/service/edu/StuFinance/GetStudentFinanceIndex", {
+                               Studetail_ID: _self.userInfo.StuDetail_ID, FType: 2
+                           }, function (rsp) {
+                               if (rsp.SuccessResponse) {
+                                   _self.ItemCount = rsp.Data;
+                               }
+                           })
+                       },
+                       getPay: function () {
+                           var _pay = this;
+                           $.get("/service/edu/StuFinance/GetStudentCenterFinanceIndex", {
+                               Studetail_ID: _pay.userInfo.StuDetail_ID,
+                               StuId: _pay.userInfo.StuID
+                           }, function (rsp) {
+                               if (rsp.SuccessResponse) {
+                                   _pay.financeList = rsp.Data
+                               }
+                           })
+                       },
+                       confirmYes: function (ID,type) {
+                           var _this = this;
+                           if (type === 1) {
+                               $.post("/service/edu/Confirm/GetConfirmhfStudatehf", { ID: ID, StuID: _this.userInfo.StuID }, function (res) {
+                                   if (res.SuccessResponse) { layer.msg("操作成功") };
+                                   _this.getPay();
+                               });
+                           } else {
+                               layer.open({
+                                   type: 1,
+                                   area: ['600px', '350px'],
+                                   title: '异议',
+                                   content: $('.Pcard_Exam')
+                               });
+                               _this.ID = ID;
+                               _this.type = type;
+                           };
+                       },
+                       saveConfirm: function () {
+                           var _this = this;
+                           $.post('/service/edu/Confirm/GetConfirmhfStudateList',
+                             {
+                                 StuID: _this.userInfo.StuID,
+                                 StuDetail_ID: _this.userInfo.StuDetail_ID,
+                                 ID: _this.ID,
+                                 Valid: _this.Ste,
+                                 BusType: 2,
+                                 ObjectionContent: _this.ObjectionContent
+                             },
+                             function (res) {
+                                 if (res.SuccessResponse) {
+                                     layer.closeAll()
+                                     _this.getPay();
+                                 }
+                             });
+                       },
+                       Record: function (ID, Ste) {
+                           location.href = '../usermanage/ObjectionMsgLst.shtml?ID=' + ID + "&BusType=" + Ste + "&url=" + location.href;
+                       }
+                   }
+               });
+           })
+    </script>
+</body>
+</html>

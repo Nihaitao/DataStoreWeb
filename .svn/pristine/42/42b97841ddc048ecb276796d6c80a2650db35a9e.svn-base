@@ -1,0 +1,153 @@
+﻿666 -->
+
+<link href="/Resources/usercss/EditPhone.css" rel="stylesheet" />
+    <div class="AccountBindTips">
+<p>* 重新绑定手机请验证您的用户信息</p>
+                    </div>
+    
+<form class="layui-form" style="overflow: hidden;" id="updateMobile">
+    <div class="layui-form-item">
+        <label class="layui-form-label">登录密码</label>
+        <div class="layui-inline">
+            <input type="password" v-model="params.Password" autocomplete="off" lay-verify="required" placeholder="请输入登录密码" class="layui-input ipt_bg_color" style="width: 240px; box-sizing: border-box;">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">绑定手机号</label>
+        <div class="layui-inline">
+            <input type="text" autocomplete="off" lay-verify="required|phone|number" v-model="params.NewPhone" placeholder="请输入绑定的手机号" class="layui-input ipt_bg_color" style="background-color: #f7f7f7;width: 240px; box-sizing: border-box;">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">短信验证码</label>
+        <div class="layui-inline" style="position: relative;">
+            <input type="text" autocomplete="off" v-model="params.PhoneCode" placeholder="请输入短信验证码" class="layui-input ipt_bg_color" style="width: 240px; box-sizing: border-box;">
+            <p class="yzmBtn" v-bind:class="{'layui-btn-disabled':status.disabled}" style="cursor:pointer" @click="SendPhoneCode">{{status.tipText}}</p>
+        </div>
+    </div>
+
+    
+
+    <div class="layui-form-item" style="text-align: center;">
+        <p class="layui-btn layui-btn-danger edit_btn" @click="editPhone">重新绑定</p>
+    </div>
+</form>
+<script>
+    require_js_file(['table', 'tree', 'form', 'jquery', 'tableExt', 'laydate'],
+    function (fnr) {
+        var table = layui.table;
+        var form = layui.form;
+        var laydate = layui.laydate;
+        var tableExt = layui.tableExt;
+        var $ = layui.$;
+        var timer;
+        //搜索条件
+        window.rootApp = new Vue({
+            el: '#updateMobile',
+            data: {
+                params: {
+                    NewPhone: "",
+                    Password: "",//密码
+                    PhoneCode: "",//验证码
+                },
+
+                status: {
+                    disabled: false,
+                    tipText: '发送验证码'
+                }
+            },
+            ready: function () {
+
+            },
+            methods: {
+                sendPsdToService: function (e) {
+                    console.log(e)
+                    this.Password = e.target.value;
+                    //发送请求
+                    //...............
+
+                },
+                qingkong: function () {
+                    var _this = this;
+                    for (key in _this.params) {
+                        _this.params[key] = "";
+                    }
+                    _this.status.disabled = false;
+                    _this.status.tipText = "发送验证码";
+
+                },
+                setCodeTime: function (Seconds, e) {
+                    var self = this;
+                    if (Seconds > 0) {
+                        self.status.disabled = true;
+                        self.status.tipText = Seconds + "秒";
+                         timer = setInterval(function () {
+                            Seconds = Seconds - 1;
+                            if (Seconds > 0)
+                                self.status.tipText = Seconds + "秒";
+                            else {
+                                clearInterval(timer);
+                                self.status.tipText = "发送验证码";
+                                self.status.disabled = false;
+                            }
+                        }, 1000);
+                    } else
+                        self.status.disabled = false;
+
+                    return false;
+                },
+                SendPhoneCode: function (e) {
+                    if (!layui.form.checkInput(e)) {
+                        return false;
+                    }
+                    var self = this;
+                    if (self.status.disabled) {
+                        return;
+                    }
+
+                    self.status.disabled = true;
+                    $.get("/service/edu/Student/SendStudentInfoPhone", { Phone: this.params.NewPhone }, function (rsp) {
+                        if (rsp.SuccessResponse) {
+                            console.log(rsp.Data.Seconds)
+                            self.params.PhoneCode = rsp.Data.Code;
+                            self.setCodeTime(rsp.Data.Seconds, e)
+                            layer.msg(rsp.Message, { icon: 1 });
+                        }
+                        else {
+                            self.status.disabled = false;
+                            layer.msg(rsp.Message, { icon: 2 });
+                        }
+                    })
+                    return false;
+                },
+                //修改手机号码
+                editPhone: function (e) {
+                    var _this = this;
+                    if (!layui.form.checkInput(e)) {
+                        return false;
+                    }
+                    $.ajax({
+                        url: '/service/edu/Student/EditStudentInfoPhone',
+                        data: this.params,
+                        success: function (res) {
+
+                            if (res.SuccessResponse) {
+                                layer.msg(res.Message)
+                                _this.qingkong();
+                                clearInterval(timer);
+                            } else {
+                                layer.msg(res.Message)
+                            }
+                        },
+                        fail: function (err) {
+
+                        }
+                    })
+                }
+            }
+        });
+        $("input[type='password']").on("blur", function () {
+
+        });
+    });
+</script>

@@ -1,0 +1,13 @@
+﻿<div class="foot">
+    <ul class="clearfix info">
+        <li>eol简介</li>
+        <li>联系方式</li>
+        <li>招聘信息</li>
+        <li>京IC证140769号</li>
+        <li>京IC备12045350号</li>
+        <li>京IC网文[2014]2106-306号</li>
+        <li>京公网安备&nbsp;11010802020236号</li>
+    </ul>
+    <p class="copyright" v-if="layoutData.length > 0">{{layoutData.FooterCopyright ? layoutData.FooterCopyright : '版权所有 赛尔互联（北京）教育科技有限公司 CERNET Corporation'}}</p>
+    <p class="copyright" v-else>版权所有 赛尔互联（北京）教育科技有限公司 CERNET Corporation</p>
+</div>

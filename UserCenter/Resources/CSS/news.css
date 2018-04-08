@@ -1,0 +1,12 @@
+﻿.menu-news{background-color: #fff;padding: 20px 0 0 57px;}
+    .topmenu-news{display: inline-block;float: left; margin: 5px 70px 0 0;border-radius: 3px;}
+    .menu-a{color: #fff;padding: 5px;background-color: red;border-radius: 5px;}
+    .menu-a:hover{ cursor:pointer;   text-decoration: none;color: #fff;}
+    .menu-li{float: left;cursor:pointer;padding: 5px;margin-right: 25px;}
+    .cls-li{font-weight: bold; color: #000!important;}
+    .triangle-up {width: 0;height: 0;border-left: 10px solid transparent;border-right: 10px solid transparent;border-bottom: 10px solid #f7f7f7;position:relative;left: 25px;}
+    .fy{background-color: #fff;position: absolute;bottom: 0;width: 1000px;text-align: center;}
+    .layui-laypage .layui-laypage-curr .layui-laypage-em{background-color: #fff!important;border: 1px solid #ff0000!important;padding:0!important;}
+    .layui-laypage a{background-color: #f7f7f7;}
+    .layui-laypage .layui-laypage-curr em{color: #000!important;}
+    .layui-laypage input:focus, .layui-laypage select:focus{border-color: #ff0000!important;}

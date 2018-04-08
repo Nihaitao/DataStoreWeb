@@ -1,0 +1,55 @@
+.main{
+    width: 100%;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+.itemBox{
+    width: 6.9rem;
+    display: inline-block;
+    text-align: left;
+}
+.itemBox .item{
+    margin-top: 0.20rem;
+    padding: 0.28rem 0.18rem 0.30rem;
+    background-color: #fafafa;
+    border-radius: 0.05rem;
+    border: 0.01rem solid #ededed;
+    box-shadow: 0.01rem 0.01rem 0.01rem #EAEFF5;
+}
+.item p{
+    font-size: 0.22rem;
+}
+.item .content{
+    margin: 0.12rem 0;
+}
+.item div p{
+    color: #666;
+    display: inline-block;
+}
+.item div p span{
+    color: #FFBE00;
+}
+.item div p.rightTime{
+    float: right;
+}
+
+.item p.client{
+    color: #9D9D9D;
+}
+.item p.client span{
+    color: #FFBE00;
+}
+.footerBtnBox{
+    height: 1rem;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+.footerBtnBox p{
+    font-size: 0.28rem;
+    color: #fff;
+    text-align: center;
+    line-height: 1rem;
+    background-color: #F76260;
+}

@@ -1,0 +1,120 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">课件名称</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="Name" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" v-model="submitForm.Name">
+                </div>
+
+                <label class="layui-form-label">科次id</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="Discipline_ID" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" v-model="submitForm.Discipline_ID">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">课件类型</label>
+                <div class="layui-input-block">
+                    <remote-rad v-bind:setting="CourseWareType_IDSetting" v-bind:value.sync="submitForm.CourseWareType_ID"
+                                initial="off"></remote-rad>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">课件大小</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="CourseSize" placeholder="请输入" autocomplete="off" class="layui-input" v-model="submitForm.CourseSize">
+                </div>
+                <label class="layui-form-label">播放地址</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="PlayAddress" placeholder="请输入" autocomplete="off" class="layui-input" v-model="submitForm.PlayAddress">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">保利威视值</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="PolyvVID" placeholder="请输入" autocomplete="off" class="layui-input" v-model="submitForm.PolyvVID">
+                </div>
+                <label class="layui-form-label">标签</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="Tag" placeholder="请输入" autocomplete="off" class="layui-input" v-model="submitForm.Tag">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">视频时长</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="Duration" placeholder="请输入" autocomplete="off" class="layui-input" v-model="submitForm.Duration">
+                </div>
+            </div>
+            <div class="layui-form-item layui-hide">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-filter="demo1" @click="SaveCourseWare">立即提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/Controls/Common.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt"],
+    function (fnr) {
+        var $ = layui.$;
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+                submitForm: {
+                    Name: '',
+                    Discipline_ID: '',
+                    CourseWareType_ID: '',
+                    CourseSize: '',
+                    PlayAddress: '',
+                    PolyvVID: '',
+                    Tag: '',
+                    Duration: '',
+                },
+                CourseWareType_IDSetting: {
+                    tags: { name: "CourseWareType_ID" },
+                    options: [
+                        { key: "1", value: "视频" },
+                        { key: "2", value: "PPT" },
+                    ],
+                    fields: { key: 'key', value: 'value' }
+                },
+            },
+            ready: function () {
+                if (!!GetQueryString('ID')) {
+                    var ID = GetQueryString('ID')
+                    var param={'ID':ID}
+                    this.GetCourseInfoByID(param);
+                }
+            },
+            methods: {
+                //根据id查询课件资源
+                GetCourseInfoByID: function (params) {
+                    $.get("/service/Resource/SaveCourseInfo", params, function (res) {
+                        this.CourseInfoList = res.ReturnData.Data;
+                    })
+
+                },
+                    //提交表单
+                SaveCourseWare: function (e) {
+                    if (!layui.form.checkInput(e)) {
+                        return false;
+                    }
+                    $.post("/service/Resource/SaveCourseInfo", this.submitForm, function (res) {
+                    });
+                }
+            }
+        });
+    });
+</script>

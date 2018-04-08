@@ -1,0 +1,164 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>04</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script src="../script/jquery.js"></script>
+    <link rel="shortcut icon" href="" type="image/x-icon" class="favIcon" />
+    <link rel="stylesheet" href="../Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../Resources/CSS/Font/css/font-awesome.min.css">
+    <script src="../Resources/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../Resources/CSS/PC_css.css">
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body id="root" v-cloak>
+    <!--顶部-->
+    <!--#<!--#include file="../UserControl/stepHeader.html"-->
+    <!--结算中心头部-->
+    <div class="jie_top clearfix">
+        <div class="container" style="height: 100%;">
+            <a href="../index.html" class="Pro-logo pull-left">
+                <img v-if="layoutData.HeaderLogoOrName == 1" v-bind:src="layoutData.HeaderLogo ? layoutData.HeaderLogo : '../Resources/images/wxdef.png'" alt="" style="width: 100%; height: 100%;">
+                <span v-if="layoutData.HeaderLogoOrName == 0" style="line-height: 60px;">{{layoutData.HeaderName}}</span>
+            </a>
+            <ul class="pay-schedule">
+                <li class="active">
+                    <div class="pay-round">1</div>
+                    <div class="pay-name">确认订单</div>
+                </li>
+                <li class="active">
+                    <div class="pay-round">2</div>
+                    <div class="pay-name">支付订单</div>
+                </li>
+                <li class="active">
+                    <div class="pay-round">3</div>
+                    <div class="pay-name">订单完成</div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!--结算中心主体-->
+    <div class="jie--container">
+        <div class="container">
+            <div class="Ps-sectionBlock" style="width: 1200px; height: 514px;">
+                <div class="isOK" style="width: 500px; height: 200px;position:relative; top: 50%; left: 50%; margin-top: -130px; margin-left: -250px;">
+                    <img src="../Resources/images/step041.png" />
+                    <p style="width: 500px; text-align:center; margin-top: 15px;">
+                        <span class="secondNum">5</span>S
+                        <span>后自动跳转至您之前访问的页面；若未正常跳转，您可以点击此处</span>
+                        <a href="../index.html" style="padding-left: 5px;">返回首页</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--footer-->
+    <!--#<!--#include file="../UserControl/Footer.html"-->
+</body>
+</html>
+<link href="../Resources/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="../Resources/js/modules/vue/vue.min.js"></script>
+<script src="../Resources/js/modules/layer/layui.js"></script>
+<script src="../Resources/js/require_config.js"></script>
+<script src="../Resources/js/headFootLayout.js"></script>
+
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt"], function (fnr) {
+        //ele判断元素，clsClass名
+        function hasClass(ele, cls) {
+            return (new RegExp('(\\s|^)' + cls + '(\\s|$)')).test(ele.className);
+        }
+        function removeClass(ele, cls) {
+            if (hasClass(ele, cls)) {
+                var reg = new RegExp('(\\s|^)' + cls + '(\\s|$)');
+                ele.className = ele.className.replace(reg, ' ');
+            }
+        }
+        function addClass(ele, cls) {
+            if (!hasClass(ele, cls)) {
+                ele.className += ' ' + cls;
+            }
+        }
+        ///参数获取
+        function GetQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+        }
+
+        function delAllCookie() {
+            var myDate = new Date();
+            myDate.setTime(-1000);//设置时间
+            var data = document.cookie;
+            var dataArray = data.split("; ");
+            for (var i = 0; i < dataArray.length; i++) {
+                var varName = dataArray[i].split("=");
+                document.cookie = varName[0] + "=''; expires=" + myDate.toGMTString();
+            }
+        }
+
+        var setTime;
+
+        window.rootApp = new Vue({
+            el: '#root',
+            data: {
+                loginState: false,
+                headPhoto: '',
+                msg: '',
+                someOrderData: {
+                    orderId: '',
+                    addTime: ''
+                },
+                layoutData: {}
+            },
+            ready: function () {
+                this.checkLogin();
+                this.setSecondNum();
+            },
+            methods: {
+                //退出
+                exit: function () {
+                    delAllCookie();
+                    location.href = '../Login.html';
+                },
+
+                //查询stuID
+                checkLogin: function () {
+                    _this = this;
+                    if (fnr.Cookie.get('StuId') && fnr.Cookie.get('StuId') != 'undefined') {
+                        _this.loginState = true;
+                        $.get("/service/Student/GetStudentInfo", function (res) {
+                            if (res.SuccessResponse) {
+                                _this.msg = 'hi，' + res.ReturnData.Data.Name;
+                                _this.headPhoto = res.ReturnData.Data.HeadImg ? res.ReturnData.Data.HeadImg : '../Resources/images/photo.png'
+                                _this.loginState = true;
+                            }
+                        });
+                    }
+                },
+
+                //定时器
+                setSecondNum: function () {
+                    var n = 5;
+                    var intTime = setInterval(function () {
+                        n--;
+                        $('.secondNum').html(n);
+                        if (n <= 0) {
+                            clearInterval(intTime);
+                            //location.href = '../index.html';
+                        }
+                    }, 1000);
+                }
+            }
+        });
+        LayoutFn()
+    });
+</script>

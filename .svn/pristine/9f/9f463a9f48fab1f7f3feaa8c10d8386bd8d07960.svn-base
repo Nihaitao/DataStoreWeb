@@ -1,0 +1,176 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>提交订单</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="/Resources/fonts/iconfont.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link href="/Resources/CSS/Font/css/font-awesome.min.css" rel="stylesheet" /> 
+    <link rel="stylesheet" href="/Resources/CSS/PC_css.css">
+    <script src="/script/artTemplate.js"></script>
+    <link href="/Resources/CSS/question.css" rel="stylesheet" />
+    <style>
+        [v-cloak] {
+        display: none;
+    }
+    </style>
+</head>
+<body style="background-color: #f7f7f7;user-select: none;" id="root">
+    <!--顶部-->
+    <!--#<!--#include file="/PublicControl/topmenu.html"-->
+    <div class="w1200 clearfix">
+        <div class="payMain">
+            <div class="navTabs">
+                <i class="iconfont icon-ditu"></i>&nbsp;&nbsp;&nbsp;
+                <span>个人管理>>我的订单>>提交订单</span>
+            </div>
+            <div class="middle-main" style="padding: 23px 0;">
+                <h3 class="borderH3">订单详情</h3>
+
+                <!--订单集合-->
+                <ul class="ordersList" v-cloak>
+                    <li style="background-color: #fafafa;" v-for="(index, item) in shopCarData">
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="width: 70%; padding: 21px 18px 18px;">
+                                    <img v-bind:src="CoverPath ? CoverPath : '/Resources/images/dianshang.png'" style="width: 160px; height: 90px;" />
+                                    <div class="courseWarp">
+                                        <h3 class="courseName">{{item.Name}}</h3>
+                                        <p class="teacherMsg">
+                                            一级会计师
+                                            <span class="teacName">赵西</span>
+                                            <span class="courseNum">{{item.TotalHours}}</span>
+                                            课
+                                        </p>
+                                    </div>
+                                </td>
+                                <td style="width: 15%;">
+                                    <p style="color: #9a9a9a; cursor: pointer;" @click="deleteCourse(item.ID)">
+                                        <i class="iconfont icon-shanchu"></i>
+                                        删除
+                                    </p>
+                                </td>
+                                <td style="width: 15%;">
+                                    <p style="color: #9a9a9a;">
+                                        实付款：
+                                        &nbsp;&nbsp;
+                                        <span style="color: #ef4141;">￥{{item.Price}}</span>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </li>
+
+                    <li class="clearfix">
+                        <div class="submitOrderBox pull-right">
+                            <p style="color: #333; margin-bottom: 16px;">
+                                应付总额：
+                                <span style="font-size: 22px;font-weight:bold;color: #ef4141;">￥{{totalPrice}}</span>
+                            </p>
+                            <p class="subBtn" @click="submitPayOrder" style="cursor: pointer;">提交订单</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--footer-->
+    <!--#<!--#include file="/PublicControl/bottommenu.html"-->
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil'],
+        function (fnr) {
+            var $ = layui.$;
+            var table = layui.table;
+            var tableExt = layui.tableExt;
+            
+            var vm = new Vue({
+                el: "#root",
+                data: {
+                    shopCarData: [],
+                    totalPrice: ''
+                },
+                ready: function () {
+                    this.GetShoppingCar();
+                },
+                methods: {
+                    //提交订单
+                    submitPayOrder: function () {
+                        $.post('/service/datastore/Order/AddOrderFromShoppingCar', { PageIndex: 0 }, function (res) {
+                            if (res.SuccessResponse) {
+                                if (res.Data.Price > 0) {
+                                    var param = {};
+                                    param.System_Station_ID = res.Data.System_Station_ID;
+                                    param.OrderId = res.Data.OrderId;
+                                    param.Money = res.Data.Price;
+                                    param.OrderName = "课程支付";
+                                    param.NotifyUrl = "http://" + location.host + "/service/datastore/Order/PaySuccessDoSomething";
+                                    param.Info = "";
+                                    $.post('/service/pay/OnLinePay/UnifiedCreateOrder', param, function (rsp) {
+                                        if (rsp.SuccessResponse) {
+                                            location.href = 'payType.shtml?ID=' + rsp.Data.ID + "&OrderId=" + res.Data.OrderId;
+                                        }
+                                    });
+                                } else if (res.Data.Price == 0) {
+                                    var param = {};
+                                    param.System_Station_ID = res.Data.System_Station_ID;
+                                    param.OrderId = res.Data.OrderId;
+                                    param.Money = res.Data.Price;
+                                    param.OrderName = "课程支付";
+                                    param.NotifyUrl = "http://" + location.host + "/service/datastore/Order/PaySuccessDoSomething";
+                                    param.Info = "";
+                                    $.post('/service/pay/OnLinePay/UnifiedCreateOrder', param, function (rsp) {
+                                        if (rsp.SuccessResponse) {
+                                            location.href = 'paysuccess.shtml?ID=' + rsp.Data.ID;
+                                        }
+                                    });
+                                }
+                            } else {
+                                layui.msg(res.Message);
+                            }
+                        });
+                    },
+
+                    //删除
+                    deleteCourse: function (id) {
+                        var self = this;
+                        layer.confirm('确定要删除吗', function (index) {
+                            $.post('/service/datastore/Order/MoveOutShoppingCar', { Course_ID: id }, function (res) {
+                                if (res.SuccessResponse) {
+                                    self.GetShoppingCar();
+                                    layer.close(index);
+                                }
+                            });
+                        })
+                        
+                    },
+
+                    //购物车课程列表
+                    GetShoppingCar: function () {
+                        var self = this;
+                        self.shopCarData = [];
+                        self.totalPrice = 0;
+                        $.get('/service/datastore/Order/GetShoppingCar', function (res) {
+                            console.log(res);
+                            if (res.SuccessResponse) {
+                                self.shopCarData = res.Data;
+                                $.each(res.Data, function (k, v) {
+                                    self.totalPrice += v.Price;
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+        })
+    </script>
+</body>
+
+</html>

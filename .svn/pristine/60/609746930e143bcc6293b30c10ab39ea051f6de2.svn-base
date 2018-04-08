@@ -1,0 +1,73 @@
+﻿@{
+    Layout = "~/Views/_Layout.cshtml";
+    Page.Title = "添加联系记录";
+}
+@section head
+{
+    <script src="~/Resources/js/Controls/Student/Contact.js"></script>
+    <script>
+        AddInit();
+        //SelectSourceBind();
+        //SelectEducationBind();
+    </script>
+}
+
+<div class="layui-form">
+    <div class="layui-form-item">
+        <div class="layui-input-inline">
+            <select id="ContactType_ID" name="ContactType_ID" lay-verify="required">
+                <option value="0">电话</option>
+                <option value="1">QQ</option>
+                <option value="2">Email</option>
+                <option value="3">微信</option>
+                <option value="4">拜访</option>
+            </select>
+        </div>
+        <div class="layui-input-inline">
+            <input class="layui-input" name="ContactTime" lay-verify="required" placeholder="联系时间" onclick="layui.laydate({ elem: this, istime: true, format: 'YYYY-MM-DD hh:mm', max: laydate.now() })" value="@DateTime.Now.ToString("yyy-MM-dd HH:mm")">
+        </div>
+        <div class="layui-input-inline">
+            <select name="PhaseType_ID" lay-verify="required">
+                <option value="0">跟踪阶段</option>
+                <option value="1">报名缴费</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block" style="margin-left:0px">
+            <textarea name="Content" lay-verify="required" placeholder="联系内容" class="layui-textarea" style="min-height:200px"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label textalignLeft">预约提醒</label>
+        <div class="layui-input-inline">
+            <input type="checkbox" name="IsAppointment" lay-skin="switch" lay-filter="filter" lay-text="ON|OFF">
+        </div>
+    </div>
+    <div id="Appointment" class="layui-form-item">
+
+    </div>
+    <div class="layui-form-item layui-hide">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+        </div>
+    </div>
+</div>
+<script id="Templete" type="text/html">
+    <div class="layui-input-inline ">
+        <input class="layui-input" name="Date" placeholder="预约时间" lay-verify="required" onclick="layui.laydate({ elem: this, istime: true, format: 'YYYY-MM-DD hh:mm', min: laydate.now() })">
+    </div>
+    <div class="layui-input-inline">
+        <select name="AppointmentType_ID" lay-verify="required" lay-bottom>
+            <option value="0">预约联系</option>
+            <option value="1">预约接待</option>
+        </select>
+    </div>
+    <div class="layui-input-inline">
+        <select name="RemindType" lay-verify="required" lay-bottom>
+            <option value="0">冒泡</option>
+            <option value="1">短信</option>
+            <option value="2">微信</option>
+        </select>
+    </div>
+</script>

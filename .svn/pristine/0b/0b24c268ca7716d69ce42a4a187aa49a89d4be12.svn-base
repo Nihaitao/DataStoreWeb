@@ -1,0 +1,170 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>沟通记录</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" href="/Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link href="//at.alicdn.com/t/font_514871_onted37ioggjsjor.css" rel="stylesheet" />
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/CEdu/static/js/Comon.js"></script>
+    <link href="/Resources/CSS/PC_css.css" rel="stylesheet" />
+    <link href="/Resources/CSS/video-js.css" rel="stylesheet" />
+    <link href="/Resources/CSS/question.css" rel="stylesheet" />
+    <link href="/Resources/CSS/ObjectionMsgLst.css" rel="stylesheet" />
+    <script>
+        var activeUrl="usercenter/usermanage/accountsettings.shtml";
+    </script>
+</head>
+<body style="background-color: #f7f7f7;user-select: none;">
+    <!--头部导航 Start-->
+    <!--#<!--#include file="/PublicControl/topmenu.html"-->
+    <!--头部导航 End-->
+    <div class="w1200 clearfix">
+        <!--左侧导航 Start-->
+        <!--#<!--#include file="/PublicControl/leftmenu.html"-->
+        <!--左侧导航 End-->
+        <div class="main title-div">
+            沟通记录
+        </div>
+        <div class="main" id="objection" style="float: left;position: absolute;background-color: #fff;">
+            <a @click="goback" style="float: right;text-decoration: underline;color: #01aaed!important;">返回上一级</a>
+            <ul class="layui-timeline ul_cls" id="content">
+                <li class="layui-timeline-item" v-for="(index,item) in items">
+                    <!--https://bbsresources.oss-cn-hangzhou.aliyuncs.com/CEdu/static/kufu.png-->
+
+                    <div v-if="item.ReplyContent">
+                        <img class="objimg" src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/CEdu/static/kufu.png" />
+                    </div>
+                    <div v-else>
+
+                        <img class="objimg" src="{{item.HeadImgurl}}" v-if="item.HeadImgurl" />
+                        <img class="objimg" src="/Resources/images/head.png" v-else />
+                    </div>
+
+                    <div class="layui-timeline-content layui-text">
+                        <h3 class="p-title p_top20">{{item.ObjectionContent?item.ObjectionContent:item.ReplyContent}}</h3>
+                        <p class="p_color" v-if="item.ReplyContent">
+                            {{item.ReplyTime.replace("T"," ")}}
+                        </p>
+                        <p class="p_color" v-else>
+                            {{item.ObjectionTime.replace("T"," ")}}
+                        </p>
+                    </div>
+                </li>
+            </ul>
+            <div class="layui-form">
+                <div class="layui-form-item layui-form-text">
+                    <div class="layui-input-block">
+                        <textarea name="desc" placeholder="请在输入框提出你的异议吧" v-model="ReplyContent" class="layui-textarea ta_cls" style="resize:none;"></textarea>
+                    </div>
+                </div>
+                <a href="#" class="layui-btn layui-btn-danger yy_asub" @click="subObjectMsg" style="color:#fff">提交</a>
+            </div>
+            <div class="footer">我已沟通完成,点击 <span style="color:#5fb878;cursor:pointer;" @click="comfirmObjection">确认无误<i class="iconfont icon-wodeshuji-gou" style="color:#5fb878;"></i></span></div>
+        </div>
+
+    </div>
+    <!--footer-->
+    <!--#<!--#include file="/PublicControl/bottommenu.html"-->
+</body>
+</html>
+<script>
+    require_js_file(['table', 'tree', 'form', 'jquery', 'tableExt', "customUtil", 'laydate'],
+    function (fnr) {
+        var table = layui.table;
+        var form = layui.form;
+        var laydate = layui.laydate;
+        var tableExt = layui.tableExt;
+        var $ = layui.$;
+        window.rootApp = new Vue({
+            el: '#objection',
+            data: {
+                ID: GetQueryString("ID"),
+                BusType:GetQueryString("BusType"),
+                items: "",
+                ReplyContent: "",
+
+            },
+            ready: function () {
+                this.getObjectionMsg();
+            },
+            methods: {
+
+    //返回上一级
+                 goback:function(){
+                        if (fnr.getQueryString('url')) {
+                                    location.href = fnr.getQueryString('url');
+                                } else {
+                                    location.href = "accountsettings.shtml";
+                                }
+                 },
+                //拿到异议列表信息
+                getObjectionMsg: function () {
+                    var _this = this;
+                    $.ajax({
+                        url: '/service/edu/Confirm/GetConfirmdetailList',
+                        data: { ID: _this.ID},
+                        success: function (res) {
+                            if (res.SuccessResponse) {
+                                if (res.Data) {
+                                    _this.items = res.Data;
+
+                                }
+                            }
+                        }
+                    })
+
+                },
+                //回复
+                subObjectMsg: function (e) {
+                    var _this = this;
+                    if(!_this.ReplyContent){
+                    layer.msg("请输入回复信息!")
+                    return;
+                    }
+                    $.ajax({
+                        url: '/service/edu/Confirm/GetConfirmhfStudateList',
+                        data: { ID: _this.ID, BusType: _this.BusType, ObjectionContent: _this.ReplyContent },
+                        type:"POST",
+                        success: function (res) {
+
+                            if (res.SuccessResponse) {
+                                _this.ReplyContent = "";
+                                    _this.getObjectionMsg()
+                            }else{
+                                layer.msg(res.Message)
+                            }
+                        }
+                    })
+                },
+                //
+                comfirmObjection: function () {
+
+                    var _this = this;
+                    $.ajax({
+                        url: '/service/edu/Confirm/GetConfirmhfStudatehf',
+                        data: { ID: _this.ID,StuID:_this.StuID },
+                        type: "POST",
+                        success: function (res) {
+                            if (res.SuccessResponse) {
+                                if (fnr.getQueryString('url')) {
+                                    location.href = fnr.getQueryString('url');
+                                } else {
+                                    location.href = "accountsettings.shtml";
+                                }
+
+                            }
+                        }
+                    })
+                },
+            }
+        });
+    });
+</script>

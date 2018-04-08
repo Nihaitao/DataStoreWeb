@@ -1,0 +1,241 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <blockquote class="layui-elem-quote">
+            <div class="layui-row layui-form">
+                <div class="layui-col-xs6" style="text-align: right;float:right">
+                    <button class="layui-btn" @click="addCompay"><i class="layui-icon"></i> 添加公司</button>
+                </div>
+            </div>
+        </blockquote>
+        <!--操作模板-->
+        <table id="listTable" lay-filter="listTable"></table>
+    </div>
+</body>
+</html>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt'],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+
+
+            //搜索条件
+            var rootApp = new Vue({
+                el: '#root',
+                data: {
+                    queryFormData: {
+                        SearchValue: '',
+                        Valid: ''
+                    },
+                    CompanyType: '',
+                    option: {
+                        options: [
+                            {
+                                key: '',
+                                value: '全部'
+                            },
+                          {
+                              key: '1',
+                              value: '启用'
+                          }, {
+                              key: '0',
+                              value: '禁用'
+                          }
+                        ]
+
+                    }
+
+                },
+                ready: function () {
+                    _this = this;
+                    //_this.CompanyType = fnr.getQueryString("CompanyType");
+                    _this.CompanyType = 0; //内部公司
+
+                },
+                mounted: {
+
+                },
+
+                methods: {
+                    addCompay: function () {
+                        fnr.openDialog({
+                            title: '添加公司',
+                            area: ['600px', '200px'],
+                            content: ['./addCompay.html?CompanyType=' + _this.CompanyType], //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+                            btn: ['确认添加'],
+                            yes: function (index, layero) {
+
+                                var iframeWin = window[layero.find('iframe')[0]['name']];
+                                $(iframeWin.document).find(".layui-btn").click();
+
+                            },
+                            events: {
+                                refresh: function (data) {
+                                    listTable.reload();
+                                    layer.msg("添加成功")
+                                }
+                            },
+                        });
+                    },
+                    doSearch: function () {
+                        var _this = this;
+                        listTable.reload({
+                            url: '/service/ClassRoom/GetClassRoomList',
+                            where: {
+                                Name: _this.queryFormData.SearchValue,
+                                Valid: _this.queryFormData.Valid
+                            }
+                        });
+                    },
+                    edit: function (int) {
+                        fnr.openDialog({
+                            title: '修改',
+                            area: ['600px', '200px'],
+                            content: ['./addCompay.html?ID=' + int.ID + '&CompanyType=' + _this.CompanyType], //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+                            btn: ['确认修改'],
+                            yes: function (index, layero) {
+
+                                var iframeWin = window[layero.find('iframe')[0]['name']];
+                                $(iframeWin.document).find(".layui-btn").click();
+
+                            },
+                            events: {
+                                refresh: function (data) {
+                                    listTable.reload();
+                                    layer.msg("修改成功")
+                                }
+                            },
+                        });
+                    },
+
+                }
+            });
+
+
+
+
+            //绑定列表
+            var listTable = table.render({
+                elem: '#listTable',
+                even: true, //开启隔行背景
+                page: true, //页分
+                cols: [
+                   [
+                       { fixed: true, checkbox: true },
+                       { field: 'ID', title: 'ID', width: 120, sort: true },
+                       { field: 'Name', title: '公司名称', width: 220, sort: true },
+                       /*{
+                           field: 'CompanyType', title: '公司类型', width: 120, sort: true, templet: function () {
+                               var array = new Array();
+                               array.push("<span>" + (this.CompanyType == 0 ? "内部公司" : "外部公司") + "</span>");
+                               return "<div>" + array.join("") + "</div>";
+                           }
+                       },
+
+                        {
+                            field: 'FinanceBeginTime', title: '财务启用日期', sort: true, width: 200, templet: function () {
+                                return fnr.format(this.FinanceBeginTime, "yyyy-MM-dd")
+                            }
+                        },
+                       {
+                           field: 'FinanceType', title: '会计制度', width: 120, templet: function () {
+                               var array = new Array();
+                               array.push("<span>" + (this.FinanceType == 0 ? "小企业会计制度" : "企业会计制度") + "</span>");
+                               return "<div>" + array.join("") + "</div>";
+                           }
+                       },
+                       {
+                           field: 'TaxpayerType', title: '纳税人类型', width: 120, sort: true, templet: function () {
+                               var array = new Array();
+                               array.push("<span>" + (this.TaxpayerType == 0 ? "小规模纳税人" : "一般纳税人") + "</span>");
+                               return "<div>" + array.join("") + "</div>";
+                           }
+                       },
+                       {
+                           field: 'IsDefault', title: '默认状态', width: 120, sort: true, templet: function () {
+                               var array = new Array();
+                               array.push("<span>" + (this.IsDefault == 0 ? "非默认" : "默认") + "</span>");
+                               return "<div>" + array.join("") + "</div>";
+                           }
+                       },*/
+                       {
+                           field: 'id', title: '状态', width: 120, templet: function () {
+                               var array = new Array();
+                               array.push("<span>" + (this.Enable ? "启用" : "禁用") + "</span>");
+                               return "<div>" + array.join("") + "</div>";
+                           }
+                       },
+                       {
+                           fixed: 'right',
+                           field: 'name',
+                           title: '操作',
+                           width: 180,
+                           toolbar: function () {
+                               var array = new Array();
+                               array.push("<button class=\"layui-btn layui-btn-small\" lay-event='edit'>编辑</button>");
+                               array.push("<button class=\"layui-btn layui-btn-small " + (this.Enable == 1 ? "layui-btn-warm" : "layui-btn-normal") + " \" lay-event='editisenable'>" + (this.Enable == 1 ? "禁用" : "启用") + "</button>");
+                               array.push("<button class=\"layui-btn layui-btn-small layui-btn-danger \" lay-event='delete'>删除</button>");
+                               return "<div>" + array.join("") + "</div>";
+                           }
+                       }
+                   ]
+                ],
+                url: '/service/hr/Station/GetCompanyList?CompanyType=' + _this.CompanyType + '&Enable=-1',
+            });
+
+
+            //监听工具栏事件
+            tableExt.addEvent("tool(listTable)",
+                {
+                    //工具栏编辑事件
+                    "edit": function (data, obj) {
+                        rootApp.edit(data)
+
+                    },
+                    //工具栏禁用启用事件
+                    "editisenable": function (data, obj) {
+                        layer.confirm('确定' + (data.Enable == 1 ? '禁用' : '启用'), { icon: 3, title: '提示' }, function (index) {
+                            var params = { ID: data.ID, Enable: data.Enable == 1 ? 0 : 1 }
+                            $.post("/service/hr/Company/CompanyEnable", params, function (res) {
+                                if (res.SuccessResponse) {
+                                    layer.msg("操作成功！");
+                                    listTable.reload();
+                                } else { layer.msg(res.Message) }
+                            })
+                            layer.close(index);
+                        });
+
+                    },
+                    //工具栏删除事件
+                    "delete": function (data, obj) {
+                        layer.confirm('确认要删除么?', { icon: 3, title: '提示' }, function (index) {
+                            var params = { ID: data.ID }
+                            $.post("/service/hr/Company/CompanyDelete", params, function (res) {
+                                if (res.SuccessResponse) {
+                                    layer.msg("删除成功！");
+                                    this.CourseInfoList = res.Data;
+                                    listTable.reload();
+                                } else {
+                                    layer.msg(res.Message)
+                                }
+                            })
+
+                            layer.close(index);
+                        });
+
+                    }
+                });
+        });
+</script>

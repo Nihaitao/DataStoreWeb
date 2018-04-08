@@ -1,0 +1,226 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        textarea {
+            resize: none;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <form class="layui-form" action="" onsubmit="return false">
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:120px">公司名称：</label>
+                <div class="layui-input-inline" style="width:300px">
+                    <input type="text" name="title" v-model="queryFormData.Name" lay-verify="required" placeholder="请输入名称"
+                           autofocus="autofocus" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:120px">公司类型：</label>
+                <div class="layui-input-block" style="width:300px">
+                    <remote-rad v-bind:setting="CompanyTypeSetting" v-bind:value.sync="queryFormData.CompanyType"
+                                initial="off"></remote-rad>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:120px">财务启用日期：</label>
+                <div class="layui-input-inline" style="width:300px">
+                    <input type="text" name="contactDate" id="contactDate" placeholder="选择日期" autocomplete="off" class="layui-input" v-bind:value.sync="queryFormData.FinanceBeginTime">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label" style="width:120px">会计制度：</label>
+                    <div class="layui-input-inline" style="width:300px">
+                        <remote-sel v-bind:setting="radioBudget" laytips="" v-bind:value.sync="queryFormData.FinanceType"
+                                    initial="off"></remote-sel>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label" style="width:120px">纳税人类型：</label>
+                    <div class="layui-input-inline" style="width:300px">
+                        <remote-sel v-bind:setting="TaxpayerTypeSetting" laytips="" v-bind:value.sync="queryFormData.TaxpayerType"
+                                    initial="off"></remote-sel>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:120px">默认状态：</label>
+                <div class="layui-input-block" style="width:300px">
+                    <check v-bind:value.sync="queryFormData.IsDefault" v-bind:bool.sync="queryFormData.IsDefault"></check>
+                </div>
+            </div>
+            <div class="layui-form-item layui-hide">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit @click="formDemo">立即提交</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+
+</body>
+</html>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="/Resources/js/Controls/Common.js"></script>
+<script>
+    Vue.component('check',
+        {
+            template:
+                '<input type="checkbox" lay-skin="primary" lay-filter="{{layfilter}}" v-model="reversedbool" value="{{value}}"/>',
+            props: ['value', 'val', 'bool'],
+            data: function () {
+                return {
+                    layfilter: ""
+                };
+            },
+            computed: {
+                reversedbool: function () {
+                    return Number(this.value);
+                }
+            },
+            watch: {
+                'value': function (val) {
+                    layui.form.render('checkbox');
+                }
+            },
+            ready: function () {
+                this.initEvent();
+                this.$nextTick(function () {
+                    layui.form.render('checkbox');
+                });
+            },
+            methods: {
+                initEvent: function () {
+                    var self = this;
+                    this.layfilter = "layfilter" + (Math.random() + "").substr(2);
+                    layui.form.on("checkbox(" + this.layfilter + ")",
+                        function (data) {
+                            self.value = data.elem.checked;
+                            self.bool = Number(data.elem.checked);
+                        });
+                }
+            }
+        });
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate"],
+        function (fnr) {
+            var laydate = layui.laydate;
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+
+            laydate.render({
+                elem: '#contactDate',
+                type: 'datetime',
+                min: -365,
+                max: 1,
+                done: function (value) {
+                    rootApp.queryFormData.FinanceBeginTime = value;
+                }
+            });
+            window.rootApp = new Vue({
+                el: "#root",
+                data: {
+                    radioBudget: {
+                        search: true,
+                        options:
+                            [
+                                { key: "0", value: "小企业会计制度" },
+                                { key: "1", value: "企业会计制度" }
+                            ],
+                    },
+                    queryFormData: {
+                        Name: '',
+                        CompanyType: 0,
+                        IsDefault: 0,
+                        FinanceBeginTime: '',
+                        FinanceType: 0,
+                        TaxpayerType: 0
+                    },
+                    _userId: '',
+                    CompanyTypeSetting: {
+                        tags: { name: "CompanyType" },
+                        options: [
+                        { key: "0", value: "内部公司" },
+                        { key: "1", value: "外部公司" }
+                        ]
+                    },
+                    TaxpayerTypeSetting: {
+                        search: true,
+                        options: [
+                        { key: "0", value: "小规模纳税人" },
+                        { key: "1", value: "一般纳税人" }
+                        ],
+                    }
+                },
+                ready: function () {
+                    _this = this;
+                    _this._userId = fnr.getQueryString("ID");
+                    //请求接口填充数据
+                    if (_this._userId) {
+                        $.get("/service/Company/GetQueryCompanyById", { ID: _this._userId }, function (rsp) {
+                            if (rsp.SuccessResponse) {
+                                _this.queryFormData.Name = rsp.ReturnData.Data.Name;
+                                _this.queryFormData.CompanyType = rsp.ReturnData.Data.CompanyType;
+                                _this.queryFormData.IsDefault = rsp.ReturnData.Data.IsDefault;
+                                _this.queryFormData.FinanceBeginTime = rsp.ReturnData.Data.FinanceBeginTime.replace("T", " ");
+                                _this.queryFormData.FinanceType = rsp.ReturnData.Data.FinanceType;
+                                _this.queryFormData.TaxpayerType = rsp.ReturnData.Data.TaxpayerType;
+                            } else {
+                                layer.msg(ReturnData.Message)
+                            }
+
+                        })
+                    }
+
+                },
+                methods: {
+
+                    //保存数据关闭弹窗
+                    formDemo: function (e) {
+                        _this = this;
+                        if (!layui.form.checkInput(e)) {
+                            return false;
+                        }
+                        if (_this._userId) {
+                            $.post("/service/Company/GetCompanyUpdate", { ID: _this._userId, Name: _this.queryFormData.Name, CompanyType: _this.queryFormData.CompanyType, IsDefault: _this.queryFormData.IsDefault, FinanceBeginTime: _this.queryFormData.FinanceBeginTime, FinanceType: _this.queryFormData.FinanceType, TaxpayerType: _this.queryFormData.TaxpayerType }, function (rsp) {
+                                if (rsp.SuccessResponse) {
+                                    fnr.callDialog('refresh'); //回调打开窗口events中的refresh
+                                    fnr.closeDialog(); //关闭当前的对话框
+                                } else {
+                                    layer.msg(rsp.Message)
+                                }
+                            })
+                            return false;
+                        } else {
+                            if (_this.queryFormData.FinanceBeginTime != "") {
+                                $.post("/service/Company/GetCompanyInsert", _this.queryFormData, function (rsp) {
+                                    if (rsp.SuccessResponse) {
+                                        fnr.callDialog('refresh'); //回调打开窗口events中的refresh
+                                        fnr.closeDialog(); //关闭当前的对话框
+                                    } else {
+                                        layer.msg(rsp.Message)
+                                    }
+                                })
+                            } else {
+                                layer.msg("时间不能为空！")
+                            }
+
+                            return false;
+                        }
+
+                    },
+                }
+            });
+        });
+</script>

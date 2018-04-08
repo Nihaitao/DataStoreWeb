@@ -1,0 +1,74 @@
+.clr_f:after {
+  clear: both;
+  content: "";
+  height: 0;
+  display: block;
+  overflow: hidden;
+  visibility: hidden;
+}
+header {
+  width: 100%;
+}
+header .ipt {
+  line-height: 0.862068rem;
+  background: #fcfcfc;
+  position: relative;
+}
+header .ipt .logo {
+  position: absolute;
+  top: 0.206896rem;
+  left: 0.362068rem;
+}
+header .ipt .logo img {
+  width: 0.793103rem;
+  height: 0.431034rem;
+}
+header .ipt input {
+  margin-left: 1.568965rem;
+  background: #f2f2f6;
+  border: none;
+  width: 4.482758rem;
+  height: 0.517241rem;
+  border-radius: 0.120689rem;
+  text-indent: 0.206896rem;
+  font-size: 0.224137rem;
+  color: #999999;
+}
+header .ipt .icon-sousuo {
+  font-size: 0.224137rem;
+  position: absolute;
+  top: 0;
+  right: 0.603448rem;
+}
+footer {
+  border-top: 0.017241rem solid #dddddd ;
+  background: #fff;
+  position: fixed;
+  bottom: 0rem;
+  width: 100%;
+  z-index: 9999 !important;
+}
+footer nav ul {
+  padding-top: 0 ;
+  width: 100%;
+}
+footer nav ul li {
+  width: 25%;
+  padding-top: 0.155172rem;
+  float: left;
+  text-align: center;
+}
+footer nav ul li i {
+  line-height: 0.344827rem ;
+  font-size: 0.344827rem !important;
+}
+footer nav ul li p {
+  line-height: 0.344827rem;
+  font-size: 0.172413rem;
+}
+footer nav ul .footer_active .footerBtn{
+  color: #f01414;
+}
+.footerBtn {
+    display: inline-block; width: 100%;height: 100%;
+}

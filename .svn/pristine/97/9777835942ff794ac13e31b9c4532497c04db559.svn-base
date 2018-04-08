@@ -1,0 +1,184 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title></title>
+	</head>
+
+	<body id="root">
+		<div class="mainContainer">
+
+			<blockquote class="layui-elem-quote">
+				<div class="layui-row layui-form">
+					<div class="layui-col-xs6">
+
+						<div class="layui-form-item">
+							<label class="layui-form-label"style="width:90px;">课程问答功能</label>
+                            <div class="layui-input-block" @click="changeQuestionValid">
+                                <input type="checkbox" name="zzz" lay-skin="switch" lay-text="开启|关闭" checked>
+                            </div>
+						</div>
+					</div>
+				</div>
+			</blockquote>
+            <div class="offToOn">
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width:104px">问答查看权限</label>
+                    <hr />
+                    <div class="site-demo-laydate"style="padding-top:38px">
+                        <div class="layui-row layui-col-space30" style="text-align:center;">
+                            <div class="layui-col-md2"style="border:1px solid #ccc;margin:10px;">
+                                <i class="layui-icon">&#xe657;</i> 
+                                购买本课程学员
+                            </div>
+                            <div class="layui-col-md2" style="border:1px solid #ccc;margin:10px;">
+                                <i class="layui-icon">&#xe65e;</i>
+                                所有付费学员
+                            </div>
+                            <div class="layui-col-md2" style="border:1px solid #ccc;margin:10px;">
+                                <i class="layui-icon">&#xe612;</i>
+                                所有登录用户
+                            </div>
+                            <div class="layui-col-md2" style="border:1px solid #ccc;margin:10px;">
+                                <i class="layui-icon">&#xe613;</i>
+                                所有用户
+                            </div>
+                        </div>
+                    </div> 
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width:104px">问答回复权限</label>
+                    <hr />
+                    <div class="layui-row layui-col-space30" style="text-align:center;padding-top:35px">
+                        <div class="layui-col-md2" style="border:1px solid #ccc;margin:10px;">
+                            <i class="layui-icon">&#xe657;</i>
+                            购买本课程学员
+                        </div>
+                        <div class="layui-col-md2" style="border:1px solid #ccc;margin:10px;">
+                            <i class="layui-icon">&#xe65e;</i>
+                            所有付费学员
+                        </div>
+                        <div class="layui-col-md2" style="border:1px solid #ccc;margin:10px;">
+                            <i class="layui-icon">&#xe612;</i>
+                            所有登录用户
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="layui-form-item">
+                <div class="layui-input-block site-demo-button" id="layerDemo">
+                    <button class="layui-btn" lay-submit="" data-method="offset" data-type="auto" lay-filter="demo1" @click="saveUpdate"> 保存 </button>
+                </div>
+            </div>
+			<!--操作模板-->
+		</div>
+	</body>
+
+</html>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+	require_js_file([ 'jquery', 'layer','element'],
+		function(fnr) {
+			var layer = layui.layer;
+			var element = layui.element;
+			var $ = layui.$;
+
+
+
+			var etext;//声明保存一个弹框的文本值
+
+
+			//搜索条件
+			var rootApp = new Vue({
+			    el: '#root',
+			    data: {
+			      
+			    },
+			    ready: function () {
+                    //获取数据库内开关按钮的数据
+                    $.get("/Base/Aciton?urlData=WConfiguration/GetWConfiguration", function (data) {
+                        var that = data.ReturnData.Data
+                        console.log(that.QuestionValid)
+                        if (that.QuestionValid == 1) {
+                            $(".layui-form-switch").find("em").parent().addClass("layui-form-onswitch")
+                            $(".layui-form-switch").find("em").html("开启")
+                            $(".offToOn").show()
+                        } else if (that.QuestionValid == 0) {
+                            $(".layui-form-switch").find("em").parent().removeClass("layui-form-onswitch")
+                            $(".layui-form-switch").find("em").html("关闭")
+                            $(".offToOn").hide()
+                        }
+			        })
+			    },
+			    methods: {
+                    //开关按钮点击事件
+			        changeQuestionValid: function () {
+			            var QuestionValid = $(".layui-form-switch").find("em").html()     //课程问答功能开关
+			            if (QuestionValid == '开启') {
+			                $(".offToOn").show()
+			            } else if (QuestionValid == '关闭') {
+			                $(".offToOn").hide()
+			            }
+			        },
+			        saveUpdate: function () {
+			            var QuestionValid = $(".layui-form-switch").find("em").html()//多处登录
+
+			            console.log(QuestionValid)
+			            if (QuestionValid == '开启') {//多处登录
+			                that_QuestionValid = 1
+			            } else if (QuestionValid == '关闭') {
+			                that_QuestionValid = 0
+			            }
+
+			            console.log(that_QuestionValid)
+			            $.post("/Base/Aciton?urlData=WConfiguration/SetWConfiguration", { QuestionValid: that_QuestionValid })
+			        },
+
+
+			    }
+
+			});
+		    //设置保存按钮的弹框
+			var active = {
+			    offset: function (othis) {
+
+			        $.ajax({
+			            url: "/Base/Aciton?urlData=WConfiguration/SetWConfiguration",
+			            type: "post",
+			            async: false,
+			            data: { ok: "1" },
+			            success: function (data) {
+			                etext = data.Message
+			            }
+			        })
+			        if (etext == '成功！') {
+			            etext = '保存成功'
+			        }
+			        var type = othis.data("type");
+			        var text = etext
+			        // console.log(text)
+			        layer.open({
+			            type: 1,
+			            offset: type,
+			            id: "laydemo" + type,
+			            content: '<div style="padding: 20px 100px;">' + text + '</div>',
+			            btn: "确定",
+			            btnAlign: 'c',//按钮居中
+			            shade: 0,//不显示遮罩
+			            yes: function () {
+			                layer.closeAll();
+			            }
+			        })
+			    }
+			};
+			$('#layerDemo .layui-btn').on('click', function () {
+			    var othis = $(this), method = othis.data('method');
+			    active[method] ? active[method].call(this, othis) : '';
+			});
+		});
+</script>

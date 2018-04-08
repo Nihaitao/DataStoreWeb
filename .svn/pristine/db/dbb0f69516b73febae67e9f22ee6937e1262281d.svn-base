@@ -1,0 +1,340 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="/Resources/fonts/iconfont.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link href="/Resources/CSS/Font/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="/Resources/CSS/video-js.css" rel="stylesheet" />
+    <style>
+        #questionModule { width: 100%; min-height: 300px; background: none; overflow: hidden; position: relative; }
+
+        #questionModule > ul { width: 100%; height: auto; }
+
+        #questionModule.cross-range { margin-bottom: 20px; }
+
+        #questionModule.cross-range > ul { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
+
+        #questionModule.cross-range > ul > li { float: left; width: 100%; overflow: hidden; }
+    </style>
+
+</head>
+<body style="background-color: #f7f7f7;user-select: none;" id="root">
+    <!--#<!--#include file="/PublicControl/topmenu.html"-->
+    <div class="content">
+        <div class="containers">
+            <!-- 栏目路径 开始 -->
+            <div class="bd-bg">
+                <div class="adress f-f14"> <i></i> 当前位置： <a href="#">《计算机应用基础》</a><span>&nbsp; &gt; &nbsp;</span><a href="#" style="cursor:default">计算机应用基础</a> </div>
+                <div class="tpro-gress-pra">
+                    <div id="m_progress" class="tpro-gress">
+                        <div class="progress"> <em class="page-done" style="width:{{done * percen}}%;"></em> </div>
+                        <div class="txt"><em>已完成{{done}}题</em>/共{{Chapter.list.length}}题</div>
+                    </div>
+                </div>
+            </div>
+            <!--栏目路径 结束-->
+            <!--题型 开始-->
+            <div class="dopra-con clearfix">
+                <div class="pra-left-con pra-right-font16">
+                    <!-- 练习模式做题-->
+                    <div id="questionModule" class="" style="min-height: 430px;">
+                        <ul>
+                            <li v-for="(index,item) in Chapter.list">
+                                <!--填空，问答-->
+                                <div class="subject-con bor clearfix m-question" v-if="item.QuestionType_ID==3 || item.QuestionType_ID==5 || item.QuestionType_ID==6">
+                                    <div class="subject-con">
+                                        <div class="sub-content ">
+                                            <i class="subjec-daan" style="display: none;"></i>
+                                            <div class="sub-dotitle"> <em>{{index+1}}</em> <i>[{{item.QuestionType_ID | filterType}}]</i> </div>
+                                            <dl class="sub-answer vsub-mater-con">
+                                                <dd v-if="item.QuestionType_ID==3 || item.QuestionType_ID==5">{{item.Title}}</dd>
+                                                <dd v-if="item.QuestionType_ID==6" v-html="item.Title"></dd>
+                                            </dl>
+                                            <div class="mater-respond" style="display:block;">
+                                                <textarea placeholder="请在此输入您的答案" v-model="item.MyAnswer"></textarea>
+                                                <div class="mare-info">
+                                                    <div class="refer-answer refer-sc">
+                                                        <ul>
+                                                            <li class="nobro"> <a href="" class="btn_scbt scbt" v-bind:class="{item.IsCollection?'this':''}"> <i></i>收藏本题 </a> </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--单选，多选，判断-->
+                                <div class="subject-con bor clearfix m-question " v-if="item.QuestionType_ID==1 || item.QuestionType_ID==2 || item.QuestionType_ID==4">
+                                    <div class="subject-con">
+                                        <div class="sub-content ">
+                                            <i class="subjec-daan" style="display: none;"></i>
+                                            <div class="sub-dotitle"> <em>{{index+1}}</em> <i>[{{item.QuestionType_ID | filterType}}]</i>{{item.Title}}</div>
+                                            <answer-singles v-if="item.QuestionType_ID==1" v-bind:list="item.Body" v-bind:value.sync="item.MyAnswer" v-bind:answer="item.Answer" v-bind:showanswer="item.ShowAnswer"></answer-singles>
+
+                                            <answer-judge v-if="item.QuestionType_ID==4" v-bind:value.sync="item.MyAnswer" v-bind:answer="item.Answer" v-bind:showanswer="item.ShowAnswer"></answer-judge>
+
+                                            <answer-mult v-if="item.QuestionType_ID==2" v-bind:list="item.Body" v-bind:value.sync="item.MyAnswer" v-bind:answer="item.Answer" v-bind:showanswer="item.ShowAnswer"></answer-mult>
+                                            <div class="refer-answer refer-sc">
+                                                <ul>
+                                                    <li class="nobro"> <a href="" class="btn_scbt scbt"><i></i>收藏本题</a> </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- 题目切换栏 -->
+                </div>
+                <!--右侧设置-->
+                <div class="pra-right-con">
+                    <div id="m_rightPart" class="pra-right-con-sub" style="z-index: 1001; position: static; top: auto; bottom: auto; left: auto;">
+                        <div class="time-card bor">
+                            <div class="y-time"> <span class="f-fl"><i></i>用时<em id="e_timer">01:29:52</em></span> <span class="btn_pause stop f-fr"><a href=""><i></i>暂停</a></span> </div>
+                            <!--答题卡区域-->
+                            <div class="rightArea-answer clear">
+                                <div id="answerCard">
+                                    <div class="hd clearfix"> <span class="title f-fl">答题卡 <span class="e_doneCount card-count" style="font-size: 12px;color: #F06000;margin-left: 10px">{{done}}/{{Chapter.list.length}}</span></span> </div>
+                                    <div class="bd clear" style="min-height:80px; max-height: 62px;">
+                                        <dl class="panel-item">
+                                            <dt>题号</dt>
+                                            <dd class="panel-order">
+                                                <a href="javascript:;" class="e_answerCard page-card-item" v-for="(index,item) in Chapter.list" v-bind:class="{'this':item.MyAnswer.length>0 || (item.MyAnswer+'').length>0}">{{index+1}}</a>
+                                            </dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                                <div class="cad-color clear">
+                                    <div class="panel-order-notice panel-notice-t"> <em>已做</em><i class="a doit"></i> <em>未做</em><i class="a normal"></i> </div>
+                                </div>
+                                <div class="ft">
+                                    <!--<div class="btn2 btn-one"><a href="" class="btn_nextGoon">保存进度，下次继续</a></div>-->
+                                    <div class="btn2"><a href="javascript:void(0)" class="btn_submit" @click="tijiao">交卷</a></div>
+                                </div>
+                            </div>
+                            <!--答题卡区域 end-->
+                        </div>
+                    </div>
+                </div>
+                <!--右侧设置 end-->
+            </div>
+            <!--题型 结束-->
+
+        </div>
+    </div>
+
+
+
+    <!--footer-->
+    <!--#<!--#include file="/PublicControl/bottommenu.html"-->
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <script>
+       //单选
+        Vue.component('answer-singles', {
+            props: ['list', 'value','answer','showanswer'],
+            template: '<dl class="sub-answer sub-answer-no"><dd class="m-question-option" v-bind:class="{\'cho-this\':key==value,\'right-this\':isRigght(key)}" v-for="(key,val) in list" @click="choice(key,val)"><i></i><span>{{key}}.</span>{{val}}</dd></dl>',
+            data: function () {
+
+            },
+            methods: {
+                isRigght:function(key){
+                    return this.answer.indexOf(key)>-1 && this.showanswer
+                },
+                choice: function (key, val) {
+                    this.value.splice(0,1,key)
+                    this.value.sort();
+                }
+            }
+        })
+        //判断
+        Vue.component('answer-judge', {
+            props: ['list', 'value','answer','showanswer'],
+            template: '<dl class="sub-answer"><dd class="m-question-option" @click=handleClick(1) v-bind:class="{\'cho-this\':1===value}"> <i></i><span>是</span> </dd><dd class="m-question-option" @click=handleClick(0) v-bind:class="{\'cho-this\':0===value}"><i></i><span>否</span></dd></dl>',
+            methods: {
+                handleClick: function (val) {
+                    this.value=val;
+                }
+            }
+        })
+        //多选
+        Vue.component('answer-mult', {
+            props: ['list', 'value','answer','showanswer'],
+            template: '<dl class="sub-answer sub-answer-double"><dd class="m-question-option" v-bind:class="{\'cho-this\':idx(key),\'right-this\':isRigght(key)}" v-for="(key,val) in list" @click="choice(key,val)"><i></i><span>{{key}}.</span>{{val}}</dd></dl>',
+            data: function () {
+                return {
+                }
+            },
+            methods: {
+                isRigght:function(key){
+                    return this.answer.indexOf(key)>-1 && this.showanswer
+                },
+                idx: function (key) {
+                    return this.value.indexOf(key) > -1
+                },
+                choice: function (key, val) {
+                    if (this.value.indexOf(key) > -1) {
+                        this.value.splice(this.value.indexOf(key), 1)
+                    } else {
+                        this.value.push(key)
+                    }
+                    this.value.sort();
+                }
+            }
+        })
+        Vue.filter('filterType', function (val) {
+            switch (val) {
+                case 1:
+                    return '单选题'
+                    break;
+                case 2:
+                    return '多选题'
+                    break;
+                case 3:
+                    return '填空题'
+                    break;
+                case 4:
+                    return '判断题'
+                    break;
+                case 5:
+                    return '问答题'
+                    break;
+                case 6:
+                    return '计算题'
+                    break;
+                case 7:
+                    return '组合题'
+                    break;
+            }
+        })
+        require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil'],
+            function (fnr) {
+                var $ = layui.$;
+                var table = layui.table;
+                var tableExt = layui.tableExt;
+                var vm = new Vue({
+                    el: "#root",
+                    data: {
+                        storeId: fnr.getQueryString('storeId'),
+                        chapterId: fnr.getQueryString('chapterId'),
+                        questionType: fnr.getQueryString('questionType'),
+                        questionCount: fnr.getQueryString('questionCount'),
+                        questionSource: fnr.getQueryString('questionSource'),
+                        Chapter: '',
+                        currentIndex: 0,
+                        ts: true,
+                    },
+                    computed: {
+                        done: function () {
+                            return this.Chapter.list.filter(function (item) {
+                                if(item.QuestionType_ID==4){
+                                    return (''+item.MyAnswer).length
+                                }
+                                return !!item.MyAnswer.length > 0
+                            }).length;
+                        },
+                        percen: function () {
+                            return 100 / this.Chapter.list.length
+                        }
+                    },
+                    ready: function () {
+                        this.CreateChapterPractice()
+                    },
+                    methods: {
+                        //创建章节练习
+                        CreateChapterPractice: function () {
+                            var that = this;
+                            $.post('/service/datastore/Chapter/CreateChapterPractice',
+                            {
+                                storeId: this.storeId,
+                                chapterId: this.chapterId,
+                                questionType: this.questionType,
+                                questionCount: this.questionCount,
+                                questionSource: this.questionSource,
+                            },
+                            function (res) {
+                                if (res.SuccessResponse) {
+                                    var list = res.Data.list;
+                                    for (var i = 0; i < list.length; i++) {
+                                        if (list[i].Body) {
+                                            list[i].Body = JSON.parse(list[i].Body)
+                                        }
+                                        if (list[i].AnswerCount) {
+                                            list[i].AnswerList = []
+                                            for (var j = 0; j < list[i].AnswerCount; j++) {
+                                                list[i].AnswerList.push({ key: i, val: String.fromCharCode(j + 65) })
+                                            }
+                                        }
+                                        if (list[i].QuestionType_ID == 3 || list[i].QuestionType_ID == 4 || list[i].QuestionType_ID == 5 || list[i].QuestionType_ID == 6) {
+                                            list[i].MyAnswer = '';
+                                        } else {
+                                            list[i].MyAnswer = [];
+                                        }
+                                        list[i].Answer = list[i].Answer.split(',').sort();
+                                        list[i].ShowAnswer = false;
+                                        list[i].ShowMark = false;
+                                        list[i].ShowNoteList = false;
+                                        list[i].Remart = '';
+                                        list[i].ShowRemart = false;
+                                    }
+                                    that.Chapter = res.Data;
+                                    var counts = res.Data.list.length;
+                                }
+                            })
+                        },
+                        //判断试题是否正确
+                        Judge: function (Answer, MyAnswer) {
+                            if (!MyAnswer) {
+                                return false;
+                            }
+                            if (typeof MyAnswer == "number" || typeof MyAnswer == "string") {
+                                return Answer.toString() == MyAnswer;
+                            } else {
+                                return Number(Answer.sort().toString() == MyAnswer.sort().toString());
+                            }
+                        },
+                        //交卷
+                        tijiao:function(){
+                            layer.confirm('是否确定交卷', {
+                                btn: ['确定交卷', '暂不交卷，我还要做'] //按钮
+                            }, function () {
+                                that.jiaojuan(that.ResultId,list);
+                            }, function () {
+
+                            });
+                        },
+                        tijiao: function () {
+                            var that = this;
+                            $.post('/service/datastore/Chapter/SubmitPractice',
+                                {
+                                    resultId: this.Chapter.resultId,
+                                    list: this.Chapter.list.map(function (item) {
+                                        return { ID: item.ID, MyAnswer: (item.MyAnswer instanceof Array)?item.MyAnswer.join():item.MyAnswer, Judge: that.Judge(item.Answer, item.MyAnswer) }
+                                    }),
+                                },
+                                function (res) {
+                                    if (res.SuccessResponse) {
+                                        fnr.openDialog({
+                                            title:'做题答案',
+                                            area: ['766px', '320px'],
+                                             content: ['/usercenter/questionbank/tk/chapterAnswer.html?busType=1&busId='+that.Chapter.practiceId+'&chapterId='+that.chapterId+'&storeId='+that.storeId+'&resultId='+that.Chapter.resultId],
+                                        });
+                                    }
+                                })
+                        },
+                    }
+                });
+            })
+    </script>
+</body>
+
+</html>

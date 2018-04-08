@@ -1,0 +1,154 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        textarea {
+            resize: none;
+        }
+
+        .table_css {
+            width: 100%;
+            border: solid 1px #DBDBDB;
+        }
+
+        .leftTD_css {
+            width: 30%;
+            padding: 10px 0px 10px 30px;
+            border-right: solid 1px #DBDBDB;
+            border-bottom: solid 1px #DBDBDB;
+            background-color: #F2F2F2
+        }
+
+        .rightTD_css {
+            padding: 10px;
+            border-bottom: solid 1px #DBDBDB;
+        }
+
+        [v-cloak] {
+            display: none
+        }
+    </style>
+</head>
+<body id="root" v-cloak>
+    <div class="OpenContainer">
+        <form class="layui-form" action="" onsubmit="return false">
+            <table class="table_css">
+                <tr>
+                    <td class="leftTD_css">姓名</td>
+                    <td class="rightTD_css">
+                        <span id="OldName" style="color:#3CB371">{{Name}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="leftTD_css">手机号</td>
+                    <td class="rightTD_css">
+                        <span id="Name" style="color:#3CB371">{{Phone}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="leftTD_css">邀请人</td>
+                    <td class="rightTD_css">
+                        <span id="PersonName">{{Inviter}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="leftTD_css">邀请时间</td>
+                    <td class="rightTD_css">
+                        <span id="AddTime">{{AddTime}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="leftTD_css">审核意见</td>
+                    <td class="rightTD_css">
+                        <remote-rad v-bind:setting="AuditValidSetting" v-bind:value.sync="AuditValid" initial="off"></remote-rad>
+                    </td>
+                </tr>
+            </table>
+            <div class="layui-form-item">
+                <div style="float:right;padding:10px;">
+                    <button class="layui-btn" lay-submit @click="formDemo">提交审核</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="/Resources/js/Controls/Common.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate"],
+        function (fnr) {
+            var laydate = layui.laydate;
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+
+            window.rootApp = new Vue({
+                el: "#root",
+                data: {
+                    AuditValidSetting: {
+                        tags: { name: "AuditValid" },
+                        options: [
+                            { key: "1", value: "通过" },
+                            { key: "2", value: "拒绝" },
+                        ]
+                    },
+                    AuditValid: 1,
+                    Name: '',
+                    Phone: '',
+                    Inviter: '',
+                    AddTime: '',
+                },
+                ready: function () {
+                    _this = this;
+                    var Info_ID = fnr.getQueryString('Info_ID');
+                    if (Info_ID != undefined && Info_ID != 0) {
+                        var para = { Info_ID: Info_ID, Proxy_ID: 0 };
+                        $.get("/service/hr/StationAccount/GetAccountInviteInfo", para, function (rsp) {
+                            if (rsp.SuccessResponse) {
+                                if (rsp.Data) {
+                                    _this.Name = rsp.Data.Name;
+                                    _this.Phone = rsp.Data.Phone;
+                                    _this.Inviter = rsp.Data.Inviter;
+                                    _this.AddTime = (fnr.format(rsp.Data.AddTime, "yyyy-MM-dd HH:mm") == "2001-01-01 00:00" ? "" : fnr.format(rsp.Data.AddTime, "yyyy-MM-dd HH:mm"));
+
+                                }
+                            }
+                            else {
+                                layer.msg(rsp.Message);
+                            }
+                        });
+                    }
+                },
+                methods: {
+                    //保存数据关闭弹窗
+                    formDemo: function () {
+                        _this = this;
+                        var Info_ID = fnr.getQueryString('Info_ID');
+                        if (Info_ID != undefined && Info_ID != 0) {
+                            layer.confirm((_this.AuditValid == 1 ? '确认要审核通过吗?' : '确认要审核拒绝吗？'), { icon: 3, title: '提示' }, function (index) {
+                                var para = { ID: Info_ID, Stationproxy_ID: 0, Status: _this.AuditValid };
+                                $.post("/service/hr/StationAccount/AuditAccountInvite", para, function (res) {
+                                    if (res.SuccessResponse) {
+                                        fnr.callDialog('refresh', res.SuccessResponse); //回调打开窗口events中的refresh
+                                        fnr.closeDialog();
+                                    }
+                                    else {
+                                        layer.msg(res.Message)
+                                    }
+                                });
+                                layer.close(index);
+                            });
+                        }
+                        return false;
+                    },
+                }
+            });
+        });
+</script>

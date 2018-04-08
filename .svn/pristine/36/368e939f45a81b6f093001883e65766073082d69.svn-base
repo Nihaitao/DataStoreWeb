@@ -1,0 +1,182 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        .isDisplay {
+            display: none;
+        }
+
+        .box {
+            position: relative;
+            border-radius: 5px;
+            padding: 25px 25px;
+            display: inline-block;
+            text-align: center;
+            width: 130px;
+        }
+        .box.ddd {
+            border: 1px solid #ddd;
+        }
+        .box.ff9 {
+            border: 1px solid #52A549;
+        }
+
+        .box a {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        .box p.imgP {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .yes {
+            color: #ddd;
+        }
+        .chooseIcon {
+            display: inline-block;
+            border-top-left-radius: 3px;
+            border-bottom-right-radius: 5px;
+            padding: 2px 7px 3px 4px;
+            background-color: #52A549;
+            color: #fff;
+            font-size: 12px;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .box a.settingBtn {
+            border-color: #52A549;
+            color: #52A549;
+            margin-left: 10px;
+        }
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body id="root" v-cloak>
+    <div class="OpenContainer">
+        <div v-bind:class="{'box': true, 'ff9': isDisabled, 'ddd': !isDisabled}">
+            <p class="imgP" v-if="!isDisabled">
+                <img src="../../Resources/images/WeChat01.png" style="width: 70px; height: 70px;" />
+                <span style="display: block; margin-top: 10px; color: #ddd;">微信支付</span>
+            </p>
+            <p class="imgP" v-if="isDisabled">
+                <img src="../../Resources/images/WeChatPay02.png" style="width: 70px; height: 70px;" />
+                <span style="display: block; margin-top: 10px; color: #52A549;">微信支付</span>
+            </p>
+            <a class="yes" href="javascript:;" v-if="!isDisabled" @click="enableFn">启用</a>
+            <a class="no" href="javascript:;" v-if="isDisabled" style="color: #ddd;" @click="disabledFn">禁用</a>
+            <a class="settingBtn" v-if="isDisabled" href="javascript:;" @click="setModelFn">设置</a>
+            <div class="chooseIcon" v-if="isDisabled">已选择</div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="../../Resources/js/Controls/Common.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate", "customUtil"],
+    function (fnr) {
+
+        var laydate = layui.laydate;
+        var $ = layui.jquery;
+
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+                isDisabled: false,
+                ID: '',
+            },
+            ready: function () {
+                this.isEnabledFn();
+            },
+            methods: {
+                //配置信息
+                enableFn: function () {
+                    var self = this;
+                    fnr.openDialog({
+                        title: '微信支付配置',
+                        area: ['1000px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                        content: ['payForm.html'],
+                        btn: ['保存'],
+                        events: {
+                            refresh: function (data) {
+                                if (data.status) {
+                                    layer.msg('添加成功');
+                                    self.isEnabledFn();
+                                } else {
+                                    layer.msg('添加失败');
+                                }
+                            }
+                        }
+                    });
+                },
+
+                //判断是否启用
+                isEnabledFn: function () {
+                    var self = this;
+                    $.get('/service/pay/OnLinePay/QueryPaySetView', { PayType: 1 }, function (res) {
+                        console.log(res);
+                        if (res.SuccessResponse) {
+                            if (res.Data != null) {
+                                self.ID = res.Data.ID;
+                                if (res.Data.Valid == 1) {
+                                    self.isDisabled = true;
+                                } else {
+                                    self.isDisabled = false;
+                                }
+                            } else {
+                                layer.msg('data为null');
+                            }
+                        }
+                    })
+                },
+
+                //禁用
+                disabledFn: function () {
+                    var self = this;
+                    $.get('/service/pay/OnLinePay/PaySetEnable', { ID: self.ID, Valid: 0 }, function (res) {
+                        console.log(res);
+                        if (res.SuccessResponse) {
+                            self.isDisabled = false;
+                            layer.msg(res.Message ? res.Message : '操作成功')
+                        } else {
+                            layer.msg(res.Message)
+                        }
+                    })
+                },
+
+                //配置
+                setModelFn: function () {
+                    var self = this;
+                    fnr.openDialog({
+                        title: '微信支付配置',
+                        area: ['1000px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                        content: ['paySetForm.html?ID=' + self.ID],
+                        btn: ['保存'],
+                        events: {
+                            refresh: function (data) {
+                                if (data.status) {
+                                    layer.msg(data.msg ? data.msg : '操作成功');
+                                } else {
+                                    layer.msg(data.msg ? data.msg : '操作失败');
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    });
+</script>

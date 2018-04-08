@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+        <meta name="format-detection" content="telephone=no">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>我的问答首页</title>
+        <link href="../../Resources/css/ba.css" rel="stylesheet" />
+        <link href="../../Resources/css/QA.css" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="http://at.alicdn.com/t/font_420109_2aq20389x5vobt9.css" />
+
+        <script src="../../script/jquery.js"></script>
+        <script src="../../js/comment.js"></script>
+        <script src="../../script/artTemplate.js"></script>
+        <script src="../../script/layer_mobile/layer.js"></script>
+	</head>
+
+	<body>
+		<header class="bz-bb">
+			<i class="iconfont icon-sanjiao-copy"></i>
+			<p>我的问答</p>
+		</header>
+		<main>
+			<div class="firstCon">
+				<span class="pic">
+					<img src="../img/tc-4.png"/>
+				</span>
+				<div class="qa-txt txt">
+					<p class="title">来自《中国近代史》第三章</p>
+					<p class="qus">老师这个问题我没有太明白什么意思?</p>
+				</div>
+				<span class="red-font">1</span>
+			</div>
+			<div class="firstCon">
+				<span class="pic">
+					<img src="../img/tc-4.png"/>
+				</span>
+				<div class="qa-txt txt">
+					<p class="title">来自《中国近代史》第四章</p>
+					<p class="qus">老师这个问题我没有太明白什么意思?</p>
+				</div>
+				<span class="red-font">1</span>
+			</div>
+		</main>
+	</body>
+
+</html>

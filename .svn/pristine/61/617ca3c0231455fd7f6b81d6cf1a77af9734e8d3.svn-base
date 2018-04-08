@@ -1,0 +1,457 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0054)http://xs.chutou.net:8001/SystemSet/Client/BaoDan.html -->
+<HTML><HEAD><META content="IE=5.0000" http-equiv="X-UA-Compatible">
+     <TITLE>表单API接口</TITLE>     
+<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+<STYLE type="text/css">
+        body { margin: 0px; padding: 0px; }
+        p { margin: 0px; padding: 0px; }
+        ul { margin: 0px; padding: 0px; }
+        ol { margin: 0px; padding: 0px; }
+        li { margin: 0px; padding: 0px; }
+        dl { margin: 0px; padding: 0px; }
+        dt { margin: 0px; padding: 0px; }
+        dd { margin: 0px; padding: 0px; }
+        h1 { margin: 0px; padding: 0px; }
+        h2 { margin: 0px; padding: 0px; }
+        h3 { margin: 0px; padding: 0px; }
+        h4 { margin: 0px; padding: 0px; }
+        h5 { margin: 0px; padding: 0px; }
+        h6 { margin: 0px; padding: 0px; }
+        fieldset { margin: 0px; padding: 0px; }
+        legend { margin: 0px; padding: 0px; }
+        input { margin: 0px; padding: 0px; }
+        select { margin: 0px; padding: 0px; }
+        textarea { margin: 0px; padding: 0px; }
+        button { margin: 0px; padding: 0px; }
+        th { margin: 0px; padding: 0px; }
+        td { margin: 0px; padding: 0px; }
+        img { margin: 0px; padding: 0px; }
+        body { background: rgb(231, 232, 235); font: 14px/1.6 "Helvetica Neue", "Hiragino Sans GB", "Microsoft YaHei", "黑体", Arial, sans-serif; color: rgb(34, 34, 34); min-width: 1200px; font-size-adjust: none; font-stretch: normal; }
+        h1 { font-size: 100%; font-weight: 400; }
+        h2 { font-size: 100%; font-weight: 400; }
+        h3 { font-size: 100%; font-weight: 400; }
+        h4 { font-size: 100%; font-weight: 400; }
+        h5 { font-size: 100%; font-weight: 400; }
+        h6 { font-size: 100%; font-weight: 400; }
+        ul { list-style: none; }
+        dl { list-style: none; }
+        ol { list-style: none; }
+        img { border: currentColor; }
+        fieldset { border: currentColor; }
+        i { font-style: normal; }
+        em { font-style: normal; }
+        img { vertical-align: top; }
+        table { width: 100%; border-collapse: collapse; word-break: break-all; word-wrap: break-word; border-spacing: 0; empty-cells: hide; }
+        textarea { font-size: 100%; overflow-y: auto; resize: none; }
+        p { word-break: break-all; word-wrap: break-word; }
+        a { color: rgb(69, 154, 233); text-decoration: none; }
+            a:hover { text-decoration: underline; }
+        .red { color: rgb(225, 95, 99) !important; }
+        .green { color: rgb(68, 181, 73) !important; }
+        .yellow { color: rgb(255, 177, 3) !important; }
+        .gray { color: rgb(141, 141, 141) !important; }
+        .black { color: rgb(34, 34, 34) !important; }
+        .vs { margin: 0px 10px; color: rgb(231, 231, 235); font-family: arial; }
+        .tl { text-align: left !important; }
+        .tc { text-align: center !important; }
+        .tr { text-align: right !important; }
+        .hr { background: rgb(231, 231, 235); margin: 30px 0px; height: 1px; overflow: hidden; }
+        .fl { float: left !important; }
+        .fr { float: right !important; }
+        .mb10 { margin-bottom: 10px !important; }
+        .mb20 { margin-bottom: 20px !important; }
+        .mb30 { margin-bottom: 30px !important; }
+        .guide-msg { background: rgb(244, 245, 249); padding: 14px 30px; color: rgb(141, 141, 141); }
+            .guide-msg .border { padding: 10px 20px; border: 1px solid rgb(231, 231, 235); margin-top: 10px; }
+        .gap { margin: 0px 4px; }
+        .gapl { margin-left: 4px; }
+        .gapr { margin-right: 4px; }
+        .gap-wide { margin: 0px 14px; }
+        .gapl-wide { margin-left: 14px; }
+        .gapr-wide { margin-right: 14px; }
+        .hide { display: none !important; }
+        .clr::after { height: 0px; clear: both; display: block; visibility: hidden; content: "."; }
+        .wrap::after { height: 0px; clear: both; display: block; visibility: hidden; content: "."; }
+        .form-item::after { height: 0px; clear: both; display: block; visibility: hidden; content: "."; }
+        .clr { zoom: 1; }
+        .wrap { zoom: 1; }
+        .form-item { zoom: 1; }
+        .wrap { margin: 0px auto; width: 1025px; overflow: hidden; zoom: 1; }
+        .container { margin: 25px auto; }
+        .header { background: rgb(255, 255, 255); border-top-color: rgb(68, 181, 73); border-bottom-color: rgb(217, 218, 220); border-top-width: 3px; border-bottom-width: 1px; border-top-style: solid; border-bottom-style: solid; }
+            .header .wrap { overflow: visible; }
+            .header .logo { padding: 10px 59px 10px 0px; float: left; }
+            .header .main-logo { background: url("https://wx.gtimg.com/pay/img/common/logo.png?v=20160909") no-repeat; width: 232px; margin-right: 12px; float: left; }
+            .header .partner.main-logo { background: url("https://wx.gtimg.com/pay/img/common/logo_partner.png?v=20160909") no-repeat; width: 250px; }
+            .header .main-logo a { height: 40px; line-height: 999px; overflow: hidden; display: block; }
+            .header .sub-logo { background: url("../img/logo_dev.png") no-repeat; width: 100px; height: 18px; margin-top: 12px; float: left; }
+            .header .link { line-height: 59px; margin-right: 17px; float: right; }
+                .header .link a { height: 60px; color: rgb(34, 34, 34); display: inline-block; }
+                    .header .link a:hover { color: rgb(69, 154, 233); }
+                .header .link .dropdown-box { display: inline-block; position: relative; z-index: 1001; }
+                    .header .link .dropdown-box .dropdown-head:hover { color: rgb(34, 34, 34); text-decoration: none; }
+                    .header .link .dropdown-box .dropdown-body { background: rgb(255, 255, 255); padding: 4px 20px; border: 1px solid rgb(231, 231, 235); left: -17px; top: 59px; line-height: 26px; display: none; position: absolute; min-width: 131px; }
+                        .header .link .dropdown-box .dropdown-body li { padding: 10px 0px; color: rgb(34, 34, 34); border-bottom-color: rgb(231, 231, 235); border-bottom-width: 1px; border-bottom-style: solid; }
+                            .header .link .dropdown-box .dropdown-body li a { height: auto; }
+                            .header .link .dropdown-box .dropdown-body li.last { border-bottom-color: currentColor; border-bottom-width: medium; border-bottom-style: none; }
+                            .header .link .dropdown-box .dropdown-body li.kefu .tel { font-size: 17px; }
+                            .header .link .dropdown-box .dropdown-body li.kefu .time { color: rgb(141, 141, 141); font-size: 12px; }
+                .header .link .show-dropdown-body .dropdown-head { background: rgb(255, 255, 255); border-width: 0px 1px; border-style: solid; border-color: rgb(231, 231, 235); margin: 0px -17px; padding: 0px 16px; position: relative; z-index: 9; }
+                .header .link .show-dropdown-body .dropdown-body { display: block; }
+        .query .wrap { overflow: visible; position: relative; }
+            .query .wrap .postion { top: 63px; right: 10px; position: absolute; }
+        .page-single .query .wrap .postion { top: 53px; }
+        .query .wrap .kf { display: none; }
+        .query .wrap .vs { display: none; }
+        .query .wrap .vs { margin: 0px 10px; color: rgb(204, 204, 204); }
+        .page-single .query .wrap a { display: none; }
+        .footer { font: 12px/1.6 tahoma, arial, "Hiragino Sans GB", 宋体, sans-serif; text-align: center; color: rgb(141, 141, 141); padding-bottom: 30px; font-size-adjust: none; font-stretch: normal; }
+            .footer p { margin-bottom: 10px; }
+            .footer a { color: rgb(141, 141, 141); }
+                .footer a:hover { color: rgb(69, 154, 233); }
+            .footer .vs { margin: 0px 10px; color: rgb(204, 204, 204); font-family: arial; }
+        .wrap { margin: 0px auto; width: 1000px; }
+        .container { background: rgb(255, 255, 255); margin: 35px auto 30px; border: 1px solid rgb(217, 218, 220); overflow: hidden; }
+        .container-hd { background: rgb(244, 245, 249); padding: 0px 20px; height: 52px; line-height: 52px; }
+        .container-bd { padding: 30px; height: auto; min-height: 400px; _height: 400px; }
+
+        .content { width: 991px; height: auto; float: right; min-height: 600px; _height: 600px; }
+        .content { padding-bottom: 9999px; margin-bottom: -9999px; }
+
+        .content-hd h2 { padding: 0px 30px; line-height: 75px; font-size: 16px; }
+            .content-hd h2.with-border { border-bottom-color: rgb(231, 231, 235); border-bottom-width: 1px; border-bottom-style: solid; }
+        .content-hd .title-tab { margin-top: -14px; }
+            .content-hd .title-tab ul { line-height: 40px; border-bottom-color: rgb(231, 231, 235); border-bottom-width: 1px; border-bottom-style: solid; }
+            .content-hd .title-tab li { margin-bottom: -1px; float: left; }
+                .content-hd .title-tab li:hover { border-bottom-color: rgb(160, 163, 171); border-bottom-width: 3px; border-bottom-style: solid; }
+                .content-hd .title-tab li.first a { padding-left: 30px; }
+                .content-hd .title-tab li.selected { border-bottom-color: rgb(68, 181, 73); border-bottom-width: 3px; border-bottom-style: solid; }
+                .content-hd .title-tab li a { padding: 0px 22px; color: rgb(34, 34, 34); display: block; }
+                    .content-hd .title-tab li a:hover { text-decoration: none; }
+        .content-hd .more-info { text-align: right; line-height: 43px; padding-right: 30px; margin-top: -43px; }
+        .content-hd .align-title.more-info { line-height: 75px; margin-top: -75px; }
+        .content-hd .align-bread.more-info { line-height: 22px; margin-top: -22px; }
+        .content-bd { padding: 30px; }
+            .content-bd p { margin-bottom: 5px; }
+        .page-single .wrap { width: 1085px; }
+        .data-box { margin-bottom: 30px; }
+            .data-box .data-hd { height: 14px; line-height: 14px; padding-left: 7px; margin-bottom: 20px; border-left-color: rgb(68, 181, 73); border-left-width: 3px; border-left-style: solid; }
+        .with-padding.data-box .data-bd { padding: 0px 10px; }
+        .with-button.data-box .data-hd .more-info { margin-top: -9px; }
+        .data-box .data-hd h3 { font-weight: 700; }
+        .data-box .data-hd h4 { font-weight: 700; }
+        .table-wrp { margin-bottom: 20px; }
+            .table-wrp .table { background: rgb(255, 255, 255); border-width: 1px 0px; border-style: solid; border-color: rgb(231, 231, 235); }
+                .table-wrp .table tr.sub-th td { padding-bottom: 0px; border-bottom-color: currentColor; border-bottom-width: 0px; border-bottom-style: none; }
+                    .table-wrp .table tr.sub-th td .th-item { color: rgb(141, 141, 141); margin-right: 30px; }
+                .table-wrp .table th { background: rgb(244, 245, 249); padding: 8px 15px; text-align: left; font-weight: 400; border-bottom-color: rgb(231, 231, 235); border-bottom-width: 1px; border-bottom-style: solid; }
+                .table-wrp .table td { padding: 8px 15px; border-bottom-color: rgb(231, 231, 235); border-bottom-width: 1px; border-bottom-style: solid; empty-cells: show; }
+                .table-wrp .table .ico-drag { cursor: move; }
+        .with-border.table-wrp table { border: 1px solid rgb(231, 231, 235); }
+        .with-divide.table-wrp table th { border-right-color: rgb(231, 231, 235); border-right-width: 1px; border-right-style: solid; }
+        .with-divide.table-wrp table td { border-right-color: rgb(231, 231, 235); border-right-width: 1px; border-right-style: solid; }
+        .inside-table.table-wrp table th { padding-top: 4px; padding-bottom: 4px; }
+        .nowrap-table.table-wrp table td { white-space: nowrap; }
+        .nowrap-table.table-wrp table th { white-space: nowrap; }
+        .table-wrp .table .name { width: 100px; }
+        .table-wrp .table .var { width: 100px; }
+        .table-wrp .table .type { width: 92px; }
+        .table-wrp .table .require { width: 45px; }
+        .table-wrp .table .example { width: 158px; }
+        .table-wrp .table .description { }
+        .table-wrp .table .opr { width: 80px; }
+        .table-auto { width: auto; }
+        .table-padd { padding-left: 10px; }
+        .statistics { margin: -6px 0px 13px; }
+        .with-title.marks-msg { padding-left: 30px; }
+        .marks-msg h4 { margin-left: -30px; float: left; }
+        .menu { padding-bottom: 13px; }
+            .menu dl { line-height: 41px; border-bottom-color: rgb(231, 231, 235); border-bottom-width: 1px; border-bottom-style: solid; }
+                .menu dl:last-child { border-bottom-color: currentColor; border-bottom-width: medium; border-bottom-style: none; }
+                .menu dl a { color: rgb(34, 34, 34); display: block; }
+                    .menu dl a:hover { text-decoration: none; }
+                .menu dl dt { color: rgb(141, 141, 141); }
+                    .menu dl dt .type-ico { margin-left: 30px; }
+                .menu dl dd a { padding-left: 48px; display: block; }
+                    .menu dl dd a:hover { background: rgb(244, 245, 249); }
+                .menu dl dt a:hover { background: rgb(244, 245, 249); }
+                .menu dl dt a { height: 41px; line-height: 41px; }
+                .menu dl dd a { height: 34px; line-height: 34px; }
+            .menu .open .on a { background: rgb(68, 181, 73); color: rgb(255, 255, 255); }
+                .menu .open .on a:hover { background: rgb(68, 181, 73); color: rgb(255, 255, 255); }
+            .menu dd { display: none; }
+            .menu .open dd { display: block; }
+            .menu .ico-arrows { margin-left: 30px; }
+        .ico-arrows { border-width: 6px 0px 6px 6px; border-style: dashed dashed dashed solid; border-color: transparent transparent transparent rgb(102, 102, 102); width: 0px; height: 0px; margin-top: 16px; margin-right: 10px; float: left; display: inline-block; }
+        .menu .open .ico-arrows { border-width: 6px 6px 0px; border-style: solid dashed dashed; border-color: rgb(102, 102, 102) transparent transparent; margin-top: 20px; margin-right: 10px; margin-left: 26px; }
+        .guide-main-li-ico { background: url("../img/technology.png") no-repeat; width: 75px; height: 57px; display: inline-block; }
+        .ico-mp { background-position: 3px 0px; }
+        .ico-app { background-position: 9px -207px; }
+        .ico-code { background-position: 1px -71px; }
+        .ico-shuaka { background-position: 5px -135px; }
+        .ico-coupon { background-position: 7px -358px; }
+        .ico-hongbao { background-position: 13px -495px; }
+        .ico-money { background-position: 0px -569px; }
+        .ico-clearance { background-position: 9px -642px; }
+        .guide-main { }
+            .guide-main li { width: 240px; text-align: center; margin-right: 18px; float: left; background-color: rgb(255, 255, 255); }
+            .guide-main .guide-main-li-4 { margin-right: 0px; }
+            .guide-main .guide-main-li-8 { margin-right: 0px; }
+            .guide-main li a { border: 1px solid rgb(229, 229, 229); width: 239px; height: 296px; display: block; position: relative; }
+            .guide-main li .title { color: rgb(0, 0, 0); line-height: 1; font-size: 16px; font-weight: normal; margin-top: 25px; display: block; }
+            .guide-main li .info { padding: 0px 10px; color: rgb(153, 153, 153); font-size: 12px; margin-top: 14px; display: block; }
+                .guide-main li .info .strong { font-weight: bold; }
+        .guide-main-li-ico { margin-top: 72px; -webkit-transition: margin-top 0.2s linear; -moz-transition: margin-top 0.2s linear; -ms-transition: margin-top 0.2s linear; -o-transition: margin-top 0.2s linear; transition: margin-top 0.2s linear; }
+        .guide-main li .btngreen { margin: 20px auto 0px; width: 171px; height: 35px; color: rgb(255, 255, 255); line-height: 35px; font-size: 14px; border-bottom-color: rgb(0, 160, 0); border-bottom-width: 1px; border-bottom-style: solid; display: none; background-color: rgb(0, 200, 0); }
+        .guide-main li .btngray { color: rgb(102, 102, 102) !important; border-bottom-color: rgb(204, 204, 204); border-bottom-width: 1px; border-bottom-style: solid; background-color: rgb(230, 230, 230) !important; }
+        .guide-main-li-3 .tips { color: rgb(255, 153, 0); line-height: 1; font-size: 12px; display: none; }
+            .guide-main-li-3 .tips .ico-info-orange { margin-top: 12px; margin-right: 5px; vertical-align: -3px; }
+        .guide-main li a { }
+            .guide-main li a:hover { border: 1px solid rgb(0, 200, 0); text-decoration: none; }
+                .guide-main li a:hover .btngreen { display: block; }
+                .guide-main li a:hover .tips { display: block; }
+                .guide-main li a:hover .guide-main-li-ico { margin-top: 45px; -webkit-transition: margin-top 0.2s linear; -moz-transition: margin-top 0.2s linear; -ms-transition: margin-top 0.2s linear; -o-transition: margin-top 0.2s linear; transition: margin-top 0.2s linear; }
+        .guide-link { height: 24px; padding-top: 120px; padding-bottom: 58px; position: relative; }
+        .guide-link-a { width: 162px; height: 24px; color: rgb(0, 200, 0); font-size: 18px; }
+            .guide-link-a .ico-arrow-right { margin-left: 8px; vertical-align: -2px; cursor: pointer; }
+        .guide-link-code { padding: 6px; border: 1px solid rgb(201, 201, 201); left: 50%; top: 67px; width: 105px; height: 105px; margin-left: 90px; display: none; position: absolute; background-color: rgb(255, 255, 255); }
+        .show-code .guide-link-code { display: block; }
+        .show-code .ico-arrow-right { -ms-transform: scale(-1, 1); -webkit-transform: scale(-1, 1); -moz-transform: scale(-1, 1); -o-transform: scale(-1, 1); transform: scale(-1, 1); }
+        .btn { background: rgb(255, 255, 255); padding: 0px 22px; border-radius: 3px; border: 1px solid rgb(230, 231, 236); height: 30px; text-align: center; line-height: 30px; font-size: 14px; text-decoration: none; vertical-align: middle; display: inline-block; cursor: pointer; min-width: 60px; -moz-border-radius: 3px; -webkit-border-radius: 3px; }
+            .btn:hover { background: rgb(230, 231, 236); border-color: rgb(218, 219, 224); text-decoration: none; }
+        .btn-default { background: rgb(255, 255, 255); border-color: rgb(231, 231, 235); color: rgb(34, 34, 34); }
+            .btn-default:hover { background: rgb(230, 231, 236); border-color: rgb(218, 219, 224); }
+        .btn-primary { background: rgb(68, 181, 73); border-color: rgb(68, 181, 73); color: rgb(255, 255, 255); }
+            .btn-primary:hover { background: rgb(47, 152, 51); border-color: rgb(47, 152, 51); }
+        .activate.btn-primary { background: rgb(47, 152, 51); border-color: rgb(47, 152, 51); }
+        .activate.btn-primary { cursor: default; }
+        .btn-warn { background: rgb(242, 77, 77); border-color: rgb(242, 77, 77); color: rgb(255, 255, 255); }
+            .btn-warn:hover { background: rgb(196, 50, 50); border-color: rgb(196, 50, 50); }
+        .ipt { padding: 4px 0px; outline: 0px; border: 0px currentColor; width: 100%; height: 22px; font-family: "Microsoft YaHei","微软雅黑",Helvetica,"黑体",Arial,Tahoma; }
+        .taa { padding: 4px 0px; outline: 0px; border: 0px currentColor; width: 100%; height: 22px; font-family: "Microsoft YaHei","微软雅黑",Helvetica,"黑体",Arial,Tahoma; }
+        .taa { height: 100px; }
+        .ipt-box { background: rgb(255, 255, 255); border: 1px solid rgb(231, 231, 235); display: inline-block; }
+        .taa-box { background: rgb(255, 255, 255); border: 1px solid rgb(231, 231, 235); display: inline-block; }
+        .disabled.ipt-box { background: rgb(238, 238, 238); }
+        .disabled.taa-box { background: rgb(238, 238, 238); }
+        .disabled.ipt-box .ipt { cursor: default; }
+        .disabled.taa-box .taa { cursor: default; }
+        .ipt-box { padding: 0px 10px; width: 258px; height: 30px; line-height: 30px; vertical-align: middle; }
+        .taa-box { width: 288px; padding-left: 10px; }
+        .large.taa-box { width: 587px; }
+        .form .sub-form { margin-top: 10px; }
+        .form .label { width: 90px; padding-top: 4px; clear: both; float: left; position: relative; }
+            .form .label .required { left: -10px; top: 4px; color: rgb(225, 95, 99); font-family: SimSun; position: absolute; }
+        .form .element { height: auto; margin-left: 90px; min-height: 26px; _height: 26px; }
+            .form .element .tel-pre { width: 30px; margin-right: 4px; }
+            .form .element .tel-num { width: 218px; }
+            .form .element .tel-sms { padding: 0px 10px; margin-left: 4px; }
+        .form .form-item { margin-bottom: 20px; }
+        .form .deal.form-item .btn { margin-right: 14px; }
+        .form .tips-info { color: rgb(141, 141, 141); padding-top: 4px; }
+        .form .tips-error { color: rgb(225, 95, 99); padding-top: 4px; }
+        .form .form-group .form-item { width: 42%; float: left; }
+        .form .form-group .small.form-item { width: 10%; }
+        .txt-box { padding-top: 4px; display: inline-block; word-break: break-all; word-wrap: break-word; }
+        .break-word { word-break: break-all; }
+        .long-label.form .label { width: 128px; }
+        .long-label.form .element { margin-left: 150px; }
+        .page-msg { margin-bottom: 20px; }
+            .page-msg .inner { padding-top: 20px; padding-bottom: 20px; }
+            .page-msg .msg-ico { margin-top: -1px; float: left; }
+            .page-msg .msg-cnt { margin-left: 56px; min-height: 56px; }
+                .page-msg .msg-cnt p { color: rgb(141, 141, 141); }
+                .page-msg .msg-cnt .deal { margin-top: 30px; }
+                    .page-msg .msg-cnt .deal .btn { margin-right: 14px; }
+        .mini.page-msg .inner { padding-top: 9px; padding-bottom: 9px; }
+        .mini.page-msg .msg-cnt { margin-left: 26px; min-height: 22px; }
+            .mini.page-msg .msg-cnt p { color: rgb(34, 34, 34); }
+        .ico-msg-s { background: url("../img/ico_msg_s.png") no-repeat; width: 16px; height: 16px; vertical-align: middle; display: inline-block; }
+        .succ.ico-msg-s { }
+        .warn.ico-msg-s { background-position: 0px -20px; }
+        .wait.ico-msg-s { background-position: 0px -40px; }
+        .info.ico-msg-s { background-position: 0px -60px; }
+        .ask.ico-msg-s { background-position: 0px -80px; }
+    </STYLE>
+ 
+<META name="GENERATOR" content="MSHTML 11.00.9600.18698"></HEAD> 
+<BODY>
+<DIV class="container wrap"><!-- 主区域 [[ -->         
+<DIV class="content"><!-- 内容 [[ -->             
+<DIV class="content-hd">
+<H2 class="with-border">报名表单API</H2></DIV>
+<DIV class="content-bd">
+<DIV class="table-wrp with-border">
+<TABLE class="table">
+  <TBODY>
+  <TR>
+    <TH class="name">名称</TH>
+    <TH class="var">变量名</TH>
+    <TH class="require">必填</TH>
+    <TH class="type">类型</TH>
+    <TH class="example">示例值</TH>
+    <TH class="description">描述</TH></TR>
+  <TR>
+    <TD>姓名</TD>
+    <TD>Name</TD>
+    <TD>是</TD>
+    <TD>nvarchar(50)</TD>
+    <TD>小明</TD>
+    <TD>客户姓名</TD></TR>
+  <TR>
+    <TD>报考类别</TD>
+    <TD>Model_ID</TD>
+    <TD>是</TD>
+    <TD>int(11)</TD>
+    <TD>自考</TD>
+    <TD>客户报考类别</TD></TR>
+  <TR>
+    <TD>学生来源</TD>
+    <TD>Source_ID</TD>
+    <TD>是</TD>
+    <TD>int(11)</TD>
+    <TD>网上报名</TD>
+    <TD>获取客户的路径</TD></TR>
+  <TR>
+    <TD>性别</TD>
+    <TD>Sex</TD>
+    <TD>是</TD>
+    <TD>int(11)</TD>
+    <TD>男</TD>
+    <TD>客户的性别</TD></TR>
+  <TR>
+    <TD>重要程度</TD>
+    <TD>Importance_ID</TD>
+    <TD>是</TD>
+    <TD>int(11)</TD>
+    <TD>重要</TD>
+    <TD>客户重要程度</TD></TR>
+  <TR>
+    <TD>电话号码</TD>
+    <TD>Phone</TD>
+    <TD>是</TD>
+    <TD>nvarchar(50)</TD>
+    <TD>13452142140</TD>
+    <TD>客户的联系方式</TD></TR>
+  <TR>
+    <TD>客户阶段</TD>
+    <TD>PhaseType_ID</TD>
+    <TD>是</TD>
+    <TD>int(11)</TD>
+    <TD>跟踪阶段</TD>
+    <TD>客户所在的阶段</TD></TR> 
+  <TR>
+    <TD>报考学校</TD>
+    <TD>School_ID</TD>
+    <TD>是</TD>
+    <TD>int(11)</TD>
+    <TD>湖南大学</TD>
+    <TD>客户所报考的学校</TD></TR>
+  <TR>
+    <TD>QQ</TD>
+    <TD>QQ</TD>
+    <TD>否</TD>
+    <TD>nvarchar(50)</TD>
+    <TD>1131424121</TD>
+    <TD>客户的QQ</TD></TR>
+  <TR>
+    <TD>报考专业</TD>
+    <TD>Specialty_ID</TD>
+    <TD>是</TD>
+    <TD>int(11)</TD>
+    <TD>人力资源管理</TD>
+    <TD>客户报考的专业</TD></TR>
+<tr>
+    <td>身份证</td>
+    <td>CardNumber</td>
+    <td>是</td>
+    <td>nvarchar(50)</td>
+    <td>421214412121012111</td>
+    <td>客户身份证</td>
+</tr>
+  <TR>
+    <TD>最高学历</TD>
+    <TD>Education_ID</TD>
+    <TD>是</TD>
+    <TD>int(11)</TD>
+    <TD>本科</TD>
+    <TD>客户的学历</TD></TR>
+  <TR>
+    <TD>省</TD>
+    <TD>NowProvince</TD>
+    <TD>是</TD>
+    <TD>int(11)</TD>
+    <TD>湖南省</TD>
+    <TD>客户所在省份</TD></TR>
+  <TR>
+    <TD>市</TD>
+    <TD>NowCity</TD>
+    <TD>是</TD>
+    <TD>int(11)</TD>
+    <TD>长沙市</TD>
+    <TD>客户所在城市</TD></TR>
+  <TR>
+    <TD>区</TD>
+    <TD>NowArea</TD>
+    <TD>是</TD>
+    <TD>int(11)</TD>
+    <TD>岳麓区</TD>
+    <TD>客户所在区域</TD></TR>
+<tr>
+    <td>联系地址</td>
+    <td>NowAddress</td>
+    <td>是</td>
+    <td>String(64)</td>
+    <td>湖南省 长沙市</td>
+    <td>客户所在地址</td>
+</tr>
+  <TR>
+    <TD>备注</TD>
+    <TD>Remart</TD>
+    <TD>否</TD>
+    <TD>text(16)</TD>
+    <TD></TD>
+    <TD>客户附加说明</TD></TR>
+ </TBODY></TABLE></DIV>
+<P class="mb10">表单提交接口GetOnlineRegistration返回结果值说明</P>
+<DIV class="table-wrp with-border">
+<TABLE class="table">
+  <TBODY>
+  <TR>
+    <TH>返回值</TH>
+    <TH>描述</TH></TR>
+  <TR>
+    <TD>Data true</TD>
+    <TD>添加成功</TD></TR>
+  <TR>
+    <TD>Data false</TD>
+    <TD>添加失败</TD></TR></TBODY></TABLE></DIV>
+<P>注：Ajax 跨域提交</P>
+<P class="mb10">示例代码如下：</P>
+<DIV class="guide-msg mb10">
+<P>$.ajax({<BR>                        
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var OnlineData=new Object();<BR>       
+                 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnlineData.Name="张三";<BR>              
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var 
+url="http://xs.chutou.net:8001";<BR>                        
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Type:'get',<BR>                        
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url: url + 
+'/api/GetOnlineRegistration/GetOnlineRegistration?callback=?',<BR>               
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data: OnlineData,<BR>         
+               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;success: function 
+(data) {<BR>                        
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alert(data);<BR> 
+                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<BR>          
+              })                     </P></DIV>
+<P>注：form表单提交</P>
+<P class="mb10">示例代码如下：</P>
+<DIV class="guide-msg mb10">
+<P>&lt;form 
+action='http://xs.chutou.net:8001/api/GetOnlineRegistration/GetOnlineRegistration' 
+id ='form1' method='get'&gt;<BR>                        &lt;input type="text" 
+value="张三" name="Name" /&gt;<BR>                        &lt;input type="text" 
+value="男" name="Sex" /&gt;<BR>                        &lt;input type="submit" 
+value="提交" /&gt;<BR>                        &lt;/form&gt;                     
+</P></DIV></DIV></DIV></DIV></BODY></HTML>

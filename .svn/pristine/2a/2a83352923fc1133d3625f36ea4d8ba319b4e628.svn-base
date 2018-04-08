@@ -1,0 +1,296 @@
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.ISerializer`2 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.RequestSerializer`2 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.SetBucketCorsRequestSerializer 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.IDeserializer`2 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.ResponseDeserializer`2 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.GetObjectResponseDeserializer 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.OssObjectSummary 生成存根: 类型没有系列可见的构造函数。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.OssCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.DeleteBucketCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.DeleteBucketWebsiteCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.OssCommand`1 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.ListPartsCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.GetObjectCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.OssErrorCode 生成存根: 类型已密封。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.SetBucketLifecycleCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.ExceptionFactory 生成存根: 类型已密封。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.SetBucketLoggingRequestSerializer 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.SerializerFactory 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.XmlSerializerFactory 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Permission 生成存根: 类型是一个值类型。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.OssObject 生成存根: 类型没有系列可见的构造函数。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.UploadPartCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.ListMultipartUploadsCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.GetBucketLoggingCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.HttpHeaders 生成存根: 类型已密封。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.AsyncResult 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.AsyncResult`1 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.AppendObjectResult 生成存根: 类型没有系列可见的构造函数。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Handlers.IResponseHandler 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Handlers.ResponseHandler 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Handlers.ErrorResponseHandler 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Handlers.CallbackResponseHandler 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Authentication.ServiceSignature 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Authentication.HmacSha1Signature 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.GetBucketRefererCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.OssHeaders 生成存根: 类型已密封。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.GetObjectAclCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.SignUtils 生成存根: 类型已密封。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.RequestParameters 生成存根: 类型已密封。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.SignHttpMethod 生成存根: 类型是一个值类型。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Part 生成存根: 类型没有系列可见的构造函数。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.GroupGrantee 生成存根: 类型已密封。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.SetBucketAclCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.DateUtils 生成存根: 类型已密封。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.ExecutionContextBuilder 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.ListMultipartUploadsResponseDeserializer 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.SetBucketWebsiteCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.CannedAccessControlList 生成存根: 类型是一个值类型。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Communication.HttpMethod 生成存根: 类型是一个值类型。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Authentication.IRequestSigner 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.OssRequestSigner 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.DeleteObjectsRequestSerializer 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.PutObjectResult 生成存根: 类型没有系列可见的构造函数。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.PartListing 生成存根: 类型没有系列可见的构造函数。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Protocol 生成存根: 类型是一个值类型。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.CallbackBodyType 生成存根: 类型是一个值类型。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Handlers.MD5DigestCheckHandler 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Communication.IServiceClient 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Communication.ServiceClient 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Communication.ServiceClientImpl 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Communication.ServiceMessage 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Communication.ServiceResponse 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Communication.HttpFactory 生成存根: 类型已密封。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Communication.HttpExtensions 生成存根: 类型已密封。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.GetBucketLoggingResultDeserializer 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.MultipartUpload 生成存根: 类型没有系列可见的构造函数。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.GetObjectMetadataCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.DeleteObjectCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.XmlStreamSerializer`1 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.OssFunc`2 生成存根: 类型已密封。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.OssAction 生成存根: 类型已密封。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.OssAction`1 生成存根: 类型已密封。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.OssUtils 生成存根: 类型已密封。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.DeleteBucketLoggingCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.DeleteObjectsResult 生成存根: 类型没有系列可见的构造函数。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.IoUtils 生成存根: 类型已密封。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.DeleteObjectsCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.UploadPartCopyResultDeserializer 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.SimpleResponseDeserializer`1 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.ListObjectsResponseDeserializer 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.GetAclResponseDeserializer 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Owner 生成存根: 类型没有系列可见的构造函数。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.CompleteMultipartUploadCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.UploadPartCopyResult 生成存根: 类型没有系列可见的构造函数。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.AppendObjectResponseDeserializer 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Communication.ExecutionContext 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.UploadPartResult 生成存根: 类型没有系列可见的构造函数。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.SetBucketLifecycleRequestSerializer 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.PutObjectCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.SetBucketCorsCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.UploadPartCopyCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.SetObjectAclCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Properties.Resources 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.ServiceClientFactory 生成存根: 类型已密封。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.ListBucketsResultDeserializer 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.GetBucketLifecycleDeserializer 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.RefererConfiguration 生成存根: 类型没有系列可见的构造函数。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.ListObjectsCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.CreateBucketCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.GetBucketWebsiteCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.MatchMode 生成存根: 类型是一个值类型。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.TupleType 生成存根: 类型是一个值类型。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.AbstractConditionItem 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.EqualConditionItem 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.StartWithConditionItem 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.RangeConditionItem 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.MatchRuleChecker 生成存根: 类型已密封。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.AppendObjectCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.PutObjectResponseDeserializer 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.CopyObjectResultDeserializer 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.AccessControlList 生成存根: 类型没有系列可见的构造函数。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.XmlStreamDeserializer`1 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.ResponseDeserializationException 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.HeadObjectCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.GetObjectMetadataResponseDeserializer 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.GetCorsResponseDeserializer 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.CompleteMultipartUploadResultDeserializer 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Domain.OssResources 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.InitiateMultipartUploadCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.GetBucketAclCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.GetBucketCorsCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.AbortMultipartUploadCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.StringValueAttribute 生成存根: 类型已密封。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.RequestSerializationException 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.ResumablePartContext 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.ResumableContext 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.ResumableCopyContext 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.GetBucketLifecycleCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.SetBucketWebsiteRequestSerializer 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.ListPartsResponseDeserializer 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.DeserializerFactory 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.XmlDeserializerFactory 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.CompleteMultipartUploadRequestSerializer 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.CompleteMultipartUploadResult 生成存根: 类型没有系列可见的构造函数。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.ListBucketsCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.CopyObjectCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.SetBucketLoggingCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.ThirdParty.ABCDStruct 生成存根: 类型是一个值类型。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.ThirdParty.MD5Core 生成存根: 类型已密封。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Communication.RetryableServiceClient 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Communication.RetryableAsyncResult 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Communication.ServiceRequest 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.SetBucketRefererCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.RuleStatus 生成存根: 类型是一个值类型。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.UploadPartResultDeserializer 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.SetBucketRefererRequestSerializer 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.InitiateMultipartUploadResultDeserializer 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.GetBucketWebSiteResultDeserializer 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.DeleteObjectsResultDeserializer 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.ObjectListing 生成存根: 类型没有系列可见的构造函数。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.CopyObjectResult 生成存根: 类型没有系列可见的构造函数。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.DeleteBucketCorsCommand 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Bucket 生成存根: 类型没有系列可见的构造函数。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.HttpUtils 生成存根: 类型已密封。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.EnumUtils 生成存根: 类型已密封。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Internal.StreamReadTracker 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Internal.EventStream 生成存根: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.ISerializer`2 生成填充码: 类型是一个接口。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.RequestSerializer`2 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.SetBucketCorsRequestSerializer 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.IDeserializer`2 生成填充码: 类型是一个接口。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.ResponseDeserializer`2 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.GetObjectResponseDeserializer 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.OssCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.DeleteBucketCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.DeleteBucketWebsiteCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.OssCommand`1 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.ListPartsCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.GetObjectCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.SetBucketLifecycleCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.ExceptionFactory 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.SetBucketLoggingRequestSerializer 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.SerializerFactory 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.XmlSerializerFactory 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Permission 生成填充码: 类型是一个枚举。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.UploadPartCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.ListMultipartUploadsCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.GetBucketLoggingCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.AsyncResult 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.AsyncResult`1 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Internal.IHashingWrapper 生成填充码: 类型是一个接口。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Handlers.IResponseHandler 生成填充码: 类型是一个接口。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Handlers.ResponseHandler 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Handlers.ErrorResponseHandler 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Handlers.CallbackResponseHandler 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Authentication.ServiceSignature 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Authentication.HmacSha1Signature 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Authentication.ICredentials 生成填充码: 类型是一个接口。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Authentication.ICredentialsProvider 生成填充码: 类型是一个接口。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.GetBucketRefererCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.OssHeaders 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.GetObjectAclCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.SignUtils 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.RequestParameters 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.SignHttpMethod 生成填充码: 类型是一个枚举。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.IGrantee 生成填充码: 类型是一个接口。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.SetBucketAclCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.DateUtils 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.ExecutionContextBuilder 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.ListMultipartUploadsResponseDeserializer 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.SetBucketWebsiteCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.CannedAccessControlList 生成填充码: 类型是一个枚举。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Communication.HttpMethod 生成填充码: 类型是一个枚举。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Authentication.IRequestSigner 生成填充码: 类型是一个接口。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.OssRequestSigner 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.DeleteObjectsRequestSerializer 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Protocol 生成填充码: 类型是一个枚举。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.CallbackBodyType 生成填充码: 类型是一个枚举。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Handlers.MD5DigestCheckHandler 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Communication.IServiceClient 生成填充码: 类型是一个接口。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Communication.ServiceClient 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Communication.ServiceClientImpl 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Communication.ServiceMessage 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Communication.ServiceResponse 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Communication.HttpFactory 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Communication.HttpExtensions 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.GetBucketLoggingResultDeserializer 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.GetObjectMetadataCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.DeleteObjectCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.XmlStreamSerializer`1 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.OssFunc`2 生成填充码: 类型是一个委托。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.OssAction 生成填充码: 类型是一个委托。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.OssAction`1 生成填充码: 类型是一个委托。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.DeleteBucketLoggingCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.DeleteObjectsCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.UploadPartCopyResultDeserializer 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.SimpleResponseDeserializer`1 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.ListObjectsResponseDeserializer 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.GetAclResponseDeserializer 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.IOss 生成填充码: 类型是一个接口。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.CompleteMultipartUploadCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.AppendObjectResponseDeserializer 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Communication.ExecutionContext 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.SetBucketLifecycleRequestSerializer 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.PutObjectCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.SetBucketCorsCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.UploadPartCopyCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.SetObjectAclCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Properties.Resources 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.ServiceClientFactory 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.ListBucketsResultDeserializer 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.GetBucketLifecycleDeserializer 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.ListObjectsCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.CreateBucketCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.GetBucketWebsiteCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.MatchMode 生成填充码: 类型是一个枚举。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.TupleType 生成填充码: 类型是一个枚举。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.AbstractConditionItem 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.EqualConditionItem 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.StartWithConditionItem 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.RangeConditionItem 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.MatchRuleChecker 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.AppendObjectCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.PutObjectResponseDeserializer 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.CopyObjectResultDeserializer 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.XmlStreamDeserializer`1 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.ResponseDeserializationException 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.HeadObjectCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.GetObjectMetadataResponseDeserializer 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.GetCorsResponseDeserializer 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.CompleteMultipartUploadResultDeserializer 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Domain.OssResources 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.InitiateMultipartUploadCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.GetBucketAclCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.GetBucketCorsCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.AbortMultipartUploadCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.StringValueAttribute 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.RequestSerializationException 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.ResumablePartContext 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.ResumableContext 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.ResumableCopyContext 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.GetBucketLifecycleCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.SetBucketWebsiteRequestSerializer 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.ListPartsResponseDeserializer 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.DeserializerFactory 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.XmlDeserializerFactory 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.CompleteMultipartUploadRequestSerializer 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.ListBucketsCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.CopyObjectCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.SetBucketLoggingCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.ThirdParty.ABCDStruct 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.ThirdParty.MD5Core 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Communication.RetryableServiceClient 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Communication.RetryableAsyncResult 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Communication.ServiceRequest 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.SetBucketRefererCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.RuleStatus 生成填充码: 类型是一个枚举。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.UploadPartResultDeserializer 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.SetBucketRefererRequestSerializer 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.InitiateMultipartUploadResultDeserializer 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.GetBucketWebSiteResultDeserializer 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Transform.DeleteObjectsResultDeserializer 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Commands.DeleteBucketCorsCommand 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Util.EnumUtils 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Internal.StreamReadTracker 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。
+E:\公司项目\新5.0\SmarrSchool5.0\Common\Fakes\Aliyun.OSS.fakes : warning : 无法为 Aliyun.OSS.Common.Internal.EventStream 生成填充码: 类型对 exported or assembly(Aliyun.OSS.Fakes) 不可见。

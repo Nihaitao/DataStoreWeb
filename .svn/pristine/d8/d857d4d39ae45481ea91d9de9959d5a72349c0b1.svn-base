@@ -1,0 +1,170 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        .isDisplay {
+            display: none;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">线索名称：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" lay-verify="required" disabled autocomplete="off"
+                               class="layui-input" v-model="ClientName">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">提醒时间：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="reserveDate" id="reserveDate" lay-verify="required" placeholder="选择日期" autocomplete="off" class="layui-input" v-bind:value.sync="submitForm.Date">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">预约类型：</label>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="AppointmentTypeSetting" layverify="required" v-bind:value.sync="submitForm.AppointmentType_ID"
+                                    initial="off"></remote-sel>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">提醒方式：</label>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="RemindTypeSetting" layverify="required" v-bind:value.sync="submitForm.RemindType"
+                                    initial="off"></remote-sel>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">记录信息：</label>
+                <div class="layui-input-block">
+                    <textarea class="layui-textarea" v-model="submitForm.Content"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <button class="layui-btn layui-hide" lay-submit @click="updateClue">提交</button>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
+
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="/Resources/js/Controls/Common.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate"],
+    function (fnr) {
+        var laydate = layui.laydate;
+        var $ = layui.jquery;
+        function trim(str) {
+            return str.replace(/(^\s*)|(\s*$)/g, "");
+        }
+        laydate.render({
+            elem: '#reserveDate',
+            type: 'datetime',
+            min: 0,
+            max: 365,
+            done: function (value) {
+                rootApp.submitForm.Date = value;
+            }
+        });
+
+        var RemindTypeOptions = [
+            {
+                id: '1',
+                value: '短信提醒'
+            },
+            {
+                id: '2',
+                value: '冒泡提醒'
+            }
+        ];
+
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+                ClientName: '',
+                submitForm: {
+                    ID: '',
+                    RemindType: '',
+                    AppointmentType_ID: '',
+                    Date: '',
+                    Content: ''
+                },
+                RemindTypeSetting: {
+                    search: true,
+                    options: RemindTypeOptions,
+                    fields: { root: "data", key: 'id', value: 'value' }
+                },
+                AppointmentTypeSetting: {
+                    search: true,
+                    options: [],
+                    fields: { root: "ReturnData.Data", key: 'ID', value: 'Description' },
+                    remote: { url: '/service/HDictionary/GetHDictionaryList', data: { Valid: 1, ColumnName: 'AppointmentType_ID' } }
+                },
+            },
+            ready: function () {
+                this.submitForm.ID = GetQueryString('ID');
+                this.modifyClients();
+            },
+            methods: {
+                //获取客户详细信息
+                modifyClients: function () {
+                    $.ajax({
+                        url: '/service/Appointment/GetAppointmentClueData',
+                        type: 'GET',
+                        dataType: 'json',
+                        data: { ID: this.submitForm.ID },
+                        success: function (data) {
+                            var Datas = data.ReturnData.Data;
+                            if(data.SuccessResponse){
+                                if (Datas != null) {
+                                    rootApp.submitForm.RemindType = Datas.RemindType;
+                                    rootApp.submitForm.AppointmentType_ID = Datas.AppointmentType_ID;
+                                    rootApp.submitForm.Date = fnr.format(Datas.Date, "yyyy-MM-dd HH:mm:ss");
+                                    rootApp.submitForm.Content = Datas.Content;
+                                    rootApp.ClientName = Datas.ClientName;
+                                }
+                            }else{
+                                layer.msg(data.Message);
+                            }
+                        }
+                    });
+                },
+                updateClue: function (e) {
+                    var self = this;
+                    self.submitForm.Content = trim(self.submitForm.Content);
+                    if (!layui.form.checkInput(e)) {
+                        return false;
+                    }
+                    $.ajax({
+                        url: '/service/Appointment/UpdateAppointmentByID',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: self.submitForm,
+                        success: function (data) {
+                            fnr.callDialog('refresh', { status: data.SuccessResponse, msg: data.Message });
+                            if (data.SuccessResponse) {
+                                fnr.closeDialog();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    });
+</script>

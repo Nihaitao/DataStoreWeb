@@ -1,0 +1,493 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery-1.4.4.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery.ztree.core.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery.ztree.excheck.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery.ztree.exedit.js"></script>
+
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <script>
+        require_js_file(["table", 'tree', "form", "jquery", "tableExt"],
+        function (fnr) {
+            var zTreeObj;
+            var tableExt = layui.tableExt;
+            // zTree 的参数配置，深入使用请参考 API 文档（setting 配置详解）
+            var setting = {
+                async: {
+                    enable: true,
+                    autoParam: ["ID"],
+                    type: "get",
+                    dataFilter: ajaxDataFilter,
+                    url: "/service/crm/Product/GetProductData",
+                },
+                edit: {
+                    enable: true,
+                    editNameSelectAll: true,
+                    showRemoveBtn: showRemoveBtn,
+                    showRenameBtn: showRenameBtn,
+                    removeTitle:"删除",
+                    renameTitle:"修改",
+                },
+                data: {
+                    key: {
+                        name: "Name"
+                    },
+                    simpleData: {
+                        enable: true,
+                        idKey: "ID",
+                        pIdKey: "CID"
+                    }
+                },
+                view: {
+                    addHoverDom: addHoverDom,  //添加事件
+                    removeHoverDom: removeHoverDom, //鼠标移开移除添加按钮
+                    nameIsHTML: true,
+                    showTitle: false,
+                    fontCss: setEnable
+                },
+                callback: {
+                    beforeEditName: beforeEditName,//修改
+                    beforeRemove: beforeRemove,//删除
+                    beforeClick: beforeClick, //点击事件
+                    //addHoverDom
+
+                }
+            };
+            //启用/禁用
+            function setEnable(treeId, treeNode) {
+                return treeNode.Valid == 0 ? { color: "red" } : {};
+            }
+
+            //节点去掉删除
+            function showRemoveBtn(treeId, treeNode) {
+                return treeNode.ID;
+            }
+            //节点去掉修改
+            function showRenameBtn(treeId, treeNode) {
+                return treeNode.ID;
+            }
+            //修改
+            function beforeEditName(treeId, treeNode) {
+                zTreeObj.selectNode(treeNode);
+                rootApp.$data.queryFormData.ID = treeNode.ID;
+                rootApp.$data.queryFormData.Name = treeNode.Name;
+                rootApp.$data.queryFormData.Organization = treeNode.Organization;
+                rootApp.$data.queryFormData.IsGeneralManager = treeNode.IsGeneralManager;
+                fnr.openDialog({
+                    title: '修改',
+                    area: ['627px', '280px'],
+                    content: ['AddProductClassification.html?ID=' + treeNode.ID + '&CID=' + treeNode.CID+'&&Name='+treeNode.Name ],
+                    btn: ['确认修改'],
+                    yes: function (index, layero) {
+                        var iframeWin = window[layero.find('iframe')[0]['name']];
+                        $(iframeWin.document).find(".layui-btn").click();
+                    },
+                    events: {
+                        refresh: function (data) {
+
+                            layer.msg(data.msg);
+                            if (data.status) {
+                                var nodes = zTreeObj.getSelectedNodes();
+                                if (data.status.IsGeneralManager == 0)
+                                    nodes[0].Name = data.status.Name + '[' + treeNode.ExistOrganization + '/' + data.status.Organization + ']';
+                                else
+                                    nodes[0].Name = data.status.Name;
+                                treeNode.NewName = data.status.Name;
+                                treeNode.Organization = data.status.Organization;
+                                treeNode.IsGeneralManager = data.status.IsGeneralManager;
+                                zTreeObj.updateNode(nodes[0]);
+                                zTreeObj.reAsyncChildNodes(nodes[0], "refresh");
+                                var nodes = zTreeObj.getSelectedNodes();
+
+                                setTimeout(function () { listTable.refresh(); }, 800);
+                            }
+
+
+                        }
+                    }
+                });
+                return false;
+            }
+
+            //删除节点事件
+            function beforeRemove(treeId, treeNode) {
+                zTreeObj.selectNode(treeNode);
+                rootApp.$data.queryFormData.ID = treeNode.ID;
+                rootApp.$data.queryFormData.CID = treeNode.CID;
+
+                layer.confirm('确定删除吗？删除后不可恢复！', function () {
+                    $.post("/service/crm/Product/DeleteProductData", { ID: treeNode.ID }, function (rsp) {
+                        if (rsp.SuccessResponse) {
+                            var nodes = zTreeObj.getNodesByParam("ID", treeNode.CID, null);
+                            zTreeObj.selectNode(nodes[0]);
+                            rootApp.$data.queryFormData.ID = nodes[0].ID;
+                            rootApp.$data.queryFormData.CID = nodes[0].CID
+                            rootApp.$data.queryFormData.Name = nodes[0].Name
+                            zTreeObj.removeNode(treeNode);
+                            layer.closeAll('dialog');
+                            layer.msg(rsp.Message)
+                        }
+                        else {
+                            layer.msg(rsp.Message)
+                        }
+                    });
+                })
+                return false;
+            }
+
+            //添加产品分类
+            function addHoverDom(treeId, treeNode) {
+                var sObj = $("#" + treeNode.tId + "_span");
+                if (treeNode.editNameFlag || $("#addBtn_" + treeNode.tId).length > 0) return;
+                var addStr = "<span class='button add' id='addBtn_" + treeNode.tId + "' title='添加分类' onfocus='this.blur();'></span>";
+
+                sObj.after(addStr);
+                var btn = $("#addBtn_" + treeNode.tId);
+                if (btn)
+                    btn.bind("click", function () {
+                        zTreeObj.selectNode(treeNode);
+                        rootApp.$data.queryFormData.ID = treeNode.ID;
+                        rootApp.$data.queryFormData.CID = treeNode.CID;
+                        var Stationproxy_ID = GetQueryString("ID");
+                        fnr.openDialog({
+                            title: '添加产品分类',
+                            area: ['627px', '280px'],
+                            content: ['AddProductClassification.html?ID=0&CID=' + treeNode.ID ],
+                            btn: ['确认添加'],
+                            yes: function (index, layero) {
+                                var iframeWin = window[layero.find('iframe')[0]['name']];
+                                $(iframeWin.document).find(".layui-btn").click();
+                            },
+                            events: {
+                                refresh: function (data) {
+                                    if (data.status) {
+                                        layer.msg(data.msg);
+                                    } else {
+                                        layer.msg(data.msg);
+                                    }
+                                    var nodes = zTreeObj.getSelectedNodes();
+                                    if (!nodes[0].isParent) {
+                                        nodes[0].isParent = true;
+                                        zTreeObj.updateNode(nodes[0]);
+                                    }
+                                    zTreeObj.reAsyncChildNodes(null, "refresh");
+                                }
+                            }
+                        });
+                        return false;
+                    });
+            };
+
+            var table = layui.table;
+            var listTable = table.render({
+                elem: '#listTable',
+                even: true, //开启隔行背景
+                page: true, //页分
+                id: "listTable",
+                cols: [
+                    [
+                        { fixed: true, checkbox: true },
+                        {
+                            title: '产品名称', width: 150, sort: true, templet: function () {
+                                var array = new Array();
+                                array.push("<a href='javascript:;' lay-event='detail1' style='color:#1e9fff;display: inline-block; width: 100%;white-space: nowrap; text-overflow: ellipsis;overflow: hidden;' title=" + (this.Name) + ">" + (this.Name) + "</a>");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        },
+                        { field: 'ProductNumber', title: '产品标号', width: 200, sort: true },
+                        { field: 'NormalPrice', title: '标准单价', width: 200, sort: true },
+                        { field: 'SaleUnit', title: '销售单位', width: 200, sort: true },
+                        { field: 'ProductTypeName', title: '产品分类', width: 300, sort: true },
+                        {
+                           fixed: 'right',
+                           field: 'name',
+                           title: '操作',
+                           width: 180,
+                           toolbar: function () {
+                               var array = new Array();
+                               array.push("<button class=\" layui-btn layui-btn-small " + (this.Valid == 1 ? "layui-btn-warm" : "layui-btn-normal") + " \" lay-event='editisenable'>" + (this.Valid == 1 ? "禁用" : "启用") + "</button>");
+                               array.push("<button type='button' class='layui-btn layui-btn-small' lay-event='modifyClient'>修改</button>");
+                               array.push("<button class=\"layui-btn layui-btn-small layui-btn-danger \" lay-event='DeleteProduct'>删除</button>");
+                               return "<div>" + array.join("") + "</div>";
+                           }
+                       }
+                    ]
+                ],
+                url: '',
+            });
+
+            function removeHoverDom(treeId, treeNode) {
+                $("#addBtn_" + treeNode.tId).unbind().remove();
+            };
+
+            function ajaxDataFilter(treeId, parentNode, rsp) {
+                rsp.Data.map(function (a, b) {
+                    a.CID = a.CID;
+                    a.ID = a.ID;
+                    a.NewName = a.Name;
+                    a.Name = a.Name;
+                    a.isParent = false;
+                    a.open = 1;
+                });
+                if (parentNode == undefined) {
+                    rsp.Data.push({ ID: 0, Name: '产品分类', open: 1 })
+                } else {
+                    rsp.Data
+                }
+                console.log(rsp.Data)
+                return rsp.Data;
+
+            };
+            function beforeClick(treeId, treeNode, clickFlag) {
+                rootApp.$data.queryFormData.ID = treeNode.ID;
+                rootApp.$data.queryFormData.CID = treeNode.CID;
+                rootApp.$data.queryFormData.Name = treeNode.Name;
+                listTable.reload({
+                    where: { ID: treeNode.ID },
+                });
+            }
+
+            function showall(data, CID) {
+                var array = new Array();
+                $.each(data, function (i, x) {
+                    if (x.ID == CID) {
+                        array.push("<a href='javascript:;'>" + this.Name + "</a>>");
+                        array = array.concat(showall(data, x.CID));
+                    }
+                });
+                return array;
+            }
+
+            //获取地址栏参数
+            function GetQueryString(name) {
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+                var r = window.parent.location.search.substr(1).match(reg);
+                if (r != null) return unescape(r[2]); return null;
+            }
+
+            window.rootApp = new Vue({
+                el: '#root',
+                data: {
+                    queryFormData: {
+                        SearchValue: '',
+                        //SearchName: 'Name',
+                        ID: 0,
+                        CID: 0,
+                        Name: '',
+                        Valid: 1
+                    },
+                    ProductExportList: [],
+
+                },
+                ready: function () {
+                },
+                methods: {
+                    //添加产品
+                    addClient: function () {
+                        fnr.openDialog({
+                            title: '添加产品',
+                            area: ['1000px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                            content: ['AddProduct.html?Department_ID=' + this.queryFormData.Department_ID + '&Department_Name=' + this.queryFormData.Department_Name],
+                            btn: ['确认添加'],
+                            events: {
+                                refresh: function (data) {
+                                    layer.msg(data.msg);
+                                    setTimeout(function () { listTable.refresh(); }, 600);
+                                    //listTable.refresh();
+                                }
+                            }
+                        });
+                    },
+                    doSearch: function () {
+                        var self = this;
+                        listTable.reload({ where: self.queryFormData });
+                    },
+                    ImportClient: function () {
+                        fnr.openDialog({
+                            title: '导入产品',
+                            area: ['1000px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                            content: ['Import.html'],
+                            //btn: ['确认添加'],
+                            events: {
+                                add: function () {
+                                    listTable.refresh();
+                                }
+                            }
+                        });
+                    },
+                    //禁用
+                    Disable:function(){
+                        var deleteArr = this.ProductExportList.join(',');
+                        fnr.openDialog({
+                            title: '编辑产品',
+                            area: ['1000px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                            content: ['Update.html?Other=' + deleteArr],
+                            btn: ['确认'],
+                            events: {
+                                refresh: function (data) {
+                                    if (data.status) {
+                                        layer.msg(data.msg);
+                                        listTable.refresh();
+                                    } else {
+                                        layer.msg(data.msg);
+                                    }
+                                }
+                            }
+                        });
+                    },
+                    modifyC1: function (data) {
+                        fnr.openDialog({
+                            title: '修改产品',
+                            area: ['1000px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                            content: ['UpdateProduct.html?ID=' + data.ID + '&&ProductTypeName=' + data.ProductTypeName],
+                            btn: ['确认修改'],
+                            events: {
+                                refresh: function (data) {
+                                    if (data.status) {
+                                        layer.msg(data.msg);
+                                        //listTable.refresh();
+                                        setTimeout(function () { listTable.refresh(); }, 600);
+                                    } else {
+                                        layer.msg(data.msg ? '操作失败' : data.msg);
+                                    }
+                                }
+                            }
+                        });
+                    },
+                    clientMsg1:function(data){
+                        fnr.openDialog({
+                            title: '产品信息',
+                            area: ['1000px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                            content: ['/Html/Client/Product/Info.html?ID=' + data.ID + "&PhaseType_ID=" + data.PhaseType_ID],
+                            events: {
+                                add: function () {
+                                    listTable.refresh();
+                                }
+                            }
+                        });
+                    },
+                    //启用
+                    EnableList: function () {
+                        var deleteArr = this.ProductExportList.join(',');
+                        $.ajax({
+                            url: '/service/crm/Product/UpdateState',
+                            type: 'POST',
+                            data: { Other: deleteArr, Status: 1 },
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data.SuccessResponse) {
+                                    layer.msg(data.Message);
+                                    listTable.refresh();
+                                } else {
+                                    layer.msg(data.Message)
+                                }
+                            }
+                        });
+                    },
+                    ProductExport: function () {
+
+                        var Other = this.ProductExportList.join(',');
+                        var data = { Other: $.trim(Other) };
+                        var str = jQuery.param(data);
+                        fnr.download("/service/crm/Product/DetailedExport?" + str);
+                    },
+                }
+
+            });
+
+            //获取选中的行相关数据
+            table.on('checkbox(listTable)', function (obj) {
+                var checkStatus = table.checkStatus('listTable');
+                rootApp.ProductExportList = [];
+                $.each(checkStatus.data, function (k, v) {
+                    if (v.IsAssign != 1) {
+
+                        rootApp.ProductExportList.push(v.ID);
+                    }
+                });
+            });
+            $(document).ready(function () {
+                listTable.config.url = '/service/crm/Product/GetProductList';
+                listTable.refresh();
+                zTreeObj = $.fn.zTree.init($("#treeDemo"), setting);
+
+            });
+            tableExt.addEvent("tool(listTable)", {
+                "editisenable": function (data, obj) {
+                    var params = { Other: data.ID, Status: data.Valid == 1 ? 0 : 1 }
+                    $.post("/service/crm/Product/UpdateState", params, function (res) {
+                        if (res.SuccessResponse) {
+                            layer.msg(data.Message);
+                            listTable.refresh();
+                        }
+                        layer.msg(res.Message);
+                    })
+                },
+                "DeleteProduct": function (data, obj) {
+                    var params = { ID: data.ID }
+                    layer.confirm('确定删除吗？删除后不可恢复！', function () {
+                        $.post("/service/crm/Product/DeleteProduct", params, function (res) {
+                            if (res.SuccessResponse) {
+                                layer.msg(data.Message);
+                                listTable.refresh();
+                            }
+                            layer.msg(res.Message);
+                        })
+                    })
+                },
+                //修改一行
+                "modifyClient": function (data, obj) {
+                    rootApp.modifyC1(data);
+                },
+                "detail1": function (data, obj) {
+                    rootApp.clientMsg1(data);
+                },
+            })
+
+        });
+
+    </script>
+
+
+
+</head>
+
+
+<body id="root" v-cloak>
+    <div class="mainContainer">
+        <div class="layui-col-xs2">
+            <ul id="treeDemo" class="ztree"></ul>
+        </div>
+        <div class="layui-col-xs10">
+            <blockquote class="layui-elem-quote">
+                <div class="layui-row layui-form">
+                    <div class="layui-col-xs6">
+
+                        <div class="layui-input-inline">
+                            <input type="text" placeholder="输入产品名称/标号" name="SearchValue" class="layui-input" v-model="queryFormData.SearchValue" size="30">
+                        </div>
+                        <button class="layui-btn layui-btn-primary" lay-submit lay-filter="btn" @click="doSearch">查询</button>
+                    </div>
+                    <div class="layui-col-xs6" style="text-align: right">
+                        <button class="layui-btn " v-bind:class="{'layui-btn-disabled':ProductExportList.length<=0}" v-bind:disabled="ProductExportList.length<=0" @click="Disable">下一步    </button>
+                        <!--<button class="layui-btn" @click="addClient"><i class="layui-icon"></i> 添加产品</button>
+                        <button class="layui-btn layui-btn-primary" @click="ImportClient"><i class="layui-icon"></i> 导入产品</button>
+                        <button class="layui-btn layui-btn-primary" @click="ProductExport"><i class="layui-icon"></i> 导出全部</button>-->
+                    </div>
+                </div>
+            </blockquote>
+            <div>
+                
+            </div>
+            <table lay-filter="listTable" id="listTable"></table>
+        </div>
+      </div>
+</body>
+</html>

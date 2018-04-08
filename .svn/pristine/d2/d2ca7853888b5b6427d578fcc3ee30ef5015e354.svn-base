@@ -1,0 +1,215 @@
+﻿-->
+<style>
+    .bs-docs-nav { background-color: #333; margin-bottom: 0; }
+    .nav > li:hover { text-decoration: none; background-color: #000; }
+    .nav > li > a:focus, .nav > li > a:hover { text-decoration: none; background-color: inherit; }
+    .navbar { min-height: 45px; }
+    .header-nav li { padding: 5px 0; }
+    .header-nav li > a { padding: 0 10px !important; }
+</style>
+<div class="navbar navbar-static-top bs-docs-nav" id="top">
+    <div class="w1200">
+        <nav class="collapse navbar-collapse">
+            <ul class="nav navbar-nav header-nav">
+                <li>
+                    <a href="">网校中心</a>
+                </li>
+                <li>
+                    <a href="">手机端</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right header-nav">
+                <li><a href="">登录</a></li>
+                <li><a href="">周可，欢迎你</a></li>
+                <li><a href="">退出</a></li>
+                <li><a href="">客服中心</a></li>
+            </ul>
+        </nav>
+    </div>
+</div>
+<div class="masthead">
+    <div class="w1200 clearfix">
+        <div class="nav-header pull-left">
+            <a href="#"><img src="/usercenter/Resources/images/hd.png" /></a>
+        </div>
+        <!--<div class="nav-bar-right pull-right">
+            <div class="toggle-switch">
+                <span class="inlineblock subject-label">当前专业</span>
+                <div class="drowntoggle inlineblock">
+                    <i class="iconfont icon-lianxijilu"></i>
+                    <span class="current">自学考试-本科-人力资源管理</span>
+                    <i class="glyphicon glyphicon-triangle-bottom"></i>
+                </div>
+                <div class="drownmenu">
+                </div>
+            </div>
+        </div>-->
+    </div>
+</div>
+<script>
+    $(function () {
+
+        var loginState;
+        //读取COOKIE方法
+        function getCookie(name) {
+            var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+            if (arr = document.cookie.match(reg))
+                return unescape(arr[2]);
+            else
+                return null;
+        }
+
+        function delAllCookie() {
+            var myDate = new Date();
+            myDate.setTime(-1000);//设置时间
+            var data = document.cookie;
+            var dataArray = data.split("; ");
+            for (var i = 0; i < dataArray.length; i++) {
+                var varName = dataArray[i].split("=");
+                document.cookie = varName[0] + "=''; expires=" + myDate.toGMTString();
+            }
+        }
+        loginState = getCookie("StuId")
+
+        if (loginState != undefined) {
+            $('.noheadLoginState').css('display', 'block');
+            $('.headLoginState').css('display', 'none');
+        } else {
+            $('.noheadLoginState').css('display', 'none');
+            $('.headLoginState').css('display', 'block');
+        }
+        function LayoutFn() {
+            $.get('/service/public/Mechanism/GetSetlist', function (res) {
+                if (res.SuccessResponse) {
+                    if (res.Data) {
+                        $('.headName').html('欢迎来到' + res.Data.HeaderName);
+                        if (res.Data.HeaderLogoOrName == 1) {
+                            $('.headerLogo').css('display', 'block');
+                            $('.headerLogo').attr('src', res.Data.HeaderLogo ? res.Data.HeaderLogo : '../Resources/images/WxLogo.png');
+                            $('.headerName').css('display', 'none');
+                        } else if (res.Data.HeaderLogoOrName == 0) {
+                            $('.headerLogo').css('display', 'none');
+                            $('.headerName').css('display', 'block');
+                            $('.headerName').html(res.Data.HeaderName);
+                        }
+                    }
+                }
+            });
+        }
+        LayoutFn();
+
+        function headPhotoFn() {
+            $.get("/service/edu/Student/GetStudentInfo", function (res) {
+                if (res.SuccessResponse) {
+                    $('.headerPhoto').attr('src', res.Data.HeadImg ? res.Data.HeadImg : '../Resources/images/photo.png');
+                }
+            });
+        }
+        headPhotoFn();
+        $('#exit').on('click', function (e) {
+            e.preventDefault();
+            delAllCookie();
+            location.href = '../Login.shtml';
+        })
+    });
+
+
+</script>
+<script>
+        var rootApp = new Vue({
+            el: '#root',
+            data: {
+                navData: [],
+                childsNavData: [],
+                LoginPageConfig: ''
+            },
+            ready: function () {
+                this.navFn();
+                this.LoginPageFn();
+            },
+            methods: {
+                LoginPageFn: function () {
+                    var self = this;
+                    $.get('/service/datastore/HConfiguration/GetConfiguration', function (res) {
+                        if (res.SuccessResponse) {
+                            self.LoginPageConfig = res.Data.LoginPageConfig;
+                        }
+                    });
+                },
+
+                RegisterFn: function () {
+                    var self = this;
+                    if (self.LoginPageConfig == 0) {
+                        layer.open({
+                            type: 2,
+                            area: ['400px', '550px'],
+                            fixed: false, //不固定
+                            maxmin: true,
+                            title: '欢迎注册',
+                            content: '../register_model.html'
+                        });
+                    } else {
+                        location.href = '../Register.shtml';
+                    }
+
+                },
+
+                //登录模态框
+                LoginFn: function () {
+                    var self = this;
+                    if (sessionStorage.getItem("thisUrl")) {
+                        sessionStorage.removeItem("thisUrl");
+                        sessionStorage.setItem("thisUrl", location.href);
+                    } else {
+                        sessionStorage.setItem("thisUrl", location.href);
+                    }
+                    if (self.LoginPageConfig == 0) {
+                        layer.open({
+                            type: 2,
+                            area: ['400px', '550px'],
+                            fixed: false, //不固定
+                            maxmin: true,
+                            title: '欢迎登陆',
+                            content: '../login_model.html',
+                        });
+                    } else {
+                        location.href = '../Login.shtml';
+                    }
+                },
+
+                //动态导航栏
+                navFn: function () {
+                    var self = this;
+                    $.get('/service/public/Menu/GetMenuData', function (res) {
+                        if (res.SuccessResponse) {
+                            if (res.Data != []) {
+                                $.each(res.Data, function (k, v) {
+                                    self.navData.push(v);
+                                });
+                            }
+                        }
+                    });
+                },
+
+                mouseThis: function (arr, e) {
+                    var ev = e.srcElement || e.target || e.toElement;
+                    var self = this;
+                    if (arr.length > 0) {
+                        var html = '';
+                        $.each(arr, function (k, v) {
+                            if (v.Valid == 1) {
+                                self.childsNavData.push(v);
+                            }
+                            html += '<li style="white-space:nowrap;text-overflow:ellipsis;overflow:hidden;width: 100%;" title="' + v.Name + '"><a href="' + v.Url + '">' + v.Name + '</a></li>';
+                        });
+                        $(ev).find('.childsList').html(html);
+                    }
+                },
+
+                mouseleaveThis: function (e) {
+                    var ev = e.srcElement || e.target || e.toElement;
+                    $(ev).find('.childsList').html('');
+                }
+            }
+        });
+</script>

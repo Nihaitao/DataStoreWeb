@@ -1,0 +1,54 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewWeb", "NewWeb\NewWeb.csproj", "{9B03AF67-4E35-4FE6-A536-03D07B92E47D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{9596D3ED-28EB-4F4A-BD82-88B9042B76CE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{5865F02E-F9B3-44BA-AC28-F744B60371C8}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stu.Web", "Stu.Web\Stu.Web.csproj", "{5949EA77-5A22-40A9-90F3-4C3C15092331}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StuMobile", "StuMobile\StuMobile.csproj", "{B83019DB-CC9F-4FB5-9CBB-0FA1628A9619}"
+EndProject
+Global
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9B03AF67-4E35-4FE6-A536-03D07B92E47D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B03AF67-4E35-4FE6-A536-03D07B92E47D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B03AF67-4E35-4FE6-A536-03D07B92E47D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B03AF67-4E35-4FE6-A536-03D07B92E47D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9596D3ED-28EB-4F4A-BD82-88B9042B76CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9596D3ED-28EB-4F4A-BD82-88B9042B76CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9596D3ED-28EB-4F4A-BD82-88B9042B76CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9596D3ED-28EB-4F4A-BD82-88B9042B76CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5949EA77-5A22-40A9-90F3-4C3C15092331}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5949EA77-5A22-40A9-90F3-4C3C15092331}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5949EA77-5A22-40A9-90F3-4C3C15092331}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5949EA77-5A22-40A9-90F3-4C3C15092331}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B83019DB-CC9F-4FB5-9CBB-0FA1628A9619}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B83019DB-CC9F-4FB5-9CBB-0FA1628A9619}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B83019DB-CC9F-4FB5-9CBB-0FA1628A9619}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B83019DB-CC9F-4FB5-9CBB-0FA1628A9619}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8D6E9E42-D959-4629-9F5B-5946AD310699}
+	EndGlobalSection
+EndGlobal

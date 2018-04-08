@@ -1,0 +1,149 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        textarea { resize: none; }
+    </style>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <form class="layui-form" action="" onsubmit="return false">
+            <div class="layui-form-item">
+                <label class="layui-form-label">部门名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="title" v-model="FormData.Name" lay-verify="required" placeholder="请输入部门名称" autofocus="autofocus" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">部门编制</label>
+                <div class="layui-input-block">
+                    <input type="text" name="Organization" v-model="FormData.Organization" lay-verify="required" placeholder="请输入部门编制" autofocus="autofocus" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">总经办</label>
+                <div class="layui-input-block">
+                    <check v-bind:value.sync="FormData.IsGeneralManager" v-bind:bool.sync="FormData.IsGeneralManager"></check>
+                </div>
+            </div>
+            <div class="layui-form-item layui-hide">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit @click="formDemo">立即提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
+
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    Vue.component('check',
+        {
+            template:
+                '<input type="checkbox" lay-skin="primary" lay-filter="{{layfilter}}" v-model="reversedbool" value="{{value}}"/>',
+        props: ['value','val','bool'],
+            data: function () {
+                return {
+                    layfilter: ""
+                };
+            },
+            computed: {
+                reversedbool: function () {
+                    return Number(this.value);
+                }
+            },
+            watch: {
+                'value': function (val) {
+                    layui.form.render('checkbox');
+                }
+            },
+            ready: function () {
+                this.initEvent();
+                this.$nextTick(function () {
+                    layui.form.render('checkbox');
+                });
+            },
+            methods: {
+                initEvent: function () {
+                    var self = this;
+                    this.layfilter = "layfilter" + (Math.random() + "").substr(2);
+                    layui.form.on("checkbox(" + this.layfilter + ")",
+                        function (data) {
+                            self.value = data.elem.checked;
+                            self.bool = Number(data.elem.checked);
+                        });
+                }
+            }
+        });
+    require_js_file(["table", "form", "jquery", "tableExt"],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+            var a = fnr.getQueryString("IsGeneralManager");
+
+
+            window.rootApp = new Vue({
+                el: "#root",
+                data: {
+                    bool: fnr.getQueryString("IsGeneralManager"),
+                    FormData: {
+                        Name: '',
+                        CID: '',
+                        Company_ID: '',
+                        ID: 0,
+                        Organization: 0,
+                        IsGeneralManager: fnr.getQueryString("IsGeneralManager")
+                    },
+                    _userId: ''
+                },
+                ready: function () {
+                    this.FormData.Company_ID = fnr.getQueryString("CompanyID");
+                    this.FormData.CID = fnr.getQueryString("CID");
+                    this.FormData.Name = fnr.getQueryString("Name");
+                    this.FormData.ID = fnr.getQueryString("ID");
+                    this.FormData.Organization = fnr.getQueryString("Organization");
+
+                    if (fnr.getQueryString("IsGeneralManager") == 1) {
+                        $("#aaa").prop('checked', true)
+                    } else {
+                        $("#aaa").prop('checked', false)
+                    }
+                },
+                methods: {
+                    //保存数据关闭弹窗
+                    formDemo: function (e) {
+                        _this = this;
+                        if (_this.FormData.ID == 0 || _this.FormData.ID == undefined) {
+                            $.post("/service/Company/InsertDepartment", _this.FormData, function (rsp) {
+                                if (rsp.SuccessResponse) {                                    
+                                    //rootApp.GetListDepartment();
+                                    fnr.callDialog('refresh', rsp.ReturnData.Data); //回调打开窗口events中的refresh
+                                    fnr.closeDialog(); //关闭当前的对话框
+                                } else {
+                                    layer.msg(rsp.Message);
+                                }
+                            })
+                        } else {
+                            $.post("/service/Company/UpdateDepartment", _this.FormData, function (rsp) {
+                                if (rsp.SuccessResponse) {
+                                    //rootApp.GetListDepartment();
+                                    fnr.callDialog('refresh', rsp.ReturnData.Data); //回调打开窗口events中的refresh
+                                    fnr.closeDialog(); //关闭当前的对话框
+                                } else {
+                                    layer.msg(rsp.Message);
+                                }
+                            })
+                        }
+                    }
+                }
+            });
+        });
+</script>

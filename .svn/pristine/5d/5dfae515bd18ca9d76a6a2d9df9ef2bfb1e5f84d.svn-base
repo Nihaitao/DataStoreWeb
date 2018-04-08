@@ -1,0 +1,222 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心</title>
+    <script src="../Resources/js/jquery.js"></script>
+    <link rel="stylesheet" href="../Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../Resources/CSS/Font/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../Resources/CSS/PC_css.css">
+    <style>
+        img.logo{
+            margin: 0;
+        }
+    </style>
+</head>
+<body style="background-color: #E8E8E8">
+    <!--顶部-->
+    <!--#<!--#include file="../UserControl/stepHeader.html"-->
+    <!--logo and search-->
+    <div style="background: #fff" class="top_search">
+        <div class="container" style="height: 100%;">
+            <a href="../index.html" class="pull-left" style="display: inline-block; width: 232px; height: 60px; margin: 30px 0;">
+                <img src="" alt="" class="logo" style="width: 100%; height: 100%; display: none;">
+                <span style="width: 100%; display: none; height: 100%;line-height: 60px;margin-left: 15px;" class="textLogo"></span>
+            </a>
+            <div class="search pull-left">
+                <span class="TOP-selected">课程 <i class=" fa fa-angle-down" style="position: absolute;right: 10px;top: 0"></i></span>
+                <input type="text" class="search_input" placeholder="2017年10月考期自考报名时间">
+                <div class="gary">搜索</div>
+            </div>
+        </div>
+    </div>
+    <!--个人中心主体部分-->
+    <div class="Ps-advertisement">
+        <div class="container">
+            <img src="../Resources/images/addBanner.png" alt="404" width="100%" height="100%">
+        </div>
+    </div>
+    <div class="Ps-body">
+        <div class="container">
+            <div class="Ps-nav pull-left">
+                <ul>
+                    <li class=""><a href="./indexs.shtml"><i class="fa fa-home"></i>首页 <span class="Ps-down-icon"></span></a>  </li>
+                    <li class=""><a href="./baseInfos.shtml"><i class="fa fa-user-circle"></i>基本资料 <span class="Ps-down-icon"></span></a>  </li>
+                    <li class=""><a href="/Center/Setting.shtml"><i class="fa fa-cog"></i>账户设置 <span class="Ps-down-icon"></span></a>  </li>
+                    <li class="active"><a href="./myCourse.shtml"><i class="fa fa-book"></i>我的课程 <span class="Ps-down-icon"></span></a>  </li>
+                    <li class=""><a href="./Order.shtml"><i class="fa fa-jpy"></i>我的订单 <span class="Ps-down-icon"></span></a>  </li>
+                    <!--<li class=""><a href=""><i class="fa fa-question-circle"></i>我的问答 <span class="Ps-down-icon"></span></a>  </li>-->
+                    <!--<li class=""><a href=""><i class="fa fa-bell-o"></i>我的消息 <span class="Ps-down-icon"></span></a>  </li>-->
+                    <!--<li><a href=""><i class="fa fa-pencil-square-o"></i>我的评论   <span class="Ps-down-icon"></span></a>  </li>-->
+
+                </ul>
+            </div>
+            <div class="tab-content pull-right">
+                <!--我的课程-->
+                <div class="tab-pane active" id="Ps-myCourse">
+                    <div class="Ps-sectionBlock" style="margin: 0;">
+                        <h3 style="position: relative">
+                            我的课程
+                            <ul class="myCourse-type">
+                                <li class="active" data-teachingmethod="-1">全部</li>
+                                <li data-teachingmethod="1">录播</li>
+                                <li data-teachingmethod="2">直播课程</li>
+                                <li data-teachingmethod="3">面授课程</li>
+                            </ul>
+                        </h3>
+                    </div>
+                    <div class="Ps-sectionBlock">
+                        <ul class="My-Ps-list clearfix" id="CourseList"></ul>
+                        <!--分页-->
+                        <div class="Pro-pageCount clearfix">
+                            <div class="clearfix" id="page">
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--footer-->
+    <!--#<!--#include file="../UserControl/Footer.html"-->
+    <script type="text/html" id="Course">
+        {{each Course as value index}}
+        <!--录播-->
+        {{if value.TeachingMethod == '1'}}
+        <li class="clearfix">
+            <img src="{{value.CoverPath ? value.CoverPath : "../Resources/images/null.jpg"}}" sty style="border-radius: 4px" class="pull-left" alt="" width="200" height="110">
+            <div class="pull-left Ps-rightBlock">
+                <h4><a href="../Course/Detail.shtml?ID={{value.ID}}" target="_blank">{{value.Name}}</a></h4>
+                <div class="Ps-name-state">
+                    {{if value.CourseChaptersID == 0}}
+                    <span class="Ps-state">未开始学习</span>
+                    {{else}}
+                    <span class="Ps-state">已学至</span>
+                    <span>{{value.CourseChaptersNameParent}}&nbsp;{{value.CourseChaptersName}}</span>
+                    {{/if}}
+                </div>
+                {{if value.StudyLength>0}}
+                <div class="">
+                    <span style="color: #df1813">学习进度：{{value.StudyLength}}%</span>
+                </div>
+                {{/if}}
+            </div>
+            {{if value.CourseChaptersID == 0}}
+            <a class="learning-button" href="../Course/Detail.shtml?ID={{value.ID}}" target="_blank">开始学习</a>
+            {{else}}
+            <a class="learning-button" href="../Course/Video.shtml?ID={{value.CourseChaptersID}}&Course_ID={{value.ID}}" target="_blank">继续学习</a>
+            {{/if}}
+        </li>
+        <!--直播-->
+        {{else if value.TeachingMethod == '2'}}
+        <li class="clearfix">
+            <img src="{{value.CoverPath ? value.CoverPath : "../Resources/images/null.jpg"}}" sty style="border-radius: 4px" class="pull-left" alt="" width="200" height="110">
+            <div class="pull-left Ps-rightBlock">
+                <h4>{{value.Name}}</h4>
+                <div class="Ps-name-state">
+                    <span class="Ps-state">直播</span>
+                    <span>{{value.CourseChaptersNameParent}}&nbsp;{{value.CourseChaptersName}}</span>
+                </div>
+                <div class="">
+                    直播时间：{{value.PayTime | dataFormat:"yyyy-MM-dd HH-mm-ss"}}<span style="color: #df1813;margin-left: 15px">(直播中)</span>
+                </div>
+            </div>
+            <button class="learning-button" data-id="{{value.ID}}">进入直播</button>
+        </li>
+
+        <!--面授-->
+        {{else if value.TeachingMethod == '3'}}
+        <li class="clearfix">
+            <img src="{{value.CoverPath ? value.CoverPath : "../Resources/images/null.jpg"}}" sty style="border-radius: 4px" class="pull-left" alt="" width="200" height="110">
+            <div class="pull-left Ps-rightBlock">
+                <h4>{{value.Name}}</h4>
+                <div class="Ps-name-state">
+                    <span class="Ps-state">面授</span>
+                    <span>{{value.CourseChaptersNameParent}}&nbsp;{{value.CourseChaptersName}}</span>
+                </div>
+                <div class="PS-Tinfo">
+                    <span>讲师：{{value.TeacherName}}</span>
+                    <span>时间：{{value.PayTime | dataFormat:"yyyy-MM-dd HH-mm-ss"}}</span>
+                    <span>地点：湖大北校区逸夫楼二楼502室</span>
+                </div>
+            </div>
+            <button class="learning-button" data-id="{{value.ID}}">查看</button>
+        </li>
+        {{/if}}
+        {{/each}}
+    </script>
+    <script src="../Resources/js/jquery.js"></script>
+    <script src="../Resources/js/bootstrap.min.js"></script>
+    <script src="../script/artTemplate.js"></script>
+    <script src="../Resources/js/Center/Center.js"></script>
+    <script src="../Resources/js/Page.js"></script>
+    <script>
+        $(function () {
+            function ImgFn() {
+                $.get('/service/public/Mechanism/GetSetlist', function (res) {
+                    if (res.SuccessResponse) {
+                        if (res.Data) {
+                            console.log(res.Data);
+                            if (res.Data.HeaderLogoOrName == 1) {
+                                $('.logo').attr('src', res.Data.HeaderLogo ? res.Data.HeaderLogo : 'Resources/images/wxdef.png')
+                                $('.logo').css('display', 'block');
+                                $('.textLogo').css('display', 'none');
+                            } else {
+                                $('.textLogo').html(res.Data.HeaderName);
+                                $('.logo').css('display', 'none');
+                                $('.textLogo').css('display', 'block');
+                            }
+                        }
+                    }
+                });
+            }
+            ImgFn();
+
+            GetOrderListByCourse(-1, -1, function (res) {
+                var data = {
+                    "Course": res.ReturnData.Data
+                }
+                var html = template('Course', data);
+                $('#CourseList').html(html);
+            })
+            $(".learning-button").click(function () {
+                var ID = GetQueryString("ID");
+                if (ID) {
+                    window.location.href = "./Detail.shtml?ID=" + ID;
+                }
+            })
+        })
+        $(".myCourse-type").on('click', "li", function () {
+            $(this).addClass("active").siblings().removeClass("active")
+            var id = $(this).data("teachingmethod");
+            GetOrderListByCourse(id, -1, function (res) {
+                var data = {
+                    "Course": res.ReturnData.Data
+                }
+                $('#CourseList').html();
+                var html = template('Course', data);
+                $('#CourseList').html(html);
+            })
+        })
+        GetStudentInfo(function (res) {
+
+            if (res.ReturnData.Data.HeadImg) {
+                $(".top_head  img").attr('src', res.ReturnData.Data.HeadImg)
+            }
+        })
+    </script>
+
+    <!--<script>
+        $("#page").Page({
+            pageIndex: 29,
+            totalPages: 30,
+            totalSize: 1000,
+            callback: function (num) {
+                console.log(num)
+            }
+        })
+    </script>-->
+</body>
+</html>

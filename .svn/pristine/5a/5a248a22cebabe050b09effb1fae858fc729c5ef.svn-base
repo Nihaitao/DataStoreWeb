@@ -1,0 +1,246 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>学生列表</title>
+    <style>
+        div.layui-table-cell{
+            height: 30px;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <blockquote class="layui-elem-quote">
+            <div class="layui-row layui-form">
+                <div class="layui-col-xs9">
+                    <div class="layui-input-inline" style="width:150px">
+                        <remote-sel v-bind:setting="searchKeySetting" v-bind:value.sync="queryFormData.SearchName" initial="off"></remote-sel>
+                    </div>
+                    <div class="layui-input-inline">
+                        <input type="text" name="SearchValue" class="layui-input" v-model="queryFormData.SearchValue">
+                    </div>
+                    <div class="layui-input-inline" style="width:150px">
+                        <remote-sel v-bind:setting="statusSetting" laytips="学生学历" v-bind:value.sync="queryFormData.Education_ID" initial="off"></remote-sel>
+                    </div>
+                    <button class="layui-btn layui-btn-primary" lay-submit lay-filter="btn" @click="doSearch">查询</button>
+                </div>
+                <div class="layui-col-xs3" style="text-align: right">
+                    <button class="layui-btn" @click="addStudent"><i class="layui-icon"></i> 添加学生</button>
+                    <button class="layui-btn layui-btn-primary" @click="ExceladdStudent">导入学生</button>
+                </div>
+            </div>
+        </blockquote>
+        <div>
+            <button class="layui-btn layui-btn-small layui-btn-primary" @click="ExcelExportStudent" style="display:none">导出Excel</button>
+        </div>
+        <!--操作模板-->
+        <table id="listTable" lay-filter="listTable"></table>
+    </div>
+</body>
+</html>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', "laydate", "element", "upload"],
+     //],
+     
+    function (fnr) {
+        var table = layui.table;
+        var form = layui.form;
+        var tableExt = layui.tableExt;
+        var $ = layui.$;
+        //搜索条件
+        window.rootApp = new Vue({
+            el: '#root',
+            data: {
+                searchKeySetting: {
+                    options: [
+                        {
+                            key: 'StuName',
+                            value: '姓名'
+                        }, {
+                            key: 'Phone',
+                            value: '手机号码'
+                        }, {
+                            key: 'CardNumber',
+                            value: '身份证'
+                        }
+                    ]
+                },
+                statusSetting: {
+                    search: true,
+                    fields: { root: 'Data', key: 'ID', value: 'Description' },
+                    options: [],
+                    remote: { url: "/service/public/HDictionary/GetHDictionaryList", data: { Valid: 1, ColumnName: 'Education_ID' } }
+                },
+                queryFormData: {
+                    SearchName: 'Name',
+                    SearchValue: '',
+                    Education_ID: '',
+                }
+            },
+            methods: {
+                doSearch: function () {
+                    var self = this;
+                    //return;
+                    listTable.reload({ where: self.queryFormData });
+                },
+                test: function () {
+                    var checkStatus = table.checkStatus('idTest'); //test即为基础参数id对应的值
+
+                },
+                addStudent: function () {
+                    fnr.openDialog({
+                        title: '添加学生',
+                        area: ['800px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                        content: ['/Html/Student/WX/Add.html'], //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+                        //btn: ['确认添加'],
+                        events: {
+                            refresh: function (data) {
+                                if (data) {
+                                    layer.msg('添加成功');
+                                    listTable.reload();
+                                }
+                                //that.formList.push(data)
+                            }
+                        }
+                    });
+                },
+                ExceladdStudent: function () {
+                    fnr.openDialog({
+                        title: '导入学生',
+                        area: ['800px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                        content: ['/Html/Student/WX/Import.html'], //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+                        //btn: ['开始导入'],
+
+                        events: {
+                            refresh: function () {
+                                listTable.reload();
+                            }
+                        }
+                    });
+                },
+                ExcelExportStudent: function () {
+                    var self = this;
+                    fnr.download("/service/edu/Student/GetExcelStudentList?SearchName=" + self.queryFormData.SearchName + "&SearchValue=" + self.queryFormData.SearchValue + "&Education_ID=" + self.queryFormData.Education_ID);
+                }
+            }
+        });
+        //绑定列表
+        var listTable = table.render({
+            elem: '#listTable',
+            even: true, //开启隔行背景
+            page: true, //页分
+            height: 'full-150',
+            id: 'listTable',
+            cols: [
+                [
+                    { fixed: true, checkbox: true },
+                    { field: 'Name', title: '姓名', width: 120 },
+                    { field: 'CardNumber', title: '身份证号码', width: 180 },
+                    { field: 'Phone', title: '手机号码', width: 140 },
+                    {
+                        field: 'Sex', title: '性别', sort: true, width: 80, templet: function () {
+                            return "<div>" + (this.Sex == 1 ? "男" : "女") + "</div>";
+                        }
+                    },
+                    { field: 'Nation_Name', title: '民族', width: 180 },
+                    //{ field: 'Police', title: '签证机构', width: 180 },
+                    { field: 'Education_Name', title: '学生学历', width: 120 },
+                    {
+                        field: 'AddTime', title: '添加时间', sort: true, width: 200, templet: function () {
+                            return fnr.format(this.AddTime, "yyyy-MM-dd HH:mm:ss")
+                        }
+                    },
+                    {
+                        fixed: 'right',
+                        field: 'name',
+                        title: '操作',
+                        width: 200,
+                        toolbar: function () {
+                            var array = new Array();
+                            array.push("<button class=\"layui-btn layui-btn-small\" lay-event='editstudent'>编辑</button>");
+                            array.push("<button class=\"layui-btn layui-btn-small layui-btn-danger \" lay-event='delstudent'>删除</button>");
+                            //array.push("<button class=\"layui-btn layui-btn-small\" lay-event='addContact'>添加联系</button>");
+                            array.push("<button class=\"layui-btn layui-btn-small layui-btn-primary\" lay-event='addOrder'>开课</button>");
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    }
+                ]
+            ],
+            url: '/service/edu/Student/GetStudentList'
+        });
+        //监听工具栏事件
+        tableExt.addEvent("tool(listTable)",
+            {
+                //添加联系
+                "addContact": function (data) {
+                    fnr.openDialog({
+                        title: '编辑学生',
+                        area: ['800px', "400px"],
+                        content: ['/Html/Educational/ContactReminder/addContact.html?StuID=' + data.StuID], //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+                        btn: ['确认'],
+                        yes: function (index, layero) {
+                            var iframeWin = window[layero.find('iframe')[0]['name']];
+                            $(iframeWin.document).find(".layui-btn").click();
+
+                        },
+                        events: {
+                            add: function () {
+                            },
+                            refresh: function (data) {
+                                if (data) {
+                                    layer.msg("添加联系记录成功")
+                                }
+                            }
+                        }
+                    });
+                },
+                //编辑学生信息
+                "editstudent": function (data, obj) {
+                    fnr.openDialog({
+                        title: '编辑学生',
+                        area: ['800px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                        content: ['/Html/Student/WX/Edit.html?ID=' + data.StuID], //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+                        events: {
+                            refresh: function (data) {
+                                if (data) {
+                                    layer.msg('修改成功');
+                                    listTable.reload();
+                                }
+                            }
+                        }
+                    });
+                },
+                //删除学生
+                "delstudent": function (data, obj) {
+                    layer.confirm('确定要删除该学生吗？一旦删除便不可恢复！', function (index) {
+                        $.post('/service/edu/Student/DeleteStudentinfo', { StuID: data.StuID }, function (result) {
+                            if (result.SuccessResponse == false) {
+                                layer.msg(result.Message);
+                                return false;
+                            } else {
+                                listTable.reload();
+                                layer.msg(result.Message, { time: 1000 }, function () {
+                                    paging.Refresh(); //重新加载当前页面
+                                });
+                            }
+                        });
+                        layer.close(index);
+                    });
+                },
+                //开课
+                "addOrder": function (data, obj) {
+                    fnr.openDialog({
+                        title: '查看开课列表',
+                        area: ['1200px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                        content: ['/Html/Educational/Order/StudentOrderList.html?StuID=' + data.StuID], //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+
+                    });
+                }
+            });
+    });
+</script>

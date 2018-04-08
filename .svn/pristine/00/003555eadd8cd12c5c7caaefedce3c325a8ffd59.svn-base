@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">新负责人</label>
+                    <div class="layui-input-block">
+                        <remote-sel name="distribution" layverify="required" v-bind:setting="DistributionSetting" v-bind:value.sync="submitForm.ID"></remote-sel>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item layui-hide">
+                <button class="layui-btn" lay-submit @click="submit">提交</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="/Resources/js/Controls/Common.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate"],
+    function (fnr) {
+
+        var laydate = layui.laydate;
+        var $ = layui.jquery;
+        var form = layui.form;
+
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+                DistributionSetting: {
+                    search: true,
+                    options: [],
+                    fields: { root: "ReturnData.Data", key: 'Account_ID', value: 'Name' },
+                    remote: { url: '/service/Station/GetListStationAccount' }
+                },
+                submitForm: {
+                    ID: 0
+                },
+                myClueData: ''
+            },
+            ready: function () {
+                this.myClueData = GetQueryString('Other');
+            },
+            methods: {
+                submit: function (e) {
+                    if (!layui.form.checkInput(e)) {
+                        return false;
+                    }
+                    $.ajax({
+                        url: '/service/Clue/UpdateHandleClue',
+                        type: "POST",
+                        data: {
+                            Other: this.myClueData,
+                            Account_ID: this.submitForm.ID
+                        },
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.SuccessResponse) {
+                                fnr.callDialog('refresh', { status: data.SuccessResponse, msg: data.Message });
+                                fnr.closeDialog();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    });
+</script>

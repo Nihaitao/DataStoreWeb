@@ -1,0 +1,254 @@
+﻿<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+        <meta name="format-detection" content="telephone=no">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>支付页面</title>
+        <link href="../../Resources/css/ba.css" rel="stylesheet" />
+        <link href="../../Resources/css/all.css" rel="stylesheet" />
+        <link href="../../Resources/css/pay.css" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="http://at.alicdn.com/t/font_420109_1vkqzax4qngn9udi.css" />
+
+        <script src="../../script/jquery.js"></script>
+        <script src="../../js/pay.js"></script>
+        <script src="../../script/artTemplate.js"></script>
+        <script src="../../script/layer_mobile/layer.js"></script>
+        <script>
+            //过滤器
+            template.helper('dataFormat', function (time, format) {
+                if (time == undefined) {
+                    return '';
+                }
+                var finalTime;
+                if (typeof (time) == 'string') {
+                    time = time.replace("T", " ");
+                    time = time.replace("Z", " ");
+                    var timeIOS = time.replace(/\-/g, "/");
+                    finalTime = new Date(timeIOS);
+                } else {
+                    finalTime = time;
+                }
+
+                var t = new Date(finalTime);
+                var tf = function (i) { return (i < 10 ? '0' : '') + i };
+                return format.replace(/yyyy|MM|dd|HH|mm|ss/g,
+                    function (a) {
+                        switch (a) {
+                            case 'yyyy':
+                                return tf(t.getFullYear());
+                                break;
+                            case 'MM':
+                                return tf(t.getMonth() + 1);
+                                break;
+                            case 'mm':
+                                return tf(t.getMinutes());
+                                break;
+                            case 'dd':
+                                return tf(t.getDate());
+                                break;
+                            case 'HH':
+                                return tf(t.getHours());
+                                break;
+                            case 'ss':
+                                return tf(t.getSeconds());
+                                break;
+                        }
+                    });
+            });
+        </script>
+        <script>
+            $(function () {
+                //未支付订单列表
+                function Unpaid() {
+                    $.get('/service/Order/GetOrderDetailListByStuId', { PayStatus: 0 }, function (rsp) {
+                        if (rsp.SuccessResponse) {
+                            var Datas = rsp.ReturnData.Data;
+                            var data = {
+                                list: Datas
+                            }
+                            var html = template('payList', data);
+                            $('#UnPaid').html(html);
+                            var payMoneyArr = $('#UnPaid .price');
+                            var moneyNum = 0;
+                            $.each(payMoneyArr, function (i, value) {
+                                moneyNum += parseFloat($(value).text().split('￥')[1]);
+                            });
+                            $('.bottom .money span').text('￥' + moneyNum);
+                            if (Datas.length == 0) {
+                                $('.bottom button.submitPay').css('background-color', '#ddd').attr('disabled', true);
+                            }
+                        }
+                    });
+                }
+                Unpaid();
+
+                //已支付订单列表
+                function Paid() {
+                    $.get('/service/Order/GetOrderDetailListByStuId', { PayStatus: 1 }, function (rsp) {
+                        if (rsp.SuccessResponse) {
+                            var Datas = rsp.ReturnData.Data;
+                            var data = {
+                                list: Datas
+                            }
+                            var html = template('AlreadyPaidList', data);
+                            $('#AlreadyPaid').html(html);
+                        }
+                    });
+                }
+                Paid();
+
+            });
+        </script>
+
+        <!--未支付订单列表-->
+        <script type="text/html" id="payList">
+            {{if list.length != 0}}
+            <span class="centerbox bz-bb">
+                <p class="all-check"><input type="radio" class="check-all" /><a>全选</a></p>
+            </span>
+            {{each list}}
+            <div class="firstCon">
+                <p class="num bz-bb">订单编号:<span class="dd-num">{{$value.OrderNo}}</span><span class="day">{{$value.PayTime | dataFormat:"YYYY-MM-DD HH:mm"}}</span></p>
+                {{if $value.OrderDetailList}}
+                {{include 'UnPaidOrderDetail' $value}}
+                {{else}}
+                <div class="commodity">
+                    <input type="radio" class="check" />
+                    <span class="pic">
+                        <img src="{{$value.CoverPath ? $value.CoverPath : '../../Resources/img/null.jpg'}}" />
+                    </span>
+                    <div class="txt">
+                        <p class="explain">{{$value.Name ? $value.Name : '暂无课程名称'}}</p>
+                        <p class="price">￥{{$value.PayPrice}}</p>
+                    </div>
+                </div>
+                {{/if}}
+            </div>
+            {{/each}}
+            <button class="del">删除订单</button>
+            {{else}}
+            <h4 style="text-align: center;margin-top: 15px;">暂无未支付的课程</h4>
+            {{/if}}
+        </script>
+        <script type="text/html" id="UnPaidOrderDetail">
+            {{if OrderDetailList}}
+            {{each OrderDetailList}}
+            <div class="commodity">
+                <input type="radio" class="check" />
+                <span class="pic">
+                    <img src="{{$value.CoverPath ? $value.CoverPath : '../../Resources/img/null.jpg'}}" />
+                </span>
+                <div class="txt">
+                    <p class="explain">{{$value.Name ? $value.Name : '暂无课程名称'}}</p>
+                    <p class="price">￥{{$value.Price}}</p>
+                </div>
+            </div>
+            {{/each}}
+            {{/if}}
+        </script>
+
+
+        <!--已支付订单列表-->
+        <script type="text/html" id="AlreadyPaidList">
+            {{if list}}
+            {{each list}}
+            <div class="firstCon">
+                <p class="num bz-bb">订单编号:<span class="dd-num">{{$value.OrderNo}}</span><span class="day">{{$value.PayTime | dataFormat:"yyyy-MM-dd HH:mm"}}</span></p>
+                {{if $value.OrderDetailList.length != 0}}
+                {{include 'OrderDetail' $value}}
+                {{else}}
+                <div class="commodity">
+                    <span class="pic">
+                        <img src="{{$value.CoverPath ? $value.CoverPath : '../../Resources/img/null.jpg'}}" />
+                    </span>
+                    <div class="txt">
+                        <p class="explain"><a href="../Video/pathNav.html?ID={{$value.Course_ID}}">{{$value.Name ? $value.Name : '暂无课程名称'}}</a></p>
+                        <p class="price">￥{{$value.PayPrice}}</p>
+                    </div>
+                    <div class="payOk">支付成功</div>
+                </div>
+                {{/if}}
+            </div>
+            {{/each}}
+            {{else}}
+            <h4 style="text-align: center;margin-top: 15px;">暂无已支付的课程</h4>
+            {{/if}}
+            
+        </script>
+        <script type="text/html" id="OrderDetail">
+            {{if OrderDetailList}}
+            {{each OrderDetailList}}
+            <div class="commodity">
+                <span class="pic">
+                    <img src="{{$value.CoverPath ? $value.CoverPath : '../../Resources/img/null.jpg'}}" />
+                </span>
+                <div class="txt">
+                    <p class="explain"><a href="../Video/pathNav.html?ID={{$value.Course_ID}}">{{$value.Name ? $value.Name : '暂无课程名称'}}</a></p>
+                    <p class="price">￥{{$value.Price}}</p>
+                </div>
+                <div class="payOk">支付成功</div>
+            </div>
+            {{/each}}
+            {{/if}}
+        </script>
+	</head>
+
+	<body>
+		<header>
+			<div class="ipt">
+				<span class="logo">
+                    <img src="../../Resources/img/logo.jpg" />
+				</span>
+				<input type="text" name="" id="" placeholder="搜索课程、专业" />
+				<i class="iconfont icon-sousuo"></i>
+			</div>
+		</header>
+		<main >
+			<div class="tip ">
+				<span class="nopay bz-bb active">待支付</span>
+				<span class="pay bz-bb">已支付</span>
+			</div>
+			<div class="mainbox">
+				<div class="content1">
+                    <div id="UnPaid"></div>
+                    <div class="bottom">
+                        <p class="money">金额总计: <span></span></p>
+                        <button type="button" class="submitPay">确认支付</button>
+                    </div>
+                </div>
+
+				<div class="content2" style="display: none;">
+                    <div style="margin-top: 0.172413rem;" id="AlreadyPaid"></div>
+				</div>
+			</div>
+		</main>
+		<div class="determineDelMask" style="display: none;">
+			<div class="determineDel">
+				<h3 class="areYouSure">确认将这个宝贝删除吗?</h3>
+				<p class="btn"><span class="no bz-bb">取消</span><span class="yes">确认</span></p>
+			</div>
+		</div>
+		<div class="payForMoneyMask" style="display: none;">
+			<div class="payForMoney">
+				<p class="payForWhat"><i class="iconfont icon-cha"></i>选择支付方式</p>
+				<div class="nameAndPrice">
+					<p class="name bz-bb">国际贸易理论与实务基础理论</p>
+					<p class="price bz-bb">￥200.00</p>
+				</div>
+				<div class="mode clearfix">
+					<div class="zfb bz-bb">
+                        <img src="../../Resources/img/zfb.png" />
+						<p>支付宝</p>
+					</div>
+					<div class="vx">
+                        <img src="../../Resources/img/vx.png" />
+						<p>微信支付 </p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+
+</html>

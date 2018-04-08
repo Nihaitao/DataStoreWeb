@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        .isDisplay {
+            display: none;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">姓名：</label>
+                <div class="layui-inline">
+                    <input type="text" name="Sex" lay-verify="required" readonly autocomplete="off"
+                           class="layui-input" v-model="submitForm.ClientName" style="border: none;">
+                </div>
+                <div class="layui-inline"> 
+                    <label class="layui-form-label">创建人：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="Phone" lay-verify="required" readonly autocomplete="off"
+                               class="layui-input" v-model="submitForm.AddPersonName" style="border: none;">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">预约类型：</label>
+                <div class="layui-inline">
+                    <input type="text" name="Sex" lay-verify="required" readonly autocomplete="off"
+                           class="layui-input" v-model="submitForm.AppointmentTypeName" style="border: none;"> 
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">处理状态：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" lay-verify="required" readonly autocomplete="off"
+                               class="layui-input" v-model="submitForm.Valid" style="border: none;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">提醒时间：</label>
+                <div class="layui-inline">
+                    <input type="text" name="Sex" lay-verify="required" readonly autocomplete="off"
+                           class="layui-input" v-model="submitForm.Date" style="border: none;">
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">创建时间：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="Phone" lay-verify="required" readonly autocomplete="off"
+                               class="layui-input" v-model="submitForm.AddTime" style="border: none;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <template v-if="submitForm.ContactTypeName != null">
+                    <label class="layui-form-label">预约方式：</label>
+                    <div class="layui-inline">
+                        <input type="text" name="Sex" lay-verify="required" readonly autocomplete="off"
+                               class="layui-input" v-model="submitForm.ContactTypeName" style="border: none;">
+                    </div>
+                </template>
+                <div class="layui-inline">
+                    <label class="layui-form-label">提醒状态：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="Phone" lay-verify="required" readonly autocomplete="off"
+                               class="layui-input" v-model="submitForm.RemindType" style="border: none;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">提醒内容：</label>
+                <div class="layui-input-block">
+                    <textarea class="layui-textarea" readonly v-model="submitForm.Content"></textarea>
+                </div>
+            </div>
+
+            <!--<div class="layui-form-item">
+                <div class="layui-input-block">
+                    <input type="text" name="Sex" lay-verify="required" readonly autocomplete="off"
+                           class="layui-input" v-model="BusType==1?'来自客户':'来自线索'" style="border: none;">
+                </div>
+            </div>-->
+        </div>
+
+    </div>
+</body>
+</html>
+
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet"/>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/Controls/Common.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate"],
+    function (fnr) {
+
+        var laydate = layui.laydate;
+        var $ = layui.jquery;
+      
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+                submitForm: {
+                    ClientName: '',
+                    AddPersonName: '',
+                    AppointmentTypeName: '',
+                    Valid: '',
+                    ContactTypeName: '',
+                    RemindType: '',
+                    Date: '',
+                    AddTime: '',
+                    Content: ''
+                },
+                studentId: '',
+                BusType:''
+            },
+            ready: function () {
+                this.studentId = GetQueryString('ID');
+                //this.BusType = fnr.getQueryString('BusType');
+                this.modifyClients();
+            },
+            methods: {
+                //获取客户详细信息
+                modifyClients: function () {
+                    $.ajax({
+                        url: '/service/crm/Appointment/GetAppointmentData',
+                        type: 'GET',
+                        dataType: 'json',
+                        data: { ID: this.studentId},
+                        success: function (data) {
+                            var Datas = data.Data;
+                            if (data.SuccessResponse) {
+                                if (Datas != null) {
+                                    rootApp.submitForm.ClientName = Datas.ClientName;
+                                    rootApp.submitForm.AddPersonName = Datas.AddPersonName;
+                                    rootApp.submitForm.AppointmentTypeName = Datas.AppointmentTypeName == null ? '暂无' : Datas.AppointmentTypeName;
+                                    rootApp.submitForm.Valid = Datas.Valid == 0 ? '未处理' : Datas.Valid == 1 ? '已处理' : '暂无';
+                                    rootApp.submitForm.ContactTypeName = Datas.ContactTypeName;
+                                    rootApp.submitForm.RemindType = Datas.RemindType == 2 ? '冒泡提醒' : Datas.RemindType == 1 ? '短信提醒' : '暂无';
+                                    rootApp.submitForm.Date = fnr.format(Datas.Date, "yyyy-MM-dd HH:mm");
+                                    rootApp.submitForm.AddTime = fnr.format(Datas.AddTime, "yyyy-MM-dd HH:mm");
+                                    rootApp.submitForm.Content = Datas.Content;
+                                }
+                            } else {
+                                layer.msg(data.Message)
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    });
+</script>

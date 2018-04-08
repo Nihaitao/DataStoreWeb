@@ -1,0 +1,55 @@
+﻿
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <script src="~/Resources/js/jquery.js"></script>
+    <script>
+        $(function () {
+            $("#Submit1").click(function () {
+                alert($("#Phone").val())
+                $.post("http://webapi.smartchutou.com:8888/Station/SendPhoneCode", { Phone: $("#Phone").val() }, function (rsp) {
+                    if (!rsp.SuccessResponse) {
+                        alert(rsp.Message)
+                    }
+                    console.log(rsp);
+                });
+
+            });
+            $("#Submit2").click(function () {
+                $.post("http://webapi.smartchutou.com:8888/Station/Login", { Phone: $("#Phone").val(), PhoneCode: $("#PhoneCode").val() }, function (rsp) {
+                    if (!rsp.SuccessResponse) {
+                        alert(rsp.Message)
+                    }
+                    console.log(rsp);
+                });
+            });
+        })
+    </script>
+</head>
+<body>
+
+    发送验证码：
+    <input id="Phone" name="Phone" value="17375813701" />
+    <input id="Submit1" type="button" value="发送" />
+    <br />
+    验证验证码：
+    <input id="PhoneCode" name="PhoneCode" value="" />
+
+    <input id="Submit2" type="button" value="登录" />
+
+    @*<form method="post" action="http://webapi.smartchutou.com:8888/Station/CheckPhoneCode">
+            验证验证码：
+            <input name="Phone" value="17375813701" />
+            <input name="PhoneCode" value="" />
+            <input id="Submit1" type="submit" value="submit" />
+        </form>
+        <form method="post" action="http://webapi.smartchutou.com:8888/Station/CreateStationAccount">
+            添加账号：
+            <input name="Name" value="" />
+            <input name="Phone" value="17375813701" />
+            <input id="Submit1" type="submit" value="submit" />
+        </form>*@
+</body>
+</html>

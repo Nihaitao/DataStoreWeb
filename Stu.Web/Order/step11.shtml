@@ -1,0 +1,236 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>01</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="../script/jquery.js"></script>
+    <link rel="shortcut icon" href="" type="image/x-icon" class="favIcon" />
+    <link rel="stylesheet" href="../Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../Resources/CSS/Font/css/font-awesome.min.css">
+    <script src="../Resources/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../Resources/CSS/PC_css.css">
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+    <style>
+        html, body { height: 100%; background-color: #f2f2f2; }
+    </style>
+</head>
+<body id="root" v-cloak>
+    <!--#<!--#include file="../UserControl/stepHeader.html"-->
+    <!--结算中心头部-->
+    <div class="jie_top clearfix">
+        <div class="container" style="height: 100%;">
+            <a href="../index.html" class="Pro-logo pull-left">
+                <img v-if="layoutData.HeaderLogoOrName == 1" v-bind:src="layoutData.HeaderLogo ? layoutData.HeaderLogo : '../Resources/images/WxLogo.png'" alt="" style="width: 100%; height: 100%;">
+                <span v-if="layoutData.HeaderLogoOrName == 0" style="line-height: 60px;">{{layoutData.HeaderName}}</span>
+            </a>
+            <ul class="pay-schedule">
+                <li class="active">
+                    <div class="pay-round">1</div>
+                    <div class="pay-name">确认订单</div>
+                </li>
+                <li>
+                    <div class="pay-round">2</div>
+                    <div class="pay-name">支付订单</div>
+                </li>
+                <li>
+                    <div class="pay-round">3</div>
+                    <div class="pay-name">订单完成</div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!--结算中心主体-->
+    <div class="jie--container">
+        <div class="container">
+            <table class="pay-table">
+                <thead>
+                    <tr>
+                        <th width="500px">课程中心</th>
+                        <th width="270px">金额/元</th>
+                        <th width="200px">数量</th>
+                        <th width="330px">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(index, item) in ShoppingCarData">
+                        <td>
+                            <div class="clearfix">
+                                <img v-bind:src="item.CoverPath ? item.CoverPath : '../Resources/images/def.jpg'" width="150" height="80" alt="" class="pull-left">
+                                <div class="pull-left" style="margin-left: 20px">
+                                    <h4 class="pay-Cname">{{item.Name}}</h4>
+                                    <span class="pay-teacher">主讲老师：{{item.TeacherDetail_Name}}</span>
+                                    <span class="pay-Ctime">课时：{{item.TotalHours}}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="df1813">￥{{item.Price}}元</span>
+                        </td>
+                        <td>
+                            1
+                        </td>
+                        <td>
+                            <span class="pay-delete" @click="DeleteCourse(item.ID)">删除</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <div>
+                                您购买了{{somethingData.num}}个课程，总金额 <span class="df1813 f30">￥{{somethingData.price}}</span>
+                                <button class="Submit-pay" @click="AddOrder">提交订单</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!--#<!--#include file="../UserControl/Footer.html"-->
+</body>
+</html>
+<link href="../Resources/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="../Resources/js/modules/vue/vue.min.js"></script>
+<script src="../Resources/js/modules/layer/layui.js"></script>
+<script src="../Resources/js/require_config.js"></script>
+<script src="../Resources/js/headFootLayout.js"></script>
+
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt"], function (fnr) {
+        //ele判断元素，clsClass名
+        function hasClass(ele, cls) {
+            return (new RegExp('(\\s|^)' + cls + '(\\s|$)')).test(ele.className);
+        }
+        function removeClass(ele, cls) {
+            if (hasClass(ele, cls)) {
+                var reg = new RegExp('(\\s|^)' + cls + '(\\s|$)');
+                ele.className = ele.className.replace(reg, ' ');
+            }
+        }
+        function addClass(ele, cls) {
+            if (!hasClass(ele, cls)) {
+                ele.className += ' ' + cls;
+            }
+        }
+        ///参数获取
+        function GetQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+        }
+
+        function delAllCookie() {
+            var myDate = new Date();
+            myDate.setTime(-1000);//设置时间
+            var data = document.cookie;
+            var dataArray = data.split("; ");
+            for (var i = 0; i < dataArray.length; i++) {
+                var varName = dataArray[i].split("=");
+                document.cookie = varName[0] + "=''; expires=" + myDate.toGMTString();
+            }
+        }
+
+        window.rootApp = new Vue({
+            el: '#root',
+            data: {
+                loginState: false,
+                headPhoto: '',
+                msg: '',
+                ShoppingCarData: [],
+                somethingData: {
+                    num: 0,
+                    price: 0
+                },
+                layoutData: {}
+            },
+            ready: function () {
+                this.checkLogin();
+                this.GetShoppingCar();
+            },
+            methods: {
+                //退出
+                exit: function () {
+                    delAllCookie();
+                    location.href = '../Login.shtml';
+                },
+
+                //查询stuID
+                checkLogin: function () {
+                    _this = this;
+                    if (fnr.Cookie.get('StuId') && fnr.Cookie.get('StuId') != 'undefined') {
+                        _this.loginState = true;
+                        $.get("/service/edu/Student/GetStudentInfo", function (res) {
+                            if (res.SuccessResponse) {
+                                _this.msg = 'hi，' + res.Data.Name;
+                                _this.headPhoto = res.Data.HeadImg ? res.Data.HeadImg : '../Resources/images/photo.png'
+                                _this.loginState = true;
+                            }
+                        });
+                    }
+                },
+
+                GetShoppingCar: function () {
+                    var self = this;
+                    $.get("/service/Order/GetShoppingCar", function (res) {
+                        if (res.SuccessResponse) {
+                            if (res.ReturnData.Data) {
+                                self.ShoppingCarData = [];
+                                self.somethingData.price = 0;
+                                $.each(res.ReturnData.Data, function (k, v) {
+                                    self.ShoppingCarData.push(v);
+                                    self.somethingData.price += v.Price;
+                                });
+                                self.somethingData.num = res.ReturnData.Data.length;
+                            }
+                        }
+                    })
+                },
+
+                DeleteCourse: function (id) {
+                    var self = this;
+                    $.post('/service/Order/MoveOutShoppingCar', { Course_ID: id }, function (res) {
+                        if (res.SuccessResponse) {
+                            layer.msg('删除成功');
+                            self.GetShoppingCar();
+                        }
+                    })
+                },
+
+                //提交订单
+                AddOrder: function () {
+                    $.post('/service/Order/AddOrderFromShoppingCar', { StuID: '' }, function (res) {
+                        if (res.SuccessResponse) {
+                            if(res.ReturnData.Data.Price > 0){
+                                var param = {};
+                                param.System_Station_ID = res.ReturnData.Data.System_Station_ID;
+                                param.OrderId = res.ReturnData.Data.OrderId;
+                                param.Money = res.ReturnData.Data.Price;
+                                param.OrderName = "课程支付";
+                                param.NotifyUrl = "http://" + location.host +"/service/NoAuthority/PaySuccessDoSomething";
+                                param.Info = "";
+                                $.post('/service/pay/OnLinePay/UnifiedCreateOrder', param, function (rsp) {
+                                    if (rsp.SuccessResponse) {
+                                        location.href = 'step22.shtml?ID=' + rsp.Data.ID;
+                                    }
+                                });
+                            }else{
+                                location.href = 'step33.shtml';
+                            }
+                        } else {
+                            layer.msg(res.Message);
+                        }
+                    })
+                }
+            }
+        });
+        LayoutFn()
+    });
+</script>

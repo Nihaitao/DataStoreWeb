@@ -1,0 +1,175 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我的订单</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="/Resources/fonts/iconfont.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link href="/Resources/CSS/Font/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="/Resources/CSS/PC_css.css" rel="stylesheet" />
+    <link href="/Resources/CSS/video-js.css" rel="stylesheet" />
+    <script src="/script/artTemplate.js"></script>
+    <link href="/Resources/CSS/question.css" rel="stylesheet" />
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+</head>
+<body style="background-color: #f7f7f7;user-select: none;">
+    <!--头部导航 Start-->
+    <!--#<!--#include file="/PublicControl/topmenu.html"-->
+    <!--头部导航 End-->
+    <div class="w1200 clearfix">
+        <!--左侧导航 Start-->
+        <!--#<!--#include file="/PublicControl/leftmenu.html"-->
+        <!--左侧导航 End-->
+        <div class="main" id="root">
+            <div class="order-top">
+                <ul class="orderTabs">
+                    <li class="active">全部</li>
+                    <li>待支付</li>
+                    <li>已开通</li>
+                </ul>
+            </div>
+            <div class="order-middle">
+                <b>共 <span>2</span> 个订单</b>
+                <div class="middle-main">
+                    <!--全选和删除按钮-->
+                    <div class="btnBox">
+                        <form class="layui-form" action="">
+                            <input type="checkbox" lay-skin="primary" title="全选">
+                        </form>
+                        <button class="layui-btn layui-btn-primary">删除订单</button>
+                    </div>
+
+                    <!--订单集合-->
+                    <div class="listItems">
+                        <ul class="item">
+                            <li class="title">
+                                <form class="layui-form" action="">
+                                    <input type="checkbox" lay-skin="primary" title="">
+                                </form>
+                                <span class="orderNum">订单编号: <span>17121235188</span></span>
+                                <span class="orderTime">2017-12-01 &nbsp;&nbsp; 09:12:55</span>
+                            </li>
+
+                            <!--订单详细-->
+                            <li class="layui-row">
+                                <table style="width: 100%;">
+                                    <tr>
+                                        <td style="width: 55%; padding: 21px 18px 18px;">
+                                            <img src="../../Resources/images/dianshang.png" style="width: 160px; height: 90px;" />
+                                            <div class="courseWarp">
+                                                <h3 class="courseName">金融市场学</h3>
+                                                <p class="teacherMsg">一级会计师 <span class="teacName">赵西</span> <span class="courseNum">488</span>课</p>
+                                            </div>
+                                        </td>
+                                        <td style="width: 15%; text-align: center;">
+                                            <p style="color: #ee1715; font-weight:bold; height: 100%; line-height: 130px;">￥ <span>299.00</span> </p>
+                                        </td>
+                                        <td style="width: 15%; text-align: center;">
+                                            <p style="color: #333; height: 100%; line-height: 130px;">等待付款</p>
+                                        </td>
+                                        <td style="width: 15%;" rowspan="2">
+                                            <p style="display: inline-block; width: 100%; margin-top: 35px; text-align: center;">
+                                                <span class="ljzf">立即支付</span>
+                                            </p>
+                                            <p class="qxdd">取消订单</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 55%; padding: 21px 18px 18px;">
+                                            <img src="/Resources/images/dianshang.png" style="width: 160px; height: 90px;" />
+                                            <div class="courseWarp">
+                                                <h3 class="courseName">金融市场学</h3>
+                                                <p class="teacherMsg">一级会计师 <span class="teacName">赵西</span> <span class="courseNum">488</span>课</p>
+                                            </div>
+                                        </td>
+                                        <td style="width: 15%; text-align: center;">
+                                            <p style="color: #ee1715; font-weight:bold; height: 100%; line-height: 130px;">￥ <span>299.00</span> </p>
+                                        </td>
+                                        <td style="width: 15%; text-align: center;">
+                                            <p style="color: #333; height: 100%; line-height: 130px;">等待付款</p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </li>
+                        </ul>
+                        <ul class="item">
+                            <li class="title">
+                                <form class="layui-form" action="">
+                                    <input type="checkbox" lay-skin="primary" title="">
+                                </form>
+                                <span class="orderNum">订单编号: <span>17121235188</span></span>
+                                <span class="orderTime">2017-12-01 &nbsp;&nbsp; 09:12:55</span>
+                            </li>
+                            <!--订单详细-->
+                            <li class="layui-row">
+                                <table style="width: 100%;">
+                                    <tr>
+                                        <td style="width: 55%; padding: 21px 18px 18px;">
+                                            <img src="/Resources/images/dianshang.png" style="width: 160px; height: 90px;" />
+                                            <div class="courseWarp">
+                                                <h3 class="courseName">金融市场学</h3>
+                                                <p class="teacherMsg">一级会计师 <span class="teacName">赵西</span> <span class="courseNum">488</span>课</p>
+                                            </div>
+                                        </td>
+                                        <td style="width: 15%; text-align: center;">
+                                            <p style="color: #ee1715; font-weight:bold; height: 100%; line-height: 130px;">￥ <span>299.00</span> </p>
+                                        </td>
+                                        <td style="width: 15%; text-align: center;">
+                                            <p style="color: #333; height: 100%; line-height: 130px;">等待付款</p>
+                                        </td>
+                                        <td style="width: 15%;" rowspan="2">
+                                            <p style="display: inline-block; width: 100%; margin-top: 35px; text-align: center;">
+                                                <span class="ljzf">立即支付</span>
+                                            </p>
+                                            <p class="qxdd">取消订单</p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--底部版权信息 Start-->
+    <!--#<!--#include file="/PublicControl/bottommenu.html"-->
+    <!--底部版权信息 End-->
+    <script src="/Resources/js/headFootLayout.js"></script>
+    <script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil'],
+        function (fnr) {
+            var $ = layui.$;
+            var table = layui.table;
+            var tableExt = layui.tableExt;
+            var vm = new Vue({
+                el: "#root",
+                data: {
+                    Discipline:[],
+                    tip:[],
+                },
+                ready: function () {
+                    this.tabsToggle();
+                },
+                methods: {
+                    tabsToggle: function () {
+                        $('.orderTabs').on('click', 'li', function () {
+                            if (!$(this).hasClass('active')) {
+                                $(this).addClass('active').siblings().removeClass('active');
+                            }
+                        });
+                    }
+                }
+            });
+        })
+    </script>
+</body>
+
+</html>

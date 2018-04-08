@@ -1,0 +1,208 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <blockquote class="layui-elem-quote">
+            <div class="layui-row layui-form">
+                <div class="layui-col-xs6" style="text-align: left">
+                    <button class="layui-btn" @click="addData"><i class="layui-icon"></i> 添加单元课次</button>
+                </div>
+            </div>
+        </blockquote>
+        <!--操作模板-->
+        <table id="listTable" lay-filter="listTable"></table>
+    </div>
+</body>
+</html>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt','laydate'],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+
+            //搜索条件
+            var rootApp = new Vue({
+                el: '#root',
+                data: {
+                    searchKeySetting: {
+                        options: [
+                            {
+                                key: '1',
+                                value: '启用'
+                            }, {
+                                key: '0',
+                                value: '禁用'
+                            }
+                        ]
+                    },
+                    searchKeySetting2: {
+                        options: [
+                            {
+                                key: '1',
+                                value: '教材'
+                            }, {
+                                key: '2',
+                                value: '教辅'
+                            }, {
+                                key: '3',
+                                value: '其他'
+                            }
+                        ]
+                    },
+                    searchTable:[],
+                    statusSetting: {
+                        options: [
+                            {
+                                "id": -1,
+                                "name": "ABC"
+                            }
+                        ],
+                        fields: { root: 'data', key: 'id', value: 'name' },
+                        remote: { url: "/service/station/Getll&data=null" }
+                    },
+                    queryFormData: {
+                        Valid:'',
+                        DataInfoType_ID: ''
+                    },
+                    CourseInfoList:''
+                },
+                ready: function () {
+
+                },
+                methods: {
+                    doSearch: function () {
+                        this.SaveCourseInfo(this.queryFormData)
+                    },
+
+                    //删除课件资源
+                    DeleteCourseInfo: function (params) {
+                        $.get("/service/Resource/DeleteCourseInfo", params, function (res) {
+                            if (res.SuccessResponse) {
+                                this.CourseInfoList = res.ReturnData.Data;
+                            }
+                        })
+
+                    },
+
+                    //添加网课
+                    addData: function () {
+                        fnr.openDialog({
+                            title:'添加课件资源',
+                            area: ['800px', '700px'],
+                            content: ['/Html/ResourcesCenter/Unit_classtime/Add.html'],
+                            btn: ['确认添加'],
+                            yes: function (index, layero) {
+
+                                var iframeWin = window[layero.find('iframe')[0]['name']];
+                                $(iframeWin.document).find(".layui-btn").click();
+
+                            }, cancel: function () {
+                                //paging.Refresh(); //重新加载当前页面
+                                //location.href = location.href;
+                            }
+                        });
+                    },
+                    //修改网课
+                    modifyData: function () {
+                        fnr.openDialog({
+                            title: '修改课件资源',
+                            area: ['800px', '700px'],
+                            content: ['/Html/ResourcesCenter/Unit_classtime/modify.html'],
+                            btn: ['确认添加'],
+                            yes: function (index, layero) {
+
+                                var iframeWin = window[layero.find('iframe')[0]['name']];
+                                $(iframeWin.document).find(".layui-btn").click();
+
+                            }, cancel: function () {
+                                //paging.Refresh(); //重新加载当前页面
+                                //location.href = location.href;
+                            }
+                        });
+                    },
+                }
+            });
+
+            var tableIns = table.render({
+                elem: '#listTable',
+                even: true, //开启隔行背景
+                page: true, //页分
+                cols: [
+                    [
+                        { field: 'ID', fixed: true, title: '网课单元课次表', width: 120 },
+                        { field: 'Unit_ID', title: '单元ID', width: 120 },
+                        { field: 'Name', title: '课次名称', width: 120 },
+                        { field: 'BegInTime', title: '开始时间', width: 120 },
+                        { field: 'EndTime', title: '结束时间', width: 120 },
+                        { field: 'TeacherDetail_ID', title: '教师明细id', width: 120 },
+                        { field: 'ClassRoom_ID', title: '教室ID', width: 120 },
+                        { field: 'System_Station_ID', title: '系统id', width: 120 },
+                        { field: 'Orders', title: '排序', width: 120 },
+                        { field: 'AddTime', title: '添加时间', width: 120 },
+                        { field: 'AddPerson', title: '添加人', width: 120 },
+                        {
+                            fixed: 'right',
+                            field: 'Valid',
+                            title: '启用状态',
+                            width: 180,
+                            toolbar: function () {
+                                var array = new Array();
+                                array.push("<button class=\"layui-btn layui-btn-small\" lay-event='edit'>编辑</button>");
+                                array.push("<button class=\"layui-btn layui-btn-small " + (this.Valid == 1 ? "layui-btn-warm" : "layui-btn-normal") + " \" lay-event='editisenable'>" + (this.Valid == 1 ? "禁用" : "启用") + "</button>");
+                                array.push("<button class=\"layui-btn layui-btn-small layui-btn-danger \" lay-event='delete'>删除</button>");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        }
+                    ]
+                ],
+                url: '/service/Resource/GetCourseInfoList',
+                response: {
+                   dataName: 'ReturnData.data'
+               }
+            });
+            tableExt.addEvent("tool(listTable)",
+                {
+                    //工具栏编辑事件
+                    "edit": function (data, obj) {
+                        rootApp.modifyData()
+
+
+                    },
+                    //工具栏禁用启用事件
+                    "editisenable": function (data, obj) {
+                        var params = { ID: data.ID, Valid: data.Valid==1? 0: 1 }
+                        $.post("/service/Resource/UpdateValid", params, function (res) {
+                            if (res.SuccessResponse) {
+                                $.get("/service/Resource/GetCourseInfoList", function (res) {
+                                    if (res.SuccessResponse) {
+                                        tableIns.reload();
+                                    }
+                                })
+                            }
+                        })
+                    },
+                    //工具栏删除事件
+                    "delete": function (data, obj) {
+                        $.post("/service/Resource/DeleteCourseInfo", params, function (res) {
+                            if (res.SuccessResponse) {
+                                this.CourseInfoList = res.ReturnData.Data;
+                            }
+                        })
+                    }
+                });
+            //监听复选框事件
+            table.on('checkbox(listTable)', function (obj) {
+
+            });
+        });
+</script>

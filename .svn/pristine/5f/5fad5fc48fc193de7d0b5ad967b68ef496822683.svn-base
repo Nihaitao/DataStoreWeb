@@ -1,0 +1,163 @@
+﻿666 -->
+
+<style>
+    [v-cloak] {
+        display: none;
+    }
+</style>
+
+<div class="nav-left" id="leftnav" v-cloak>
+    <div class="nav-title" @click="showdata">
+        <h3><a href="/usercenter/index.shtml">首页</a></h3>
+    </div>
+    <div v-if="NetWorkClass" class="nav-item">
+        <div class="nav-item-title">我的网课</div>
+        <ul class="sub-nav">
+            <li><a href="/usercenter/onlinecourse/coursemanage.shtml"><i class="iconfont icon-kechengguanli"></i>课程管理</a></li>
+            <li><a href="/usercenter/onlinecourse/courserecord.shtml"><i class="iconfont icon-tingkejilu"></i>听课记录</a></li>
+        </ul>
+    </div>
+    <div v-if="Questions" class="nav-item">
+        <div class="nav-item-title">我的题库</div>
+        <ul class="sub-nav">
+            <li><a href="/usercenter/questionbank/tk/myCourseList.shtml"><i class="iconfont icon-kaishizuoti"></i>开始做题</a></li>
+            <li><a href="/usercenter/questionbank/QuestionRecord.shtml"><i class="iconfont icon-zuotijilu"></i>做题记录</a></li>
+        </ul>
+    </div>
+    <div v-if="Tuition" class="nav-item">
+        <div class="nav-item-title">我的学费</div>
+        <ul class="sub-nav">
+            <li><i class="iconfont icon-lijijiaofei"></i>立即缴费</li>
+        </ul>
+    </div>
+    <div v-if="Educational" class="nav-item">
+        <div class="nav-item-title">我的教务</div>
+        <ul class="sub-nav">
+            <li><a href="/usercenter/educational/Myscore.shtml"><i class="iconfont icon-wodechengji"></i>我的成绩</a></li>
+            <li><a href="/usercenter/educational/Myexam.shtml"><i class="iconfont icon-wodebaokao"></i>我的报考</a></li>
+            <li><a><i class="iconfont icon-wodeshuji"></i>我的书籍</a></li>
+            <li><a><i class="iconfont icon-lianxijilu"></i>联系记录</a></li>
+        </ul>
+    </div>
+    <div v-if="Graduation" class="nav-item">
+        <div class="nav-item-title">我要毕业</div>
+        <ul class="sub-nav">
+            <li><i class="iconfont icon-xuexijindu"></i>学习进度</li>
+            <li><i class="iconfont icon-lunwendabian"></i>论文答辩</li>
+        </ul>
+    </div>
+    <div v-if="Personal" class="nav-item">
+        <div class="nav-item-title">个人管理</div>
+        <ul class="sub-nav">
+            <li><a href="/usercenter/order/myorder.shtml"><i class="iconfont icon-wodedingdan"></i>我的订单</a></li>
+            <li><a href="/usercenter/usermanage/accountsettings.shtml"><i class="iconfont icon-zhanghaoshezhi"></i>账号设置</a></li>
+            <li><a href="/usercenter/usermanage/question.shtml"><i class="iconfont icon-tousuyutiwen"></i>投诉提问</a></li>
+            <li><a href="/usercenter/usermanage/newsCenter.shtml"><i class="iconfont icon-xiaoxizhongxin"></i>消息中心</a></li>
+        </ul>
+    </div>
+    <div v-if="Process" class="nav-item">
+        <div class="nav-item-title">过程性考核</div>
+        <ul class="sub-nav">
+            <li><i class="iconfont icon-kaishixuexi"></i>开始学习</li>
+            <li><i class="iconfont icon-peiyangjihua"></i>培养计划</li>
+            <li><i class="iconfont icon-xuankeguanli"></i>选课管理</li>
+            <li><i class="iconfont icon-chengjichaxun"></i>成绩查询</li>
+        </ul>
+    </div>
+    <div v-if="Credit" class="nav-item">
+        <div class="nav-item-title">学分互认</div>
+        <ul class="sub-nav">
+            <li><i class="iconfont icon-kaishixuexi"></i>开始学习</li>
+            <li><i class="iconfont icon-peiyangjihua"></i>培养计划</li>
+            <li><i class="iconfont icon-xuankeguanli"></i>选课管理</li>
+            <li><i class="iconfont icon-chengjichaxun"></i>成绩查询</li>
+        </ul>
+    </div>
+</div>
+<script>
+    //注释说明
+    //    学生返回类型：
+    //    1-自考：首页、我的网课、我的题库、我的学费、我的教务、我要毕业、个人管理、过程性考核、学分互认
+    //    2-成考：首页、我的网课、我的题库、我的学费、我的教务、我要毕业、个人管理
+    //    3-省级系统：首页、个人管理、过程性考核
+    //    4-网校:首页、我的网课、我的题库、个人管理
+
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil'],
+    function (fnr) {
+        var $ = layui.$;
+        var table = layui.table;
+        var tableExt = layui.tableExt;
+        new Vue({
+            el: "#leftnav",
+            data: {
+                NetWorkClass: false,//我的网课
+                Questions: false,//我的题库
+                Tuition: false,//我的学费
+                Educational: false,//我的教务
+                Graduation: false,//我要毕业
+                Personal: false,//个人管理
+                Process: false,//过程性考核
+                Credit: false//学分互认
+            },
+            ready: function () {
+                var model_id, schooltype;
+                var _this = this;
+                var arr = [];
+                $.get("/service/edu/StudentinfoDetail/CheckStudentCenterLeftMenu", null, function (rsp) {
+                    if (rsp.SuccessResponse) {
+                        model_id = rsp.Data.Model_Id;
+                        schooltype = rsp.Data.School_Province_ID;
+                        //  自考
+                        if (model_id == 1 && schooltype === 0) {
+                            arr = ['NetWorkClass', 'Questions', 'Tuition', 'Educational', 'Graduation', 'Personal', 'Process', 'Credit'];
+                        }
+                            //省级系统
+                        else if (model_id == 1 && schooltype !== 0) {
+                            arr = ['Personal', 'Process'];
+                        }
+                            //成考
+                        else if (model_id == 2) {
+                            arr = ['NetWorkClass', 'Questions', 'Tuition', 'Educational', 'Graduation', 'Personal'];
+                        }
+                            //网校
+                        else {
+                            arr = ['NetWorkClass', 'Questions', 'Personal'];
+                        }
+                        arr.map(function (a, b) {
+                            _this[a] = true;
+                        });
+                    } else {
+                        layer.msg("请重新登录~！", { icon: 5 }, function (index) {
+                            location.href = "/usercenter/logins.html";
+                        });
+                    }
+                })
+            },
+            methods: {
+                showdata: function () {
+                    console.log(this);
+                }
+            }
+        });
+
+
+    })
+</script>
+<script>
+
+    //获取当前路径文件名 加上a标签样式
+    layui.$(function () {
+        var filename = location.href;
+        function getFileName(url) {
+            return url.substr(url.lastIndexOf('/') + 1)
+        }
+        $("a").map(function (a, b) {
+            var aFileName = $(this).prop("href");
+
+            if (getFileName(aFileName) === getFileName(filename) && getFileName(aFileName) !== 'index.shtml') {
+                $(this).parent().addClass("active-menu");
+            }
+
+        })
+    })
+</script>

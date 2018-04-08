@@ -1,0 +1,155 @@
+﻿(function () {
+    window.rootApp = new Vue({
+        el: '#root',
+        data: {
+            ProvinceId: 0,
+            LevalId: 0,
+            CategoryId: 0,
+            ModelId: 1,
+            rspListData: [],
+            ProvinceData: [],
+            LevelData: [],
+            CategoryData: []
+        },
+        ready: function () {
+            this.requestList(this.ProvinceId, this.LevalId, this.CategoryId, this.ModelId);
+            this.ProvinceList();
+            this.LevelList();
+            this.CategoryList();
+        },
+        methods: {
+            // 请求筛选列表参数
+            // Province_ID省份ID，Level_ID层次ID，Category_ID专业分类ID，Model_ID模型ID，Orderstr排序字段，Order排序方式
+            requestList: function (pId, lId, cId, mId) {
+                var self = this;
+                $.get('/service/edu/Specialty/GetSpecialtyLevalList', {Province_ID: pId, Level_ID: lId, Category_ID: cId, Model_ID: mId, Orderstr: 'AddTime', Order: 'desc' }, function (rsp) {
+                    if (rsp.SuccessResponse) {
+                        if (rsp.Data) {
+                            $.each(rsp.Data, function (k, v) {
+                                self.rspListData.push(v);
+                            });
+                        } else {
+                            layer.msg('data为空')
+                        }
+                    } else {
+                        layer.msg(rsp.Message ? rsp.Message : '操作失败')
+                    }
+                });
+            },
+
+            //省份
+            ProvinceList: function () {
+                var self = this;
+                $.get('/service/edu/Specialty/GetSpecialtyProvince', { Model_ID: 1 }, function (rsp) {
+                    if (rsp.SuccessResponse) {
+                        if (rsp.Data) {
+                            $.each(rsp.Data, function (k, v) {
+                                self.ProvinceData.push(v);
+                            });
+                        } else {
+                            layer.msg('data为空')
+                        }
+                    } else {
+                        layer.msg(rsp.Message ? rsp.Message : '操作失败')
+                    }
+                });
+            },
+
+            //层次
+            LevelList: function () {
+                var self = this;
+                $.get('/service/edu/SpecialtyLevel/GetSpecialtyLevelList', { Valid: -1 }, function (rsp) {
+                    if (rsp.SuccessResponse) {
+                        if (rsp.Data) {
+                            $.each(rsp.Data, function (k, v) {
+                                self.LevelData.push(v);
+                            });
+                        } else {
+                            layer.msg('data为空')
+                        }
+                    } else {
+                        layer.msg(rsp.Message ? rsp.Message : '操作失败')
+                    }
+                });
+            },
+
+            //分类
+            CategoryList: function (Pid, Lid) {
+                var self = this;
+                $.get('/service/edu/Specialty/GetSpecialtyCategoryList', { Province_ID: Pid, Level_ID: Lid, Model_ID: 1 }, function (rsp) {
+                    if (rsp.SuccessResponse) {
+                        if (rsp.Data) {
+                            $.each(rsp.Data, function (k, v) {
+                                self.CategoryData.push(v);
+                            });
+                        } else {
+                            layer.msg('data为空')
+                        }
+                    } else {
+                        layer.msg(rsp.Message ? rsp.Message : '操作失败')
+                    }
+                });
+            },
+
+            //点击省份触发事件
+            ClickProvince: function (pId) {
+                var self = this;
+                self.rspListData = [];
+                self.ProvinceId = pId;
+                self.requestList(pId, self.LevalId, self.CategoryId, self.ModelId);
+                $('.ProvinceList').on('click', 'li:not(.ProText)', function () {
+                    if (!$(this).hasClass('active')) {
+                        $(this).find('a').css('color', '#fff');
+                        $(this).addClass('active').siblings('li:not(.ProText)').removeClass('active').find('a').css('color', '#333');
+                    }
+                    self.CategoryList(pId, self.CategoryId);
+                    $('.CategoryList li:not(.CatText)').css('display', 'block');
+                });
+            },
+
+            //点击层次触发事件
+            ClickLeval: function (lId) {
+                var self = this;
+                self.rspListData = [];
+                self.LevalId = lId;
+                self.requestList(self.ProvinceId, lId, self.CategoryId, self.ModelId);
+                $('.LevelList').on('click', 'li:not(.LevText)', function () {
+                    if (!$(this).hasClass('active')) {
+                        $(this).find('a').css('color', '#fff');
+                        $(this).addClass('active').siblings('li:not(.LevText)').removeClass('active').find('a').css('color', '#333');
+                    }
+                    self.CategoryList(self.ProvinceId, lId);
+                    $('.CategoryList li:not(.CatText)').css('display', 'block');
+                });
+            },
+
+            //点击分类触发事件
+            ClickCategory: function (cId) {
+                var self = this;
+                self.rspListData = [];
+                self.CategoryId = cId;
+                self.requestList(self.ProvinceId, self.LevalId, cId, self.ModelId);
+                $('.CategoryList').on('click', 'li:not(.CatText)', function () {
+                    if (!$(this).hasClass('active')) {
+                        $(this).find('a').css('color', '#fff');
+                        $(this).addClass('active').siblings('li:not(.CatText)').removeClass('active').find('a').css('color', '#333');
+                    }
+                });
+            },
+
+            //`全部`按钮触发事件
+            ProvinceClear: function () {
+                var self = this;
+                self.ClickProvince(0);
+            },
+            LevelClear: function () {
+                var self = this;
+                self.ClickLeval(0);
+            },
+            CategoryClear: function () {
+                var self = this;
+                self.ClickCategory(0);
+            }
+        }
+    });
+})();

@@ -1,0 +1,190 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <div style="margin-left:20px;position:relative;text-align:center;">
+            <div class="layui-upload">
+                <div class="layui-upload-list" style="">
+                    <img class="layui-upload-img" id="StuP" width="50" height="50" style="border-radius:50%" v-bind:src="submitForm.HeadImg">
+                    <p id="StuText" style="margin-left:-15px;margin-top:5px;"></p>
+                </div>
+                <button type="button" class="layui-btn layui-btn-normal" id="upStudP" style="margin:15px 0"><i class="layui-icon">&#xe67c;</i>上传证件照</button>
+            </div>
+        </div>
+        <div class="layui-form">
+            <input type="hidden" autocomplete="off" v-model="submitForm.StuId">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">姓名</label>
+                    <div class="layui-input-inline">
+                        <input type="text" lay-verify="required" autocomplete="off" placeholder="请输入姓名" class="layui-input"
+                               v-model="submitForm.Name">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">性别</label>
+                    <div class="layui-input-inline">
+                        <remote-rad v-bind:setting="SelectSex" v-bind:value.sync="submitForm.Sex"
+                                    initial="off"></remote-rad>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">身份证号码</label>
+                    <div class="layui-input-inline">
+                        <input type="text" lay-verify="empty|identity" autocomplete="off" placeholder="请输入身份证号码"
+                               class="layui-input" v-model="submitForm.CardNumber">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">手机号码</label>
+                    <div class="layui-input-inline">
+                        <input type="text" lay-verify="empty|phone" autocomplete="off" placeholder="请输入手机号码" class="layui-input"
+                               v-model="submitForm.Phone">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">身份证地址</label>
+                <div class="layui-input-block">
+                    <input type="text" autocomplete="off" placeholder="户籍地址"
+                           class="layui-input" v-model="submitForm.HomeAddress">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">证件有效期</label>
+                <div class="layui-input-block">
+                    <input type="text" autocomplete="off" placeholder="" id="EffDate"  class="layui-input" v-model="submitForm.EffDate | format 'yyyy-MM-dd'" style="width:200px;display:inline-block">
+                    <i style="margin:0 10px;">-</i>
+                    <input type="text" autocomplete="off" placeholder="" id="ExpDate"  class="layui-input" v-model="submitForm.ExpDate | format 'yyyy-MM-dd'" style="width:200px;display:inline-block">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">签发机关</label>
+                    <div class="layui-input-inline">
+                        <input type="text"  autocomplete="off" placeholder="请输入签发机关" class="layui-input"
+                               v-model="submitForm.Police">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">民族</label>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="NationSetting" lay-verify="required"  v-bind:value.sync="submitForm.Nation" initial="off" v-bind:change="searchCourse"></remote-sel>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">学历</label>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="SelectEducation" lay-verify="required" v-bind:value.sync="submitForm.Education_ID" v-bind:change="searchCourse"
+                                    initial="off" lay-filter="Education_ID"></remote-sel>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">邮箱</label>
+                    <div class="layui-input-inline">
+                        <input type="text" lay-verify="empty|email" autocomplete="off" placeholder="请输入邮箱" class="layui-input"
+                               v-model="submitForm.Email">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                
+                <div class="layui-inline">
+                    <label class="layui-form-label">联系电话</label>
+                    <div class="layui-input-inline">
+                        <input type="text" autocomplete="off" placeholder="请输入联系电话" class="layui-input" v-model="submitForm.Phone2">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">QQ</label>
+                    <div class="layui-input-inline">
+                        <input type="text" lay-verify="empty|number" autocomplete="off" placeholder="请输入QQ" class="layui-input" v-model="submitForm.QQ">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">地区</label>
+                <div class="layui-input-inline">
+                    <remote-sel v-bind:setting="provinceSetting" v-bind:value.sync="submitForm.NowProvince_ID" v-bind:change="provinceChange"
+                                initial="off"></remote-sel>
+                </div>
+                <div class="layui-input-inline">
+                    <remote-sel v-bind:setting="citySetting" v-bind:value.sync="submitForm.NowCity_ID" v-bind:change="cityChange" v-ref:city
+                                initial="off"></remote-sel>
+                </div>
+                <div class="layui-input-inline">
+                    <remote-sel v-bind:setting="areaSetting" v-bind:value.sync="submitForm.NowArea_ID" v-ref:area initial="off"></remote-sel>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">现居地址</label>
+                <div class="layui-input-block">
+                    <input type="text" autocomplete="off" placeholder="请输入地址"
+                           class="layui-input" v-model="submitForm.NowAddress">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">备注说明</label>
+                <div class="layui-input-block">
+                    <textarea placeholder="请输入备注说明" class="layui-textarea" v-model="submitForm.Remark"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item layui-hide">
+                <div class="layui-input-block">
+                    <button class="layui-btn" @click="saveUpdate" lay-submit>立即提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/Controls/Common.js"></script>
+<script src="/Resources/js/Controls/Student/EditStudent.js?v=1.0"></script>
+<script>
+    layui.use('upload', function () {
+        var $ = layui.jquery
+        , upload = layui.upload;
+
+        //普通图片上传
+        var uploadInst = upload.render({
+            elem: '#upStudP'
+          , url: '/service/public/Upload/File/2'
+          , before: function (obj) {
+              //预读本地文件示例，不支持ie8
+              obj.preview(function (index, file, result) {
+                  $('#StuP').attr('src', result); //图片链接（base64）
+              });
+          }
+          , done: function (res) {
+              //如果上传失败
+              if (res.code > 0) {
+                  return layer.msg('上传失败');
+              }
+              //上传成功
+              rootApp.submitForm.HeadImg = res.Message
+              layer.msg('上传成功')
+          }
+          , error: function () {
+              //演示失败状态，并实现重传
+              var demoText = $('#StuText');
+              demoText.html('<span style="color: #FF5722;">上传失败</span> <a class=" demo-reload" style="cursor:pointer;">重试</a>');
+              demoText.find('.demo-reload').on('click', function () {
+                  uploadInst.upload();
+              });
+          }
+        })
+    })
+</script>

@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>添加报名表单</title>
+</head>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<body>
+    <div class="mainContainer">
+        <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+            <div class="layui-tab-content" style="height: 100px;">
+                <div class="layui-tab-item layui-show">
+                    <div class="layui-form">
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">表单名称：</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="FormName" lay-verify="required" autocomplete="off"
+                                           class="layui-input" v-model="SubmitCustomForm.FormName">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">表单分组：</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="FormName" lay-verify="required" autocomplete="off"
+                                           class="layui-input" v-model="SubmitCustomForm.FormName">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">分配方式：</label>
+                                <div class="layui-input-block">
+                                    <remote-rad v-bind:setting="FormAllotSetting" v-bind:value.sync="SubmitCustomForm.FormAllot" initial="off"></remote-rad>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">客服人员：</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="FormName" lay-verify="required" autocomplete="off"
+                                           class="layui-input" v-model="SubmitCustomForm.FormName">
+                                </div>
+                            </div>
+                        </div>
+                        
+
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">报名信息：</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="TipMsg" lay-verify="required" autocomplete="off"
+                                           class="layui-input" v-model="SubmitCustomForm.TipMsg">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div style="display: block; width: 100%; position: fixed;bottom: 0;right: 0; padding: 20px 20px 20px 0; background-color: #fff; text-align:right;">
+                        <button class="layui-btn" lay-submit @click="nextChange1($event)">保存</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

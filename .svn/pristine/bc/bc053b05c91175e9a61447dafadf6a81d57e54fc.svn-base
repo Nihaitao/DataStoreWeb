@@ -1,0 +1,171 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <form class="layui-form" action="" onsubmit="return false">
+            <div class="layui-form-item">
+                <label class="layui-form-label">课次名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="Name" lay-verify="required" placeholder="请输入课次名称" autocomplete="off" class="layui-input" v-model="ClassTime.Name">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">上课时间</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="BegInTime" id="BegInTime" lay-verify="required" placeholder="开始时间" autocomplete="off" class="layui-input" v-model="ClassTime.BegInTime | format">
+                </div>
+                    <span style="float:left;font-size: 21px;display: inline-block;margin: 0 15px 0 5px;padding-top:5px;">—</span>
+                <div class="layui-input-inline">
+                    <input type="text" name="EndTime" id="EndTime" lay-verify="required" placeholder="结束时间" autocomplete="off" class="layui-input" v-model="ClassTime.EndTime | format">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">教师</label>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="teacherSetting" v-bind:value.sync="ClassTime.TeacherDetail_ID" initial="off" layverify="required"></remote-sel>
+                    </div>
+                </div>
+                <div class="layui-inline" v-if="tmNum == 3">
+                    <label class="layui-form-label">教室</label>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="courseSetting" v-bind:value.sync="ClassTime.ClassRoom_ID" initial="off"></remote-sel>
+                    </div>
+                </div>
+                </div>
+            <div class="layui-form-item layui-hide">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit @click="SaveForm">立即提交</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</body>
+</html>
+
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/Controls/Common.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "upload", "laydate"],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+            var upload = layui.upload;
+            var laydate = layui.laydate;
+
+
+            window.rootApp = new Vue({
+                el: "#root",
+                filters: {
+                    format: function (val) {
+                        return fnr.format(val, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+                data: {
+                    ClassTime: {
+                        ID:0,
+                        Name: '',
+                        Unit_ID: '',
+                        BegInTime: '',
+                        EndTime: '',
+                        TeacherDetail_ID: '',
+                        ClassRoom_ID: '',
+                        Orders: 0,
+                    },
+                    teacherSetting: { 
+                        search: true,
+                        options: [
+                        ],
+                        remote: {
+                            url: '/service/datastore/Teacher/GetAllTeachers',
+                            data: { Valid: 1, Discipline_ID: GetQueryString('Discipline_ID') }
+                        },
+                        fields: { root: 'Data', key: 'ID', value: 'Name' }
+                    },
+                    courseSetting: {
+                        search: true,
+                        options: [
+                        ],
+                        remote: {
+                            url: '/service/datastore/Campus/GetClassRoomList',
+                            data: { Valid:1}
+                        },
+                        fields: { root: 'Data', key: 'ID', value: 'Name' }
+                    },
+                    tmNum: ''
+                },
+                ready: function () {
+                    this.tmNum = GetQueryString('tmNum');
+                    if (GetQueryString('ID') && GetQueryString('Unit_ID')) {
+                        this.ClassTime.ID = GetQueryString('ID');
+                        this.ClassTime.Unit_ID = GetQueryString('Unit_ID');
+                        this.GetCourseUnitClassTimeByID({ID:this.ClassTime.ID});
+                    }
+
+                },
+                methods: {
+                    SaveForm: function (e) {
+                        if (!layui.form.checkInput(e)) {
+                            return false;
+                        }
+                        this.SaveCourse_Unit_ClassTime(this.ClassTime, function (res) {
+                            fnr.callDialog('refresh', res.Data);
+                            fnr.closeDialog();
+                        });
+                    },
+                    GetCourseUnitClassTimeByID: function (params, cb) {
+                        var self = this;
+                        $.get('/service/datastore/WebCourse/GetCourseUnitClassTimeByID', params, function (res) {
+                            if (res.SuccessResponse) {
+                                if (cb && typeof cb == "function") cb(res);
+                                self.ClassTime = res.Data;
+                            }
+                        })
+                    },
+
+                    SaveCourse_Unit_ClassTime: function (params, cb) {
+                        $.post('/service/datastore/WebCourse/SaveCourse_Unit_ClassTime', params, function (res) {
+                            if (res.SuccessResponse) {
+                                if (cb && typeof cb == "function") cb(res);
+                                layer.msg('添加成功')
+                            }
+                            layer.close();
+                        })
+                    },
+                }
+            });
+            //指定允许上传的文件类型
+            upload.render({
+                elem: '#test3'
+              , url: '/service/public/Upload/File/2'
+              , accept: 'file' //普通文件
+              , done: function (res) {
+              }
+            });
+            laydate.render({
+                elem: '#BegInTime',
+                type:'datetime',
+                done: function(value, date, endDate){
+                    rootApp.ClassTime.BegInTime=value;
+                    
+                }
+            });
+            laydate.render({
+                elem: '#EndTime',
+                type: 'datetime',
+                done: function (value, date, endDate) {
+                    rootApp.ClassTime.EndTime = value;
+                }
+            })
+        });
+</script>

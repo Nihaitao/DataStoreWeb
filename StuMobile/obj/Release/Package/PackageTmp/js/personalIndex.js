@@ -1,0 +1,27 @@
+
+
+
+//个人中心 请求数据学生个人数据
+$(function () {
+    $.get("/service/Student/GetStudentInfo", function (rsp) {
+        console.log(rsp);
+        if (rsp.SuccessResponse) {
+            console.log(rsp.ReturnData.HeadImg)
+            //个人中心首页
+            $(".pic img").attr('src', rsp.ReturnData.Data.HeadImg ? rsp.ReturnData.Data.HeadImg : '../../Resources/img/head.png');
+            $(".mine p.name").html(rsp.ReturnData.Data.Name)
+
+            //基本信息填充内容
+            
+            $("main p[data-name]").map(function (a, b) {
+                console.log($(b).attr("data-name"))
+                $(b).find("span.txt").html(rsp.ReturnData.Data[$(b).attr("data-name")])
+            });
+            $("main p[data-name=Sex_n]>.txt").html(rsp.ReturnData.Data.Sex == 1 ? "男" : "女")
+            $("main p[data-name=address]>.txt").html(rsp.ReturnData.Data.ProvinceName + rsp.ReturnData.Data.CityName +(rsp.ReturnData.Data.DistrictName?rsp.ReturnData.Data.DistrictName:""))
+        } else {
+            layer.open({ content: "网络请求出错", type: 0, time: 0.5 });
+        }
+    })
+})
+

@@ -1,0 +1,103 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>表单分类</title>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">分类名称</label>
+                    <div class="layui-inline">
+                        <input type="text" name="Weight" lay-verify="required" autocomplete="off"
+                               class="layui-input" v-model="submitForm.TypeName">
+                    </div>
+                </div>
+            </div>
+         
+            <div class="layui-form-item">
+                <button class="layui-btn layui-hide" lay-submit @click="submit">提交</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="/Resources/js/Controls/Common.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate"],
+        function (fnr) {
+            var $ = layui.jquery;
+            window.rootApp = new Vue({
+                el: "#root",
+                data: {
+                    submitForm: {
+                        ID: '',
+                        TypeName: ''
+                    }
+                },
+                ready: function () {
+                    this.submitForm.ID = GetQueryString('ID');
+                    this.modifyForm();
+                },
+                methods: {
+                   
+                    submit: function (e) {
+                        if (!layui.form.checkInput(e)) {
+                            return false;
+                        }
+                        if (this.submitForm.ID > 0){
+                            $.ajax({
+                                url: '/service/crm/Form/UpdateFormCategory',
+                                type: 'POST',
+                                dataType: 'json',
+                                data: this.submitForm,
+                                success: function (data) {
+                                    if (data.SuccessResponse) {
+                                        fnr.callDialog('refresh', { status: data.SuccessResponse, msg: data.Message });
+                                        fnr.closeDialog();
+                                    }
+                                }
+                            });
+                        } else {
+                            $.ajax({
+                                url: '/service/crm/Form/AddForm',
+                                type: 'POST',
+                                dataType: 'json',
+                                data: this.submitForm,
+                                success: function (data) {
+                                    if (data.SuccessResponse) {
+                                        fnr.callDialog('refresh', { status: data.SuccessResponse, msg: data.Message });
+                                        fnr.closeDialog();
+                                    }
+                                }
+                            });
+                        }
+                    },
+                    modifyForm: function (e) {                     
+                        $.ajax({
+                            url: '/service/crm/Form/GetDetailedForm',
+                            type: 'GET',
+                            dataType: 'json',
+                            data: { ID: this.submitForm.ID },
+                            success: function (data) {
+                                var Datas = data.Data;
+                                if (data.SuccessResponse) {
+                                    if (Datas != null) {
+                                        rootApp.submitForm.TypeName = Datas.TypeName;
+                                    }
+                                } else {
+                                    layer.msg(data.Message);
+                                }
+                            }
+                        })
+                    }
+                }
+            })
+        })
+</script>

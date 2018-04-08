@@ -1,0 +1,170 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>02</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script src="../script/jquery.js"></script>
+    <link rel="stylesheet" href="../Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../Resources/CSS/Font/css/font-awesome.min.css">
+    <script src="../Resources/js/bootstrap.min.js"></script>
+    <script src="../script/layer/layer.js"></script>
+    <script src="../script/artTemplate.js"></script>
+    <link rel="stylesheet" href="../Resources/CSS/PC_css.css">
+</head>
+<body>
+    <!--顶部-->
+    <div id="headLogin">
+        <script type="text/html" id="loginState_txt">
+            {{if loginState == null}}
+            <div class="top_head clearfix">
+                <div class="container">
+                    <div class="pull-left" style="margin-left: 15px">
+                        <span>欢迎来到中国教育中心</span>
+                    </div>
+                    <div class="pull-right">
+                        <a href="../Login.html">登录</a>
+                        <a href="../Register.html">注册</a>
+                        <a href="#">注册客服中心</a>
+                    </div>
+                </div>
+            </div>
+            {{else}}
+            <div class="top_head">
+                <div class="container">
+                    <div class="pull-left" style="margin-left: 15px">
+                        <span>欢迎来到励弘在线</span>
+                    </div>
+                    <div class="pull-right Gcenter">
+                        <a>
+                            <img src="{{headPhoto ? headPhoto : '../Resources/images/photo.png'}}" al alt="" width="30" height="30" style="border-radius: 50%">
+                            <i class="fa fa-angle-down" style="margin-left: 20px"></i>
+                        </a>
+                        <a href="#"><i class="fa fa-bell"></i></a>
+                        <a href="#">客服中心</a>
+                        <a id="exit">退出</a>
+                    </div>
+                </div>
+            </div>
+            {{/if}}
+        </script>
+    </div>
+    <!--结算中心头部-->
+    <div class="jie_top clearfix">
+        <div class="container">
+            <img src="../Resources/images/JSlogo.png" alt="" style="margin-top: 43px">
+            <ul class="pay-schedule">
+                <li class="active">
+                    <div class="pay-round">1</div>
+                    <div class="pay-name">确认订单</div>
+                </li>
+                <li class="active">
+                    <div class="pay-round">2</div>
+                    <div class="pay-name">支付订单</div>
+                </li>
+                <li>
+                    <div class="pay-round">3</div>
+                    <div class="pay-name">订单完成</div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!--结算中心主体-->
+    <div class="jie--container">
+        <div class="container">
+            <div class="Ps-sectionBlock">
+                <h3 style="color: #666;">
+                    选择支付方式
+                    <div class="pull-right" style="margin-right: 20px">总金额 <span class="df1813 f30">￥1050.00元</span></div>
+                </h3>
+                <div class="pay-way clearfix">
+                    <div class="pull-left">
+                        <input type="radio" id="zhifubao" name="payWay" class="pay-checkbox"><label for="zhifubao"></label>
+                        <img src="../Resources/images/zhifubao.png" alt="">
+                    </div>
+                    <div class="pull-left">
+                        <input type="radio" id="weixin" name="payWay" class="pay-checkbox"><label for="weixin"></label>
+                        <img src="../Resources/images/weixinpay.png" alt="">
+                    </div>
+                </div>
+                <div style="text-align: center">
+                    <button class="Submit-pay" style="float: none">去付款</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--footer-->
+
+    <div class="foot">
+        <ul class="clearfix info">
+            <li>eol简介</li>
+            <li>联系方式</li>
+            <li>招聘信息</li>
+            <li>京IC证140769号</li>
+            <li>京IC备12045350号</li>
+            <li>京IC网文[2014]2106-306号</li>
+            <li>京公网安备&nbsp;11010802020236号</li>
+        </ul>
+        <p class="copyright">版权所有 赛尔互联（北京）教育科技有限公司 CERNET Corporation</p>
+    </div>
+</body>
+</html>
+<script>
+    function delAllCookie() {
+        var myDate = new Date();
+        myDate.setTime(-1000);//设置时间    
+        var data = document.cookie;
+        var dataArray = data.split("; ");
+        for (var i = 0; i < dataArray.length; i++) {
+            var varName = dataArray[i].split("=");
+            document.cookie = varName[0] + "=''; expires=" + myDate.toGMTString();
+        }
+    }
+    $(function () {
+        $('#exit').on('click', function () {
+            delAllCookie();
+            location.href = '../Login.html';
+        });
+    });
+    //读取COOKIE方法
+    function getCookie(name) {
+        var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+        if (arr = document.cookie.match(reg))
+            return unescape(arr[2]);
+        else
+            return null;
+    }
+    var loginState = getCookie("StuId")
+    var data = {
+        loginState: loginState
+    }
+    var html = template('loginState_txt', data);
+    $('#headLogin').html(html);
+    //打开登录模态框
+    $(".Pro-screen").on("click", '.buyNow-button', function () {
+        var loginState = getCookie("StuId")
+        if (!loginState && loginState != 'undefined') {
+            layer.open({
+                type: 2,
+                area: ['400px', '550px'],
+                fixed: false, //不固定
+                maxmin: true,
+                title: '欢迎登陆',
+                content: '../login_model.html',
+            });
+        } else {
+            var ID = GetQueryString('ID');
+            $.post("/service/Order/PutInShoppingCar/", { Course_ID: ID }, function (res) {
+                if (res.SuccessResponse) {
+                    layer.msg('添加成功')
+                    location.href = '../Order/step1.html'
+                } else {
+                    layer.msg(res.Message)
+                }
+            })
+        }
+    })
+</script>

@@ -1,0 +1,377 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.js"
+            integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+    <link href="Resources/CSS/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="shortcut icon" href="" type="image/x-icon" class="favIcon" />
+    <link rel="stylesheet" href="Resources/CSS/Font/css/font-awesome.min.css">
+    <script src="Resources/CSS/bootstrap/js/bootstrap.min.js"></script>
+    <link href="Resources/CSS/indexType2.css" rel="stylesheet" />
+    <style>
+        .Pro-logo {
+            display: inline-block;
+            width: 250px;
+            height: 60px;
+        }
+    </style>
+</head>
+<body id="root" v-cloak>
+    <!--顶部-->
+    <!--#<!--#include file="UserControl/stepHeader.html"-->
+    <!--logo and search-->
+    <div class="top_search">
+        <div class="container" style="height: 100%;">
+            <a href="javascript:;" class="Pro-logo pull-left">
+                <img v-if="layoutData.HeaderLogoOrName == 1" v-bind:src="layoutData.HeaderLogo ? layoutData.HeaderLogo : 'Resources/images/wxdef.png'" alt="" class="logo" style="width: 100%; height: 100%;">
+                <span v-if="layoutData.HeaderLogoOrName == 0" style="width: 100%; height: 100%;display: inline-block;margin-top: 16%;padding-top: 11px;padding-left: 14px;">{{layoutData.HeaderName}}</span>
+            </a>
+            <!--<div class="pull-left" style="width: 250px; height: 60px;" v-if="layoutData.length > 0">
+                <img v-if="layoutData.HeaderLogoOrName == 1" v-bind:src="layoutData.HeaderLogo ? layoutData.HeaderLogo : 'Resources/images/wxdef.png'" alt="" class="logo" style="width: 100%; height: 100%;">
+                <span v-if="layoutData.HeaderLogoOrName == 0" style="width: 100%; height: 100%;display: inline-block;margin-top: 16%;padding-top: 11px;padding-left: 14px;">{{layoutData.HeaderName}}</span>
+            </div>-->
+            <!--<div class="pull-left" style="width: 250px; height: 40px;" v-else>
+                <img src="Resources/images/wxdef.png" alt="" class="logo" style="width: 100%; height: 100%;">
+            </div>-->
+            <div class="search pull-left">
+                <span class="selected">课程 <i class=""></i></span>
+                <input type="text" class="search_input" placeholder="2017年10月考期自考报名时间">
+                <div class="gary">搜索</div>
+            </div>
+        </div>
+    </div>
+    <!--nav-->
+    <div class="nav_school">
+        <div class="container">
+            <ul class="clearfix" style="margin: 0;padding: 0">
+                <li class="firstLi"><a href="Center/indexs.shtml" style="color:#fff">进入我的网校</a></li>
+                <li v-for="(index, item) in navData" @mouseenter="mouseThis(item.Childs, $event)" @mouseleave="mouseleaveThis($event)" style="position: relative; top: 0; left: 0;right: 0; bottom: 0;height: 45px; line-height: 20px;" v-if="item.Valid == 1">
+                    <a v-bind:href="item.Url" v-if="item.OpenType == 0" style="display:inline-block; padding-bottom: 5px;" target="_blank">{{item.Name}}</a>
+                    <a v-bind:href="item.Url" v-else style="display:inline-block; padding-bottom: 5px;">{{item.Name}}</a>
+                    <ul class="childsList" style="position: absolute; top:30px;left:0; z-index: 9999;background-color: #fff;"></ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!--banner-->
+    <div class="banner">
+        <div class="container" v-cloak>
+            <!--定位分类导航-->
+            <div class="nav-block">
+                <div class="list-category">
+                    <!--地区分类-->
+                    <div class="clearfix" v-for="(index, item) in Discipline">
+                        <h4 v-if="item.IsRecommend == 1">{{item.Name}}</h4>
+                        <div class="clearfix pp25">
+                            <a v-bind:href="'./Course/CourseList.shtml?index='+items.ID+'&Des='+item.ID" v-for="(indexs,items) in item.ChildNodeList" v-if="items.IsRecommend == 1 && item.IsRecommend == 1">{{items.Name}}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--轮播图-->
+            <div class="float-block">
+                <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                    <!-- Indicators -->
+                    <ol class="carousel-indicators">
+                        <li v-for="(index, item) in bannerData" data-target="#carousel-example-generic" v-bind:data-slide-to="index" v-bind:class="{active: index == 0}"></li>
+                    </ol>
+                    <!-- Wrapper for slides -->
+                    <div class="carousel-inner" role="listbox">
+                        <div v-bind:class="{item: true, active: index == 0}" v-for="(index, item) in bannerData" v-bind:data-bgcolor="item.BgColor">
+                            <a v-bind:href="item.Url">
+                                <img v-bind:src="item.PicUrl ? item.PicUrl : 'Resources/images/defBanner.jpg'" style="height: 460px;">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--登录-->
+            <div class="loginBlock">
+                <div class="login-head">
+                    <img v-bind:src="headPhoto ? headPhoto : '../Resources/images/photo.png'" width="80" height="80">
+                    <p class="welcome-word">{{msg}}</p>
+                </div>
+                <div class="button-block" v-if="!loginState">
+                    <a href="Login.html" class="btn btn-red">登录</a>
+                    <a href="Register.html" class="btn" style="background-color: #ddd;">注册</a>
+                </div>
+                <div v-if="loginState" style="margin:0 25px;text-align:left;">
+                    <p class="welcome-word" style="margin:0;line-height:1.5em">{{msgCouse}}</p>
+                    <div style="">
+                        <a href="Center/indexs.shtml" style="color:#f45337;">前往个人中心</a>
+                    </div>
+
+                </div>
+                <div class="message">
+                    <i class="void"></i><span>最新消息</span>
+                    <ul>
+                        <li>-&nbsp;中国近代史纲要上线了</li>
+                        <li>-&nbsp;恭喜网校中心正式上线</li>
+                        <li>-&nbsp;中国近代史纲要上线了</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--main-->
+    <div class="main">
+        <div class="container">
+            <section v-if="item.CourseList.length>0" class="clearfix" v-for="(index,item) in Discipline1">
+                <div class="section_top clearfix">
+                    <h4 class="title pull-left"><i class="red-line"></i>{{item.Name}}</h4>
+                    <!--<i class="layui-icon">&#xe603;</i>
+                    <i class="layui-icon">&#xe602;</i>-->
+                    <nav class="pull-right">
+                        <ul class="section-top-nav">
+                            <li class="text-red allCourse" style="cursor: pointer;" @click="allClickCourse($event)">全部</li>
+                            <li v-for="item2 in item.ChildNodeList" @click="changeCourse(item2,index,$event);"><a style="cursor: pointer;" v-bind:class="{'text-red':item2.selelted}">{{item2.Name}}</a></li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="section-body isShow">
+                    <div v-for="(index,course) in item.CourseList" style="position: relative;" v-if="course.IsPutaway == 1 && course.IsRecommend == 1">
+                        <a href="../Course/Detail.shtml?ID={{course.ID}}" class="p-text">
+                            <img v-bind:src="course.CoverPath ? course.CoverPath : 'Resources/images/def.jpg'" style="height: 127px;width: 224px">
+                            <span style="display: inline-block; margin-top: 10px; margin-bottom: 10px;">
+                                {{course.Name}}
+                            </span>
+                        </a>
+                        <div class="tmName">{{course.TeachingMethod_Name}}</div>
+                        <div>
+                            <span class="text-red" style="position: absolute; bottom: 0; left: 0;">{{course.Price != 0 ? '￥' + course.Price : '免费'}}</span>
+                            <div class="pull-right" style="position: absolute; bottom: 0; right: 0;"><i class="fa fa-user-o"></i> <span>{{course.BuyBase}}</span>人</div>
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+    </div>
+    <!--footer-->
+    <!--#<!--#include file="UserControl/Footer.html"-->
+</body>
+
+</html>
+
+<link href="Resources/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="Resources/js/modules/vue/vue.min.js"></script>
+<script src="Resources/js/modules/layer/layui.js"></script>
+<script src="Resources/js/require_config.js"></script>
+<script src="Resources/js/headFootLayout.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt"], function (fnr) {
+
+        function delAllCookie() {
+            var myDate = new Date();
+            myDate.setTime(-1000);//设置时间
+            var data = document.cookie;
+            var dataArray = data.split("; ");
+            for (var i = 0; i < dataArray.length; i++) {
+                var varName = dataArray[i].split("=");
+                document.cookie = varName[0] + "=''; expires=" + myDate.toGMTString();
+            }
+        }
+
+        var $ = layui.$;
+        $('.carousel').on('slide.bs.carousel', function (e) {
+            var ev = e.target || e.currentTarget || e.delegateTarget;
+            var evArr = $(ev).find('.carousel-inner .item');
+            var n = '';
+            for (var i = 0; i < evArr.length; i++) {
+                if ($(evArr[i]).hasClass('active')) {
+                    if (i == evArr.length - 1) {
+                        console.log();
+                        n = $(evArr[0]).data('bgcolor');
+                    } else {
+                        n = $(evArr[i]).next().data('bgcolor');
+                    }
+                }
+            }
+            $('.banner').css('backgroundColor', n);
+        });
+        rootApp = new Vue({
+            el: "#root",
+            data: {
+                loginState:false,
+                ture:true,
+                Discipline: [],
+                Discipline1: [],
+                msg: 'hi 欢迎来到网校中心',
+                msgCouse:'',
+                headPhoto: "",
+                layoutData: {},
+                bannerData: [],
+                navData: [],
+                childsNavData: []
+            },
+            ready: function () {
+                this.GetAllDiscipline();
+                this.GetAllDiscipline1();
+                this.checkLogin();
+                this.bannerFn();
+                this.navFn();
+
+            },
+            methods: {
+                //退出
+                exit: function () {
+                    delAllCookie();
+                    location.href = '../Login.html';
+                },
+
+                //获取所有学科信息
+                GetAllDiscipline: function () {
+                    _this = this;
+                    $.get('/service/NoAuthority/GetAllDiscipline', function (res) {
+                        if (res.SuccessResponse) {
+                            _this.Discipline = res.ReturnData.Data;
+                        } else {
+                            layer.msg('网络请求出错')
+                        }
+
+                    })
+                },
+
+                //获取所有学科信息1
+                GetAllDiscipline1: function () {
+                    _this = this;
+                    $.get('/service/NoAuthority/GetAllDisciplineInfo', function (res) {
+                        if (res.SuccessResponse) {
+                            _this.Discipline1 = res.ReturnData.Data;
+                        } else {
+                            layer.msg('网络请求出错')
+                        }
+
+                    })
+                },
+
+                //全部
+                allClickCourse: function (e) {
+                    var self = this;
+                    var ev = e.srcElement || e.target || e.toElement;
+                    console.log($(ev));
+                    if (!$(ev).hasClass('text-red')) {
+                        $(ev).addClass('text-red').siblings('li').removeClass('text-red');
+                    }
+                    //self.GetAllDiscipline();
+                    self.GetAllDiscipline1();
+                },
+
+                //根据学科ID查询课程
+                changeCourse: function (data, index, e) {
+                    _this = this;
+                    var ev = e.srcElement || e.target || e.toElement;
+                    console.log(ev);
+                    if (!$(ev).hasClass('text-red')) {
+                        $(ev).addClass('text-red').parent().siblings('li').find('a').removeClass('text-red');
+                        $(ev).addClass('text-red').parent().siblings('li.allCourse').removeClass('text-red');
+                    }
+                    $.get('/service/NoAuthority/GetCourseList', { Discipline_ID: data.ID }, function (res) {
+                        if (res.SuccessResponse) {
+                            _this.Discipline1[index].CourseList = res.ReturnData.Data;
+                            _this.Discipline1[index].ChildNodeList.map(function (a, b) {
+                                a.CoverPath = 'Resources/images/def.jpg';
+                                //if (a.ID == data.ID) {
+                                //    //a.selelted = true;
+                                //    Vue.set(a, 'selelted', true)
+                                //    return;
+                                //}
+                                ////a.selelted = false;
+                                //Vue.set(a, 'selelted', false)
+                                //if ($('.allCourse').hasClass('text-red')) {
+                                //    $('.allCourse').removeClass('text-red')
+                                //}
+                            })
+                        } else {
+                            layer.msg('网络请求出错')
+                        }
+                    });
+
+                },
+                //查询stuID
+                checkLogin: function () {
+                    _this = this;
+                    if (fnr.Cookie.get('StuId') && fnr.Cookie.get('StuId') != 'undefined') {
+                        _this.loginState = true;
+                        $.get("/service/Order/GetOrderListByCourse", { TeachingMethod: -1 }, function (res) {
+                            if (res.SuccessResponse) {
+                                var len = res.ReturnData.Data.map(function (a, b) {
+                                    if (a.StudyLength != 0) {
+                                        return a
+                                    }
+                                })
+                                if (len[0]) { _this.msgCouse = '最近学习到《' + len[0].Name + '》' } else { _this.msgCouse ='您最近还没在学习的课程'}
+
+                            }
+                        });
+
+                        $.get("/service/Student/GetStudentInfo", function (res) {
+                            if (res.SuccessResponse) {
+                                _this.msg = 'hi，' + res.ReturnData.Data.Name;
+                                _this.headPhoto = res.ReturnData.Data.HeadImg ? res.ReturnData.Data.HeadImg : '../Resources/images/photo.png'
+                                _this.loginState = true;
+                            }
+                        });
+                    }
+                },
+
+                //动态轮播图
+                bannerFn: function () {
+                    var self = this;
+                    $.get('/service/public/Mechanism/GetBannerList', function (res) {
+                        if (res.SuccessResponse) {
+                            if (res.Data.length > 0) {
+                                $.each(res.Data, function (k, v) {
+                                    self.bannerData.push(v);
+                                });
+                                $('.banner').css('backgroundColor', res.Data[0].BgColor);
+                            } else {
+                                self.bannerData.push({ PicUrl: 'Resources/images/defBanner.jpg' })
+                            }
+                        } else {
+                            layer.msg(res.Message);
+                        }
+                    });
+                },
+
+                //动态导航栏
+                navFn: function () {
+                    var self = this;
+                    $.get('/service/public/Menu/GetMenuData', function (res) {
+                        if (res.SuccessResponse) {
+                            if (res.Data != []) {
+                                $.each(res.Data, function (k, v) {
+                                    self.navData.push(v);
+                                });
+                            }
+                        }
+                    });
+                },
+
+                mouseThis: function (arr, e) {
+                    var ev = e.srcElement || e.target || e.toElement;
+                    var self = this;
+                    if (arr.length > 0) {
+                        var html = '';
+                        $.each(arr, function (k, v) {
+                            if (v.Valid == 1) {
+                                self.childsNavData.push(v);
+                            }
+                            html += '<li><a href="'+ v.Url +'">'+ v.Name +'</a></li>';
+                        });
+                        $(ev).find('.childsList').html(html);
+                    }
+                },
+
+                mouseleaveThis: function (e) {
+                    var ev = e.srcElement || e.target || e.toElement;
+                    $(ev).find('.childsList').html('');
+                }
+            },
+        });
+        LayoutFn();
+    })
+</script>

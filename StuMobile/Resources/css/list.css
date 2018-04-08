@@ -1,0 +1,49 @@
+body {
+  background: #efeff4;
+}
+main .side i {
+  font-style: normal;
+}
+main .side .side_p {
+  width: 1.534482rem;
+  float: left;
+}
+main .side .side_p div {
+  width: 1.534482rem;
+  line-height: 1.275862rem;
+  text-align: center;
+  border-bottom: 0.017241rem solid #dddddd;
+}
+main .side .side_p .active {
+  background: #fff;
+  border-left: 0.051724rem solid #f10013;
+}
+main .side .side_show {
+  margin-left: 1.534482rem ;
+  background: #fff;
+  padding-bottom: 6.275862rem ;
+}
+main .side .side_show .side_p_show {
+  float: left;
+  margin: 0 0.172413rem;
+}
+main .side .side_show .side_p_show .diqu {
+  border-bottom: 0.017241rem solid #dddddd;
+  padding-bottom: 0.172413rem;
+}
+main .side .side_show .side_p_show .diqu i {
+  float: left;
+  width: 1.37931rem;
+  line-height: 0.862068rem;
+  background: #efeff4 ;
+  margin-top: 0.172413rem;
+  text-align: center;
+  border-radius: 0.103448rem;
+}
+main .side .side_show .side_p_show .diqu i:nth-child(3n) {
+  margin: 0.172413rem 0.172413rem  0;
+}
+main .side .side_show .side_p_show .diqu div {
+  line-height: 0.586206rem;
+  padding-top: 0.344827rem;
+}

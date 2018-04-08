@@ -1,0 +1,244 @@
+﻿<!DOCTYPE html>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        .labelleft { font-weight: bold; }
+        .layui-form-label { padding: 3px 7px; }
+    </style>
+</head>
+<body>
+    <fieldset class="layui-elem-field site-demo-button" style="margin-top: 30px;">
+        <legend>测试表单信息</legend>
+        <div style="margin: 30px;">
+            <button class="layui-btn layui-btn-primary">编辑</button>
+            <button class="layui-btn">删除</button>
+        </div>
+
+
+        <div class="layui-tab layui-tab-card">
+            <ul class="layui-tab-title">
+                <li class="layui-this">基本信息</li>
+                <li>客服分配</li>
+                <li>产品库</li>
+                <li>报名数据</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label labelleft">表单名称：</label>
+                            <div class="layui-input-inline">
+                                <label class="layui-form-label">表单名称</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label labelleft">表单名称：</label>
+                            <div class="layui-input-inline">
+                                <label class="layui-form-label">表单名称</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label labelleft">表单名称：</label>
+                            <div class="layui-input-inline">
+                                <label class="layui-form-label">表单名称</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label labelleft">表单名称：</label>
+                            <div class="layui-input-inline">
+                                <label class="layui-form-label">表单名称</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-tab-item">
+                    <div class="layui-form">
+                        <button class="layui-btn">保存</button>
+                        <table class="layui-table">
+                            <colgroup>
+                                <col width="150">
+                                <col width="150">
+                                <col>
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox" name="like1[write]" lay-skin="primary" title="全选" checked=""></th>
+                                    <th>客服</th>
+                                    <th>权重</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><input type="checkbox" name="like1[write]" lay-skin="primary" checked=""></td>
+                                    <td>张三</td>
+                                    <td><input type="text" name="title" lay-verify="title" value="12" autocomplete="off" class="layui-input"></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox" name="like1[write]" lay-skin="primary" checked=""></td>
+                                    <td>张三1</td>
+                                    <td><input type="text" name="title" lay-verify="title" autocomplete="off" class="layui-input"></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox" name="like1[write]" lay-skin="primary" checked=""></td>
+                                    <td>张三2</td>
+                                    <td><input type="text" name="title" lay-verify="title" autocomplete="off" class="layui-input"></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox" name="like1[write]" lay-skin="primary" checked=""></td>
+                                    <td>张三22</td>
+                                    <td><input type="text" name="title" lay-verify="title" autocomplete="off" class="layui-input"></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox" name="like1[write]" lay-skin="primary" checked=""></td>
+                                    <td>张三222</td>
+                                    <td><input type="text" name="title" lay-verify="title" autocomplete="off" class="layui-input"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="layui-tab-item">
+                    <div class="layui-form">
+                        <button class="layui-btn">关联产品</button>
+                        <table class="layui-table">
+                            <colgroup>
+                                <col width="150">
+                                <col width="150">
+                                <col width="200">
+                                <col width="200">
+                                <col width="200">
+                                <col>
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>产品名称</th>
+                                    <th>产品分类</th>
+                                    <th>产品编号</th>
+                                    <th>标准单价</th>
+                                    <th>销售单位</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>贤心</td>
+                                    <td>汉族</td>
+                                    <td>1989-10-14</td>
+                                    <td>人生似修行</td>
+                                    <td>人生似修行</td>
+                                    <td>
+                                        <button class="layui-btn layui-btn-sm">删除</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>张爱玲</td>
+                                    <td>汉族</td>
+                                    <td>1920-09-30</td>
+                                    <td>于千万人之中遇见你所遇见的人，于千万年之中，时间的无涯的荒野里…</td>
+                                    <td>人生似修行</td>
+                                    <td><button class="layui-btn layui-btn-sm">删除</button></td>
+                                </tr>
+                                <tr>
+                                    <td>Helen Keller</td>
+                                    <td>拉丁美裔</td>
+                                    <td>1880-06-27</td>
+                                    <td> Life is either a daring adventure or nothing.</td>
+                                    <td>人生似修行</td>
+                                    <td><button class="layui-btn layui-btn-sm">删除</button></td>
+                                </tr>
+                                <tr>
+                                    <td>岳飞</td>
+                                    <td>汉族</td>
+                                    <td>1103-北宋崇宁二年</td>
+                                    <td>教科书再滥改，也抹不去“民族英雄”的事实</td>
+                                    <td>人生似修行</td>
+                                    <td><button class="layui-btn layui-btn-sm">删除</button></td>
+                                </tr>
+                                <tr>
+                                    <td>孟子</td>
+                                    <td>华夏族（汉族）</td>
+                                    <td>公元前-372年</td>
+                                    <td>猿强，则国强。国强，则猿更强！ </td>
+                                    <td>人生似修行</td>
+                                    <td><button class="layui-btn layui-btn-sm">删除</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="layui-tab-item">
+                    <div class="layui-form">
+                        <table class="layui-table">
+                            <colgroup>
+                                <col width="150">
+                                <col width="150">
+                                <col width="200">
+                                <col>
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>名称</th>
+                                    <th>跟进阶段</th>
+                                    <th>负责人</th>
+                                    <th>添加时间</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>贤心</td>
+                                    <td>汉族</td>
+                                    <td>1989-10-14</td>
+                                    <td>人生似修行</td>
+                                </tr>
+                                <tr>
+                                    <td>张爱玲</td>
+                                    <td>汉族</td>
+                                    <td>1920-09-30</td>
+                                    <td>于千万人之中遇见你所遇见的人，于千万年之中，时间的无涯的荒野里…</td>
+                                </tr>
+                                <tr>
+                                    <td>Helen Keller</td>
+                                    <td>拉丁美裔</td>
+                                    <td>1880-06-27</td>
+                                    <td> Life is either a daring adventure or nothing.</td>
+                                </tr>
+                                <tr>
+                                    <td>岳飞</td>
+                                    <td>汉族</td>
+                                    <td>1103-北宋崇宁二年</td>
+                                    <td>教科书再滥改，也抹不去“民族英雄”的事实</td>
+                                </tr>
+                                <tr>
+                                    <td>孟子</td>
+                                    <td>华夏族（汉族）</td>
+                                    <td>公元前-372年</td>
+                                    <td>猿强，则国强。国强，则猿更强！ </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</body>
+</html>
+<script>
+    require_js_file(["table", 'tree', "form", "jquery", "tableExt", "element"],
+        function (fnr) {
+            element = layui.element;
+        });
+</script>
+

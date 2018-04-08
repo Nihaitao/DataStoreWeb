@@ -1,0 +1,16 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    <script src="http://testApp.kliao.net/Content/require.js?pageauth=2" data-main="http://testApp.kliao.net/Content/authmain" id="kliao"></script>
+    <script src="zgjyzx.js"></script>
+    <title></title>
+</head>
+<body>
+    <input type="button" value="点我聊天" onclick="clickMeChat()"> 
+    <input type="button" value="点我退出" onclick="checkOut()"> 
+    <input type="button" value="登陆网校" onclick="loginWangxiao()"> 
+
+</body>
+</html>

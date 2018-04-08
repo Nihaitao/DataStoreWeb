@@ -1,0 +1,141 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        .isDisplay {
+            display: none;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">姓名：</label>
+                <div class="layui-inline">
+                    <input type="text"  lay-verify="required" readonly autocomplete="off"
+                           class="layui-input" v-model="submitForm.ClientName" style="border: none;">
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">创建人：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="Phone" lay-verify="required" readonly autocomplete="off"
+                               class="layui-input" v-model="submitForm.AddPersonName" style="border: none;">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">联系类型：</label>
+                <div class="layui-inline">
+                    <input type="text" name="Sex" lay-verify="required" readonly autocomplete="off"
+                           class="layui-input" v-model="submitForm.ContactTypeName" style="border: none;">
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">创建时间：</label>
+                    <div class="layui-inline">
+                        <input type="text" name="Sex" lay-verify="required" readonly autocomplete="off"
+                               class="layui-input" v-model="submitForm.AddTime" style="border: none;">
+                    </div>
+                   
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">联系时间：</label>
+                <div class="layui-input-inline">
+                    <input type="text" lay-verify="required" readonly autocomplete="off"
+                           class="layui-input" v-model="submitForm.ContactTime" style="border: none;">
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">联系内容：</label>
+                <div class="layui-input-block">
+                    <textarea class="layui-textarea" readonly v-model="submitForm.Content"></textarea>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <input type="text" name="Sex" lay-verify="required" readonly autocomplete="off"
+                           class="layui-input" v-model="submitForm.BusType==1?'来自客户':'来自线索'" style="border: none;">
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate"],
+        function (fnr) {
+
+            var laydate = layui.laydate;
+            var $ = layui.jquery;
+
+            window.rootApp = new Vue({
+                el: "#root",
+                data: {
+                    submitForm: {                        
+                        AccountID:0,
+                        AccountName:'',
+                        AddPerson:0,
+                        AddPersonName:"",
+                        AddTime:""   ,      
+                        BusID:0,
+                        BusType:0,
+                        ClientName:'',
+                        ContactPersonName: '',
+                        ContactPerson_ID: 0,
+                        ContactTime: "",
+                        ContactTypeName:"",
+                        ContactType_ID:0,
+                        Content:"",
+                        ID: 0,
+                        BusType:'',
+                    },
+                    ID: 0,
+                },
+                ready: function () {
+                    this.ID = fnr.getQueryString('ID');
+                    this.modifyClients();
+                },
+                methods: {
+                    //获取客户详细信息
+                    modifyClients: function () {
+                        var self = this;
+                        $.ajax({
+                            url: '/service/crm/Contact/GetContactDataByID',
+                            type: 'GET',
+                            dataType: 'json',
+                            data: { ID: this.ID},
+                            success: function (data) {                               
+                                if (data.SuccessResponse) {
+                                       var Datas = data.Data;
+                                        if (Datas != null) {
+                                            self.submitForm.ClientName = Datas.ClientName;
+                                            self.submitForm.AddPersonName = Datas.AddPersonName;
+                                            self.submitForm.ContactTypeName = Datas.ContactTypeName;
+                                            self.submitForm.ContactTime = fnr.format(Datas.ContactTime, "yyyy-MM-dd HH:mm");
+                                            self.submitForm.AddTime = fnr.format(Datas.AddTime, "yyyy-MM-dd HH:mm");
+                                            self.submitForm.Content = Datas.Content;
+                                            self.submitForm.BusType = Datas.BusType;
+                                        }
+                                    } else {
+                                        layer.msg(data.Message)
+                                    }
+                               
+                            }
+                        });
+                    }
+                }
+            });
+        });
+</script>

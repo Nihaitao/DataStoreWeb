@@ -1,0 +1,530 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>表单列表</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        .isDisplay {
+            display: none;
+        }
+
+        .toggleNext {
+            height: 39px;
+            background: #fff;
+            line-height: 39px;
+            border: 1px solid #e2e2e2;
+            border-top-color: transparent;
+        }
+
+        .listBox {
+            border: 1px solid #dedede;
+            border-bottom: none;
+            border-top-left-radius: 3px;
+            border-bottom-left-radius: 3px;
+        }
+
+        .listItem {
+            height: 39px;
+            line-height: 39px;
+            border-bottom: 1px solid #dedede;
+            position: relative;
+            background: #F6F8F8;
+            transition: background 0.3s;
+        }
+
+            .listItem div {
+                display: inline-block;
+            }
+
+        .tempBox {
+            width: 100%;
+            padding: 0 10px 0px 20px;
+        }
+
+        .hoverColor {
+            background-color: #009688;
+            width: 0;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: width 0.3s;
+        }
+
+        .deleteBtn,
+        .modifyBtn {
+            float: right;
+            transition: color 0.3s;
+        }
+
+        .disabledBtn {
+            float: right;
+            transition: color 0.3s;
+        }
+
+        .deleteBtn,
+        .modifyBtn,
+        .disabledBtn {
+            display: none;
+            margin-right: 10px;
+        }
+
+        .defalutTxt {
+            display: inline-block;
+            position: absolute;
+            top: 0;
+            right: 70px;
+            color: #999;
+        }
+
+        .itemName {
+            transition: color 0.3s;
+        }
+
+        .listItem {
+            cursor: pointer;
+        }
+
+            .listItem:hover .itemName {
+                color: #009688;
+            }
+
+            .listItem:hover {
+                background: #fff;
+            }
+
+                .listItem:hover .hoverColor {
+                    width: 8px;
+                }
+
+                .listItem:hover .deleteBtn,
+                .listItem:hover .modifyBtn,
+                .listItem:hover .disabledBtn {
+                    display: block;
+                    color: #009688;
+                }
+
+        .layui-collapse {
+            margin-bottom: 30px;
+        }
+
+        div.layui-tab-content {
+            padding-left: 0;
+            padding-bottom: 0;
+        }
+
+        .rightTitle {
+            height: 39px;
+            line-height: 39px;
+        }
+
+        div.layui-input-block {
+            margin-left: 0;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+
+        .cursor {
+            cursor: pointer;
+        }
+
+        .listItem.active {
+            background: #fff;
+        }
+
+            .listItem.active .hoverColor {
+                width: 8px;
+            }
+
+        .zz {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #f6f8f8;
+            opacity: 0.5;
+            z-index: 999;
+        }
+
+        div.isBlock {
+            display: block;
+        }
+
+        .open {
+            transform: rotate(-90deg);
+        }
+
+        .layui-unselect.layui-form-checkbox.layui-form-checked.layui-checkbox-disbaled.layui-disabled i.layui-icon {
+            background-color: #c9c9c9;
+            border-color: #c9c9c9;
+        }
+        div.layui-table-view{
+            margin: 0;
+        }
+    </style>
+
+</head>
+<body id="root" v-cloak>
+    <div class="mainContainer">
+        <blockquote class="layui-elem-quote">
+            <div class="layui-row">
+                <div class="layui-col-xs12" style="text-align: right">
+                    <button class="layui-btn" @click="Addclass"><i class="layui-icon"></i> 添加表单分类</button>
+                    <button class="layui-btn" @click="AddForm"><i class="layui-icon"></i> 添加表单</button>
+                </div>
+            </div>
+        </blockquote>
+   
+        <div class="layui-row" style="padding: 10px; border: 1px solid #dedede; border-radius: 3px;">
+            <!--类别列表-->
+            <div class="layui-col-xs3">
+                <div class="treeData" style="height: 100%;">
+                    <ul class="listBox">
+                        <li v-for="(index, item) in RolesData" @click.stop="handlerChoice(item.ID, $event)" v-bind:class="{'listItem': true, 'active': index == 0}">
+                            <div class='hoverColor'></div>
+                            <div class='tempBox'>
+                                <a href='javscript:;' class='itemName'>{{item.TypeName}}</a>
+                                <i class='layui-icon deleteBtn cursor'  @click.stop='deleteThis(item.ID)' title="删除表单分类" `>&#xe640;</i>
+                                <i class='layui-icon modifyBtn cursor'  @click.stop='modifyThis(item.ID)' title="修改表单分类" style=" font-size:18px">&#xe642;</i>
+                                <!--<i class="layui-icon modifyBtn cursor" @click.stop='Addclass()' title="添加表单分类" style=" font-size:18px">&#xe654;</i>-->
+                            
+                            </div>
+                            <span v-if="item.Valid == 0" class="defalutTxt">已禁用</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="layui-col-xs9" style="padding-left:15px; border-top-right-radius: 3px;border-bottom-right-radius: 3px; position: relative;" v-if="!submitForm.title">
+                <table id="listTable" lay-filter="listTable"></table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "element"],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+            var element = layui.element;
+            //var linq = layui.linq;
+            var table = layui.table;
+         
+            var $ = layui.jquery;
+         
+            GetParentQueryString = function (name) {
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+                var r = window.parent.location.search.substr(1).match(reg);
+                if (r != null) return decodeURIComponent(r[2]);
+                return undefined;
+            };
+
+            var tableColsConfig =
+               [
+                   { field: 'ID', title: '表单ID', width: 80, sort: true },
+                   {
+                       field: 'FormName', title: '表单名称', width: 180, sort: true, templet: function () {
+                           var array = new Array();
+                           array.push("<a href='javascript:;' style='color: #1e9fff;' lay-event='GetFormInfo'>" + this.FormName + "</a>");
+                           return "<div>" + array.join("") + "</div>";
+                       }
+                   },
+                   {
+                       title: '表单类别', width: 100, sort: true, templet: function () {
+                           var array = new Array();
+                           if (this.FormType == 1) {
+                               array.push("<a href='javascript:;' color:'red;'>客户</a>");
+                           } else if (this.FormType == 2) {
+                               array.push("<a href='javascript:;' color:'red;'>线索</a>");
+                           }
+                           return "<div>" + array.join("") + "</div>";
+                       }
+                   },
+                   { field: 'AddPersonName', title: '添加人', width: 120, sort: true },
+                   { field: 'CustomerName', title: '分配人', sort: true },
+                   {
+                       title: '添加时间', width: 160, sort: true, templet: function () {
+                           var array = new Array();
+                           array.push("<span>" + fnr.format(this.AddTime, "yyyy-MM-dd HH:mm") + "</span>");
+                           return "<div>" + array.join("") + "</div>";
+                       }
+                   },
+                   {
+                       fixed: 'right',
+                       title: '操作',
+                       width: 210,
+                       toolbar: function () {
+                           var array = new Array();
+                           array.push("<button type='button' class='layui-btn layui-btn-small' lay-event='UpdateForm'>修改</button>");
+                           array.push("<button type='button' class='layui-btn layui-btn-small layui-btn-normal' lay-event='GetFormCode'>获取代码</button>");
+                           array.push("<button type='button' class='layui-btn layui-btn-small layui-btn-primary' lay-event='GetFormPreview'>预览</button>");
+                           //array.push("<button type='button' class='layui-btn layui-btn-small' lay-event='GetFormInfo'>查看</button>");
+                           return "<div>" + array.join("") + "</div>";
+                       }
+                   }
+               ];
+            window.rootApp = new Vue({
+                el: "#root",
+                data: {
+                    submitForm: {
+                        title: '',
+                        id: '',
+                        valid: 1
+                    },
+                    RolesData: [],  //角色集合
+                    RolesDataThisID: '',  //当前选中的表单分类ID
+                },
+                ready: function () {
+                    this.RolesFn(); //加载角色
+                   
+                },
+                methods: {
+                    handlerChoice: function (ID, e) {
+                        var ev = e.target || e.srcElement || e.toElement;
+                        $(ev).parents('.listItem').addClass('active').siblings().removeClass('active');
+                        this.RolesDataThisID = ID;
+                        listTable.reload({
+                            where: { 
+                                BusType: ID
+                            }
+                        })
+                    },
+                    RolesFn: function (callback) {
+                        var self = this;
+                        $.get("/service/crm/Form/GetFormTypeGroupList", function (rsp) {
+                            if (rsp.SuccessResponse) {
+                                if (rsp.Data) {
+                                    self.RolesData = rsp.Data ;
+                                }
+                            }
+                        });
+                    },
+                    addRole: function () {
+                        var self = this;
+                        fnr.openDialog({
+                            title: '添加表单分类',
+                            area: ['550px', '200px'],
+                            content: ['./AddFormClassification.html'],
+                            btn: ['确认添加'],
+                            events: {
+                                refresh: function (data) {
+                                    console.log(data)
+                                    if (data.status) {
+                                        layer.msg("添加成功！");
+                                        this.RolesFn();
+                                    } else {
+                                        layer.msg('添加失败');
+                                    }
+                                }
+                            },
+                        });
+                    },
+                    //添加表单
+                    AddForm: function () {
+                        fnr.openDialog({
+                            title: '添加表单',
+                            area: ['800px', (parent.document.documentElement || parent.document.body).clientHeight - 300 + "px"],
+                            content: ['FormAdd.html'],
+                            events: {
+                                refresh: function (data) {
+                                    if (data.status) {
+                                        layer.msg('添加成功');
+                                        listTable.reload();
+                                    } else {
+                                        layer.msg('添加失败');
+                                    }
+                                }
+                            }
+                        });
+                    },
+                   //修改表单
+                    UpdateForm: function (data) {
+                        fnr.openDialog({
+                            title: '修改表单',
+                            area: ['800px', (parent.document.documentElement || parent.document.body).clientHeight - 130 + "px"],
+                            content: ['FormAdd.html?ID=' + data.ID],
+                            //btn: ['保存进入下一步'],
+                            events: {
+                                refresh: function (data) {
+                                    if (data.status) {
+                                        layer.msg('修改成功');
+                                        listTable.refresh();
+                                    } else {
+                                        layer.msg('修改失败');
+                                    }
+                                }
+                            }
+                        });
+                    },
+                    //添加表单分类
+                    Addclass: function () {
+                        var self = this;
+                        fnr.openDialog({
+                            title: '添加表单分类',
+                            area: ['488px', '210px'],
+                            content: ['AddFormClassification.html'],
+                            btn: ['确认添加'],
+                            events: {
+                                refresh: function (data) {
+                                    if (data.status) {
+                                        layer.msg('添加成功');
+                                        self.RolesFn();
+                                    } else {
+                                        layer.msg('添加失败');
+                                    }
+                                }
+                            }
+                        });
+                    },
+                    //删除表单分类
+                    deleteThis: function (id) {
+                        var self = this;
+                        layer.confirm('确认要删除么?', { icon: 3, title: '提示' }, function (index) {
+                            $.post("/service/crm/Form/DeleteFormTypeGroup", { ID: id }, function (res) {
+                                if (res.SuccessResponse) {
+                                    layer.msg("删除成功！");
+                                    self.RolesFn();
+                                }
+                                else {
+                                    layer.msg(res.Message)
+                                }
+                            });
+                            layer.close(index);
+                        });
+                    },
+
+                    //修改
+                    modifyThis: function (id) {
+                        var self = this;
+                        fnr.openDialog({
+                            title: '修改表单分类',
+                            area: ['500px', '250px'],
+                            content: ['./AddFormClassification.html?ID=' + id],
+                            btn: ['确认修改'],
+                            events: {
+                                refresh: function (data) {
+                                    if (data.status) {
+                                        layer.msg('修改成功');
+                                        self.RolesFn();
+                                    } else {
+                                        layer.msg('修改失败');
+                                    }
+                                }
+                            }
+                        });
+                    },
+                    //删除表单
+                    DeleteForm: function (data) {
+                        layer.confirm('确定删除吗，删除后将无法恢复', function (index) {
+                            $.ajax({
+                                url: '/service/crm/Form/DeleteFormSignUp',
+                                type: 'POST',
+                                data: { ID: data.FormID },
+                                dataType: 'json',
+                                success: function (data) {
+                                    layer.msg(data.Message);
+                                    if (data.SuccessResponse) {
+                                        listTable.refresh();
+                                    }
+                                }
+                            });
+                        })
+                    },
+                    ///预览
+                    GetFormPreview: function (data) {
+                        window.open("FormSignUp.html?FormID=" + data.ID);
+                    },
+                    //查看表单
+                    GetFormInfo: function (data) {
+                        fnr.openDialog({
+                            title: '查看表单',
+                            area: ['1200px', (parent.document.documentElement || parent.document.body).clientHeight - 130 + "px"],
+                            content: ['FormInfo.html?FormID=' + data.ID],
+                            //btn: ['保存进入下一步'],
+                            events: {
+                                //refresh: function (data) {
+                                //    if (data.status) {
+                                //        layer.msg('修改成功');
+                                //        listTable.refresh();
+                                //    } else {
+                                //        layer.msg('修改失败');
+                                //    }
+                                //}
+                            }
+                        });
+                    },
+                    ///获取代码
+                    GetFormCode: function (data) {
+                        $.ajax({
+                            url: '/service/crm/Form/GetFormJson',
+                            type: 'GET',
+                            data: { ID: data.ID },
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data.SuccessResponse) {
+                                    fnr.openDialog({
+                                        title: '获取代码',
+                                        area: ['710px', '500px'],
+                                        content: ['/Html/Client/Form/ShowCode.html?ID=' + data.Message, 'no'],
+                                        events: {
+                                            refresh: function (data) {
+                                                
+                                            }
+                                        }
+                                    });
+                                    //var htmlJs="<scr"+"ipt src=\"https://bbsresources.oss-cn-hangzhou.aliyuncs.com/customForm/js/require.js\" data-main=\"https://bbsresources.oss-cn-hangzhou.aliyuncs.com/customForm/js/main\"  data-uuid='"+data.Message+"'></scr"+"ipt>"
+                                    //alert(htmlJs);
+                                }
+                            }
+                        });
+                    },
+                    
+                }
+            });
+            //绑定列表
+            var listTable = table.render({
+                elem: '#listTable',
+                even: true, //开启隔行背景
+                page: true, //页分,
+                id: 'listTable',
+                height: 'full-140',
+                cols: [tableColsConfig],
+                url: "/service/crm/Form/GetFormSignList"
+            });
+            //监听工具栏事件
+            tableExt.addEvent("tool(listTable)",
+                {
+                    "UpdateForm": function (data, obj) {
+                        rootApp.UpdateForm(data);
+                    },
+                    "DeleteForm": function (data, obj) {
+                        rootApp.DeleteForm(data);
+                    },
+                    "GetFormCode": function (data, obj) {
+                        rootApp.GetFormCode(data);
+                    },
+                    "GetFormPreview": function (data, obj) {
+                        rootApp.GetFormPreview(data);
+                    },
+                    "GetFormInfo": function (data, obj) {
+                        rootApp.GetFormInfo(data);
+                    }
+                });
+        });
+</script>

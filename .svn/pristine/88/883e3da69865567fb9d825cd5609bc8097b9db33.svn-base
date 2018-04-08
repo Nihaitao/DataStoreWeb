@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>客户交接</title>
+    <style>
+        .isDisplay {
+            display: none;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width: 112px;">交接客户的管理员</label>
+                <div class="layui-input-block" style="margin-left: 160px;">
+                    <remote-sel v-bind:setting="TransferSetting" layverify="required" v-bind:value.sync="submitForm.ID"
+                                initial="off"></remote-sel> 
+                </div>
+            </div> 
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width: 112px;">接收客户的管理员</label>
+                <div class="layui-input-block" style="margin-left: 160px;">
+                    <remote-sel v-bind:setting="ReceiveSetting" layverify="required" v-bind:value.sync="submitForm.Other"
+                                initial="off"></remote-sel>
+                </div>
+            </div> 
+            <div class="layui-form-item">
+                <button class="layui-btn " lay-submit @click="submit" style="float: right;">确认</button>
+            </div>
+        </div>
+
+        
+    </div>
+</body>
+</html>
+
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate"],
+    function (fnr) {
+
+        var laydate = layui.laydate;
+        var $ = layui.jquery;
+
+        var TransferOptions = [];
+
+        var ReceiveOptions = [];
+
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+                TransferSetting: {
+                    search: true,
+                    options: TransferOptions,
+                    fields: { root: "ReturnData.Data", key: 'Account_ID', value: 'Name' },
+                    remote: { url: '/service/Station/GetListStationAccount' }
+                },
+                ReceiveSetting: {
+                    search: true,
+                    options: ReceiveOptions,
+                    fields: { root: "ReturnData.Data", key: 'Account_ID', value: 'Name' },
+                    remote: { url: '/service/Station/GetListStationAccount' }
+                },
+                submitForm: {
+                    ID: '',
+                    Other: ''
+                },
+            },
+            ready: function () {
+            },
+            methods: {
+                submit: function (e) {
+                    if (!layui.form.checkInput(e)) {
+                        return false;
+                    }
+                    $.ajax({
+                        url: '/service/MyClient/UpdateTransferClient',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: this.submitForm,
+                        success: function (data) {
+                            if (data.ReturnData.Data) {
+                                if (data.SuccessResponse) {
+                                    layer.msg(data.Message);
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 500);
+                                } else {
+                                    layer.msg(data.Message == null ? '转移失败' : data.Message);
+                                }
+                            } else {
+                                layer.msg('data为空');
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    });
+</script>

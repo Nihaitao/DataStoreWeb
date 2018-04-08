@@ -1,0 +1,373 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
+    <script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery-1.4.4.min.js"></script>
+    <script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery.ztree.core.js"></script>
+    <script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery.ztree.excheck.js"></script>
+    <script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery.ztree.exedit.js"></script>
+    <style>
+        div.layui-table-cell {
+            height: 30px;
+        }
+    </style>
+
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <div class="layui-col-xs2">
+            <ul id="treeDemo" class="ztree"></ul>
+        </div>
+        <div class="layui-col-xs10">
+            <blockquote class="layui-elem-quote">
+                <div class="layui-row layui-form">
+                    <div class="layui-col-xs9">
+                        <div class="layui-inline">
+                            <div class="layui-input-inline">
+                                <input type="text" autocomplete="off" placeholder="课件名称" class="layui-input" v-model="queryFormData.Name">
+                            </div>
+                            <div class="layui-input-inline">
+                                <remote-sel v-bind:setting="CourseWareTypeSetting" laytips="课件类型" v-bind:value.sync="queryFormData.CourseWareType_ID" initial="off"></remote-sel>
+                            </div>
+                            <div class="layui-input-inline">
+                                <remote-sel v-bind:setting="StatusSetting" laytips="课件状态" v-bind:value.sync="queryFormData.Status" initial="off"></remote-sel>
+                            </div>
+                            <div class="layui-input-inline">
+                                <remote-sel v-bind:setting="ValidSetting" laytips="启用状态" v-bind:value.sync="queryFormData.Valid" initial="off"></remote-sel>
+                            </div>
+                        </div>
+                        <button class="layui-btn layui-btn-primary" lay-submit lay-filter="btn" @click="doSearch">查询</button>
+                    </div>
+                    <div class="layui-col-xs3" style="text-align: right">
+                        <button v-bind:class="queryFormData.Discipline_ID?'layui-btn':'layui-btn layui-btn-disabled'" @click="multiUpload()"><i class="layui-icon"></i> 课件上传</button>
+                    </div>
+                </div>
+            </blockquote>
+            <!--操作模板-->
+            <table id="listTable" lay-filter="listTable"></table>
+        </div>
+    </div>
+</body>
+</html>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(["table", 'tree', "form", "jquery", "tableExt"],
+        function (fnr) {
+            var zTreeObj;
+            // zTree 的参数配置，深入使用请参考 API 文档（setting 配置详解）
+            var setting = {
+                async: {
+                    enable: true,
+                    autoParam: ["ID=CID"],
+                    type: "get",
+                    dataFilter: ajaxDataFilter,
+                    url: "/service/datastore/Discipline/GetDisciplineWithCID"
+                },
+                data: {
+                    key: {
+                        name: "Name"
+                    },
+                    simpleData: {
+                        enable: true,
+                        idKey: "ID",
+                        pIdKey: "CID"
+                    }
+                },
+                view: {
+                    nameIsHTML: true,
+                    showTitle: false
+                },
+                callback: {
+                    beforeClick: beforeClick,
+                    onAsyncSuccess: zTreeOnAsyncSuccess
+                }
+            };
+
+            function ajaxDataFilter(treeId, parentNode, rsp) {
+                rsp.Data.map(function (a, b) {
+                    a.isParent = a.isParent == "1" ? true : false;
+                })
+                return rsp.Data;
+            };
+            function beforeClick(treeId, treeNode, clickFlag) {
+                rootApp.$data.queryFormData.Discipline_ID = treeNode.ID;
+                listTable.reload({
+                    where: { Discipline_ID: treeNode.ID, Valid: -1, Status: -1 },
+                });
+            }
+            function zTreeOnAsyncSuccess(event, treeId, treeNode, msg) {
+                //var nodes1 = zTreeObj.getSelectedNodes();
+                //var nodes = zTreeObj.getNodes();
+                //if (nodes.length > 0 && nodes1.length == 0) {
+                //    zTreeObj.selectNode(nodes[0]);
+                //    rootApp.$data.queryFormData.Discipline_ID = nodes[0].ID;
+
+                //    //zTreeObj.expandNode(nodes[0], true, null, true, true);
+                //}
+            };
+            $(document).ready(function () {
+                $.get("/service/datastore/Discipline/GetDisciplineWithCID", { CID: 0 }, function (rsp) {
+                    rsp.Data.map(function (a, b) {
+                        a.isParent = true;
+                        a.Company_ID = a.ID;
+                        a.Department_ID = 0;
+                    })
+                    zTreeObj = $.fn.zTree.init($("#treeDemo"), setting, rsp.Data);
+
+                    var nodes = zTreeObj.getNodes();
+                    if (nodes.length > 0) {
+                        zTreeObj.selectNode(nodes[0]);
+                        zTreeObj.expandNode(nodes[0], true, null, true, true);
+                    }
+                });
+            });
+
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+
+            //搜索条件
+            var rootApp = new Vue({
+                el: '#root',
+                data: {
+                    ValidSetting: {
+                        search: true,
+                        defaultValue:-1,
+                        options: [
+                            { key: '1', value: '启用' },
+                            { key: '0', value: '禁用' }
+                        ]
+                    },
+                    StatusSetting: {
+                        search: true,
+                        defaultValue: -1,
+                        options: [
+                            //0.上传中。1上传失败，2.转码中，3.转码失败，4.审核中，5审核通过，6已删除，7正常
+                            { key: '0', value: '上传中' },
+                            { key: '1', value: '上传失败' },
+                            { key: '2', value: '转码中' },
+                            { key: '3', value: '转码失败' },
+                            { key: '4', value: '审核中' },
+                            { key: '5', value: '审核通过' },
+                            { key: '6', value: '已删除' },
+                            { key: '7', value: '正常' },
+                        ]
+                    },
+                    CourseWareTypeSetting: {
+                        search: true,
+                        options: [
+                            { key: '1', value: '视频' },
+                            { key: '2', value: 'PPT' }
+                        ]
+                    },
+                    queryFormData: {
+                        Status: '',
+                        Valid: '',
+                        Discipline_ID: 0,
+                        CourseWareType_ID:'',
+                        Name: ''
+                    },
+                    CourseInfoList: ''
+                },
+                ready: function () {
+
+                },
+                methods: {
+                    doSearch: function () {
+                        listTable.reload({
+                            where: this.queryFormData,
+                        });
+                    },
+
+                    //删除课件资源
+                    DeleteCourseInfo: function (params) {
+                        $.get("/service/datastore/Resource/DeleteCourseInfo", params, function (res) {
+                            if (res.SuccessResponse) {
+                                this.CourseInfoList = res.Data;
+                            }
+                            layer.msg(res.Message);
+                        })
+                    },
+
+                    //批量上传
+                    multiUpload: function () {
+                        if (this.queryFormData.Discipline_ID == 0) {
+                            layer.alert('请选择左侧学科分类', {
+                                icon: 0,
+                                skin: 'layer-ext-moon' //该皮肤由layer.seaning.com友情扩展。关于皮肤的扩展规则，去这里查阅
+                            })
+                        } else {
+                            $.get("/service/datastore/PolyvInfo/HasSetAndOpen", function (res) {
+                                if (!res.SuccessResponse) {
+                                    return layer.msg(res.Message);
+                                }
+                                else {
+                                    var Discipline_OneLevelID = '';
+                                    var Discipline_TwoLevelID = '';
+                                    var Discipline_ThreeLevelID = '';
+                                    var sNodes = zTreeObj.getSelectedNodes();
+                                    if (sNodes.length > 0) {
+                                        var node = sNodes[0].getPath();
+                                        $.each(node, function (i, a) {
+                                            if (a.level == 0)
+                                                Discipline_OneLevelID = a.ID;
+                                            if (a.level == 1)
+                                                Discipline_TwoLevelID = a.ID;
+                                            if (a.level == 2)
+                                                Discipline_ThreeLevelID = a.ID;
+                                        })
+                                    }
+
+                                    fnr.openDialog({
+                                        title: '上传课件资源',
+                                        closeBtn: 0,
+                                        area: [(document.documentElement || document.body).clientWidth - 140 + "px", (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                                        content: ['UploadCouser.html?Discipline_ID=' + rootApp.$data.queryFormData.Discipline_ID + '&Discipline_OneLevelID=' + Discipline_OneLevelID + '&Discipline_TwoLevelID=' + Discipline_TwoLevelID + '&Discipline_ThreeLevelID=' + Discipline_ThreeLevelID + ''], //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+                                        btn: ['关闭'],
+                                        yes: function (index, layero) {
+                                            layer.close(index);
+                                        },
+                                        events: {
+                                            refresh: function () {
+                                                listTable.reload()
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    },
+                }
+            });
+
+            var listTable = table.render({
+                elem: '#listTable',
+                even: true, //开启隔行背景
+                height: 'full-108',
+                page: true, //页分
+                cols: [
+                    [
+                        { field: 'ID', title: 'ID', width: 70 },
+                        { field: 'Name', title: '课件名称', width: 300 },
+                        { field: 'Discipline_Name', title: '学科', width: 120 },
+                        {
+                            field: 'CourseWareType_ID', title: '类型', width: 80, templet: function () {
+                                var array = new Array();
+                                array.push(this.CourseWareType_ID == 1 ? "视频" : "PPT");
+                                return array.join("");
+                            }
+                        },
+                        { field: 'CourseSizeS', title: '大小', width: 100 },
+                        //{ field: 'PolyvVID', title: '保利威视值', width: 280 },
+                        { field: 'DurationS', title: '视频时长', width: 100 },
+                        {
+                            field: 'AddTime', title: '上传时间', width: 140, templet: function () {
+                                var array = new Array();
+                                array.push("<span>" + fnr.format(this.AddTime, "yyyy-MM-dd HH:mm") + "</span>");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        }, {
+                            field: 'Valid', title: '启用', width: 80, templet: function () {
+                                var array = new Array();
+                                array.push(this.Valid == 1 ? "启用" : "禁用");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        },
+                        { field: 'Status_Name', title: '状态', width: 100 },
+                        {
+                            fixed: 'right',
+                            title: '操作',
+                            width: 330,
+                            toolbar: function () {
+                                var array = new Array();
+                                array.push("<button class=\"layui-btn layui-btn-small\" lay-event='edit'>编辑</button>");
+                                array.push("<button class=\"layui-btn layui-btn-small " + (this.Valid == 1 ? "layui-btn-warm" : "layui-btn-normal") + " \" lay-event='editisenable'>" + (this.Valid == 1 ? "禁用" : "启用") + "</button>");
+                                array.push("<button class=\"layui-btn layui-btn-small layui-btn-danger \" lay-event='delete'>删除</button>");
+                                array.push("<button class=\"layui-btn layui-btn-small layui-btn-normal " + (this.Status == 1 ? "layui-hide" : "") + " \" \" lay-event='updatestatus'>更新状态</button>");
+                                array.push("<button class=\"layui-btn layui-btn-small layui-btn-primary \" lay-event='preview'>预览</button>");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        }
+                    ]
+                ],
+                url: '/service/datastore/Resource/GetCourseWareList',
+                response: {
+                    dataName: 'Data'
+                },
+                where: {Valid:-1,Status:-1}
+            });
+            tableExt.addEvent("tool(listTable)",
+                {
+                    //工具栏编辑事件
+                    "edit": function (data, obj) {
+                        //rootApp.multiUpload(2, data)
+                        fnr.openDialog({
+                            title: '修改',
+                            area: ["800px", "700px"],
+                            content: ['Edit.html?ID=' + data.ID], 
+                            btn: ['保存'],
+                            events: {
+                                refresh: function () {
+                                    listTable.refresh();
+                                }
+                            }
+                        });
+
+                    },
+                    //工具栏禁用启用事件
+                    "editisenable": function (data, obj) {
+                        var params = { ID: data.ID, Valid: data.Valid == 1 ? 0 : 1 }
+                        $.post("/service/datastore/Resource/UpdateValid", params, function (res) {
+                            if (res.SuccessResponse) {
+                                listTable.refresh();
+                                layer.msg("操作成功！");
+                            }
+                        })
+                    },
+                    //工具栏删除事件
+                    "delete": function (data, obj) {
+                        layer.confirm('确认要删除么', { icon: 2, title: '提示' }, function (index) {
+                            var params = { ID: data.ID }
+                            $.post("/service/datastore/Resource/DeleteCourseWare", params, function (res) {
+                                if (res.SuccessResponse) {
+                                    obj.del();
+                                }
+                                layer.msg(res.Message);
+                            })
+                        });
+                    },
+                    //预览
+                    "preview": function (data, obj) {
+                        fnr.openDialog({
+                            title: '预览',
+                            area: ['1000px', '850px'],
+                            content: ['Preview.html?pid=' + data.PolyvVID],
+                            events: {
+                                refresh: function () {
+                                    
+                                }
+                            }
+                        });
+                    },
+                    //更新科技状态
+                    "updatestatus": function (data, obj) {
+                        var params = { ID: data.ID, Status: 7 }
+                        $.post("/service/datastore/Resource/UpdateStatus", params, function (res) {
+                            if (res.SuccessResponse) {
+                                layer.msg("更新成功！");
+                                listTable.refresh();
+                            }
+                        })
+                    }
+                });
+            //监听复选框事件
+            table.on('checkbox(listTable)', function (obj) {
+
+            });
+        });
+</script>

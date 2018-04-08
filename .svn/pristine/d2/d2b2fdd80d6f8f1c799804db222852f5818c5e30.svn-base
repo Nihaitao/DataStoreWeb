@@ -1,0 +1,61 @@
+header {
+  position: relative;
+  line-height: 0.775862rem;
+  border-top: 0.017241rem solid #ddd ;
+  border-bottom: 0.017241rem solid #ddd ;
+}
+header i {
+  position: absolute;
+  left: 0.344827rem;
+  font-size: 0.293103rem;
+  color: #333;
+}
+header p {
+  font-size: 0.293103rem;
+  text-align: center;
+  color: #000;
+}
+main .firstCon {
+  position: relative;
+}
+main .firstCon .pic {
+  position: absolute;
+  top: 0.25862rem;
+  left: 0.25862rem;
+  display: inline-block;
+  width: 0.689655rem;
+  height: 0.689655rem;
+}
+main .firstCon .pic img {
+  width: 100%;
+  height: 100%;
+}
+main .firstCon .txt {
+  border-bottom: 0.017241rem solid #ddd;
+  margin-left: 1.120689rem;
+}
+main .firstCon .txt .title {
+  font-size: 0.25862rem;
+  line-height: 0.465517rem;
+  padding-top: 0.155172rem;
+  color: #000000;
+}
+main .firstCon .txt .qus {
+  line-height: 0.431034rem;
+  font-size: 0.224137rem;
+  padding-bottom: 0.155172rem;
+  color: #777777;
+}
+main .firstCon .red-font {
+  position: absolute;
+  top: 0.465517rem;
+  right: 0.25862rem;
+  display: block;
+  font-size: 16px;
+  width: 16px;
+  text-align: center;
+  line-height: 0.275862rem;
+  background: #F10013;
+  color: #fff;
+  border-radius: 50%;
+}

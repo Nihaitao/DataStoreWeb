@@ -1,0 +1,176 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>听课记录</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="../../Resources/fonts/iconfont.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../../Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link href="../../Resources/CSS/Font/css/font-awesome.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../Resources/CSS/PC_css.css">
+    <script src="../../script/artTemplate.js"></script>
+    <link href="../../Resources/CSS/question.css" rel="stylesheet" />
+
+    <style>
+
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body style="background-color: #f7f7f7;user-select: none;" id="root">
+    <!--顶部-->
+    <!--#include file="../UserControl/header.html"-->
+
+
+    <div class="w1200 clearfix">
+
+        <!--左侧导航-->        
+        <!--#include file="../UserControl/aside.html"-->
+
+        <div class="main" v-cloak>
+            <div class="order-top">
+                <p class="recordText">听课记录</p>
+            </div>
+            <div class="order-middle">
+                <b>全部 <span>{{CourseLook.length + CourseLookOthers.length}}</span> 条</b>
+                <div class="record-main">
+                    <div class="listItems" v-if="CourseLook.length == 0">
+                        <div style="width:100%; height:500px; text-align:center;padding-top:130px">
+                            <img src="../../Resources/images/noneData.png" style="width: 200px; height: 180px;" />
+                        </div>
+                    </div>
+                    <ul>
+                        <li v-for="(index,item) in CourseLook">
+                            <div class="recordRight clearfix" style="display: table; width: 100%; ">
+                                <div class="timesBox">
+                                    <p>{{item.date.substring(0,4)}}</p>
+                                    <p>{{item.date.substring(5,10)}}</p>
+                                </div>
+                                <div class="clearfix recordWrap " v-bind:class="{recordWrap1:CourseLook.length>index + 1}">
+                                    <i class="dot"></i>
+                                    <div class="layui-row" style="margin-top:10px" v-for="detail in item.datalist">
+                                        <div class="imgBox layui-col-xs2" style="position: relative;">
+                                            <i class="dot"></i>
+                                            <img src="{{detail.CoverPath}}" style="width: 100%; height: 100%;" />
+                                        </div>
+                                        <div class="courseDetail layui-col-xs6">
+                                            <p class="" style="color: #333;font-size: 16px;margin-bottom: 10px;">{{detail.Name}}</p>
+                                            <p style="color: #9a9a9a;margin-bottom: 10px;">
+                                                {{detail.JobTitle || "讲师"}}
+                                                &nbsp;
+                                                <span class="teacName">{{detail.Teacher || "匿名"}}</span>
+                                                &nbsp;
+                                                <span class="courseTime">{{detail.TotalHours}}</span>
+                                                课
+                                            </p>
+                                            <div class="width: 100%;">
+                                                <div class="jiantou"></div>
+                                                <p style="color: #666; display: inline-block;width: 93%;">
+                                                    已学
+                                                    <span style="color: #fb791c">{{detail.TotalHours == 0 ? '0.00' :(detail.LookHours / detail.TotalHours).toFixed(2) }}%</span>
+                                                    &nbsp;
+                                                    用时
+                                                    <span style="color: #fb791c">{{detail.LearnTimes}}分</span>
+                                                    &nbsp;
+                                                    学习至
+                                                    <span style="color: #fb791c;white-space:nowrap; text-overflow:ellipsis;overflow:hidden; display: inline-block;vertical-align: bottom; width: 45%;" @click="WatchWare(detail.ID,detail.CourseChapters_ID)" title="{{detail.WareName}}">{{detail.WareName}}</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="btnsBox layui-col-xs4">
+                                            <p class="nextBtn" @click="WatchWare(detail.ID,detail.CourseChapters_ID)">继续学习</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--footer-->
+    <!--#<!--#include file="../UserControl/Footer.html"-->
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <script>
+        require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil', 'util'],
+            function (fnr) {
+                var $ = layui.$;
+                var table = layui.table;
+                var tableExt = layui.tableExt;
+                var util = layui.util;
+                var vm = new Vue({
+                    el: "#root",
+                    data: {
+                        CourseLook: [],
+                        CourseLookOthers: [],
+                    },
+                    ready: function () {
+                        var self = this;
+                        this.tabsToggle();
+                        $.get("/service/datastore/WebCourse/GetCourseLookInfo", function (res) {
+                            if (res.SuccessResponse) {
+                                var lastdate;
+                                $.each(res.Data, function (i) {
+                                    if (lastdate == this.LookDate) {//根据日期归组
+                                        if (self.CourseLookOthers.length == 0)
+                                            self.CourseLook[self.CourseLook.length - 1].datalist.push(this);
+                                        else
+                                            self.CourseLookOthers[self.CourseLookOthers.length - 1].datalist.push(this);
+                                    }
+                                    else {
+                                        var arr = [];
+                                        arr.push(this);
+                                        if (self.CourseLook.length < 10)
+                                            self.CourseLook.push({ date: this.LookDate, datalist: arr });
+                                        else
+                                            self.CourseLookOthers.push({ date: this.LookDate, datalist: arr });
+                                        lastdate = this.LookDate;
+                                    }
+                                })
+                            } else {
+                                layer.msg(res.Message)
+                            }
+                        });
+                        $(window).scroll(function () {
+                            var scrollTop = $(this).scrollTop();
+                            var scrollHeight = $(document).height();
+                            var windowHeight = $(this).height();
+                            if (scrollTop + windowHeight == scrollHeight) {
+                                self.CourseLook = self.CourseLook.concat(self.CourseLookOthers.slice(0, 10));
+                                var index = Math.min(self.CourseLookOthers.length, 10);
+                                self.CourseLookOthers.splice(0, index);
+                                util.fixbar();
+                            }
+                        });
+                    },
+                    methods: {
+                        tabsToggle: function () {
+                            $('.orderTabs').on('click', 'li', function () {
+                                if (!$(this).hasClass('active')) {
+                                    $(this).addClass('active').siblings().removeClass('active');
+                                }
+                            });
+                        },
+
+                        //查看课件
+                        WatchWare: function (CoueseID, ChapterID) {
+                            if (ChapterID > 0)
+                                location.href = '../onlinecourse/Video.shtml?ID=' + ChapterID + '&Course_ID=' + CoueseID;
+                            else
+                                location.href = '../onlinecourse/Detail.shtml?ID=' + CoueseID;
+                        },
+                    }
+                });
+            })
+    </script>
+</body>
+
+</html>

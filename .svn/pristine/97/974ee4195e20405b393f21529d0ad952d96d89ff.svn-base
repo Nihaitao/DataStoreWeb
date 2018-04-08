@@ -1,0 +1,306 @@
+﻿666 -->
+
+<style>
+    .bs-docs-nav {
+        background-color: #333;
+        margin-bottom: 0;
+    }
+
+    .nav > li:hover {
+        text-decoration: none;
+        background-color: #000;
+    }
+
+    .nav > li > a:focus, .nav > li > a:hover {
+        text-decoration: none;
+        background-color: inherit;
+    }
+
+    .navbar {
+        min-height: 45px;
+    }
+
+    .header-nav li {
+        padding: 5px 0;
+    }
+
+        .header-nav li > a {
+            padding: 0 10px !important;
+        }
+
+    [v-cloak] {
+        display: none;
+    }
+
+    .top_head {
+        width: 100%;
+        height: 45px;
+        font-size: 13px;
+        color: #666;
+        line-height: 45px;
+        background-color: #f8f8f8;
+    }
+
+        .top_head a {
+            padding: 0 12px;
+            color: #666;
+            border-right: 1px solid #ddd;
+        }
+
+    #zy .layui-input:focus, .layui-textarea:focus {
+        border-color: #ff0000 !important;
+    }
+
+    #zy .layui-input:hover, .layui-textarea:hover {
+        border-color: #ff0000 !important;
+    }
+
+    #zy .layui-form-select dl dd {
+        color: #ff0000;
+    }
+
+    #zy input::-webkit-input-placeholder {
+        color: #ff0000;
+    }
+
+    #zy .layui-form-select .layui-input {
+        color: #ff0000;
+        border: 1px solid #ff0000;
+        padding-left: 40px;
+    }
+
+    #zy .layui-form-select dl dd.layui-this {
+        background-color: #f7f7f7;
+        color: #ff0000 !important;
+    }
+
+    #zy .icon-xuanzedangqianzhuanye1:before {
+        content: "";
+    }
+
+    #zy i.top {
+        position: relative;
+        left: -50px;
+        top: 28px;
+        z-index: 1;
+        color: #ff0000;
+    }
+
+    #zy .layui-form-select .layui-del {
+        color: #ff0000;
+    }
+
+    #zy .layui-form-select .layui-edge {
+        border-top-color: #ff0000 !important;
+    }
+
+    #zy .layui-form-select input {
+        background-color: #fff;
+    }
+</style>
+<div id="top" v-cloak>
+    <!--顶部-->
+    <div class="top_head clearfix" v-if="!loginState">
+        <div class="container">
+            <div class="pull-left" style="margin-left: 15px">
+                <span>欢迎来到{{layoutData.HeaderName}}</span>
+            </div>
+            <div class="pull-right">
+                <a href="javascript:;" @click="LoginFn">登录</a>
+                <a href="javascript:;" @click="RegisterFn">注册</a>
+                <!--<a href="#">注册客服中心</a>-->
+            </div>
+        </div>
+    </div>
+    <div class="top_head" v-if="loginState">
+        <div class="container">
+            <div class="pull-left" style="margin-left: 15px">
+                <span>欢迎来到{{layoutData.HeaderName}}</span>
+            </div>
+            <div class="pull-right Gcenter">
+                <a href="javascript:;" style="text-decoration: none;">
+                    {{msg}}
+                </a>
+                <!--<a href="#"><i class="fa fa-bell"></i></a>
+                <a href="#">客服中心</a>-->
+                <a id="exit" @click="exit" style="cursor: pointer; text-decoration: none;">退出</a>
+            </div>
+        </div>
+    </div>
+    <div class="masthead">
+        <div class="w1200 clearfix">
+            <div class="nav-header pull-left" @click="hrefIndex">
+                <a href="/usercenter/index.shtml" v-if="layoutData.HeaderLogoOrName == 1" style="width: 232px; height: 60px; display: block; overflow:hidden;"><img v-bind:src="layoutData.HeaderLogo ? layoutData.HeaderLogo : '/Resources/images/WxLogo.png'" /></a>
+                <a href="/usercenter/index.shtml" v-else style="width: 232px; height: 60px; display: block; overflow:hidden; margin-top: 30px;text-decoration: none;">{{layoutData.HeaderName}}</a>
+            </div>
+            <div style="float:right;" v-if="IsStu">
+                <div class="layui-form">
+                    <div class="layui-form-item" id="zy">
+                        <span style="position: relative;left: -80px;top: 28px;color:#000;">当前专业</span>
+                        <i class="iconfont icon-xuanzedangqianzhuanye1 top">&#xe631;</i>
+                        <remote-sel v-bind:setting.sync="GetStudentDetailRegisterSet" v-bind:value.sync="url" v-bind:change="RegisterSetChange" laytips="请选择"></remote-sel>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/script/jquery.js"></script>
+<script>
+
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil', 'linq'],
+        function (fnr) {
+
+            var table = layui.table;
+            var tableExt = layui.tableExt;
+            var linq = layui.linq;
+            //读取COOKIE方法
+            function getCookie(name) {
+                var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+                if (arr = document.cookie.match(reg))
+                    return unescape(arr[2]);
+                else
+                    return null;
+            }
+            //退出，删除cookie
+            function delAllCookie() {
+                var myDate = new Date();
+                myDate.setTime(myDate.getTime() - 10000);//设置时间
+                var data = document.cookie;
+                var dataArray = data.split("; ");
+                for (var i = 0; i < dataArray.length; i++) {
+                    var varName = dataArray[i].split("=");
+                    document.cookie = varName[0] + "=''; expires=" + myDate.toGMTString() + ";path=/";
+                }
+            }
+            var rootApp = new Vue({
+                el: '#top',
+                data: {
+                    LoginPageConfig: '',
+                    loginState: false,
+                    IsStu: false,
+                    layoutData: {
+                      
+                    },
+                    headPhoto: '',
+                    msg: '',
+                    HeaderLogoName: '',  //头部公司名称
+                    GetStudentDetailRegisterSet: (function () {
+                        var data = {
+                            search: true,
+                            fields: { key: 'Specialty_ID', value: 'Description_ID', },
+                            options: [],
+                            remote: { url: "/service/edu/StudentinfoDetail/GetStudentDetailRegisterSet", data: {} }
+
+
+                        }
+                        return data;
+                    })(),
+                    url: getCookie("Specialty_ID"),
+                },
+                ready: function () {
+                    this.LoginPageFn();
+                    this.loginState = !!getCookie("StuId");
+                    this.IsStu = !!getCookie("StuDetail_ID");
+
+                    this.LayoutFn();
+
+                },
+                methods: {
+                    RegisterSetChange: function () {
+                        var value = this.url;
+                        var info = linq.from(this.GetStudentDetailRegisterSet.dataSource).firstOrDefault(function (x) { return x.Specialty_ID == value });
+                        if (info) {
+                            if (getCookie("Specialty_ID") != info.Specialty_ID) {
+                                window.open(info.Description);
+                            }
+                        }
+                    },
+                    //判断LOGO
+                    LayoutFn: function () {
+                        var self = this;
+                        self.msg = 'hi，' + getCookie("Name");
+                        self.headPhoto = getCookie("HeadImg") ? getCookie("HeadImg") : '/Resources/images/photo.png'
+                        self.loginState = true;
+                        if (getCookie("Setting") != null && getCookie("Setting") != "") {
+                            var Setting = JSON.parse(getCookie("Setting"));
+                           
+                            self.layoutData.HeaderName = Setting.HeaderName;
+                            self.layoutData.HeaderLogo = Setting.HeaderLogo;
+                            self.layoutData.HeaderLogoOrName = Setting.HeaderLogoOrName;
+
+                          
+                        } else {
+                            var _this = this;
+                            $.get('/service/public/Mechanism/GetSetlist', function (res) {
+                                if (res.SuccessResponse) {
+                                    if (res.Data) {
+
+
+                                        var Setting = { HeaderLogo: res.Data.HeaderLogo ? res.Data.HeaderLogo : '/Resources/images/WxLogo.png', HeaderLogoOrName: res.Data.HeaderLogoOrName, HeaderName: res.Data.HeaderName, FooterCopyright: res.Data.FooterCopyright, Favicon: res.Data.Favicon }
+
+                                        _this.setCookie('Setting', JSON.stringify(Setting));
+                                    }
+                                } else {
+                                    layer.msg(res.Message);
+                                }
+                            });
+                        }
+                    },
+
+                    //退出
+                    exit: function () {
+                        delAllCookie();
+                        location.href = '/usercenter/login.shtml';
+                    },
+
+                    //LOGO跳转首页
+                    hrefIndex: function () {
+                        location.href = '/index.shtml';
+                    },
+
+                    //获取学员信息
+                    GetStudentInfo: function () {
+                        var self = this;
+                        $.get('/service/edu/Student/GetStudentInfo', function (res) {
+                            self.msg = 'hi，' + res.Data.Name;
+                            self.headPhoto = res.Data.HeadImg ? res.Data.HeadImg : '/Resources/images/photo.png'
+                            self.loginState = true;
+                        });
+                    },
+
+                    //获取本站点学员设置的数据
+                    LoginPageFn: function () {
+                        var self = this;
+                        $.get('/service/datastore/HConfiguration/GetConfiguration', function (res) {
+                            if (res.SuccessResponse && !!res.Data) {
+                                self.LoginPageConfig = res.Data.LoginPageConfig;
+                            }
+                        });
+                    },
+                    //登录
+                    LoginFn: function () {
+                        var self = this;
+                        if (sessionStorage.getItem("thisUrl")) {
+                            sessionStorage.removeItem("thisUrl");
+                            sessionStorage.setItem("thisUrl", location.href);
+                        } else {
+                            sessionStorage.setItem("thisUrl", location.href);
+                        }
+                        if (self.LoginPageConfig == 0) {
+                            layer.open({
+                                type: 2,
+                                area: ['400px', '550px'],
+                                fixed: false, //不固定
+                                maxmin: true,
+                                title: '欢迎登陆',
+                                content: '/usercenter/login_model.html',
+                            });
+                        } else {
+                            location.href = '/usercenter/Login.shtml';
+                        }
+                    },
+                }
+            });
+        })
+</script>

@@ -1,0 +1,146 @@
+﻿666-->
+
+
+<style>
+    [v-cloak] {
+        display: none;
+    }
+</style>
+
+<div class="nav-left">
+    <div class="nav-title">
+        <h3>首页</h3>
+    </div>
+    <div class="nav-item">
+        <div class="nav-item-title">我的网课</div>
+        <ul class="sub-nav">
+            <li><a href="/usercenter/onlinecourse/coursemanage.shtml"><i class="iconfont icon-kechengguanli"></i>课程管理</a></li>
+            <li><a href="/usercenter/onlinecourse/courserecord.shtml"><i class="iconfont icon-tingkejilu"></i>听课记录</a></li>
+        </ul>
+    </div>
+    <div class="nav-item">
+        <div class="nav-item-title">我的题库</div>
+        <ul class="sub-nav">
+            <li><a href="/usercenter/questionbank/MyCourse.html"><i class="iconfont icon-kaishizuoti"></i>开始做题</a></li>
+            <li><a href="/usercenter/questionbank/QuestionRecord.html"><i class="iconfont icon-zuotijilu"></i>做题记录</a></li>
+        </ul>
+    </div>
+    <div class="nav-item">
+        <div class="nav-item-title">我的学费</div>
+        <ul class="sub-nav">
+            <li><a href="#"><i class="iconfont icon-lijijiaofei"></i>立即缴费</a></li>
+        </ul>
+    </div>
+    <div class="nav-item">
+        <div class="nav-item-title">我的教务</div>
+        <ul class="sub-nav">
+            <li><a href="#"><i class="iconfont icon-wodechengji"></i>我的成绩</a></li>
+            <li><a href="#"><i class="iconfont icon-wodebaokao"></i>我的报考</a></li>
+            <li><a href="#"><i class="iconfont icon-wodeshuji"></i>我的书籍</a></li>
+            <li><a href="#"><i class="iconfont icon-lianxijilu"></i>联系记录</a></li>
+        </ul>
+    </div>
+    <div class="nav-item">
+        <div class="nav-item-title">我要毕业</div>
+        <ul class="sub-nav">
+            <li><a href="#"><i class="iconfont icon-xuexijindu"></i>学习进度</a></li>
+            <li><a href="#"><i class="iconfont icon-lunwendabian"></i>论文答辩</a></li>
+        </ul>
+    </div>
+    <div class="nav-item">
+        <div class="nav-item-title">个人管理</div>
+        <ul class="sub-nav">
+            <li><a href="/usercenter/order/myorder.shtml"><i class="iconfont icon-wodedingdan"></i>我的订单</a></li>
+            <li><a href="#"><i class="iconfont icon-zhanghaoshezhi"></i>账号设置</a></li>
+            <li><a href="#"><i class="iconfont icon-tousuyutiwen"></i>投诉提问</a></li>
+            <li><a href="#"><i class="iconfont icon-xiaoxizhongxin"></i>消息中心</a></li>
+        </ul>
+    </div>
+    <div class="nav-item">
+        <div class="nav-item-title">过程性考核</div>
+        <ul class="sub-nav">
+            <li><a href="#"><i class="iconfont icon-kaishixuexi"></i>开始学习</a></li>
+            <li><a href="#"><i class="iconfont icon-peiyangjihua"></i>培养计划</a></li>
+            <li><a href="#"><i class="iconfont icon-xuankeguanli"></i>选课管理</a></li>
+            <li><a href="#"><i class="iconfont icon-chengjichaxun"></i>成绩查询</a></li>
+        </ul>
+    </div>
+</div>
+
+
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    //注释说明
+    //    学生返回类型：
+    //    1-自考：首页、我的网课、我的题库、我的学费、我的教务、我要毕业、个人管理、过程性考核、学分互认
+    //    2-成考：首页、我的网课、我的题库、我的学费、我的教务、我要毕业、个人管理
+    //    3-省级系统：首页、我的教务、个人管理、过程性考核
+    //    4-网校:首页、我的网课、我的题库、个人管理
+
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'element'],
+    function (fnr) {
+        var $ = layui.$;
+        var table = layui.table;
+        var tableExt = layui.tableExt;
+       
+        window.leftnav = new Vue({
+            el: "#leftnav",
+            data: {
+                NetWorkClass: true,//我的网课
+                Questions: true,//我的题库
+                Tuition: false,//我的学费
+                Educational: false,//我的教务
+                Graduation: false,//我要毕业
+                Personal: false,//个人管理
+                Process: false,//过程性考核
+                Credit: false//学分互认
+            },
+            ready: function () {
+                var model_id, schooltype
+          
+                $.get("/service/edu/StudentinfoDetail/CheckStudentCenterLeftMenu", null, function (rsp) {
+                    //layer.alert(rsp.Data.StuID + "---" + rsp.Data.StuDetail_ID);
+                    if (rsp.SuccessResponse) {
+                        model_id = rsp.Data.Model_Id;
+                        schooltype = rsp.Data.School_Province_ID;
+                    }
+                })
+                var _this = this;
+                var arr = [];
+                //  自考
+                if (model_id == 1 && schooltype === 0) {
+                    arr = ['NetWorkClass', 'Questions', 'Tuition', 'Educational', 'Graduation', 'Personal', 'Process', 'Credit'];
+                }
+                    //省级系统
+                else if (model_id == 1 && schooltype !== 0) {
+                    arr = ['Educational', 'Personal', 'Process'];
+                }
+                    //成考
+                else if (model_id == 2) {
+                    arr = ['NetWorkClass', 'Questions', 'Tuition', 'Educational', 'Graduation', 'Personal'];
+                }
+                    //网校
+                else {
+                    arr = ['NetWorkClass', 'Questions', 'Personal'];
+                }
+                arr.map(function (a, b) {
+                    _this[a] = true;
+                });
+            
+            },
+            methods: {
+                showdata: function () {
+                    console.log(this);
+                }
+            }
+        });
+    })
+
+
+
+
+</script>
+

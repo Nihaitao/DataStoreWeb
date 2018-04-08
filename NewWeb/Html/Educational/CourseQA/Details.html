@@ -1,0 +1,144 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        .layui-row {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+        }
+
+        textarea {
+            resize: none;
+        }
+
+        .teacher {
+            float: right;
+            text-align: right;
+        }
+
+        .studnent {
+            float: left;
+        }
+
+        .stuName {
+            font-size: 16px;
+        }
+
+        .addtime {
+            font-size: 12px;
+            color: #666;
+            margin-left: 10px;
+        }
+
+        .content {
+            padding: 5px;
+            background-color: #ddd;
+            border-radius: 4px;
+            margin-top: 15px;
+            display: inline-block;
+        }
+
+        .mar146 {
+            margin-bottom: 146px;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <div class="layui-form">
+            <div v-for="(index, item) in queryData" v-bind:class="{'layui-row': true, 'mar146': index == queryData.length - 1}">
+                <div class="layui-col-xs8" style="float:left" v-if="item.StudentId">
+                    <div class="studnent">
+                        <div>
+                            <span class="stuName" v-text="item.StudentName"></span><span class="addtime" v-text="item.AddTime"></span>
+                        </div>
+                        <p class="content" v-text="item.Content"></p>
+                    </div>
+
+                </div>
+                <div class="layui-col-xs8" style="float:right" v-if="!item.StudentId">
+                    <div class="teacher">
+                        <div><span class="stuName" v-text="item.AccountName"></span><span class="addtime" v-text="item.AddTime"></span></div>
+                        <p class="content" v-text="item.Content"></p>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align:right;margin-top:20px;position:fixed; bottom:0px; width:97%;background-color:#fff;padding-bottom:20px;z-index:11;">
+                <hr>
+                <textarea class="layui-textarea" lay-verify="required" placeholder="请输入回复内容" v-model="submitForm.Content" style="margin-bottom:20px;min-height:85px;border:solid 1px;"></textarea>
+            </div>
+            <div class="layui-form-item layui-hide">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-filter="demo1" lay-submit @click="saveUpdate">提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
+
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt"],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+
+
+            window.rootApp = new Vue({
+                el: "#root",
+                data: {
+                    PID: '',
+                    Course_ID: '',
+                    Chapter_ID: '',
+                    queryData: {
+
+                    },
+                    submitForm: {
+                        PID: fnr.getQueryString('ID'),
+                        Chapter_ID: fnr.getQueryString('ChapterId'),
+                        Course_ID: fnr.getQueryString('CourseId'),
+                        Content: '',
+                    },
+                },
+                ready: function () {
+                    _this = this;
+                    _this.Course_ID = fnr.getQueryString("CourseId");
+                    _this.Chapter_ID = fnr.getQueryString("ChapterId");
+                    _this.PID = fnr.getQueryString("ID");
+                    if (_this.PID) {
+                        $.get("/service/datastore/CourseInterlocution/GetCourseInterlocutionList", { PID: _this.PID }, function (rsp) {
+                            if (rsp.SuccessResponse) {
+                                _this.queryData = rsp.Data;
+                            } else {
+                                layer.msg(ReturnData.Message)
+                            }
+
+                        })
+                    }
+                },
+                methods: {
+                    //提交回复
+                    saveUpdate: function (e) {
+                        if (!layui.form.checkInput(e)) {
+                            return false;
+                        }
+                        $.post("/service/datastore/CourseInterlocution/AddContent", this.submitForm, function (res) {
+                            fnr.callDialog('refresh', { status: res.SuccessResponse });
+                            if (res.SuccessResponse) {
+                                fnr.closeDialog();
+                            }
+                        });
+                    }
+                }
+            });
+        });
+</script>

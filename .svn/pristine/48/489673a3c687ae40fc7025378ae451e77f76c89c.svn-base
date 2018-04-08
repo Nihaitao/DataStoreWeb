@@ -1,0 +1,137 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>页头</title>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label" >页头设置:</label>
+                    <div class="layui-input-inline">
+                        <remote-rad v-bind:setting="Select" v-bind:value.sync="submitForm.HeaderLogoOrName" initial="off"></remote-rad>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item" v-show="submitForm.HeaderLogoOrName == '0'">
+            <label class="layui-form-label">公司名称:</label>
+            <div class="layui-input-inline">
+                <input type="text" lay-verify="empty|HeaderName" autocomplete="off" placeholder="请输公司名称" class="layui-input"
+                       v-model="submitForm.HeaderName">
+            </div>
+        </div>
+        <div class="layui-form-item" v-show="submitForm.HeaderLogoOrName == '1'">
+            <label>学生中心Logo:</label> &nbsp;
+            <img class="layui-upload-img" id="StuP" v-bind:src="submitForm.HeaderLogo+'?x-oss-process=image/resize,m_fixed,h_227,w_447'">&nbsp;
+            <button type="button" class="layui-btn" id="upStudP" style="margin:15px 0">上传图片</button>
+            <p id="StuText" style="margin-left:-15px;margin-top:5px;"></p>
+        </div>
+        <div div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" @click="saveAdd" lay-submit>立即提交</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="/Resources/js/Controls/Common.js"></script>
+
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate"],
+function (fnr) {
+    var $ = layui.jquery;
+
+    window.rootApp = new Vue({
+        el: "#root",
+        data: {
+            Select: {
+                tags: { name: "HeaderLogoOrName" },
+                options: [
+                { key: "0", value: "公司" },
+                { key: "1", value: "LOGO" }
+                ]
+            },
+            submitForm: {
+                HeaderLogoOrName: '0',
+                HeaderLogo: '',
+                HeaderName:''
+            },
+            setting: {
+                tags: {}
+            }
+        },
+        ready: function () {
+            var self = this;
+            var laydate = layui.laydate;
+            $.get("/service/public/Mechanism/GetSetlist", {}, function (rsp) {
+                if (rsp.SuccessResponse) {
+                    fnr.mergeJson(rsp.Data, self.submitForm);//合并ajax值fnr.closeDialog();
+                    console.log(self.submitForm);
+                }
+                else {
+                    layer.msg(rsp.Message, { icon: 2 });
+                }
+            });
+        },
+        methods: {
+            saveAdd: function (e) {
+                var self = this;
+                if (!layui.form.checkInput(e)) {
+                    return false;
+                }
+                $.post("/service/Public/Mechanism/HeaderSet", this.submitForm, function (result) {
+                    if (result.SuccessResponse) {
+                        layer.msg(result.Message, { time: 2000, icon: 1 }, function () {
+                            window.parent.layer.close(parent.layer.getFrameIndex(window.name));
+                        });
+                    }
+                    else {
+                        layer.msg(result.Message, { icon: 2 });
+                    }
+                })
+                return false;   
+            }
+        }
+    });
+});
+    layui.use('upload', function () {
+        var $ = layui.jquery
+        , upload = layui.upload;
+
+        //普通图片上传
+        var uploadInst = upload.render({
+            elem: '#upStudP'
+          , url: '/service/upload?busType=Student'
+          , before: function (obj) {
+              //预读本地文件示例，不支持ie8
+              obj.preview(function (index, file, result) {
+                  $('#StuP').attr('src', result); //图片链接（base64）
+              });
+          }
+          , done: function (res) {
+              //如果上传失败
+              if (res.code > 0) {
+                  return layer.msg('上传失败');
+              }
+              //上传成功
+              rootApp.submitForm.HeaderLogo = res.Message
+              layer.msg('上传成功')
+          }
+          , error: function () {
+              //演示失败状态，并实现重传
+              var demoText = $('#StuText');
+              demoText.html('<span style="color: #FF5722;">上传失败</span> <a class=" demo-reload" style="cursor:pointer;">重试</a>');
+              demoText.find('.demo-reload').on('click', function () {
+                  uploadInst.upload();
+              });
+          }
+        })
+    })
+</script>

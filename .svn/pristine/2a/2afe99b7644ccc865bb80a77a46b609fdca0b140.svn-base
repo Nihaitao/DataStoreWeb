@@ -1,0 +1,483 @@
+﻿<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+        <meta name="format-detection" content="telephone=no">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1, maximum-scale=1, user-scalable=no" />
+		<title>视频播放页</title>
+        <link href="../../Resources/css/ba.css" rel="stylesheet" />
+        <link href="../../Resources/css/pathNav.css" rel="stylesheet" />
+        <link href="../../Resources/css/all.css" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="http://at.alicdn.com/t/font_415611_uvpck6mufxdy4x6r.css" />
+
+        <script src="https://player.polyv.net/script/polyvplayer.min.js"></script>
+        <script src="../../script/jquery.js"></script>
+        <script src="../../js/pathNav.js"></script>
+        <script src="../../script/artTemplate.js"></script>
+        <script src="../../script/layer_mobile/layer.js"></script>
+        <script>
+            var player;
+
+            //记录播放时间
+            var miaoInt = 0;
+            var oldInt = 0;
+
+            function LookCourse(id) {
+                var LookTime;
+                var CourseChapters_ID = GetQueryString('CourseChaptersID');
+                if (id === 1) { LookTime = 0; }
+                else {
+                    LookTime = player.j2s_getCurrentTime();//播放时间
+                }
+                maioInt = LookTime - oldInt;
+                oldInt = LookTime;
+                $.post('/service/WebCourse/SaveCourse_Look', { CourseChapters_ID: CourseChapters_ID, LookType: 1, LookTime: maioInt, IP: '' }, function (data) {
+                    if (!data.SuccessResponse) {
+                        layer.open({
+                            content: data.Message
+                        });
+                    }
+                });
+            }
+
+            //判断是否是移动端页面
+            function IsPC() {
+                var userAgentInfo = navigator.userAgent;
+                var Agents = ["Android", "iPhone",
+                            "SymbianOS", "Windows Phone",
+                            "iPad", "iPod"];
+                var flag = true;
+                for (var v = 0; v < Agents.length; v++) {
+                    if (userAgentInfo.indexOf(Agents[v]) > 0) {
+                        flag = false;
+                        break;
+                    }
+                }
+                return flag;
+            }
+
+            //截取URL地址栏参数
+            function GetQueryString(name) {
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+                var r = window.location.search.substr(1).match(reg);
+                if (r != null) return unescape(r[2]); return null;
+            }
+            $(function () {
+                var ID = GetQueryString('ID') ? GetQueryString('ID') : -100;
+                var Course_ID = GetQueryString('Course_ID') ? GetQueryString('Course_ID') : -100;
+                var CourseChaptersID = GetQueryString('CourseChaptersID') ? GetQueryString('CourseChaptersID') : -100;
+                //获取课程目录列表
+                function GetCourseList() {
+                    $.get('/service/WebCourse/GetCourse_ChaptersNodeList', { Course_ID: GetQueryString('ID') }, function (rsp) {
+                        if (rsp.SuccessResponse) {
+                            if (rsp.ReturnData.Data.length != 0) {
+                                var data = {
+                                    courseList: rsp.ReturnData.Data
+                                }
+                                var html = template('Course', data);
+                                $('#navList').html(html);
+
+                                $(".navList").find(".title").bind('click', function () {
+                                    if ($(this).next().is(':hidden')) {//判断当前的内容是否隐藏
+                                        $(this).siblings('.detailed').hide();
+                                        $(this).next().show();
+                                        $(this).find('.right').addClass('icon-down-trangle');
+                                        $(this).find('.right').removeClass('icon-xiangyou');
+                                        $(this).siblings('.title').find('.right').removeClass('icon-down-trangle').addClass('icon-xiangyou');
+                                    } else {
+                                        $(this).next().hide();
+                                        $(this).find('.right').addClass('icon-xiangyou');
+                                        $(this).find('.right').removeClass('icon-down-trangle');
+                                    }
+                                });
+                                $('.detailed').on('click', '.detailed-title', function () {
+                                    var id = $(this).data('cid');
+                                    var _thisId = $(this).data('csid');
+                                    location.href = 'pathNav.html?ID=' + _thisId + '&Course_ID=' + _thisId + '&CourseChaptersID=' + id;
+                                    $(this).find('i').addClass('red');
+                                    $(this).siblings().find('i').removeClass('red');
+                                    $('#CuPlayer').html(' ');
+                                    CourseWare(id);
+                                });
+                                if (Course_ID == -100 || CourseChaptersID == -100) {
+                                    $($('.detailed').first().children()[0]).trigger('click');
+                                } else {
+                                    var courseListArr = $('.detailed-title');
+                                    $.each(courseListArr, function (i, value) {
+                                        if ($(value).data('cid') == CourseChaptersID) {
+                                            $(value).find('i').addClass('red');
+                                            CourseWare($(value).data('cid'));
+                                        }
+                                    });
+                                }
+                            } else {
+                                $('#CuPlayer').html('<img style="width: 100%; height: 100%;" src="../../Resources/img/video_null.jpg" />');
+                            }
+                        }
+                    });
+                }
+                //视频播放
+                function CourseWare(id) {
+                    if (id && ID != -100) {
+                        $.get('/service/Resource/GetCourseWareByID', { id: id, Course_ID: ID }, function (rsp) {
+                            if (rsp.SuccessResponse) {
+                                var Datas = rsp.ReturnData.Data;
+                                if (Datas.IsOpen === 3) {
+                                    if (Datas.IsPay >= 1) {
+                                        player = polyvObject('#CuPlayer').videoPlayer({
+                                            'width': '100%',
+                                            'height': '100%',
+                                            'vid': Datas.PolyvVID,
+                                            'df': 3,
+                                            'flashvars': { 'autoplay': 'true', 'param2': Datas.StuId },
+                                            'params': { 'param2': Datas.StuId },
+                                            'flashParams': { 'wmode': 'window', 'allowScriptAccess': 'always', 'allowFullScreen': 'false' }
+                                        });
+                                        //页面加载时调用
+                                        LookCourse(1);
+                                        //看视频的时候 用到
+                                        setInterval(function () { LookCourse() }, 60000);//60秒执行一次
+                                    } else {
+                                        layer.msg('视频未购买，不予许观看')
+                                    }
+                                } else {
+                                    player = polyvObject('#CuPlayer').videoPlayer({
+                                        'width': '100%',
+                                        'height': '100%',
+                                        'vid': Datas.PolyvVID,
+                                        'df': 3,
+                                        'flashvars': { 'autoplay': 'true', 'param2': Datas.StuId },
+                                        'params': { 'param2': Datas.StuId },
+                                        'flashParams': { 'wmode': 'window', 'allowScriptAccess': 'always', 'allowFullScreen': 'false' }
+                                    });
+                                    //页面加载时调用
+                                    LookCourse(1);
+                                    //看视频的时候 用到
+                                    setInterval(function () { LookCourse() }, 60000);//60秒执行一次
+                                }
+                            }
+                        })
+                    }
+                }
+                GetCourseList();
+
+                //课程介绍and老师介绍
+                function CourseAndTeacherDetail() {
+                    $.get('/service/WebCourse/GetCourseByID', { ID: ID }, function (rsp) {
+                        console.log(rsp);
+                        if (rsp.SuccessResponse) {
+                            var Datas = rsp.ReturnData.Data;
+                            TeacherDetail(Datas.TeacherDetail_ID, Datas.CourseCount, Datas.BuyCount);
+                            var data = Datas;
+                            var html = template('CourseDetail', data);
+                            $('#CourseD').html(html);
+                        }
+                    });
+                }
+                function TeacherDetail(tId, CourseCount, BuyCount) {
+                    $.get('/service/Teacher/GetTeacherByID', { TeacherDetail_ID: tId }, function (rsp) {
+                        if (rsp.SuccessResponse) {
+                            var Datas = rsp.ReturnData.Data;
+                            var data = {
+                                teacherDetails: {
+                                    CourseCount: CourseCount,
+                                    BuyCount: BuyCount,
+                                    detailData: Datas
+                                }
+                            }
+                            var html = template('TeacherDetail', data);
+                            $('#TeacherD').html(html);
+                        } else {
+                            var data = {
+                                teacherDetails: {
+                                    CourseCount: CourseCount,
+                                    BuyCount: BuyCount,
+                                    detailData: []
+                                }
+                            }
+                            var html = template('TeacherDetail', data);
+                            $('#TeacherD').html(html);
+                        }
+                    })
+                }
+                CourseAndTeacherDetail();
+            });
+            
+        </script>
+
+        <!--课程列表-->
+        <script type="text/html" id="Course">
+            {{each courseList}}
+            <div class="title">
+                <i class="iconfont icon-dengyuhao dengyuhao"></i>
+                <div class="cont">{{$value.Name}}</div>
+                <i class="iconfont icon-xiangyou right"></i>
+            </div>
+            <div class="detailed" style="{{$index == 0 ? 'display: block' : 'display: none'}}">
+                {{include 'childCourse' $value}}
+            </div>
+            {{/each}}
+        </script>
+        <script type="text/html" id="childCourse">
+            {{if ChildNodeList}}
+            {{each ChildNodeList}}
+            <div class="detailed-title" data-cid="{{$value.ID}}" data-csid="{{$value.Course_ID}}">
+                <p class="detailed-title-txt">
+                    {{$value.Name}}
+                </p>
+                {{if $value.IsLook == 1}}
+                <i class="iconfont icon-shipin green"></i>
+                {{else}}
+                <i class="iconfont icon-shipin"></i>
+                {{/if}}
+            </div>
+            {{/each}}
+            {{/if}}
+        </script>
+
+        <!--课程介绍-->
+        <script type="text/html" id="CourseDetail">
+            <p class="path">
+                {{Name}}
+            </p>
+            <p class="speakTeacher">
+                讲师: {{TeacherDetail_Name ? TeacherDetail_Name : '暂无'}}
+            </p>
+            <p class="price">已购买</p>
+        </script>
+
+        <!--老师介绍-->
+        <script type="text/html" id="TeacherDetail">
+            {{if teacherDetails.detailData.length != 0}}
+            <div class="teacher bz-bb">
+                <div class="teacherPic clearfix">
+                    <span class="pic">
+                        <img src="{{teacherDetails.detailData.HeadImage ? teacherDetails.detailData.HeadImage : '../../Resources/img/head.png'}}" alt="" />
+                    </span>
+                    <p class="name">
+                        {{teacherDetails.detailData.Name ? teacherDetails.detailData.Name : '暂无老师名称'}}
+                    </p>
+                </div>
+                <p class="txt">
+                    {{teacherDetails.detailData.Introduction ? teacherDetails.detailData.Introduction : '暂无'}}
+                </p>
+            </div>
+            {{else}}
+            <div class="teacher bz-bb">
+                <div class="teacherPic clearfix">
+                    <span class="pic">
+                        <img src="../../Resources/img/head.png" alt="" />
+                    </span>
+                    <p class="name">
+                        暂无老师名称
+                    </p>
+                </div>
+                <p class="txt">
+                    {{teacherDetails.detailData.Introduction}}
+                </p>
+            </div>
+            {{/if}}
+        </script>
+	</head>
+
+	<body>
+		<!--头部-->
+		<header>
+			<div class="ipt">
+				<span class="logo">
+                    <img src="../../Resources/img/logo.jpg" />
+				</span>
+				<input type="text" name="" id="" placeholder="搜索课程、专业" />
+				<i class="iconfont icon-sousuo"></i>
+			</div>
+		</header>
+
+		<main>
+            <div id="CuPlayer" style="height: 200px;"></div>
+			<nav class="choise clearfix bz-bb">
+				<div class="summary bz-bb">课程概述</div>
+                <div class="catalog bz-bb active">课程目录</div>
+				<!--<div class="comment bz-bb ">学员评论</div>-->
+			</nav>
+
+			<div class="contentbox">
+                <!--课程概述/老师介绍-->
+                <div class="content1" style="display: none">
+                    <div class="content1_1" id="CourseD"></div>
+                    <div class="mask1"></div>
+                    <div class="content1_2">
+                        <div class="whoIsTeacher">老师介绍</div>
+                        <div id="TeacherD"></div>
+                    </div>
+                    <!--<div class="mask2"></div>-->
+                    <!--<div class="content1_3">
+                        <p class="title">课程详情</p>
+                        <span class="rulePic">
+                            <img src="../../Resources/img/rule.jpg" />
+                        </span>
+                        <span class="rewardPic">
+                            <img src="../../Resources/img/20170906-02by_06.jpg" />
+                        </span>
+                    </div>
+                    <div class="pay">立即购买</div>
+                    <div class="mask3"></div>-->
+                </div>
+
+                <!--课程列表-->
+				<div class="content2">
+					<!--<div class="teaching">
+						<p class="mode">授课方式: 直播<span class="broadcast"> (<a>12</a>) </span>/录播<span class="recording">(<a>5</a>)</span>/面授<span class="ftf">(<a>3</a>)</span></p>
+					</div>
+					<div class="mask1"></div>-->
+                    <div class="navList" id="navList">
+                        <!--<div class="detailed">
+                            <div class="detailed-title">
+                                <p class="detailed-title-txt2">
+                                    第二节&nbsp;劳动法的概念及调整概念概念及调整概念
+                                </p>
+                                <p class="detailed-title-txt3">
+                                    9月4号&nbsp;10: 00-11: 30 <span>(已结束)</span>
+                                </p>
+                                <i class="iconfont icon-shipin gray"></i>
+                            </div>
+                            <div class="detailed-title">
+                                <p class="detailed-title-txt4">
+                                    第三节&nbsp;劳动法的概念及调整概念概念及调整概念
+                                </p>
+                                <p class="detailed-title-txt5">
+                                    9月4号&nbsp;10: 00-11: 30 <span>(直播中)</span>
+                                </p>
+                                <i class="iconfont icon-shipin red"></i>
+                            </div>
+                            <div class="detailed-title">
+                                <p class="detailed-title-txt2">
+                                    第四节&nbsp;劳动法的概念及调整概念概念及调整概念
+                                </p>
+                                <p class="detailed-title-txt3">
+                                    9月4号&nbsp;10: 00-11: 30 <span>(未开始)</span>
+                                </p>
+                                <i class="iconfont icon-shipin gray"></i>
+                            </div>
+                            <div class="detailed-title">
+                                <p class="detailed-title-txt4">
+                                    第五节&nbsp;劳动法的概念及调整概念概念及调整概念
+                                </p>
+                                <p class="detailed-title-txt6">
+                                    讲师: 符太郜&nbsp;9月4号&nbsp;10: 00-11: 30 <span>(面授)</span>
+                                </p>
+                                <p class="detailed-title-txt7">
+                                    地点:&nbsp;湖大北校区三教学楼3楼303室
+                                </p>
+                                <i class="iconfont icon-shipin red"></i>
+                            </div>
+                        </div>-->
+                    </div>
+                    
+				</div>
+
+                <!--学员评论-->
+				<div class="content3" style="display: none">
+					<!--评论区域-->
+					<div class="review-area">
+						<div class="canClone">
+							<!--单个评论-->
+							<div class="review">
+								<span class="pic">
+                                    <img src="../../Resources/img/personalIndex-hf.png" />
+							</span>
+								<span class="name">
+								张晓楠***
+							</span>
+								<p class="person-review">
+									老师讲的很好，很详细，很适合我们这种下班后利用空闲时间的学习
+								</p>
+								<div class="time">
+									<span class="study">学习进度<i>100%</i> </span>
+									<span class="day">2017-09-01</span>
+								</div>
+							</div>
+
+							<div class="review">
+								<span class="pic">
+                                    <img src="../../Resources/img/personalIndex-hf.png" />
+							</span>
+								<span class="name">
+								张晓楠***
+							</span>
+								<p class="person-review">
+									老师讲的很好，很详细，很适合我们这种下班后利用空闲时间的学习
+								</p>
+								<div class="time">
+									<span class="study">学习进度<i>100%</i></span>
+									<span class="day">2017-09-01</span>
+								</div>
+							</div>
+
+							<div class="review">
+								<span class="pic">
+                                    <img src="../../Resources/img/personalIndex-hf.png" />
+							</span>
+								<span class="name">
+								张晓楠***
+							</span>
+								<p class="person-review">
+									老师讲的很好，很详细，很适合我们这种下班后利用空闲时间的学习
+								</p>
+								<div class="time">
+									<span class="study">学习进度<i>100%</i></span>
+									<span class="day">2017-09-01</span>
+								</div>
+							</div>
+						</div>
+				
+						<div class="more">
+							<i class="iconfont icon-double-down"></i>
+						</div>
+
+					</div>
+					<div class="botfix">
+						<div class="comment-now">立即评论</div>
+						<div class="mask1"></div>
+					</div>
+				</div>
+
+			</div>
+
+		</main>
+
+		<footer>
+			<nav>
+				<ul class="clearfix">
+					<li>
+                        <a class="footerBtn" href="../index.html">
+                            <i class="iconfont icon-shouye1"></i>
+                            <p>首页</p>
+                        </a>
+					</li>
+					<li>
+                        <a href="../Course/list.html" class="footerBtn">
+                            <i class="iconfont icon-fenlei1"></i>
+                            <p>分类</p>
+                        </a>
+						
+					</li>
+                    <li class="footer_active">
+                        <a href="../Center/path.html" class="footerBtn">
+                            <i class="iconfont icon-wodekecheng"></i>
+                            <p>我的课程</p>
+                        </a>
+
+                    </li>
+					<li>
+                        <a href="../Center/personalIndex.html" class="footerBtn">
+                            <i class="iconfont icon-wode"></i>
+                            <p>我的</p>
+                        </a>
+					</li>
+				</ul>
+			</nav>
+		</footer>
+	</body>
+	
+</html>

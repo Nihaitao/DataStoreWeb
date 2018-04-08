@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<configuration>
+  <configSections>
+    <section name="proxyServices" type="CT.HttpProxy.Configuration.ProxyConfiguration,CT.HttpProxy" />
+  </configSections>
+  <proxyServices proxyPath="service">
+    <services>
+      <add prefix="hr" url="http://47.97.163.229:9000/" debug="true" />
+      <add prefix="*" url="http://47.97.163.229:8080/" />
+    </services>
+  </proxyServices>
+  <system.web>
+    <compilation debug="true" targetFramework="4.5" />
+    <httpRuntime targetFramework="4.5" />
+    <authentication mode="Forms">
+      <forms loginUrl="Default.cshtml" defaultUrl="About.cshtml" />
+    </authentication>
+  </system.web>
+  <system.webServer>
+    <handlers>
+      <add path="/service/*" type="CT.HttpProxy.ProxyHandler,CT.HttpProxy" verb="*" name="proxyHandler" />
+    </handlers>
+  </system.webServer>
+
+  <runtime>
+
+    <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+
+      <dependentAssembly>
+
+        <assemblyIdentity name="Newtonsoft.Json" publicKeyToken="30ad4fe6b2a6aeed" culture="neutral" />
+
+        <bindingRedirect oldVersion="0.0.0.0-10.0.0.0" newVersion="10.0.0.0" />
+
+      </dependentAssembly>
+
+      <dependentAssembly>
+
+        <assemblyIdentity name="Antlr3.Runtime" publicKeyToken="eb42632606e9261f" culture="neutral" />
+
+        <bindingRedirect oldVersion="0.0.0.0-3.5.0.2" newVersion="3.5.0.2" />
+
+      </dependentAssembly>
+
+    </assemblyBinding>
+
+  </runtime>
+
+</configuration>

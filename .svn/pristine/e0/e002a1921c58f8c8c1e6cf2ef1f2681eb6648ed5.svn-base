@@ -1,0 +1,503 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        .QApower div { border: 1px solid #ccc; position: relative; }
+
+        .checkQA { border-color: #0af !important; }
+
+        .QAreply div { display: block; position: relative; border: 1px solid #ccc; margin: 10px; }
+
+        .mask { display: block; width: 100%; height: 100%; position: absolute; top: 0; left: 0; background: rgba(0,0,0,0.7); }
+
+        .mask-D { background: rgba(0,0,0,0); }
+
+        .isDisplay { display: none; }
+
+        .isChecked { border-color: #0af !important; }
+    </style>
+</head>
+<body id="root">
+    <div class="mainContainer">
+
+        <div class="layui-tab layui-tab-card">
+            <ul class="layui-tab-title">
+                <li class="layui-this" data-method="updataValidity">课程有效期设置</li>
+                <li data-method="updataComment">课程评论管理</li>
+                <li data-method="updataQA">课程问答功能</li>
+                <li data-method="updataWatch">课程观看权限</li>
+            </ul>
+            <div class="layui-tab-content">
+                <!--课程有效期-->
+                <div class="layui-tab-item layui-show">
+                    <form class="layui-form" action="" onsubmit="return false">
+                        <div class="layui-col-xs6">
+                            <div class="layui-form-item ">
+                                <label class="layui-form-label" style="width:116px;">机构级别设置：</label>
+                                <div class="layui-input-block valid">
+                                    <!--<input type="checkbox" name="cs" lay-skin="switch" lay-text="开启|关闭">-->
+                                    <local-switch v-bind:value.sync="mechanismSwitch" text="开启|关闭"
+                                                  initial="off"></local-switch>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-bind:class="{ isDisplay: !mechanismSwitch}">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label" style="width:116px">课程有效期：</label>
+                                <!--validity有效期-->
+                                <div class="layui-input-inline validity">
+                                    <input type="text" name="password" lay-verify="time" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">天</div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label" style="width:116px">单视频观看次数：</label>
+                                <!--video有效期-->
+                                <div class="layui-input-inline video">
+                                    <input type="text" name="password" lay-verify="time" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">次</div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label" style="width:116px">单直播回看次数：</label>
+                                <!--broadcast有效期-->
+                                <div class="layui-input-inline broadcast">
+                                    <input type="text" name="password" lay-verify="time" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">次</div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-input-block site-demo-button" id="layerDemo">
+                                <button class="layui-btn" lay-submit="" data-method="offset" data-type="auto" lay-filter="demo1" @click="saveUpdate(1)" value="有效期"> 保存 </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!--课程评论-->
+                <div class="layui-tab-item">
+                    <div class="layui-form" action="" onsubmit="return false">
+                        <div class="layui-col-xs6">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label" style="width:130px;">开放课程评论功能：</label>
+                                <div class="layui-input-block comment">
+                                    <!--<input type="checkbox" name="sc" lay-skin="switch" lay-text="开启|关闭" checked>-->
+                                    <local-switch v-bind:value.sync="commentSwitch" text="开启|关闭"
+                                                  initial="off"></local-switch>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block site-demo-button" id="layerDemo">
+                            <button class="layui-btn" lay-submit="" data-method="offset" data-type="auto" lay-filter="demo1" @click="saveUpdate(2)"> 保存 </button>
+                        </div>
+                    </div>
+                </div>
+                <!--课程问答-->
+                <div class="layui-tab-item">
+                    <div class="layui-row layui-form">
+                        <div class="layui-col-xs6">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label" style="width:90px;">课程问答功能</label>
+                                <div class="layui-input-block QA">
+                                    <local-switch v-bind:value.sync="QASwitch" text="开启|关闭"
+                                                  initial="off"></local-switch>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div v-bind:class="{ isDisplay: !QASwitch}">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" style="width:104px">问答查看权限</label>
+                            <hr />
+                            <div class="site-demo-laydate" style="padding-top:38px">
+                                <div class="layui-row QApower layui-col-md2" v-for="SEE in SeeList" style="text-align:center;">
+                                    <div id="{{{SEE.id}}}" v-bind:class="{ isChecked: {{SEE.checked}}}" style="margin:10px;padding:10%" data-method="changedown">
+                                        <i class="layui-icon">{{{SEE.icon}}}</i>
+                                        <p>{{SEE.text}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" style="width:104px">问答回复权限</label>
+                            <hr />
+                            <div class="layui-row layui-col-md2  QAreply" v-for="QA in QAList" style="text-align:center;margin-top:35px;">
+                                <div id="{{{QA.id}}}" class=" pos" data-method="canChange" style="padding:10%">
+                                    <i class="layui-icon">{{{QA.icon}}}</i>
+                                    <p>{{ QA.text}}</p>
+                                    <span class="mask mask-D"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block site-demo-button" id="layerDemo">
+                            <button class="layui-btn" lay-submit="" data-method="offset" data-type="auto" lay-filter="demo1" @click="saveUpdate(3)"> 保存 </button>
+                        </div>
+                    </div>
+                </div>
+                <!--课程观看-->
+                <div class="layui-tab-item">
+                    <form class="layui-form" action="" onsubmit="return false">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" style="width:154px">试听时长设置 :</label>
+                            <div class="layui-input-inline listentime">
+                                <input type="text" name="password" lay-verify="time" autocomplete="off" class="layui-input">
+                            </div>
+                            <div class="layui-form-mid layui-word-aux">分钟</div>
+                        </div>
+
+                        <div class="layui-form-item layui-form-text">
+                            <label class="layui-form-label" style="width:154px">试听到时提示 : </label>
+                            <div class="layui-input-block">
+                                <textarea placeholder="" class="layui-textarea" style="width:600px"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item audition" pane="">
+                            <label class="layui-form-label" style="width:154px">试听视频权限 :</label>
+                            <div class="layui-input-block" style="padding-top:10px">
+                                <input type="radio" name="alluser" value="所有用户" title="所有用户" checked="">
+                                <input type="radio" name="alluser" value="注册用户" title="注册用户" style="margin-left:30px">
+                            </div>
+                        </div>
+                        <div class="layui-form-item free" pane="">
+                            <label class="layui-form-label" style="width:154px">免费视频/资源观看权限 :</label>
+                            <div class="layui-input-block" style="padding-top:10px">
+                                <input type="radio" name="registerUser" value="所有用户" title="所有用户" checked="">
+                                <input type="radio" name="registerUser" value="注册用户" title="注册用户" style="margin-left:30px">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-input-block" id="layerDemo" style="margin-top:30px;">
+                                <button class="layui-btn updata" lay-submit="" lay-filter="demo1" data-method="offset" data-type="auto" @click="saveUpdate(4)">保存</button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</body>
+</html>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(['form', 'jquery', 'element', 'layer'],
+        function (fnr) {
+            var form = layui.form;
+            var $ = layui.$;
+            var element = layui.element;
+            var layer = layui.layer;
+
+
+            //搜索条件
+            var rootApp = new Vue({
+                el: '#root',
+                data: {
+                    mechanismSwitch: '',//机构开关
+                    commentSwitch: '',//课程评论功能
+                    QASwitch: '',
+                    QAList: [
+                        { id: 1, icon: "&#xe657;", text: '购买本课程学员' },
+                        { id: 2, icon: "&#xe65e;", text: '所有付费学员' },
+                        { id: 3, icon: "&#xe612;", text: '所有登录用户' },
+                    ],
+                    SeeList: [
+                        { id: 1, icon: "&#xe657;", text: '购买本课程学员', checked: false },
+                        { id: 2, icon: "&#xe65e;", text: '所有付费学员', checked: false },
+                        { id: 3, icon: "&#xe612;", text: '所有登录用户', checked: false },
+                        { id: 4, icon: "&#xe613;", text: '所有用户', checked: true },
+                    ]
+                },
+                ready: function () {
+                    $.get("/service/datastore/HConfiguration/GetWConfiguration", function (data) {
+                        var that = data.Data
+                        //that.ComDay 天数
+                        //that.ComVideo 单视频
+                        //that.ComLive 单直播
+                        //console.log(that)
+                        //课程评论功能
+                        rootApp.mechanismSwitch = that.ValidPeriod == 1 ? true : false;
+                        $(".validity").find("input").val(that.ComDay)
+                        $(".video").find("input").val(that.ComVideo)
+                        $(".broadcast").find("input").val(that.ComLive)
+                    })
+                },
+                methods: {
+
+                    saveUpdate: function (n) {
+                        var self = this
+                        if (n == 1) {
+                            var ValidPeriod = self.mechanismSwitch == true ? '1' : "0"//机构开关
+
+                            var that_ComDay = $(".validity").find("input").val()
+                            var that_ComVideo = $(".video").find("input").val()
+                            var that_ComLive = $(".broadcast").find("input").val()
+
+
+                            $.post("/service/datastore/HConfiguration/SetWConfiguration1", { ValidPeriod: ValidPeriod, ComDay: that_ComDay, ComVideo: that_ComVideo, ComLive: that_ComLive }, function (data) {
+                                if (data.SuccessResponse) {
+                                    layer.msg("保存成功")
+                                } else {
+                                    layer.msg("保存失败")
+                                }
+                            })
+                        }
+
+                        if (n == 2) {
+                            //console.log(CommentValid)
+
+                            var CommentValid = self.commentSwitch == true ? '1' : "0"//评论开关
+
+
+                            $.post("/service/datastore/HConfiguration/SetWConfiguration2", { CommentValid: CommentValid }, function (data) {
+                                if (data.SuccessResponse) {
+                                    layer.msg("保存成功")
+                                } else {
+                                    layer.msg("保存失败")
+                                }
+                            })
+                        }
+
+                        if (n == 3) {
+
+                            var QuestionValid = self.QASwitch == true ? '1' : "0"//问答开关
+                            var QuestionLookType = $(".checkQA").eq(0).find("p").text()
+                            if (QuestionLookType == '购买本课程学员') {
+                                that_QuestionLookType = 1
+                            } else if (QuestionLookType == '所有付费学员') {
+                                that_QuestionLookType = 2
+                            } else if (QuestionLookType == '所有登录用户') {
+                                that_QuestionLookType = 3
+                            } else if (QuestionLookType == '所有用户') {
+                                that_QuestionLookType = 4
+                            }
+                            var QuestionReplyType = $(".checkQA").eq(1).find("p").text()
+                            if (QuestionReplyType == '购买本课程学员') {
+                                that_QuestionReplyType = 1
+                            } else if (QuestionReplyType == '所有付费学员') {
+                                that_QuestionReplyType = 2
+                            } else if (QuestionReplyType == '所有登录用户') {
+                                that_QuestionReplyType = 3
+                            }
+                            $.post("/service/datastore/HConfiguration/SetWConfiguration3", { QuestionValid: QuestionValid, QuestionReplyType: that_QuestionReplyType, QuestionLookType: that_QuestionLookType}, function (data) {
+                                if (data.SuccessResponse) {
+                                    layer.msg("保存成功")
+                                } else {
+                                    layer.msg("保存失败")
+                                }
+                            })
+                        }
+
+
+                        if (n == 4) {
+                            var that_time = $(".listentime").find("input").val() //获取试听时长
+                            //console.log($(".listentime"))
+                            var that_text = $(".layui-textarea").val()//试听到时提示内容
+
+                            var that_audition = $(".audition").find(".layui-form-radioed").find("span").html()//试听权限
+                            if (that_audition == '所有用户') {
+                                that_OverFlowAuth = 0
+                            } else if (that_audition == '注册用户') {
+                                that_OverFlowAuth = 1
+                            }
+                            var that_free = $(".free").find(".layui-form-radioed").find("span").html()//免费视频权限
+                            if (that_free == '所有用户') {
+                                that_UserSeeAuth = 0
+                            } else if (that_free == '注册用户') {
+                                that_UserSeeAuth = 1
+                            }
+                            $.post("/service/datastore/HConfiguration/SetWConfiguration4", { OverFlowTime: that_time, OverFlowInfo: that_text, OverFlowAuth: that_OverFlowAuth, UserSeeAuth: that_UserSeeAuth }, function (data) {
+                                if (data.SuccessResponse) {
+                                    layer.msg("保存成功")
+                                } else {
+                                    layer.msg("保存失败")
+                                }
+                            })
+                        }
+                    },
+                }
+            });
+
+            //选项卡加载
+            var Va = 0;//保存点击次数 已加载的将不加载
+            var QA = 0;//保存点击次数 已加载的将不加载
+            var Com = 0;//保存点击次数 已加载的将不加载
+            var Watch = 0;//保存点击次数 已加载的将不加载
+            var active = {
+                updataValidity: function () {
+                    Va += 1;
+                    if (Va < 2) {
+                        $.get("/service/datastore/HConfiguration/GetWConfiguration", function (data) {
+                            var that = data.Data
+                            var ValidPeriod = self.mechanismSwitch == true ? '1' : "0"//机构开关
+                            $(".validity").find("input").val(that.ComDay)
+                            $(".video").find("input").val(that.ComVideo)
+                            $(".broadcast").find("input").val(that.ComLive)
+                        })
+                    }
+                },
+                updataQA: function () {
+                    QA += 1;
+                    if (QA < 2) {
+                        //获取数据库内开关按钮的数据
+                        $.get("/service/datastore/HConfiguration/GetWConfiguration", function (data) {
+                            var that = data.Data
+                            //console.log(that.QuestionValid)
+                            rootApp.QASwitch = that.QuestionValid == 1 ? true : false;
+                            //下面权限的设置
+                            $(".pos").find("span").addClass("mask-D");
+                            if (that.QuestionLookType == 0 || that.QuestionLookType == 1) {
+                                $(".QApower").find("div").eq(0).addClass("checkQA")
+                                $(".pos").eq(1).find("span").removeClass("mask-D");
+                                $(".pos").eq(2).find("span").removeClass("mask-D");
+                            } else if (that.QuestionLookType == 2) {
+                                $(".QApower").find("div").eq(1).addClass("checkQA")
+                                $(".pos").eq(2).find("span").removeClass("mask-D");
+                            } else if (that.QuestionLookType == 3) {
+                                $(".QApower").find("div").eq(2).addClass("checkQA")
+                            } else if (that.QuestionLookType == 4) {
+                                $(".QApower").find("div").eq(3).addClass("checkQA")
+                            }
+                            // console.log($(".pos").eq(1))
+                            if (that.QuestionReplyType == 0 || that.QuestionReplyType == 1) {
+                                $(".pos").eq(0).addClass("checkQA")
+                            } else if (that.QuestionLookType == 2) {
+                                $(".pos").eq(1).addClass("checkQA")
+                                $(".mask").eq(1).addClass("mask-D")
+                            } else if (that.QuestionLookType == 3) {
+                                $(".pos").eq(2).addClass("checkQA")
+                                $(".mask").eq(1).addClass("mask-D")
+                                $(".mask").eq(2).addClass("mask-D")
+                            }
+                        })
+                    }
+                },
+                updataComment: function () {
+                    Com += 1;
+                    if (Com < 2) {
+                        //获取数据库内开关按钮的数据
+                        $.get("/service/datastore/HConfiguration/GetWConfiguration", function (data) {
+
+                            var that = data.Data
+                            rootApp.commentSwitch = that.CommentValid == 1 ? true : false;
+                        })
+                    }
+                },
+                updataWatch: function () {
+                    Watch += 1;
+                    if (Watch < 2) {
+                        //获取数据库内开关按钮的数据
+                        $.get("/service/datastore/HConfiguration/GetWConfiguration", function (data) {
+                            var that = data.Data
+
+                            $(".listentime").find("input").val(that.OverFlowTime)//试听时长
+                            $(".layui-textarea").val(that.OverFlowInfo)
+                            //试听数据
+                            if (that.OverFlowAuth == 0) {
+                                text = "所有用户"
+                            } else if (that.OverFlowAuth == 1) {
+                                text = "注册用户"
+                            }
+                            //text为选中的值
+                            //试听选中项的设置
+                            $(".audition").find("span:contains('" + text + "')").parent().addClass("layui-form-radioed")
+                            $(".audition").find("span:contains('" + text + "')").parent().find('i').addClass("layui-anim-scaleSpring")
+                            $(".audition").find("span:contains('" + text + "')").parent().find('i').html('&#xe643;')
+                            //试听非选中项的设置
+                            $(".audition").find("span:not(:contains('" + text + "'))").parent().removeClass("layui-form-radioed")
+                            $(".audition").find("span:not(:contains('" + text + "'))").parent().find('i').removeClass("layui-anim-scaleSpring")
+                            $(".audition").find("span:not(:contains('" + text + "'))").parent().find('i').html('&#xe63f;')
+
+                            //试看数据
+                            if (that.UserSeeAuth == 0) {
+                                that_text = "所有用户"
+                            } else if (that.UserSeeAuth == 1) {
+                                that_text = "注册用户"
+                            }
+                            //that_text为选中的值
+                            //试看选中项的设置
+                            $(".free").find("span:contains('" + that_text + "')").parent().addClass("layui-form-radioed")
+                            $(".free").find("span:contains('" + that_text + "')").parent().find('i').addClass("layui-anim-scaleSpring")
+                            $(".free").find("span:contains('" + that_text + "')").parent().find('i').html('&#xe643;')
+                            //试看非选中项的设置
+                            $(".free").find("span:not(:contains('" + that_text + "'))").parent().removeClass("layui-form-radioed")
+                            $(".free").find("span:not(:contains('" + that_text + "'))").parent().find('i').removeClass("layui-anim-scaleSpring")
+                            $(".free").find("span:not(:contains('" + that_text + "'))").parent().find('i').html('&#xe63f;')
+
+                        })
+                    }
+                },
+                changedown: function (othis) {
+                    var self = this
+                    //console.log($(othis).parent().siblings("div"))
+                    $(othis).addClass("checkQA")
+                    $(othis).parent().siblings("div").find("div").removeClass("checkQA");
+                    $(".pos").find("span").addClass("mask-D")
+                    var two = $(".QAreply").eq(1).find("div").is(".checkQA")
+                    var three = $(".QAreply").eq(2).find("div").is(".checkQA")
+                    if (self.id == 1) {
+                        $(".pos").eq(1).find("span").removeClass("mask-D");
+                        $(".pos").eq(2).find("span").removeClass("mask-D");
+                        if (two || three) {
+                            $(".QAreply").eq(1).find("div").removeClass("checkQA");
+                            $(".QAreply").eq(2).find("div").removeClass("checkQA");
+                            $(".QAreply").eq(0).find("div").addClass("checkQA");
+                        }
+                    } else if (self.id == 2) {
+                        $(".pos").eq(2).find("span").removeClass("mask-D");
+                        if (three) {
+                            $(".QAreply").eq(2).find("div").removeClass("checkQA");
+                            $(".QAreply").eq(0).find("div").addClass("checkQA");
+                        }
+                    }
+                },
+                canChange: function (othis) {
+                    var mine = this
+
+                    //$(".pos").find("span").addClass("mask-D")
+                    var C_two = $(".QApower").eq(1).find("div").is(".checkQA")
+                    var C_three = $(".QApower").eq(2).find("div").is(".checkQA")
+                    var C_four = $(".QApower").eq(3).find("div").is(".checkQA")
+                    if (mine.id == 1) {
+                        $(othis).parent().siblings("div").find("div").removeClass("checkQA");
+                        $(othis).addClass("checkQA")
+                    } else if (mine.id == 2) {
+                        if (C_two || C_three || C_four) {
+                            $(othis).parent().siblings("div").find("div").removeClass("checkQA");
+                            $(othis).addClass("checkQA")
+                        }
+                    } else if (mine.id == 3) {
+                        if (C_three || C_four) {
+                            $(othis).parent().siblings("div").find("div").removeClass("checkQA");
+                            $(othis).addClass("checkQA")
+                        }
+                    }
+                },
+            };
+            $('.layui-tab-title li').on('click', function () {
+                var othis = $(this), method = othis.data('method');
+                active[method] ? active[method].call(this, othis) : '';
+            });
+            $('#layerDemo .layui-btn').on('click', function () {
+                var othis = $(this), method = othis.data('method');
+                active[method] ? active[method].call(this, othis) : '';
+            });
+            $('.layui-row div').on('click', function () {
+                var othis = $(this), method = othis.data('method');
+                active[method] ? active[method].call(this, othis) : '';
+            });
+
+        });
+</script>

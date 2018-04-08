@@ -1,0 +1,73 @@
+﻿<div class="mainContainer" id="root">
+    <form class="layui-form" style="margin-bottom:30px;">
+        <div class="layui-container">                    
+            <div class="layui-row" v-data:self="rootitem">
+                <div class="layui-col-xs4">
+                    <div>目标客户</div>
+                    <div class="grid-demo grid-demo-bg1" style="background-color: #63BA79;padding: 10px;padding: 10px;line-height: 30px; color: #fff; text-align: center;" v-for="item in FirstData">{{item.Name}}</div>
+                </div>
+                <div class="layui-col-xs4" v-for="item in CustomerList">
+                    <local-chb class="chbClass" v-bind:value.sync="item.Check"></local-chb>
+
+                    <div class="grid-demo grid-demo-bg1" style="background-color: #fff;padding: 10px;padding: 10px;line-height: 30px; color: #333; text-align: center;" v-for="items in item.Children">
+                    {{items.Value ? items.Value : '...'}}
+                        <input v-if="!!items.Value" type="radio" name="items.Name" value="items.Value" >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <button class="layui-btn" @click="addCustomField">提交</button>
+</div>
+
+
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="../../../Resources/js/Controls/Common.js"></script>
+    <script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'jqueryui'],
+        function (fnr) {
+            var $ = layui.$;
+            var jqueryui = layui.jqueryui;
+
+            var vm = new Vue({
+                el: "#root",
+                data:
+                {
+                    CustomerList: [],
+                    FirstData: []
+                },
+                ready: function () {
+                    var Phone=GetQueryString('Phone')
+                    this.GetCustomerInformation(Phone);
+                },
+                methods: {
+                    GetCustomerInformation: function (PhoneNumb) {
+                        var self = this;
+                        $.get("/service/crm/Client/GetListMergePhone", { Phone: PhoneNumb }, function (resp) {
+                            if (resp.SuccessResponse) {
+                                resp.Data.map(function (val, index) {
+                                    val['Children'] = [];
+                                    val.map(function (_val, _index) {
+                                        _val.Childs.map(function (__val, __index) {
+                                            val['Children'].push(__val);
+                                        })
+                                    })
+                                });
+                                self.CustomerList = resp.Data;
+                                resp.Data[0].map(function (val, index) {
+                                    if (!!val.Childs) {
+                                        val.Childs.map(function (_val, _index) {
+                                            self.FirstData.push(_val);
+                                        })
+                                    }
+                                });
+                            }
+                        })
+                    },
+                }
+            });
+        });
+    </script>

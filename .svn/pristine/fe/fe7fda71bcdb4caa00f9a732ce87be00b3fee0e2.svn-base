@@ -1,0 +1,318 @@
+﻿<!DOCTYPE html>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        .labelleft {
+            font-weight: bold;
+        }
+
+        .layui-form-label {
+            padding: 3px 7px;
+            width: 90px;
+            line-height: 32px;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+        #qrcode{
+            display: inline-block;
+            margin-left: 30px;
+        }
+         #qrcode canvas{
+             margin-bottom: 150px;
+         }
+         iframe{
+             border: 0;
+             background-color: #dfdfdf;
+             height: 100%;
+             width: 320px;
+         }
+         
+    </style>
+</head>
+<body id="root">
+    <div class="layui-form">
+        <fieldset class="layui-elem-field site-demo-button" style="margin-top: 30px;">
+            <legend>测试表单信息</legend>
+    
+            <div class="layui-tab layui-tab-card" style="margin: 10px;">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">基本信息</li>
+                    <!--<li>客服分配</li>
+                    <li>产品库</li>-->
+                    <li>浏览量</li>
+                    <li>报名数据</li>
+                </ul>
+                <div class="layui-tab-content">
+
+                    <!--基本信息-->
+                    <div class="layui-tab-item layui-show" v-cloak>
+                        <div class="layui-row">
+                            <div class="layui-col-xs6">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label labelleft">活动名称：</label>
+                                    <div class="layui-input-block">
+                                        {{BasicInfo.FormName}}
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label labelleft">分配方式：</label>
+                                    <div class="layui-input-block">
+                                        {{BasicInfo.FormAllot == 0 ? '随机分配' : '循环分配'}}
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label labelleft">H5页面链接：</label>
+                                    <div class="layui-input-block">
+                                        {{BasicInfo.H5Url}}
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label labelleft">分享图片：</label>
+                                    <div class="layui-input-block">
+                                        <img style="height: 60px; width: 232px;" v-bind:src.sync="BasicInfo.SharePictures ? BasicInfo.SharePictures : ''" />
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label labelleft">分享摘要：</label>
+                                    <div class="layui-input-block">
+                                        {{BasicInfo.ShareSummary}}
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label labelleft">报名介绍：</label>
+                                    <div class="layui-input-block">
+                                        {{BasicInfo.Remart}}
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label labelleft">报名信息：</label>
+                                    <div class="layui-input-block">
+                                        {{BasicInfo.FormType == 1 ? '客户' : '线索'}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-col-xs6">
+                                <div style="height: 500px;position:relative;">
+                                    <!--v-bind:src="BasicInfo.H5Url"-->
+                                    <iframe id="resIframe" scrolling="no" v-bind:src="'H5res.html?inlinesrc=' + BasicInfo.H5Url + '?AccountID=' + AccountID + '?FormID=' + FormID"></iframe>
+                                    <!--二维码-->
+                                    <div id="qrcode"></div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--浏览量-->
+                    <div class="layui-tab-item">
+                        <table id="proLibaryTable" lay-filter="proLibaryTable"></table>
+                    </div>
+
+                    <!--客服分配-->
+                    <!--<div class="layui-tab-item">
+                        <button class="layui-btn" @click="reloadCustomer">保存</button>
+                        <table class="layui-table">
+                            <colgroup>
+                                <col width="150">
+                                <col width="150">
+                                <col>
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>客服</th>
+                                    <th>权重</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="item in CustomerData">
+                                    <td>{{item.Customer_Name}}</td>
+                                    <td><input type="number" lay-verify="title" value="{{item.Weight}}" data-id="{{item.ID}}" autocomplete="off" class="layui-input"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>-->
+
+                    <!--产品库-->
+                    <!--<div class="layui-tab-item">
+                        <button class="layui-btn">关联产品</button>
+                        <table id="proLibaryTable" lay-filter="proLibaryTable"></table>
+                    </div>-->
+
+                    <!--报名数据-->
+                    <div class="layui-tab-item">
+                        <table id="signUpTable" lay-filter="signUpTable"></table>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</body>
+</html>
+<script src="/Scripts/jquery-3.2.1.min.js"></script>
+<script src="/Resources/js/jquery.qrcode.min.js"></script>
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'jqueryui', 'element'],
+    function (fnr) {
+        var $ = layui.$;
+        var jqueryui = layui.jqueryui;
+        var form = layui.form;
+        var element = layui.element;
+        var table = layui.table;
+        var tableExt = layui.tableExt;
+        function getCookie(name) {
+            var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+            if (arr = document.cookie.match(reg))
+                return unescape(arr[2]);
+            else
+                return null;
+        }
+        var signUpTableColsConfig = [
+            { field: 'Name', title: '名称', sort: true },
+            { field: 'ClueStatusName', title: '跟进阶段', sort: true },
+            { field: 'AccountName', title: '负责人', sort: true },
+            {
+                title: '添加时间', sort: true, templet: function () {
+                    var array = new Array();
+                    array.push("<span>" + fnr.format(this.AddTime, "yyyy-MM-dd HH:mm") + "</span>");
+                    return "<div>" + array.join("") + "</div>";
+                }
+            },
+        ];
+
+        var proLibaryTableColsConfig = [
+            { field: 'Name', title: '分享人', sort: true },
+            { field: 'ProductType_Name', title: '页面浏览量', sort: true },
+            { field: 'ProductNumber', title: '生成线索数', sort: true },
+        ];
+
+        window.vm = new Vue({
+            el: "#root",
+            data: {
+                CustomerData: [],  //产品分配列表
+                BasicInfo: [],
+                UpdateWeightData: {
+                    ID: '',
+                    ExtData: []
+                },
+                isShowIframe: true,  //判断iframe显示
+                FormID: fnr.getQueryString('FormID'),
+                AccountID: '',
+            },
+            ready: function () {
+                this.GetClientOrClueListByFormID(fnr.getQueryString('FormID'));
+                //this.demoFn();
+                this.AccountID = getCookie('AccountID');
+            },
+            methods: {
+                demoFn: function () {
+                    //$.get('/service/crm/Form/GetProductListByFormID', { ID: 53 }, function (res) {
+                    //    console.log(res);
+                    //});
+                },
+                //H5页面提交按钮
+                //iframeSubmit: function () {
+                //    var self = this;
+                //    self.isShowIframe = false;
+                //},
+
+                //基本信息，客服分配
+                GetClientOrClueListByFormID: function (FormID) {
+                    var self = this;
+                    $.get('/service/crm/Form/GetFormDetailInfo', { ID: FormID, Status: -1 }, function (res) {
+                        if (res.SuccessResponse) {
+                            if (res.Data) {
+                                self.BasicInfo = res.Data;
+                                var qrCodeUrl = window.location.href.split('FormInfoM.html')[0] + 'H5res.html?inlinesrc=' + res.Data.H5Url + '?Account_ID=' + getCookie('AccountID') + '?FormID=' + fnr.getQueryString('FormID');
+                                $('#qrcode').qrcode(qrCodeUrl);
+                                self.CustomerData = res.Data.CustomerData;
+                            } else {
+                                layer.msg('返回值为空')
+                            }
+                        }
+                    });
+                },
+                //保存客服分配
+                UpdateCustomerWeight: function (data) {
+                    var self = this;
+                    $.post('/service/crm/Form/UpdateCustomerWeight', data, function (res) {
+                        if (res.SuccessResponse) {
+                            layer.msg('保存成功');
+                        } else {
+                            layer.msg('保存失败，请重试');
+                        }
+                    });
+                },
+                //客服分配
+                reloadCustomer: function () {
+                    var self = this;
+                    self.UpdateWeightData.ID = fnr.getQueryString('FormID');
+                    self.$nextTick(function () {
+                        var inputData = $('input[type="number"]');
+                        inputData.map(function (index, value) {
+                            self.UpdateWeightData.ExtData.push({ ID: $(value).data('id'), ItemValue: value.value });
+                        });
+                        self.UpdateCustomerWeight(self.UpdateWeightData)
+                    });
+                },
+            }
+        });
+
+        //报名数据绑定列表
+        var signUpTable = table.render({
+            elem: '#signUpTable',
+            url: "/service/crm/Form/GetClientOrClueListByFormID?ID=" + fnr.getQueryString('FormID'),
+            page: true, //页分,
+            id: 'signUpTable',
+            cols: [signUpTableColsConfig],
+        });
+
+        //浏览量绑定列表
+        var proLibaryTable = table.render({
+            elem: '#proLibaryTable',
+            url: "/service/crm/Form/GetProductListByFormID?ID=" + fnr.getQueryString('FormID'),
+            id: 'proLibaryTable',
+            cols: [proLibaryTableColsConfig],
+        });
+
+        //产品库监听工具栏事件
+        tableExt.addEvent("tool(proLibaryTable)",
+            {
+                //删除一行
+                "deleteClient": function (data, obj) {
+                    layer.confirm('确定删除吗，删除后将无法恢复', function (index) {
+                        $.ajax({
+                            url: '/service/crm/Form/DeleteFormProduct',
+                            type: 'POST',
+                            data: { Other: data.ID, ID: fnr.getQueryString('FormID') },
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data.Data) {
+                                    if (data.SuccessResponse) {
+                                        layer.close(index);
+                                        proLibaryTable.reload();
+                                        layer.msg(data.Message)
+                                    } else {
+                                        layer.msg(data.Message)
+                                    }
+                                } else {
+                                    layer.msg('data为空');
+                                }
+                            }
+                        });
+                    })
+                },
+            });
+    });
+</script>
+
+
+

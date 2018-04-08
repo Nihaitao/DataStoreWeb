@@ -1,0 +1,30 @@
+D:\project\dotnet\CT.Signature\CT.Signature\bin\Debug\CT.Signature.dll
+D:\project\dotnet\CT.Signature\CT.Signature\bin\Debug\CT.Signature.pdb
+D:\project\dotnet\CT.Signature\CT.Signature\obj\Debug\CT.Signature.csprojResolveAssemblyReference.cache
+D:\project\dotnet\CT.Signature\CT.Signature\obj\Debug\CT.Signature.csproj.CoreCompileInputs.cache
+D:\project\dotnet\CT.Signature\CT.Signature\obj\Debug\CT.Signature.dll
+D:\project\dotnet\CT.Signature\CT.Signature\obj\Debug\CT.Signature.pdb
+C:\Users\Administrator\Desktop\CT.Signature\bin\Debug\CT.Signature.dll
+C:\Users\Administrator\Desktop\CT.Signature\bin\Debug\CT.Signature.pdb
+C:\Users\Administrator\Desktop\CT.Signature\obj\Debug\CT.Signature.dll
+C:\Users\Administrator\Desktop\CT.Signature\obj\Debug\CT.Signature.pdb
+C:\Users\Administrator\Desktop\CT.Signature\obj\Debug\CT.Signature.csprojResolveAssemblyReference.cache
+D:\project\dotnet\SmartSchool5.0\CT.Signature\bin\Debug\CT.Signature.dll
+D:\project\dotnet\SmartSchool5.0\CT.Signature\bin\Debug\CT.Signature.pdb
+D:\project\dotnet\SmartSchool5.0\CT.Signature\obj\Debug\CT.Signature.csprojResolveAssemblyReference.cache
+D:\project\dotnet\SmartSchool5.0\CT.Signature\obj\Debug\CT.Signature.csproj.CoreCompileInputs.cache
+D:\project\dotnet\SmartSchool5.0\CT.Signature\obj\Debug\CT.Signature.dll
+D:\project\dotnet\SmartSchool5.0\CT.Signature\obj\Debug\CT.Signature.pdb
+E:\网校\CT.Signature\bin\Debug\CT.Signature.dll
+E:\网校\CT.Signature\bin\Debug\CT.Signature.pdb
+E:\网校\CT.Signature\obj\Debug\CT.Signature.dll
+E:\网校\CT.Signature\obj\Debug\CT.Signature.pdb
+E:\5.0\SmarrSchool5.0\CT.Signature\bin\Debug\CT.Signature.dll
+E:\5.0\SmarrSchool5.0\CT.Signature\bin\Debug\CT.Signature.pdb
+E:\5.0\SmarrSchool5.0\CT.Signature\obj\Debug\CT.Signature.dll
+E:\5.0\SmarrSchool5.0\CT.Signature\obj\Debug\CT.Signature.pdb
+E:\5.0\SmarrSchool5.0\CT.Signature\obj\Debug\CT.Signature.csprojResolveAssemblyReference.cache
+D:\公司项目20170207\SmartSchool 5.0\CT.Signature\bin\Debug\CT.Signature.dll
+D:\公司项目20170207\SmartSchool 5.0\CT.Signature\bin\Debug\CT.Signature.pdb
+D:\公司项目20170207\SmartSchool 5.0\CT.Signature\obj\Debug\CT.Signature.dll
+D:\公司项目20170207\SmartSchool 5.0\CT.Signature\obj\Debug\CT.Signature.pdb

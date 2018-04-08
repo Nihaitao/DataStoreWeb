@@ -1,0 +1,585 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="/usercenter/Resources/fonts/iconfont.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/usercenter/Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link href="/usercenter/Resources/CSS/Font/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="/usercenter/Resources/CSS/video-js.css" rel="stylesheet" />
+    <style>
+        a { text-decoration:none!important;}
+        a:hover { text-decoration:none;}
+    </style>
+</head>
+<body style="background-color: #f7f7f7" id="root">
+    <!--顶部-->
+    <!--#<!--#include file="../UserControl/stepHeader.html"-->
+    <div class="masthead">
+        <div class="w1200 clearfix">
+            <div class="nav-header pull-left">
+                <a href="#"><img src="/usercenter/Resources/images/hd.png" /></a>
+            </div>
+        </div>
+    </div>
+    <div class="w1200 clearfix">
+        <div class="content">
+            <div class="containers">
+                <!-- 栏目路径 开始 -->
+                <div class="bd-bg">
+                    <div class="adress f-f14"> <i></i> 当前位置： <a href="#">章节练习-练习模式</a><span>&nbsp; &gt; &nbsp;</span><a href="#" style="cursor:default" id="title">管理学原理第一节管理概述</a> </div>
+                    <div class="tpro-gress-pra">
+                        <div id="m_progress" class="tpro-gress">
+                            <div class="progress"> <em class="page-done" style="width:{{done * percen}}%;"></em> </div>
+                            <div class="txt"><em>已完成<code id="page-done-count-text">{{done}}</code>题</em>/共<code id="page-question-count-text">{{Chapter.list.length}}</code>题</div>
+                        </div>
+                    </div>
+                </div>
+                <!--栏目路径 结束-->
+                <!--题型 开始-->
+                <div class="dopra-con clearfix">
+                    <div class="pra-left-con pra-right-font16">
+                        <!-- 练习模式做题-->
+                        <div id="questionModule" class="" style="width:915px;overflow:hidden;">
+                            <ul id="QuestionList" v-bind:style="{'transform' : 'translate3d(' + translateX + 'px,0px, 0)'}" style="transition:all .5s ease;">
+                                <li v-for="(index,item) in Chapter.list">
+                                    <div class="subject-con bor clearfix m-question" v-if="item.QuestionType_ID==1 || item.QuestionType_ID==2 || item.QuestionType_ID==4" style="min-height: 686px;">
+                                        <div class="subject-con">
+                                            <div class="sub-content2 sub-conanswer">
+                                                <i class="subjec-daan" v-bind:class="[item.MyAnswer.length==0?'subjec-none':(item.MyAnswer.toString()==item.Answer.toString()?'subjec-right':'subjec-wrong')]"></i>
+                                                <div class="sub-dotitle"> <em>{{index+1}}</em> <i>[{{item.QuestionType_ID | filterType}}]</i>{{item.Title}}</div>
+                                                <!--单选-->
+                                                <answer-singles v-if="item.QuestionType_ID==1" v-bind:list="item.Body" v-bind:value.sync="item.MyAnswer" v-bind:answer="item.Answer" v-bind:showanswer="item.ShowAnswer"></answer-singles>
+                                                <!--判断-->
+                                                <answer-judge v-if="item.QuestionType_ID==4" v-bind:value.sync="item.MyAnswer" v-bind:answer="item.Answer" v-bind:showanswer="item.ShowAnswer"></answer-judge>
+                                                <!--多选-->
+                                                <answer-mult v-if="item.QuestionType_ID==2" v-bind:list="item.Body" v-bind:value.sync="item.MyAnswer" v-bind:answer="item.Answer" v-bind:showanswer="item.ShowAnswer"></answer-mult>
+                                            </div>
+                                            <div v-show="item.ShowAnswer">
+                                                <div class="m_answerLine refer-answer clearfix jx_box " style="">
+                                                    <div class="reck"> 参考答案：<em class="right">{{item.Answer}}</em> 您的答案：<em class="wrong">{{item.MyAnswer}}</em> </div>
+                                                    <ul>
+                                                        <li class="nobro"> <a href="javascript:void(0)" class="btn__scbt scbt" v-bind:class="{item.IsCollection?'this':''}" @click="AddCollection(item)"> <i></i>收藏本题 </a> </li>
+                                                        <li><a href="" class="btn_jc jc"><i></i>纠错</a></li>
+                                                        <li> <a href="" class="btn_sqjx sqjx"><i></i>收起解析</a> <a href="" class="btn_zkjx zkjx" style="display:none;"><i></i>展开解析</a> </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="m_analyse detail-intro">
+                                                    <div class="solution  f-f14">
+                                                        <ul>
+                                                            <li>
+                                                                <span class="s-stnd"><i></i>试题难度：</span>
+                                                                <div class="so-star"><b style="width:{{item.Level*20}}%;"></b></div>
+                                                            </li>
+                                                            <li>
+                                                                <span class="s-jx"><i></i>参考解析：</span>
+                                                                <div class="so-timu">
+                                                                    <div class="wenzi">{{item.Mark || '暂无解析'}}</div>
+                                                                </div>
+                                                            </li>
+
+                                                            <li class="f-mt20">
+                                                                <span class="s-note"><i></i>笔&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;记：</span>
+                                                                <div class="so-note"><a href="javascript:;" class="btn__addNote" @click="showRemakInput(item)"><i></i>记笔记</a></div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="biji_notes">
+                                                        <h4><a href="javascript:">我的笔记</a></h4>
+                                                        <div class="add_biji text-right" v-show="item.ShowRemart">
+                                                            <textarea placeholder="好记性不如烂笔头，你可以记录试题" v-model="item.Remart"></textarea>
+                                                            <button class="mid-btn btn-red" @click="AddQuestionNote(item,index)">新增笔记</button>
+                                                            <div class="clear"></div>
+                                                        </div>
+                                                        <div class="student_notes" v-show="item.ShowNoteList">
+                                                            <div class="notes_info" v-for="child in item.NoteList">
+                                                                <div class="name">
+                                                                    <span class="time f-f12">时间：{{child.AddTime}}</span> <h5>王军</h5>
+                                                                </div>
+                                                                <div class="biji_box clear">{{child.Remart}}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="detail-more mt40"> <a href="javascript:" @click="ShouQi(item)" class="btn__showAllNote"><span><i></i>{{item.ShowNoteList?'收起笔记':'查看所有笔记'}} <em></em></span></a> </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                    <div class="subject-con bor clearfix m-question disabled" v-if="item.QuestionType_ID==3 || item.QuestionType_ID==5 || item.QuestionType_ID==6" style="min-height: 686px;">
+                                        <div class="subject-con">
+                                            <div class="sub-content2 ">
+                                                <i class="subjec-daan" style="display: none;"></i>
+                                                <div class="sub-dotitle"> <em>{{index+1}}</em> <i>[{{item.QuestionType_ID | filterType}}]</i> </div>
+                                                <dl class="sub-answer vsub-mater-con">
+                                                    <dd v-if="item.QuestionType_ID==3 || item.QuestionType_ID==5">{{item.Title}}</dd>
+                                                    <dd v-if="item.QuestionType_ID==6" v-html="item.Title"></dd>
+                                                </dl>
+                                                <div class="mater-respond" style="display:block;">
+                                                    <input type="text" v-model="item.MyAnswer" v-if="item.QuestionType_ID==3" />
+                                                    <textarea placeholder="请在此输入您的答案" v-model="item.MyAnswer" v-if="item.QuestionType_ID==5"></textarea>
+                                                </div>
+                                            </div>
+                                            <div v-show="item.ShowAnswer">
+                                                <div class="m_answerLine refer-answer clearfix jx_box " style="">
+                                                    <div class="reck"> 参考答案：<em class="right">{{item.Answer}}</em> 您的答案：<em class="wrong">{{item.MyAnswer}}</em> </div>
+                                                    <ul>
+                                                        <li class="nobro"> <a href="javascript:void(0)" class="btn__scbt scbt" v-bind:class="{item.IsCollection?'this':''}" @click="AddCollection(item)"> <i></i>收藏本题 </a> </li>
+                                                        <li><a href="" class="btn_jc jc"><i></i>纠错</a></li>
+                                                        <li> <a href="" class="btn_sqjx sqjx"><i></i>收起解析</a> <a href="" class="btn_zkjx zkjx" style="display:none;"><i></i>展开解析</a> </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="m_analyse detail-intro">
+                                                    <div class="solution  f-f14">
+                                                        <ul>
+                                                            <li>
+                                                                <span class="s-stnd"><i></i>试题难度：</span>
+                                                                <div class="so-star"><b style="width:{{item.Level*20}}%;"></b></div>
+                                                            </li>
+                                                            <li>
+                                                                <span class="s-jx"><i></i>参考解析：</span>
+                                                                <div class="so-timu">
+                                                                    <div class="wenzi">{{item.Mark || '暂无解析'}}</div>
+                                                                </div>
+                                                            </li>
+
+                                                            <li class="f-mt20">
+                                                                <span class="s-note"><i></i>笔&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;记：</span>
+                                                                <div class="so-note"><a href="javascript:;" class="btn__addNote" @click="showRemakInput(item)"><i></i>记笔记</a></div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="biji_notes">
+                                                        <h4><a href="javascript:">我的笔记</a></h4>
+                                                        <div class="add_biji text-right" v-show="item.ShowRemart">
+                                                            <textarea placeholder="好记性不如烂笔头，你可以记录试题" v-model="item.Remart"></textarea>
+                                                            <button class="mid-btn btn-red" @click="AddQuestionNote(item,index)">新增笔记</button>
+                                                            <div class="clear"></div>
+                                                        </div>
+                                                        <div class="student_notes" v-show="item.ShowNoteList">
+                                                            <div class="notes_info" v-for="child in item.NoteList">
+                                                                <div class="name">
+                                                                    <span class="time f-f12">时间：{{child.AddTime}}</span> <h5>王军</h5>
+                                                                </div>
+                                                                <div class="biji_box clear">{{child.Remart}}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="detail-more mt40"> <a href="javascript:" @click="ShouQi(item)" class="btn__showAllNote"><span><i></i>{{item.ShowNoteList?'收起笔记':'查看所有笔记'}} <em></em></span></a> </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- 题目切换栏 -->
+                    </div>
+                    <!--右侧设置-->
+                    <div class="pra-right-con">
+                        <div id="m_rightPart" class="pra-right-con-sub" style="z-index: 1001; position: static; top: auto; bottom: auto; left: auto;">
+                            <!---->
+                            <div id="m_rightBtnLine" class="pra-r-set bor clearfix">
+                                <ul class="f-f14">
+                                    <li @click="returnList">
+                                        <a href="javascript:;" class="btn_backList fhlb">
+                                            <i></i>
+                                            <p>返回列表</p>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;" class="btn_jsq jsq" @click="jisuanqi">
+                                            <i></i>
+                                            <p>计算器</p>
+                                        </a>
+                                    </li>
+                                    <li @click="fontSetting=!fontSetting">
+                                        <a href="javascript:;" class="btn_fontsize font">
+                                            <i></i> <!--选择时添加 this-->
+                                            <p>字体</p>
+                                        </a>
+                                        <!-- 字体设置-->
+                                        <div class="m_fontsize pop" v-show="fontSetting">
+                                            <i></i>
+                                            <div class="txt-size clearfix">
+                                                <a href="javascript:;" class="f-f18" @click="chociceFont(18)">大</a>
+                                                <a href="javascript:;" class="f-f16 this" @click="chociceFont(16)">中</a>
+                                                <a href="javascript:;" class="f-f14" @click="chociceFont(14)">小</a>
+                                            </div>
+                                        </div>
+                                        <!-- 字体设置 end-->
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!---->
+                            <div class="time-card bor mt20">
+                                <!--答题卡区域-->
+                                <div class="rightArea-answer clear">
+                                    <div id="answerCard">
+                                        <div class="hd clearfix"> <span class="title f-fl">答题卡 <span class="e_doneCount card-count" id="page-card-info" style="font-size: 12px;color: #F06000;margin-left: 10px"></span></span> </div>
+                                        <div class="bd clear" style="min-height:80px; max-height: 62px;">
+                                            <dl class="panel-item">
+                                                <dt>题号</dt>
+                                                <dd class="panel-order" id="datika1">
+                                                    <a href="javascript:;" class="e_answerCard page-card-item" v-for="(index,item) in Chapter.list" v-bind:class="{'this':item.MyAnswer.length!=0}" @click="choiceQues(index)">{{index+1}}</a>
+                                                </dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                    <div class="cad-color clear">
+                                        <div class="panel-order-notice panel-notice-t"> <em>已做</em><i class="a doit"></i> <em>未做</em><i class="a normal"></i> </div>
+                                    </div>
+                                    <div class="ft">
+                                        <div class="btn2"><a href="javascript:" class="btn_submit" @click="tijiao">结束作答</a></div>
+                                    </div>
+                                </div>
+                                <!--答题卡区域 end-->
+                            </div>
+                        </div>
+                    </div>
+                    <!--右侧设置 end-->
+                </div>
+                <!--题型 结束-->
+
+            </div>
+        </div>
+        <div id="m__bottomBtnLine" class="subbottom-con">
+            <div class="subbottom">
+                <div class="tieshi"><a href="javascript:;" class="btn__tips" @click="tsclose"><i></i>小贴士</a></div>
+                <div id="m__tipsInfo" class="tie-list-con clearfix" v-show="ts">
+                    <div class="tie-list clearfix">
+                        <ul class="f-f14">
+                            <li class="s-pgup">
+                                <span>切换<br>“上一题”</span> <i></i>
+                            </li>
+
+                            <li class="s-pgdn">
+                                <i></i><span>切换<br>“下一题”</span>
+                            </li>
+                        </ul>
+                        <i class="s-off" @click="tsclose"></i>
+                    </div>
+                </div>
+                <ul class="bor">
+                    <li class="btn__prev pre " @click="upquestion()"><a href="javascript:;"><i></i>上一题</a></li>
+                    <li class="btn__analyse ckdan ckzt" @click="seeAnswer"><a href="javascript:;"><i></i>查看答案</a></li>
+                    <li class="btn__next next" @click="nextquestion()"><a href="javascript:;">下一题 <i></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--footer-->
+    <!--#<!--#include file="../UserControl/Footer.html"-->
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <script>
+        //单选
+        Vue.component('answer-singles', {
+            props: ['list', 'value','answer','showanswer'],
+            template: '<dl class="sub-answer sub-answer-no"><dd class="m-question-option" v-bind:class="{\'cho-this\':key==value,\'right-this\':isRigght(key)}" v-for="(key,val) in list" @click="choice(key,val)"><i></i><span>{{key}}.</span>{{val}}</dd></dl>',
+            data: function () {
+
+            },
+            methods: {
+                isRigght:function(key){
+                    return this.answer.indexOf(key)>-1 && this.showanswer
+                },
+                choice: function (key, val) {
+                    this.value.splice(0,1,key)
+                    this.value.sort();
+                }
+            }
+        })
+        //判断
+        Vue.component('answer-judge', {
+            props: ['list', 'value','answer','showanswer'],
+            template: '<dl class="sub-answer"><dd class="m-question-option" @click=handleClick(1) v-bind:class="{\'cho-this\':1===value}"> <i></i><span>是</span> </dd><dd class="m-question-option" @click=handleClick(0) v-bind:class="{\'cho-this\':0===value}"><i></i><span>否</span></dd></dl>',
+            methods: {
+                handleClick: function (val) {
+                    this.value=val;
+                }
+            }
+        })
+        //多选
+        Vue.component('answer-mult', {
+            props: ['list', 'value','answer','showanswer'],
+            template: '<dl class="sub-answer sub-answer-double"><dd class="m-question-option" v-bind:class="{\'cho-this\':idx(key),\'right-this\':isRigght(key)}" v-for="(key,val) in list" @click="choice(key,val)"><i></i><span>{{key}}.</span>{{val}}</dd></dl>',
+            data: function () {
+                return {
+                }
+            },
+            methods: {
+                isRigght:function(key){
+                    return this.answer.indexOf(key)>-1 && this.showanswer
+                },
+                idx: function (key) {
+                    return this.value.indexOf(key) > -1
+                },
+                choice: function (key, val) {
+                    if (this.value.indexOf(key) > -1) {
+                        this.value.splice(this.value.indexOf(key), 1)
+                    } else {
+                        this.value.push(key)
+                    }
+                    this.value.sort();
+                }
+            }
+        })
+        Vue.filter('filterType', function (val) {
+            switch (val) {
+                case 1:
+                    return '单选题'
+                    break;
+                case 2:
+                    return '多选题'
+                    break;
+                case 3:
+                    return '填空题'
+                    break;
+                case 4:
+                    return '判断题'
+                    break;
+                case 5:
+                    return '问答题'
+                    break;
+                case 6:
+                    return '计算题'
+                    break;
+                case 7:
+                    return '组合题'
+                    break;
+            }
+        })
+        require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil'],
+            function (fnr) {
+                var $ = layui.$;
+                var table = layui.table;
+                var tableExt = layui.tableExt;
+                var vm = new Vue({
+                    el: "#root",
+                    data: {
+                        storeId: fnr.getQueryString('storeId'),
+                        chapterId: fnr.getQueryString('chapterId'),
+                        questionType: fnr.getQueryString('questionType'),
+                        questionCount: fnr.getQueryString('questionCount'),
+                        questionSource: fnr.getQueryString('questionSource'),
+                        Chapter: '',
+                        currentIndex: 0,
+                        ts: true,
+                        fontSetting:false,
+                        translateX:0,
+                    },
+                    computed: {
+                        done: function () {
+                            return this.Chapter.list.filter(function (item) { return !!item.MyAnswer.length > 0 }).length;
+                        },
+                        percen: function () {
+                            return 100 / this.Chapter.list.length
+                        }
+                    },
+                    ready: function () {
+                        this.CreateChapterPractice()
+                        var that=this;
+                        document.addEventListener('keydown',function(e){
+                             switch (e.keyCode) {
+                                case 37:
+                                    that.upquestion();
+                                    break;
+                                case 39:
+                                    that.nextquestion();
+                                    break;
+                                default:
+                            }
+                        },false)
+                    },
+                    methods: {
+                        //选择题目
+                        choiceQues:function(index){
+                            this.currentIndex=index;
+                            this.setTranstion(this.currentIndex*-915)
+                        },
+                        //返回列表
+                        returnList:function(){
+                            history.back(-1);
+                        },
+                        //创建章节练习
+                        CreateChapterPractice: function () {
+                            var that = this;
+                            $.post('/service/datastore/Chapter/CreateChapterPractice',
+                            {
+                                storeId: this.storeId,
+                                chapterId: this.chapterId,
+                                questionType: this.questionType,
+                                questionCount: this.questionCount,
+                                questionSource: this.questionSource,
+                            },
+                            function (res) {
+                                if (res.SuccessResponse) {
+                                    var list = res.Data.list;
+                                    for (var i = 0; i < list.length; i++) {
+                                        if (list[i].Body) {
+                                            list[i].Body = JSON.parse(list[i].Body)
+                                        }
+                                        if (list[i].AnswerCount) {
+                                            list[i].AnswerList = []
+                                            for (var j = 0; j < list[i].AnswerCount; j++) {
+                                                list[i].AnswerList.push({ key: i, val: String.fromCharCode(j + 65) })
+                                            }
+                                        }
+                                        list[i].MyAnswer = [];
+                                        list[i].Answer = list[i].Answer.split(',').sort();
+                                        list[i].ShowAnswer = false;
+                                        list[i].ShowMark = false;
+                                        list[i].ShowNoteList = false;
+                                        list[i].Remart = '';
+                                        list[i].ShowRemart = false;
+                                    }
+                                    that.Chapter = res.Data;
+                                    var counts = res.Data.list.length;
+                                    //document.getElementById('QuestionList').style.width=915 * counts+'px'
+                                    $("#QuestionList").width(915 * counts);
+                                }
+                            })
+                        },
+                        setTranstion:function(val){
+                            this.translateX=val;
+                        },
+                        //上一题
+                        upquestion: function () {
+                            if (this.currentIndex == 0) {
+                                layer.msg('已经是第一题了')
+                            } else {
+                                this.currentIndex--;
+                                this.setTranstion(this.currentIndex*-915)
+                            }
+                        },
+                        //下一题
+                        nextquestion: function () {
+                            if (this.currentIndex == this.Chapter.list.length - 1) {
+                                layer.msg('已经是最后一题')
+                            } else {
+                                this.currentIndex++;
+                                this.setTranstion(this.currentIndex*-915)
+                            }
+                        },
+                        Judge: function (Answer, MyAnswer) {
+                            console.log(Answer.sort().toString(), MyAnswer.sort().toString())
+                            return Number(Answer.sort().toString() == MyAnswer.sort().toString());
+                        },
+                        //结束作答
+                        tijiao: function () {
+                            var that = this;
+                            $.post('/service/datastore/Chapter/SubmitPractice',
+                                {
+                                    resultId: this.Chapter.resultId,
+                                    list: this.Chapter.list.map(function (item) {
+                                        return { ID: item.ID, MyAnswer: item.MyAnswer.join(), Judge: that.Judge(item.Answer, item.MyAnswer) }
+                                    }),
+                                },
+                                function (res) {
+                                    if (res.SuccessResponse) {
+                                        fnr.openDialog({
+                                            title:'做题答案',
+                                            area: ['766px', '320px'],
+                                            content: ['/usercenter/questionbank/tk/chapterAnswer.html?busType=1&busId='+that.Chapter.practiceId+'&chapterId='+that.chapterId+'&storeId='+that.storeId],
+                                        });
+                                    }
+                                })
+                        },
+                        //查看答案
+                        seeAnswer: function () {
+                            this.Chapter.list[this.currentIndex].ShowAnswer = !this.Chapter.list[this.currentIndex].ShowAnswer;
+                        },
+                        //切换解析显示隐藏
+                        shouqi: function (item) {
+                            item.ShowMark = !item.ShowMark;
+                        },
+                        //收起笔记
+                        ShouQi: function (item) {
+                            item.ShowNoteList = !item.ShowNoteList;
+
+                        },
+                        //填写笔记
+                        showRemakInput: function (item) {
+                            item.ShowRemart = !item.ShowRemart;
+                        },
+                        //关闭提示
+                        tsclose: function () {
+                            this.ts = !this.ts;
+                        },
+                        //收藏本题
+                        AddCollection: function (item) {
+                            var that=this;
+                            console.log(item)
+                            $.post('/service/datastore/Chapter/SubmitPractice',
+                                {
+                                    ID: item.ID,
+                                    BusType: that.Chapter.BusType,
+                                    BusID: item.BusID,
+                                    StuID: item.StuID,
+                                    AddTime: Data.now(),
+                                }
+                                , function (res) {
+
+                                })
+                        },
+                        //添加笔记
+                        AddQuestionNote: function (item,index) {
+                            if (!item.Remart) {
+                                return layer.msg('笔记为空')
+                            }
+                            var that=this;
+                            $.post('/service/datastore/Question/AddQuestionNote',
+                                {
+                                    Question_ID: item.ID,
+                                    Remart: item.Remart,
+                                }
+                                , function (res) {
+                                    if (res.SuccessResponse) {
+                                        item.Remart='';
+                                        layer.msg(res.Message)
+                                        that.GetQuestionNoteList(item,index)
+                                    }
+
+                                })
+                        },
+                        //获取笔记列表
+                        GetQuestionNoteList: function (item,index) {
+                            var that=this;
+                            $.get('/service/datastore/Question/GetQuestionNoteList',
+                                {
+                                    Question_ID: item.ID,
+                                }
+                                , function (res) {
+                                        console.log(that.Chapter)
+                                        that.Chapter.list[index].NoteList=res.Data;
+                                })
+                        },
+                        //计算器
+                        jisuanqi:function () {
+                            fnr.openDialog({
+                                type: 2,
+                                title: "计算器",
+                                area: ['710px', "400px"],
+                                scrollbar: true,
+                                content: ['/usercenter/questionbank/Counter.html']
+                            })
+                        },
+                        //改变字体
+                        chociceFont:function(font){
+                            document.getElementsByClassName('sub-content2')[0].style.fontSize=font+'px'
+                        },
+                    }
+                });
+            })
+    </script>
+</body>
+
+</html>

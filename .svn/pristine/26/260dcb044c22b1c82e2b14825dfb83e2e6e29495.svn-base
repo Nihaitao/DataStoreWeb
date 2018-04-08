@@ -1,0 +1,523 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>介绍</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="../script/jquery.js"></script>
+    <link rel="shortcut icon" href="" type="image/x-icon" class="favIcon" />
+    <link rel="stylesheet" href="../Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../Resources/CSS/Font/css/font-awesome.min.css">
+    <script src="../Resources/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../Resources/CSS/PC_css.css">
+    <style>
+        .dColor {
+            color: #1d9d74;
+            float: right;
+            margin-right: 10px;
+            font-size: 20px;
+        }
+
+        .iconFree {
+            font-size: 12px;
+            color: #fff;
+            background-color: #FF1A1A;
+            padding: 1px 2px;
+            border-radius: 1px;
+            margin-left: 10px;
+        }
+
+        .iconAudition {
+            font-size: 12px;
+            color: #fff;
+            background-color: #FFD143;
+            padding: 1px 2px;
+            border-radius: 1px;
+            margin-left: 10px;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body style="background-color: #F0F2F5" id="root" v-cloak>
+    <!--顶部-->
+    <div class="top_head clearfix" v-if="!loginState">
+        <div class="container">
+            <div class="pull-left" style="margin-left: 15px">
+                <span>欢迎来到{{layoutData.HeaderName}}</span>
+            </div>
+            <div class="pull-right">
+                <a href="../Login.html">登录</a>
+                <a href="../Register.html">注册</a>
+                <a href="#">注册客服中心</a>
+            </div>
+        </div>
+    </div>
+    <div class="top_head" v-if="loginState">
+        <div class="container">
+            <div class="pull-left" style="margin-left: 15px">
+                <span>欢迎来到{{layoutData.HeaderName}}</span>
+            </div>
+            <div class="pull-right Gcenter">
+                <a>
+                    <img v-bind:src="headPhoto" al alt="" width="30" height="30" style="border-radius: 50%">
+                    <i class="fa fa-angle-down" style="margin-left: 20px"></i>
+                </a>
+                <a href="#"><i class="fa fa-bell"></i></a>
+                <a href="#">客服中心</a>
+                <a id="exit" @click="exit">退出</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="clearfix" style="height: 60px;background-color: #fff">
+        <div class="container">
+            <a href="../index.html" class="Pro-logo pull-left" style="display: inline-block; width: 230px; height: 40px;">
+                <img v-if="layoutData.HeaderLogoOrName == 1" v-bind:src="layoutData.HeaderLogo" alt="" style="width: 100%; height: 100%;">
+                <span v-if="layoutData.HeaderLogoOrName == 0" style="width: 100%; height: 100%;display: inline-block;padding-top: 6px;padding-left: 14px;">{{layoutData.HeaderName}}</span>
+            </a>
+            <div class="Pro-nav pull-right">
+                <ul>
+                    <li><a href="#">课程中心</a></li>
+                    <li><a href="#">问答</a></li>
+                    <li><a href="#">专业</a></li>
+                    <li><a href="#">题库</a></li>
+                    <li><a href="#">名师</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!--详细介绍-->
+    <div class="Pro-screen" style="box-shadow: none">
+        <div class="container clearfix">
+            <ol class="breadcrumb">
+                <li><i class="icon_weizhi"></i><span>当前位置：</span></li>
+                <li>首页</li>
+                <li>课程详情</li>
+            </ol>
+            <div id="showDetail" class="Pro-showDetail clearfix">
+                <div class="Pro_care pull-left">
+                    <img v-bind:src="headDetailData.CoverPath ? headDetailData.CoverPath : '../Resources/images/null.jpg'" alt="" width="329" height="185">
+                </div>
+                <div class="pull-left" style="margin-left: 35px;">
+                    <h3 class="Pro-title">
+                        {{headDetailData.Name}}
+                    </h3>
+                    <p>{{headDetailData.Description}}</p>
+                    <div style="margin-top: 10px"><span style="font-weight: 600;">主讲老师：</span><span>{{headDetailData.TeacherDetail_Name}}</span></div>
+                    <div style="margin-top: 10px" v-if="IsPay == 0"><span style="font-weight: 600;">价格：</span><span class="price">￥ {{headDetailData.Price}}</span></div>
+                    <div style="margin-top: 10px" v-else><span style="font-weight: 600;">价格：</span><span class="price">已购买</span></div>
+                    <div style="margin-top: 10px" v-if="IsPay == 0">
+                        <div class="buyNow-button" style="display: inline-block;margin: 0" @click="buyNow"> 立即购买</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--课程导师及介绍-->
+    <div class="Cur-introduce">
+        <div class="container">
+            <div class="pull-left Cur-introduce-info ">
+                <ul class="Cur-nav-tap clearfix">
+                    <li class=""><a href="#courseIntroduce" role="tab" data-toggle="tab">课程介绍</a></li>
+                    <li class="active"><a href="#courseList" data-toggle="tab">课程目录</a></li>
+                    <li class=""><a href="#dataDowm" data-toggle="tab">资料下载</a></li>
+                    <li class=""><a href="#studentTalk" data-toggle="tab">学员评论</a></li>
+                </ul>
+                <div class="tab-content" style="min-height: 382px;">
+                    <!--课程介绍-->
+                    <div role="tabpanel" class="tab-pane" id="courseIntroduce">
+                        <div class="Pro-introduce">
+                            <div id="Pro-introduce-info" class="Pro-introduce-info clearfix">
+                                <div>{{headDetailData.Particulars}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--课程目录-->
+                    <div role="tabpanel" class="tab-pane active" id="courseList">
+                        <ul class="chapter-list">
+                            <li id="accordion" v-for="(index, item) in pathNavData">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#{{item.Name}}" target="_blank">
+                                    <i class="chapter-icon"></i>
+                                    <span>{{item.Name}}</span>
+                                    <i class="pull-right fa fa-caret-down"></i>
+                                </a>
+                                <ul id="{{item.Name}}" class="course-list panel-collapse collapse {{index == 0 ? 'in' : ' '}}" v-if="IsPay == 0">
+                                    <li v-for="(i, items) in item.ChildNodeList">
+                                        <a class="notPurch" href="javascript:;" style="text-decoration:none;" v-if="items.IsOpen == 3">
+                                            <i class="fa fa-unlock-alt" style="margin-left: 5px; margin-right: 20px;color: #929292;"></i>
+                                            <span style="color: #666;">{{items.Name}}</span>
+                                            <span></span>
+                                            <!--<i class="fa fa-check-square dColor {{$value.IsLook==1?"":"hide"}}"></i>-->
+                                        </a>
+                                        <a v-if="items.IsOpen == 2" href="Video.html?ID={{items.ID}}&Course_ID={{items.Course_ID}}&CourseWare_ID={{items.CourseWare_ID}}">
+                                            <i class="fa fa-video-camera" style="margin-left: 5px; margin-right: 20px;color: #929292;"></i>
+                                            <span style="color: #666;">{{items.Name}}</span>
+                                            <span class="iconAudition">试听</span>
+                                        </a>
+                                        <a v-if="items.IsOpen == 1" href="Video.html?ID={{items.ID}}&Course_ID={{items.Course_ID}}&CourseWare_ID={{items.CourseWare_ID}}">
+                                            <i class="fa fa-video-camera" style="margin-left: 5px; margin-right: 20px;color: #929292;"></i>
+                                            <span style="color: #666;">{{items.Name}}</span>
+                                            <span class="iconFree">免费</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <ul id="{{item.Name}}" class="course-list panel-collapse collapse {{index == 0 ? 'in' : ' '}}" v-if="IsPay == 1">
+                                    <li v-for="(i, items) in item.ChildNodeList">
+                                        <a href="Video.html?ID={{items.ID}}&Course_ID={{items.Course_ID}}&CourseWare_ID={{items.CourseWare_ID}}">
+                                            <i class="fa fa-video-camera" style="margin-left: 5px; margin-right: 20px;color: #929292;"></i>
+                                            <span style="color: #666;">{{items.Name}}</span>
+                                            <i class="fa fa-check-square dColor {{items.IsLook==1?"":"hide"}}"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <!--资料下载-->
+                    <div role="tabpanel" class="tab-pane " id="dataDowm">
+                        <ul class="file-list" v-for="(index, item) in downloadData">
+                            <li class="clearfix">
+                                <div class="file-name pull-left">
+                                    <h5><i class="file-icon img"></i>{{item.Name}}</h5>
+                                    <p>
+                                        上传时间：<span>{{item.AddTime}}</span>
+                                    </p>
+                                    </p>
+                                </div>
+                                <div class="file-dowmNum pull-left">
+                                    <span>{{item.DownCount}}</span>人下载
+                                </div>
+                                <a @click="saveDownNum(this, {{item.ID}})" v-bind:href="item.Path" class="pull-right file-dowmButtom">下载</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!--学员评论-->
+                    <div role="tabpenl" class="tab-pane " id="studentTalk">
+                        <ul class="talk-list" v-for="(index, item) in stutalkData">
+                            <li class="clearfix">
+                                <div class="pull-left">
+                                    <div class="pull-left" style="width: 10%;">
+                                        <img v-bind:src="item.url ? item.url : '../Resources/images/head.png'" c class="user-photo pull-left" alt="123">
+                                    </div>
+                                    <div class="pull-right" style="width: 90%;padding-left: 20px;">
+                                        <div class="user-name">{{item.StudentName}}</div>
+                                        <div class="user-say">{{item.Content}}</div>
+                                        <div class="user-say-date">{{item.AddTime}}</div>
+                                    </div>
+                                </div>
+                                <div class="like_status">
+                                    <img class="thumbsUp" src="../Resources/images/like-0.png" width="19" height="19"><span>(<span class="giveNum">0</span>)</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!--主讲老师-->
+            <div id="Cur-introduce-Tinfo" class="pull-right Cur-introduce-Tinfo">
+                <h3>授课老师</h3>
+                <div class="teacher-photo">
+                    <img v-bind:src="teacherDetailData.HeadImage ? teacherDetailData.HeadImage : '../Resources/images/head.png'" alt="" style="width:100px;height:100px;border-radius:50%;">
+                </div>
+                <div class="teacher-name">{{teacherDetailData.Name}}</div>
+                <div class="teacher-info">
+                    {{teacherDetailData.Introduction}}
+                </div>
+            </div>
+
+        </div>
+        <!--footer-->
+        <div class="foot">
+            <ul class="clearfix info">
+                <li>eol简介</li>
+                <li>联系方式</li>
+                <li>招聘信息</li>
+                <li>京IC证140769号</li>
+                <li>京IC备12045350号</li>
+                <li>京IC网文[2014]2106-306号</li>
+                <li>京公网安备&nbsp;11010802020236号</li>
+            </ul>
+            <p class="copyright">{{layoutData.FooterCopyright}}</p>
+        </div>
+
+</body>
+</html>
+<link href="../Resources/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="../Resources/js/modules/vue/vue.min.js"></script>
+<script src="../Resources/js/modules/layer/layui.js"></script>
+<script src="../Resources/js/require_config.js"></script>
+<script src="../Resources/js/headFootLayout.js"></script>
+<script>
+    
+    require_js_file(["table", "form", "jquery", "tableExt"], function (fnr) {
+        function GetQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+        }
+        function delAllCookie() {
+            var myDate = new Date();
+            myDate.setTime(-1000);//设置时间
+            var data = document.cookie;
+            var dataArray = data.split("; ");
+            for (var i = 0; i < dataArray.length; i++) {
+                var varName = dataArray[i].split("=");
+                document.cookie = varName[0] + "=''; expires=" + myDate.toGMTString();
+            }
+        }
+        
+        var $ = layui.$;
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+                loginState: false,
+                headPhoto: '',
+                cId: GetQueryString('ID'),
+                dId: '',
+                IsPay: '',
+                TeacherDetail_ID: '',
+                layoutData: {},
+                headDetailData: {}, //头部展示数据, 课程介绍部分
+                teacherDetailData: {}, //老师详情介绍
+                stutalkData: [], //学员评论
+                downloadData: [], //资料下载
+                pathNavData: [] //课程目录
+            },
+            ready: function () {
+                _this = this;
+                //每个数据只加载一次
+                var p = 0, d = 0, s = 0;
+                $(".Cur-nav-tap").find("li").bind('click', function () {
+                    var txt = $(this).find('a').html()
+                    if (txt == '课程目录') {
+                        if (p < 1) {
+                            p++
+                            _this.pathnav()
+                        }
+                    } else if (txt == '资料下载') {
+                        if (d < 1) {
+                            d++
+                            _this.download()
+                        }
+                    }
+                    else if (txt == '学员评论') {
+                        if (s < 1) {
+                            s++
+                            _this.stutalk()
+                        }
+                    }
+                })
+                _this.checkLogin();
+                _this.headDetail();
+            },
+            methods: {
+                //退出
+                exit: function () {
+                    delAllCookie();
+                    location.href = '../Login.html';
+                },
+
+                //查询stuID
+                checkLogin: function () {
+                    _this = this;
+                    if (fnr.Cookie.get('StuId') && fnr.Cookie.get('StuId') != 'undefined') {
+                        _this.loginState = true;
+                        $.get("/service/Student/GetStudentInfo", function (res) {
+                            if (res.SuccessResponse) {
+                                _this.msg = 'hi，' + res.ReturnData.Data.Name;
+                                _this.headPhoto = res.ReturnData.Data.HeadImg ? res.ReturnData.Data.HeadImg : '../Resources/images/photo.png'
+                                _this.loginState = true;
+                            }
+                        });
+                    }
+                },
+
+                //资料下载页面`下载次数的更新
+                saveDownNum: function () {
+                    var n = $(a).prev().find("span").html() //获取当前页面上下载次数
+                    $(a).prev().find("span").html(n * 1 + 1) //页面上的下载次数数据加一
+                    $.ajax({
+                        type: 'POST',
+                        url: '/service/NoAuthority/WebCourse/UpdateDataInfoDownCount',
+                        data: { ID: id },
+                        success: function (data) {
+                            if (!data.SuccessResponse) {
+                                layer.msg(data.Message);
+                            }
+                        }
+                    })
+                },
+
+                //学员评论
+                stutalk: function () {
+                    var self = this;
+                    $.ajax({
+                        type: 'get',
+                        url: '/service/CourseComment/GetCourseCommentList',
+                        data: { Discipline_ID: self.dId, Course_ID: self.cId },
+                        success: function (res) {
+                            if (res.SuccessResponse) {
+                                if (res.ReturnData.Data) {
+                                    var list = res.ReturnData.Data.reverse();
+                                    $.each(list, function (k, v) {
+                                        self.stutalkData.push(v);
+                                    });
+                                    var data = {
+                                        talkList: list
+                                    }
+                                    $('.like_status').on('click', '.thumbsUp', function () {
+                                        $(this).attr('src', '../Resources/images/like-1.png')
+                                    });
+                                }
+                            }
+                        }
+                    })
+                },
+
+                //资料下载
+                download: function () {
+                    var self = this;
+                    $.ajax({
+                        type: 'GET',
+                        url: '/service/NoAuthority/WebCourse/GetDataInfoList',
+                        data: { Course_ID: self.cId }, //课件ID
+                        success: function (res) {
+                            if (res.SuccessResponse) {
+                                if (res.ReturnData.Data) {
+                                    var fileList = res.ReturnData.Data;
+                                    $.each(fileList, function (k, v) {
+                                        self.downloadData.push(v);
+                                    });
+                                } else {
+                                    layer.msg('data为空');
+                                }
+                            } else {
+                                layer.msgs(res.Message);
+                            }
+                        }
+                    })
+                },
+
+                //课程目录
+                pathnav: function () {
+                    var self = this;
+                    $.ajax({
+                        type: 'GET',
+                        url: '/service/NoAuthority/GetCourse_ChaptersNodeList',
+                        data: { Course_ID: self.cId },  //课件ID
+                        success: function (res) {
+                            if (res.SuccessResponse) {
+                                if (res.ReturnData.Data) {
+                                    var list = res.ReturnData.Data
+                                    $.each(list, function (k, v) {
+                                        self.pathNavData.push(v);
+                                    });
+                                    $('.notPurch').on('click', function () {
+                                        var loginState = fnr.Cookie.get("StuId")
+                                        if (!loginState) {
+                                            layer.open({
+                                                type: 2,
+                                                area: ['400px', '550px'],
+                                                fixed: false, //不固定
+                                                maxmin: true,
+                                                title: '欢迎登陆',
+                                                content: '../login_model.html',
+                                            });
+                                        } else {
+                                            layer.open({
+                                                content: '视频未购买，不能播放'
+                                            })
+                                        }
+                                    })
+                                } else {
+                                    layer.msg('data为空');
+                                }
+
+                            } else {
+                                layer.msg(res.Message);
+                            }
+                        }
+                    })
+                },
+
+                //头部的详情介绍和课程介绍部分
+                headDetail: function () {
+                    var self = this;
+                    $.ajax({
+                        type: 'GET',
+                        url: '/service/NoAuthority/GetCourseByID',
+                        data: { ID: self.cId },
+                        success: function (res) {
+                            if (res.SuccessResponse) {
+                                if (res.ReturnData.Data) {
+                                    self.dId = res.ReturnData.Data.Discipline_ID;
+                                    self.IsPay = res.ReturnData.Data.IsPay;
+                                    self.TeacherDetail_ID = res.ReturnData.Data.TeacherDetail_ID;
+                                    self.teacherDetail(self.TeacherDetail_ID);
+                                    self.headDetailData = res.ReturnData.Data  //teacherID来源
+                                    self.pathnav();
+                                } else {
+                                    layer.msg('data为空');
+                                }
+                            } else {
+                                layer.msg(res.Message);
+                            }
+                        }
+                    });
+                },
+
+                //老师详情介绍
+                teacherDetail: function (tId) {
+                    var self = this;
+                    $.ajax({
+                        type: 'get',
+                        url: '/service/NoAuthority/GetTeacherByID',
+                        data: { TeacherDetail_ID: tId }, //老师ID
+                        success: function (res) {
+                            if (res.SuccessResponse) {
+                                if (res.ReturnData.Data) {
+                                    self.teacherDetailData = res.ReturnData.Data;
+                                }
+                            }
+                        }
+                    })
+                },
+
+                //立即购买
+                buyNow: function () {
+                    var loginState = fnr.Cookie.get("StuId")
+                    if (!loginState && loginState != 'undefined') {
+                        layer.open({
+                            type: 2,
+                            area: ['400px', '550px'],
+                            fixed: false, //不固定
+                            maxmin: true,
+                            title: '欢迎登陆',
+                            content: '../login_model.html',
+                        });
+                    } else {
+                        var ID = GetQueryString('ID');
+                        $.post("/service/Order/PutInShoppingCar", { Course_IDs: ID }, function (res) {
+                            if (res.SuccessResponse) {
+                                layer.msg('添加成功')
+                                location.href = '../Order/step11.html'
+                            } else {
+                                layer.msg(res.Message)
+                            }
+                        })
+                    }
+                }
+            },
+        });
+        LayoutFn();
+    })
+</script>

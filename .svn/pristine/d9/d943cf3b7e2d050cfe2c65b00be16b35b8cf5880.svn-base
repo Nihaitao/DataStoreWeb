@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <form class="layui-form" action="" onsubmit="return false" novalidate>
+            <div class="layui-form-item">
+                <label class="layui-form-label">校区名称</label>
+                <div class="layui-input-block">
+                    <input type="text" v-model="name" name="title" required lay-verify="required" placeholder="请输入校区名称" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item layui-hide">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit @click="formDemo">立即提交</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</body>
+</html>
+
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt"],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+           
+      
+            window.rootApp = new Vue({
+                el: "#root",
+                data: {
+                    _userId:0,
+                    name:''
+                },
+                ready: function () {
+                    _this = this;
+                    _this._userId = fnr.getQueryString("ID");
+                    //请求借口填充数据
+                    if (_this._userId) {
+                        $.get("/service/datastore/Campus/GetCampusByID", { ID: _this._userId }, function (rsp) {
+                            if (rsp.SuccessResponse) {
+                                _this.name = rsp.ReturnData.Data.Name;
+                            } else {
+                                layer.msg(Message)
+                            }
+                           
+                        })
+                    }
+
+                },
+                methods: {
+                    //保存数据关闭弹窗
+                    formDemo: function () {
+                        _this = this;
+                        if (!this.name) { layer.msg("请填写校区名字"); return false };
+                        $.post("/service/datastore/Campus/SaveCampus", { ID: this._userId, Name: this.name }, function (rsp) {
+                            if (rsp.SuccessResponse) {
+                                fnr.callDialog('refresh'); //回调打开窗口events中的refresh
+                                fnr.closeDialog(); //关闭当前的对话框
+                            } else {
+                                layer.msg(rsp.Message)
+                            }
+                        })
+                        return false;
+                    },
+                }
+            });
+        });
+</script>

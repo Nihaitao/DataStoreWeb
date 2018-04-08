@@ -1,0 +1,181 @@
+﻿<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+        <meta name="format-detection" content="telephone=no">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>列表内容页</title>
+        <link href="../../Resources/css/all.css" rel="stylesheet" />
+        <link href="../../Resources/css/ba.css" rel="stylesheet" />
+        <link href="../../Resources/css/listcont.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="http://at.alicdn.com/t/font_415611_zzk4w6t6v7a54s4i.css" />
+
+        <script src="../../script/jquery.js"></script>
+        <script src="../../js/listcont.js"></script>
+        <script src="../../js/comment.js"></script>
+        <script src="../../script/artTemplate.js"></script>
+        <script src="../../script/layer_mobile/layer.js"></script>
+	</head>
+
+	<body>
+		<header>
+			<div class="ipt">
+				<span class="logo">
+                    <img src="../../Resources/img/logo.jpg" />
+				</span>
+				<input type="text" name="" id="" placeholder="搜索课程、专业" />
+				<i class="iconfont icon-sousuo"></i>
+			</div>
+		</header>
+
+		<main>
+			<nav class="tip">
+				<ul class="clearfix bz-bb">
+					<li class="">
+						<span>综合排序</span>
+						<i class="iconfont icon-down-trangle"></i>
+						<span class="down" style="display: none;">
+                            <img src="../../Resources/img/032017090-02_03.jpg" />
+						</span>
+					</li>
+					<li class="">
+						<span>地区</span>
+						<i class="iconfont icon-down-trangle"></i>
+						<span class="down" style="display: none;">
+                            <img src="../../Resources/img/032017090-02_03.jpg" />
+						</span>
+					</li>
+					<li class="">
+						<span>筛选</span>
+						<i class="iconfont icon-down-trangle"></i>
+						<span class="down" style="display: none;">
+                            <img src="../../Resources/img/032017090-02_03.jpg" />
+						</span>
+					</li>
+				</ul>
+				<div class="side clr_f" style="display: none;">
+					<div class="placeShow" >
+						<div class="side_p">
+					 	<div class="bz-bb">
+					 		地区
+					 	</div >
+					 	<div class="bz-bb">
+					 		层次
+					 	</div>
+					 	<div class="active bz-bb">
+					 		学科
+					 	</div>
+					 </div> 
+					 <div class="side_show clr_f">
+					 	<div class="side_p_show">
+					 		<div class="fl-r diqu clr_f">
+					 			<i>文史类</i>
+					 			<i>理工类</i>
+					 			<i>法学类</i>
+					 			<i>医学类</i>
+					 			<i>新闻类</i>
+					 			<i>经管类</i>
+					 			<i>艺术类</i>
+					 		</div>
+					 	</div>
+					 </div>
+					</div>
+				</div>
+			</nav>
+			<p class="explain">
+				在“<span class="choice">地区</span>”的分类下,找到了<span class="num">188</span>门课程
+			</p>
+			<div class="firstCon clearfix">
+				<div class="international clearfix">
+					<span class="inter_English flt">
+                        <img src="../../Resources/img/20170906-06_03.jpg" alt="学位英语" />
+					</span>
+					<span class="inter_English_describe flt">
+						<h3>国际贸易理论与实务基础理论</h3>
+						<span class="inter_English_describe_person ">
+							<i class="iconfont icon-ren">398人</i>
+							<i class="price">￥300</i>
+						</span>
+					</span>
+				</div>
+				<div class="international clearfix">
+					<span class="inter_English flt">
+                        <img src="../../Resources/img/20170906-06_06.jpg" alt="电商运营" />
+					</span>
+					<span class="inter_English_describe flt">
+						<h3>国际贸易理论与实务基础理论</h3>
+						<span class="inter_English_describe_person ">
+							<i class="iconfont icon-ren">398人</i>
+							<i class="price">￥300</i>
+						</span>
+					</span>
+				</div>
+				<div class="international clearfix">
+					<span class="inter_English flt">
+                        <img src="../../Resources/img/20170906-06_03.jpg" alt="学位英语" />
+					</span>
+					<span class="inter_English_describe flt">
+						<h3>国际贸易理论与实务基础理论</h3>
+						<span class="inter_English_describe_person ">
+							<i class="iconfont icon-ren">398人</i>
+							<i class="price">￥300</i>
+						</span>
+					</span>
+				</div>
+				<div class="international clearfix">
+					<span class="inter_English flt">
+                        <img src="../../Resources/img/20170906-06_03.jpg" alt="学位英语" />
+					</span>
+					<span class="inter_English_describe flt">
+						<h3>国际贸易理论与实务基础理论</h3>
+						<span class="inter_English_describe_person ">
+							<i class="iconfont icon-ren">398人</i>
+							<i class="price">￥300</i>
+						</span>
+					</span>
+				</div>
+				</div>
+				<div class="more_btn">
+					<button class="more">查看更多课程</button>
+				</div>
+				<div class="mask" style="display: none"></div>
+		</main>
+
+
+		<footer>
+			<nav>
+				<ul class="clearfix">
+                    <li class="footer_active">
+                        <a class="footerBtn" href="../index.html">
+                            <i class="iconfont icon-shouye1"></i>
+                            <p>首页</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="list.html" class="footerBtn">
+                            <i class="iconfont icon-fenlei1"></i>
+                            <p>分类</p>
+                        </a>
+
+                    </li>
+                    <li>
+                        <a href="../Center/path.html" class="footerBtn">
+                            <i class="iconfont icon-wodekecheng"></i>
+                            <p>我的课程</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../Center/personalIndex.html" class="footerBtn">
+                            <i class="iconfont icon-wode"></i>
+                            <p>我的</p>
+                        </a>
+                    </li>
+				</ul>
+			</nav>
+		</footer>
+	</body>
+	
+	
+	
+</html>

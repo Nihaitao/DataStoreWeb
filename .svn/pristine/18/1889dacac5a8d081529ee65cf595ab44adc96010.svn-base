@@ -1,0 +1,112 @@
+﻿<!DOCTYPE html>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>添加活动推广</title>
+    <style>
+        .labelleft { font-weight: bold; width: 100px; }
+        .layui-form-label { padding: 3px 7px; }
+        .layui-form-item div.layui-input-inline { width: 500px; }
+    </style>
+
+</head>
+
+<body>
+    <div class="mainContainer">
+        <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+            <div class="layui-tab-content" style="height: 100px;">
+                <div class="layui-tab-item layui-show">
+                    <div class="layui-form">
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label labelleft">活动名称：</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="FormName" lay-verify="required" autocomplete="off"
+                                           class="layui-input" v-model="SubmitCustomForm.FormName">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label labelleft">分配方式：</label>
+                                <div class="layui-input-inline">
+                                    <input type="radio" name="sex" value="随机分配" title="随机分配" checked="">
+                                    <input type="radio" name="sex" value="顺序分配" title="顺序分配">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label labelleft">分配客服：</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="FormName" lay-verify="required" autocomplete="off"
+                                           class="layui-input" v-model="SubmitCustomForm.FormName">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label labelleft">H5页面链接：</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="FormName" lay-verify="required" autocomplete="off"
+                                           class="layui-input" v-model="SubmitCustomForm.FormName">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label labelleft">分享图片：</label>
+                                <div class="layui-input-inline">
+                                    <button type="button" class="layui-btn layui-btn-normal" id="test7"><i class="layui-icon"></i>上传图片</button>
+                                    <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+                                        预览图：
+                                        <div class="layui-upload-list" id="demo2"></div>
+                                    </blockquote>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label labelleft">分享摘要：</label>
+                                <div class="layui-input-inline">
+                                    <textarea placeholder="请输入内容" class="layui-textarea"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label labelleft">报名介绍：</label>
+                                <div class="layui-input-inline">
+                                    <textarea placeholder="请输入内容" class="layui-textarea"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label labelleft">报名信息：</label>
+                                <div class="layui-input-inline">
+                                    <input type="radio" name="sex" value="线索" title="线索" checked="">
+                                    <input type="radio" name="sex" value="客户" title="客户">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

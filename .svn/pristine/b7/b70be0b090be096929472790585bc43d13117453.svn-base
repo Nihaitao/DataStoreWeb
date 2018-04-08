@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        label.layui-form-label {
+            width: 150px;
+        }
+
+        div.layui-input-block {
+            margin-left: 180px;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">支付名称</label>
+                <div class="layui-input-block">
+                    <input type="text" lay-verify="required" autocomplete="off" placeholder="请输入支付名称"
+                           class="layui-input" v-model="submitForm.Name">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">微信应用appid</label>
+                <div class="layui-input-block">
+                    <input type="text" lay-verify="required" autocomplete="off" placeholder="请输入微信应用appid"
+                           class="layui-input" v-model="submitForm.AppID">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">回调地址</label>
+                <div class="layui-input-block">
+                    <input type="text" lay-verify="required" autocomplete="off" placeholder="回调地址不需要客户填写"
+                           class="layui-input" v-model="submitForm.NotifyUrl">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">支付宝公钥</label>
+                <div class="layui-input-block">
+                    <textarea class="layui-textarea" lay-verify="required" autocomplete="off" v-model="submitForm.AliPublicKey" placeholder="请输入支付宝公钥"></textarea>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">支付宝应用私钥</label>
+                <div class="layui-input-block">
+                    <textarea class="layui-textarea" lay-verify="required" autocomplete="off" v-model="submitForm.AliPrivateKey" placeholder="请输入支付宝应用私钥"></textarea>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">是否支持PC支付</label>
+                    <div class="layui-input-inline">
+                        <remote-rad v-bind:setting="pcSetting" v-bind:value.sync="submitForm.IsPCPay"
+                                    initial="off"></remote-rad>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">是否支持移动H5支付</label>
+                    <div class="layui-input-inline">
+                        <remote-rad v-bind:setting="h5Setting" v-bind:value.sync="submitForm.IsPhonePay"
+                                    initial="off"></remote-rad>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-hide">
+                <button class="layui-btn" lay-submit @click="submit">提交</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="/Resources/js/Controls/Common.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate"],
+    function (fnr) {
+
+        var laydate = layui.laydate;
+        var $ = layui.jquery;
+        var form = layui.form;
+
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+                submitForm: {
+                    Name: '',
+                    AppID: '',
+                    NotifyUrl: '',
+                    AliPublicKey: '',
+                    AliPrivateKey: '',
+                    IsPCPay: '',
+                    IsPhonePay: '',
+                    PayType: 2
+                },
+                pcSetting: {
+                    tags: { name: "IsPCPay" },
+                    options: [
+                        { key: "0", value: "不支持" },
+                        { key: "1", value: "支持" }
+                    ]
+                },
+                h5Setting: {
+                    tags: { name: "IsPhonePay" },
+                    options: [
+                        { key: "0", value: "不支持" },
+                        { key: "1", value: "支持" }
+                    ]
+                }
+            },
+            ready: function () {
+                this.setPay();
+            },
+            methods: {
+                submit: function () {
+                    var self = this;
+                    $.post('/service/pay/OnLinePay/PaySetUpdate', self.submitForm, function (res) {
+                        if (res.SuccessResponse) {
+                            fnr.callDialog('refresh', { status: res.SuccessResponse, msg: res.Message });
+                            if (res.SuccessResponse) {
+                                fnr.closeDialog();
+                            }
+                        } else {
+
+                        }
+                    })
+                },
+                setPay: function () {
+                    var self = this;
+                    $.get('/service/pay/OnLinePay/QueryPaySetModel', { ID: fnr.getQueryString('ID') }, function (res) {
+                        if (res.SuccessResponse) {
+                            if (res.Data != null) {
+                                var Datas = res.Data;
+                                self.submitForm.Name = Datas.Name;
+                                self.submitForm.AppID = Datas.AppID;
+                                self.submitForm.NotifyUrl = Datas.NotifyUrl;
+                                self.submitForm.AliPublicKey = Datas.AliPublicKey;
+                                self.submitForm.AliPrivateKey = Datas.AliPrivateKey;
+                                self.submitForm.IsPCPay = Datas.IsPCPay;
+                                self.submitForm.IsPhonePay = Datas.IsPhonePay;
+                                self.submitForm.PayType = Datas.PayType;
+                            } else { }
+                        } else {
+                            layer.msg(res.Message);
+                        }
+                    });
+                }
+            }
+        });
+    });
+</script>

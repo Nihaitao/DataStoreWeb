@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery-1.4.4.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery.ztree.core.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery.ztree.excheck.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery.ztree.exedit.js"></script>
+
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <script language="JavaScript">
+        require_js_file(["table", 'tree', "form", "jquery", "tableExt"],
+        function (fnr) {
+            var zTreeObj;
+            // zTree 的参数配置，深入使用请参考 API 文档（setting 配置详解）
+            var setting = {
+                async: {
+                    enable: true,
+                    autoParam: ["ID"],
+                    type: "get",
+                    dataFilter: ajaxDataFilter,
+                    url: "/service/crm/Product/GetProductData",
+                },
+                data: {
+                    key: {
+                        name: "Name"
+                    },
+                    simpleData: {
+                        enable: true,
+                        idKey: "ID",
+                        pIdKey: "CID"
+                    }
+                },
+                view: {
+                    nameIsHTML: true,
+                    showTitle: false
+                },
+                callback: {
+                    onDblClick: function (e, treeId, treeNode) {
+                        if (treeNode.ID == 0) {
+                            layer.msg("当前节点不能选择，请重新选择！");
+                            return;
+                        }
+                        fnr.callDialog("new", treeNode);
+                        fnr.closeDialog();
+                    }
+                }
+            };
+
+            function ajaxDataFilter(treeId, parentNode, rsp) {
+                rsp.Data.map(function (a, b) {
+                    a.CID = a.CID;
+                    a.ID = a.ID;
+                    a.Name = a.Name
+              
+                })
+
+                if (parentNode == undefined) {
+                    rsp.Data.push({ ID: 0, Name: '产品分类', open: 1 })
+                } else {
+                    rsp.Data
+                }
+                return rsp.Data;
+            };
+            function zTreeOnExpand(event, treeId, treeNode) {
+                $.each(window.rootApp.$data.SelectData, function (i, x) {
+                    var nodes = zTreeObj.getNodesByParam("ID", x.ID, null);
+                    if (nodes.length > 0) {
+                        nodes[0].checked = true;
+                        zTreeObj.updateNode(nodes[0]);
+                    }
+                })
+            };
+
+            $(document).ready(function () {
+                zTreeObj = $.fn.zTree.init($("#treeDemo"), setting);
+            });
+
+
+        });
+    </script>
+
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <div class="layui-col-xs7" style="height:480px; overflow:auto">
+            <ul id="treeDemo" class="ztree"></ul>
+        </div>
+    </div>
+</body>
+</html>

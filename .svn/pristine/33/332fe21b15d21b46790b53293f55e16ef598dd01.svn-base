@@ -1,0 +1,126 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body id="root" v-cloak>
+    <div class="OpenContainer">
+        <div class="layui-form" lay-filter="listSelect">
+            <div class="layui-form-item">
+                <label class="layui-form-label">题型类别</label>
+                <div class="layui-input-block">
+                    <remote-sel v-bind:setting="TypeSetting" layverify="required" v-bind:value.sync="queryFormData.QuestionType_ID" laytips="题型类别" initial="off"></remote-sel>
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">标题</label>
+                <div class="layui-input-block">
+                    <input type="text" autocomplete="off" lay-verify="required" placeholder="标题" class="layui-input" v-model="queryFormData.QuestionType_Name">
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">题型说明</label>
+                <div class="layui-input-block">
+                    <input type="text" autocomplete="off" placeholder="题型说明" class="layui-input" v-model="queryFormData.QuestionType_Mark">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">单题分数</label>
+                <div class="layui-input-block">
+                    <input type="number" autocomplete="off" lay-verify="required" placeholder="单题分数" class="layui-input" v-model="queryFormData.Sorce">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">题目数量</label>
+                <div class="layui-input-block">
+                    <input type="number" autocomplete="off" lay-verify="required" placeholder="题目数量" class="layui-input" v-model="queryFormData.Num">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">排序</label>
+                <div class="layui-input-block">
+                    <input type="text" autocomplete="off" placeholder="排序" class="layui-input" v-model="queryFormData.Sort">
+                </div>
+            </div>
+            <div class="layui-form-item layui-hide">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-filter="demo1" lay-submit @click="saveUpdate">提交</button>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>
+
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/Controls/Common.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt"],
+    function (fnr) {
+        var $ = layui.$;
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+                submitForm: {
+                    ID: fnr.getQueryString('ID'),
+                    Name: '',
+                },
+                TypeSetting: {
+                    defaultValue: 0,
+                    search: true,
+                    fields: { root: 'Data', key: 'ID', value: 'Name' },
+                    options: [],
+                    remote: { url: "/service/datastore/Question/GetQuestionTypeList" }
+                },
+                queryFormData: {
+                    ID: fnr.getQueryString('ID'),
+                    ExamPaper_ID: fnr.getQueryString('ExamPaper_ID'),
+                    QuestionType_ID: '',
+                    QuestionType_Name: "",
+                    QuestionType_Mark: "",
+                    Sorce: "",
+                    Num: "",
+                    Sort: ""
+                },
+            },
+            ready: function () {
+                if (!!fnr.getQueryString('ID')) {
+                    var ID = fnr.getQueryString('ID')
+                    this.GetCourseInfoByID(ID);
+                }
+            },
+            methods: {
+                //根据id查询试卷
+                GetCourseInfoByID: function (ID) {
+                    var self = this;
+                    $.get("/service/datastore/ExamPaper/GetExamPaperTypebyID", { ID: ID }, function (res) {
+                        self.queryFormData.QuestionType_ID = res.Data[0].QuestionType_ID;
+                        self.queryFormData.QuestionType_Name = res.Data[0].QuestionType_Name;
+                        self.queryFormData.QuestionType_Mark = res.Data[0].QuestionType_Mark;
+                        self.queryFormData.Sorce = res.Data[0].Sorce;
+                        self.queryFormData.Num = res.Data[0].Num;
+                        self.queryFormData.Sort = res.Data[0].Sort;
+                    })
+                },
+                //提交表单
+                saveUpdate: function (e) {
+                    if (!layui.form.checkInput(e)) {
+                        return false;
+                    }
+                    $.post("/service/datastore/ExamPaper/UpdateExamPaperDetail", this.queryFormData, function (res) {
+                        fnr.callDialog('refresh', res );
+                        if (res.SuccessResponse) {
+                            fnr.closeDialog();
+                        }
+                    });
+                }
+            }
+        });
+    });
+</script>

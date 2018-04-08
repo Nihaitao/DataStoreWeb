@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <title>提醒详情</title>
+    <link rel="stylesheet" href="../css/iconfont.css">
+    <link rel="stylesheet" href="../js/modules/layer/css/layui.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/client/remindDetail.css">
+    <script src="../js/jquery.js"></script>
+    <script src="../js/modules/vue/vue.min.js"></script>
+    <script src="../js/modules/layer/layui.js"></script>
+    <script>
+        (function () {
+            document.documentElement.style.fontSize = document.documentElement.clientWidth / 7.5 + 'px';
+            window.onresize = function () {
+                document.documentElement.style.fontSize = document.documentElement.clientWidth / 7.5 + 'px';
+            };
+        })()
+    </script>
+</head>
+<body>
+    <div class="appContainer">
+        <div class="remindTimeBox">
+            <!--选中-->
+            <div class="remindTime active">
+                提醒时间: 2017-12-2 11:40
+            </div>
+
+            <!--未选中-->
+            <div class="remindTime">
+                提醒时间: 2017-12-2 11:40
+            </div>
+
+            <div class="remindContentTitle">
+                提醒内容
+            </div>
+            <div class="remindContent">
+                <p>
+                    给双元教育刘总打电话给双元教育刘总打电话给双元教育刘总打电话
+                </p>
+                <p>
+                    关联客户：湖南双元教育科技有限公司
+                </p>
+                <p>
+                    创建时间：2017-11-30 16:00
+                </p>
+            </div>
+        </div>
+        <div class="remindBtn">
+            设置已处理
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <title>功能列表</title>
+    <link rel="stylesheet" href="../css/iconfont.css">
+    <link rel="stylesheet" href="../js/modules/layer/css/layui.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/report/featureList.css">
+    <script src="../js/jquery.js"></script>
+    <script src="../js/modules/vue/vue.min.js"></script>
+    <script src="../js/modules/layer/layui.js"></script>
+    <script>
+        (function () {
+            document.documentElement.style.fontSize = document.documentElement.clientWidth / 7.5 + 'px';
+            window.onresize = function () {
+                document.documentElement.style.fontSize = document.documentElement.clientWidth / 7.5 + 'px';
+            };
+        })()
+    </script>
+</head>
+<body>
+    <div class="appContainer">
+        <div class="featureHeader">
+            <span class="headText">功能列表</span>
+        </div>
+        <div class="featureMain">
+            <ul class="layui-clear">
+                <li class="items">
+                    <div class="temp">
+                        <i class="iconfont reIcon icon-xiansuo"></i>
+                        <p>线索</p>
+                    </div>
+                </li>
+                <li class="items">
+                    <div class="temp">
+                        <i class="iconfont reIcon icon-gongneng-kehu"></i>
+                        <p>客户</p>
+                    </div>
+                </li>
+                <li class="items">
+                    <div class="temp">
+                        <i class="iconfont reIcon icon-gongneng-lianxiren"></i>
+                        <p>联系人</p>
+                    </div>
+                </li>
+                <li class="items">
+                    <div class="temp">
+                        <i class="iconfont reIcon icon-gongneng-gonghaikehu"></i>
+                        <p>公海客户</p>
+                    </div>
+                </li>
+                <li class="items">
+                    <div class="temp">
+                        <i class="iconfont reIcon icon-jilu"></i>
+                        <p>跟进记录</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!--尾部-->
+        <div class="bottomBox">
+            <div class="layui-row heightMax">
+                <div class="layui-col-xs22 heightMax">
+                    <div class="iconBox heightMax active">
+                        <i class="iconfont reportIcon icon-baobiao-hover"></i>
+                        <p class="reportText">报表</p>
+                    </div>
+                </div>
+                <div class="layui-col-xs22 heightMax">
+                    <div class="iconBox heightMax">
+                        <i class="iconfont fnIcon icon-gongneng"></i>
+                        <p class="reportText">功能</p>
+                    </div>
+                </div>
+                <div class="layui-col-xs44 heightMax">
+                    <div class="heightMax" style="text-align: center;">
+                        <i class="iconfont middleIcon icon-kuaijiegongnengjian"></i>
+                    </div>
+                </div>
+                <div class="layui-col-xs22 heightMax">
+                    <div class="iconBox heightMax">
+                        <i class="iconfont needToIcon icon-daiban"></i>
+                        <p class="reportText">待办</p>
+                    </div>
+                </div>
+                <div class="layui-col-xs22 heightMax">
+                    <div class="iconBox heightMax">
+                        <i class="iconfont helpIcon icon-bangzhu"></i>
+                        <p class="reportText">帮助</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

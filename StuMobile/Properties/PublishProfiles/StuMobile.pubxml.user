@@ -1,0 +1,310 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+您 Web 项目的发布/打包进程将使用此文件。您可以通过编辑此 MSBuild 文件
+来自定义该进程的行为。若要了解与此相关的详细信息，请访问 http://go.microsoft.com/fwlink/?LinkID=208121。
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <_PublishTargetUrl>C:\Users\Administrator\Desktop\StuMobile</_PublishTargetUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="bin/Aliyun.OSS.dll">
+      <publishTime>09/13/2017 09:09:59</publishTime>
+    </File>
+    <File Include="bin/Common.dll">
+      <publishTime>11/01/2017 09:23:52</publishTime>
+    </File>
+    <File Include="bin/CT.Signature.dll">
+      <publishTime>09/30/2017 09:41:19</publishTime>
+    </File>
+    <File Include="bin/ICSharpCode.SharpZipLib.dll">
+      <publishTime>01/03/2011 14:16:38</publishTime>
+    </File>
+    <File Include="bin/Nancy.dll">
+      <publishTime>09/20/2017 14:27:44</publishTime>
+    </File>
+    <File Include="bin/Nancy.Hosting.Aspnet.dll">
+      <publishTime>09/20/2017 14:27:44</publishTime>
+    </File>
+    <File Include="bin/Newtonsoft.Json.dll">
+      <publishTime>06/18/2017 13:57:10</publishTime>
+    </File>
+    <File Include="bin/NPOI.dll">
+      <publishTime>09/19/2017 10:00:21</publishTime>
+    </File>
+    <File Include="bin/NPOI.OOXML.dll">
+      <publishTime>09/19/2017 10:00:21</publishTime>
+    </File>
+    <File Include="bin/NPOI.OpenXml4Net.dll">
+      <publishTime>09/19/2017 10:00:21</publishTime>
+    </File>
+    <File Include="bin/NPOI.OpenXmlFormats.dll">
+      <publishTime>09/19/2017 10:00:21</publishTime>
+    </File>
+    <File Include="bin/StuMobile.dll">
+      <publishTime>11/01/2017 09:23:52</publishTime>
+    </File>
+    <File Include="html/Center/comment.html">
+      <publishTime>10/13/2017 16:27:00</publishTime>
+    </File>
+    <File Include="html/Center/commentcont.html">
+      <publishTime>10/13/2017 16:27:00</publishTime>
+    </File>
+    <File Include="html/Center/informationEditor.html">
+      <publishTime>10/26/2017 18:18:15</publishTime>
+    </File>
+    <File Include="html/Center/message.html">
+      <publishTime>10/13/2017 16:27:00</publishTime>
+    </File>
+    <File Include="html/Center/myQA.html">
+      <publishTime>10/13/2017 16:27:00</publishTime>
+    </File>
+    <File Include="html/Center/passwordModify.html">
+      <publishTime>10/13/2017 16:27:00</publishTime>
+    </File>
+    <File Include="html/Center/path.html">
+      <publishTime>10/18/2017 14:15:33</publishTime>
+    </File>
+    <File Include="html/Center/pay.html">
+      <publishTime>10/13/2017 16:27:00</publishTime>
+    </File>
+    <File Include="html/Center/personalIndex.html">
+      <publishTime>10/27/2017 17:07:02</publishTime>
+    </File>
+    <File Include="html/Center/personalInformation.html">
+      <publishTime>10/26/2017 17:45:05</publishTime>
+    </File>
+    <File Include="html/Center/personSet.html">
+      <publishTime>10/13/2017 16:27:00</publishTime>
+    </File>
+    <File Include="html/Center/QA.html">
+      <publishTime>10/13/2017 16:27:00</publishTime>
+    </File>
+    <File Include="html/Course/list.html">
+      <publishTime>10/13/2017 16:27:00</publishTime>
+    </File>
+    <File Include="html/Course/listcont.html">
+      <publishTime>10/13/2017 16:27:00</publishTime>
+    </File>
+    <File Include="html/index.html">
+      <publishTime>10/16/2017 11:27:58</publishTime>
+    </File>
+    <File Include="html/Login/login.html">
+      <publishTime>10/13/2017 16:27:00</publishTime>
+    </File>
+    <File Include="html/Register/regs.html">
+      <publishTime>10/13/2017 16:27:00</publishTime>
+    </File>
+    <File Include="html/Register/regsNext.html">
+      <publishTime>10/13/2017 16:27:00</publishTime>
+    </File>
+    <File Include="html/Video/pathNav.html">
+      <publishTime>10/25/2017 14:42:58</publishTime>
+    </File>
+    <File Include="index.html">
+      <publishTime>10/30/2017 14:38:44</publishTime>
+    </File>
+    <File Include="js/comment.js">
+      <publishTime>10/13/2017 10:56:47</publishTime>
+    </File>
+    <File Include="js/footer.js">
+      <publishTime>10/10/2017 16:14:08</publishTime>
+    </File>
+    <File Include="js/index.js">
+      <publishTime>10/28/2017 11:02:52</publishTime>
+    </File>
+    <File Include="js/informEditor.js">
+      <publishTime>10/27/2017 17:07:02</publishTime>
+    </File>
+    <File Include="js/jquery-3.2.1.min.js">
+      <publishTime>10/10/2017 16:14:08</publishTime>
+    </File>
+    <File Include="js/listcont.js">
+      <publishTime>10/10/2017 16:14:08</publishTime>
+    </File>
+    <File Include="js/login.js">
+      <publishTime>10/25/2017 14:42:58</publishTime>
+    </File>
+    <File Include="js/message.js">
+      <publishTime>10/10/2017 16:14:08</publishTime>
+    </File>
+    <File Include="js/pathNav.js">
+      <publishTime>10/12/2017 14:01:57</publishTime>
+    </File>
+    <File Include="js/pay.js">
+      <publishTime>10/10/2017 16:14:08</publishTime>
+    </File>
+    <File Include="js/personalIndex.js">
+      <publishTime>10/26/2017 18:18:15</publishTime>
+    </File>
+    <File Include="js/personalSet.js">
+      <publishTime>10/12/2017 16:07:14</publishTime>
+    </File>
+    <File Include="js/swiper.min.js">
+      <publishTime>10/10/2017 16:14:08</publishTime>
+    </File>
+    <File Include="login.html">
+      <publishTime>10/28/2017 09:15:34</publishTime>
+    </File>
+    <File Include="Resources/css/all.css">
+      <publishTime>10/10/2017 17:34:56</publishTime>
+    </File>
+    <File Include="Resources/css/ba.css">
+      <publishTime>10/10/2017 16:13:57</publishTime>
+    </File>
+    <File Include="Resources/css/index.css">
+      <publishTime>10/27/2017 17:07:02</publishTime>
+    </File>
+    <File Include="Resources/css/informationEditor.css">
+      <publishTime>10/12/2017 16:49:42</publishTime>
+    </File>
+    <File Include="Resources/css/list.css">
+      <publishTime>10/10/2017 16:13:57</publishTime>
+    </File>
+    <File Include="Resources/css/listcont.css">
+      <publishTime>10/10/2017 16:13:57</publishTime>
+    </File>
+    <File Include="Resources/css/login.css">
+      <publishTime>10/10/2017 16:13:57</publishTime>
+    </File>
+    <File Include="Resources/css/message.css">
+      <publishTime>10/10/2017 16:13:57</publishTime>
+    </File>
+    <File Include="Resources/css/myQA.css">
+      <publishTime>10/10/2017 16:13:57</publishTime>
+    </File>
+    <File Include="Resources/css/passwordModify.css">
+      <publishTime>10/12/2017 16:49:42</publishTime>
+    </File>
+    <File Include="Resources/css/path.css">
+      <publishTime>10/17/2017 09:07:38</publishTime>
+    </File>
+    <File Include="Resources/css/pathNav.css">
+      <publishTime>10/12/2017 18:26:13</publishTime>
+    </File>
+    <File Include="Resources/css/pay.css">
+      <publishTime>10/12/2017 14:01:56</publishTime>
+    </File>
+    <File Include="Resources/css/personalIndex.css">
+      <publishTime>10/16/2017 11:27:58</publishTime>
+    </File>
+    <File Include="Resources/css/personalInformation.css">
+      <publishTime>10/10/2017 16:13:57</publishTime>
+    </File>
+    <File Include="Resources/css/personSet.css">
+      <publishTime>10/13/2017 10:56:47</publishTime>
+    </File>
+    <File Include="Resources/css/QA.css">
+      <publishTime>10/10/2017 16:13:57</publishTime>
+    </File>
+    <File Include="Resources/css/regs.css">
+      <publishTime>10/13/2017 11:35:19</publishTime>
+    </File>
+    <File Include="Resources/css/regsNext.css">
+      <publishTime>10/10/2017 16:13:57</publishTime>
+    </File>
+    <File Include="Resources/css/swiper.min.css">
+      <publishTime>10/10/2017 16:13:57</publishTime>
+    </File>
+    <File Include="Resources/img/032017090-02_03.jpg">
+      <publishTime>10/10/2017 16:14:07</publishTime>
+    </File>
+    <File Include="Resources/img/20170906-02by_03.jpg">
+      <publishTime>10/10/2017 16:14:07</publishTime>
+    </File>
+    <File Include="Resources/img/20170906-02by_06.jpg">
+      <publishTime>10/10/2017 16:14:07</publishTime>
+    </File>
+    <File Include="Resources/img/20170906-06-by_06.jpg">
+      <publishTime>10/10/2017 16:14:07</publishTime>
+    </File>
+    <File Include="Resources/img/20170906-06_03.jpg">
+      <publishTime>10/10/2017 16:14:07</publishTime>
+    </File>
+    <File Include="Resources/img/20170906-06_04.jpg">
+      <publishTime>10/10/2017 16:14:07</publishTime>
+    </File>
+    <File Include="Resources/img/20170906-06_05.jpg">
+      <publishTime>10/10/2017 16:14:07</publishTime>
+    </File>
+    <File Include="Resources/img/20170906-06_06.jpg">
+      <publishTime>10/10/2017 16:14:07</publishTime>
+    </File>
+    <File Include="Resources/img/20170906-06_09.jpg">
+      <publishTime>10/10/2017 16:14:07</publishTime>
+    </File>
+    <File Include="Resources/img/20170906-06_10.jpg">
+      <publishTime>10/10/2017 16:14:07</publishTime>
+    </File>
+    <File Include="Resources/img/20170906-06_13.jpg">
+      <publishTime>10/10/2017 16:14:07</publishTime>
+    </File>
+    <File Include="Resources/img/20170906-06_14.jpg">
+      <publishTime>10/10/2017 16:14:07</publishTime>
+    </File>
+    <File Include="Resources/img/20170906-06_17.jpg">
+      <publishTime>10/10/2017 16:14:07</publishTime>
+    </File>
+    <File Include="Resources/img/dun.jpg">
+      <publishTime>10/10/2017 16:14:07</publishTime>
+    </File>
+    <File Include="Resources/img/head.png">
+      <publishTime>10/12/2017 14:01:56</publishTime>
+    </File>
+    <File Include="Resources/img/logo.jpg">
+      <publishTime>10/10/2017 16:14:07</publishTime>
+    </File>
+    <File Include="Resources/img/null.jpg">
+      <publishTime>10/12/2017 14:01:56</publishTime>
+    </File>
+    <File Include="Resources/img/person-hf.png">
+      <publishTime>10/10/2017 16:14:07</publishTime>
+    </File>
+    <File Include="Resources/img/personalIndex-hf.png">
+      <publishTime>10/10/2017 16:14:07</publishTime>
+    </File>
+    <File Include="Resources/img/rule.jpg">
+      <publishTime>10/10/2017 16:14:07</publishTime>
+    </File>
+    <File Include="Resources/img/tc-3.jpg">
+      <publishTime>10/10/2017 16:14:07</publishTime>
+    </File>
+    <File Include="Resources/img/tc-4.png">
+      <publishTime>10/10/2017 16:14:07</publishTime>
+    </File>
+    <File Include="Resources/img/video-01.jpg">
+      <publishTime>10/10/2017 16:14:07</publishTime>
+    </File>
+    <File Include="Resources/img/video_null.jpg">
+      <publishTime>10/12/2017 18:26:13</publishTime>
+    </File>
+    <File Include="Resources/img/vx.png">
+      <publishTime>10/10/2017 16:14:07</publishTime>
+    </File>
+    <File Include="Resources/img/zfb.png">
+      <publishTime>10/10/2017 16:14:07</publishTime>
+    </File>
+    <File Include="script/artTemplate.js">
+      <publishTime>10/10/2017 16:13:56</publishTime>
+    </File>
+    <File Include="script/jquery.js">
+      <publishTime>10/30/2017 14:38:44</publishTime>
+    </File>
+    <File Include="script/knockout.js">
+      <publishTime>10/10/2017 16:13:56</publishTime>
+    </File>
+    <File Include="script/layer_mobile/layer.js">
+      <publishTime>10/10/2017 16:13:54</publishTime>
+    </File>
+    <File Include="script/layer_mobile/need/layer.css">
+      <publishTime>10/10/2017 16:13:54</publishTime>
+    </File>
+    <File Include="script/picker.min.js">
+      <publishTime>10/12/2017 14:01:56</publishTime>
+    </File>
+    <File Include="Web.config">
+      <publishTime>10/12/2017 16:08:18</publishTime>
+    </File>
+  </ItemGroup>
+</Project>

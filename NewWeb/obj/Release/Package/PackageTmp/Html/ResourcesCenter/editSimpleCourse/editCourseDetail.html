@@ -1,0 +1,223 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>课程-课程详情</title>
+    <style>
+        .left-side { float: left; width: 18%; min-height: 576px; border: 1px solid #e9edee; background-color: #f6f6f6; }
+        .left-sides-title { height: 28px; line-height: 28px; color: #fdfdfd; background-color: #cccccc; text-align: center; font-size: 14px; border-bottom: 1px solid #f6f6f6; cursor: pointer; }
+        .subentry { height: 34px; line-height: 34px; /* text-align: center; */ font-size: 14px; color: #666; cursor: pointer; border-top: 1px solid #F6F6F6; padding-left: 38%; }
+        li.subentry { position: relative; }
+        .left-side li.subentry.active { background-color: #00aaff; color: #fff; }
+        .left-side li.subentry.active a { color: #fff; }
+        li.subentry span { position: absolute; left: 64px; font-size: 16px; margin-right: 5px; }
+        .right-side { float: right; width: 81%; min-height: 576px; border: 1px solid #e9edee; background-color: #f6f6f6; }
+        div.u-wrap { width: 98%; }
+        .right-side .classes { margin: 0; }
+        .u-wrap .mainbackground { position: relative; padding: 50px 100px 10px; background-color: #f6f6f6; }
+        .right-side .u-wrap .mainbackground.nopadding { padding: 0 25px; }
+        .heading { position: relative; margin: 15px 0; padding: 3px 8px; border-left: 3px solid #fa6900; }
+        .right-side .heading { position: relative; }
+        .company .heading { border-width: 4px; }
+        .right-side div.mainbackground .heading { border-left: 3px solid #0af; height: 18px; font-size: 14px; }
+        .layui-upload-list { width:400px;}
+        .layui-upload-list img { width:100%;}
+        [v-cloak] { display:none;}
+    </style>
+
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <div class="left-side">
+            <ul class="menuList_choose">
+                <li class="subentry" data-local="/Html/ResourcesCenter/editSimpleCourse/editClassBaseInfo.html?ID={{ID}}">基本信息</li>
+                <li class="subentry" v-cloak v-if="TeachingMethod != 2" data-local="/Html/ResourcesCenter/editSimpleCourse/editClassTypeVideo.html?ID={{ID}}">视频课</li>
+                <li class="subentry active" data-local="/Html/ResourcesCenter/editSimpleCourse/editCourseDetail.html?ID={{ID}}">课程详情</li>
+                <li class="lines"></li>
+                <li class="subentry " data-local="/Html/ResourcesCenter/editSimpleCourse/classesResource.html?ID={{ID}}">课程资料</li>
+                <li class="subentry" v-cloak v-if="TeachingMethod == 2" data-local="/Html/ResourcesCenter/editSimpleCourse/editliveOrface.html?ID={{ID}}">排课表</li>
+            </ul>
+        </div>
+        <div class="right-side">
+            <div class="u-wrap classes">
+                <div class="mainbackground nopadding">
+                    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                        <legend>基本信息</legend>
+                    </fieldset>
+                    <div class="layui-form">
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">封面</label>
+                                <div class="layui-input-block">
+                                    <div class="layui-upload">
+                                        <div class="layui-upload-list">
+                                            <img class="layui-upload-img" id="demo1" v-bind:src="submitForm.CoverPath">
+                                            <p id="demoText"></p>
+                                        </div>
+                                        <button type="button" class="layui-btn" id="test1">更换封面</button><input class="layui-upload-file" type="file" name="file">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">名师</label>
+                                <div class="layui-input-block">
+                                    <remote-sel v-bind:setting="TeacherSetting" v-bind:value.sync="submitForm.TeacherDetail_ID" v-bind:change="SecondChange" v-ref:second
+                                                initial="off"></remote-sel>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">介绍</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="Description" placeholder="请输入" autocomplete="off" class="layui-input" v-model="submitForm.Description">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">课程详情</label>
+                                <div class="layui-input-block">
+                                    <textarea id="demo" name="Particulars" style="display: none;" v-model="submitForm.Particulars"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item" style="text-align:center;">
+                            <div class="layui-input-block">
+                                <button class="layui-btn" lay-filter="demo1" @click="save">保存</button>
+                                <button class="layui-btn layui-btn-primary"  @click="Cancel">取消</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="https://cdn.bootcss.com/jquery/1.10.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.js"></script>
+<script src="../Classroom/Sortable.js?v1.0.1"></script>
+<script src="/Resources/js/Controls/Common.js"></script>
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'laydate', 'upload', 'layedit'],
+        function (fnr) {
+            var layedit = layui.layedit;
+            var upload = layui.upload;
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+
+            //搜索条件
+            var rootApp = new Vue({
+                el: '#root',
+                data: {
+                    ID: '',
+                    TeachingMethod:'',
+                    submitForm: {
+                        ID: '',
+                        TeacherDetail_ID: '',
+                        CoverPath: '',
+                        Description: '',
+                        Particulars: '',
+                    },
+                    TeacherSetting: {
+                        search: true,
+                        options: [
+                        ],
+                        remote: {
+                            url: '/service/Teacher/GetAllTeachers',
+                            data: {}
+                        },
+                        fields: { root: 'ReturnData.Data', key: 'ID', value: 'Name' }
+                    },
+                },
+                ready: function () {
+                    if (GetQueryString("ID")) {
+                        this.ID= this.submitForm.ID = ID = GetQueryString("ID");
+                        this.GetCourseByID({ ID: ID })
+                    }
+                    $(".menuList_choose").on('click', 'li.subentry', function () {
+                        var href = $(this).attr("data-local");
+                        window.location.href = href;
+                    });
+                },
+                methods: {
+                    //查询网课数据
+                    GetCourseByID: function (params) {
+                        var self = this;
+                        $.get('/service/WebCourse/GetCourseByID', params, function (res) {
+                            self.ID = self.submitForm.ID = res.ReturnData.Data.ID;
+                            self.submitForm.TeacherDetail_ID = res.ReturnData.Data.TeacherDetail_ID;
+                            self.submitForm.CoverPath = res.ReturnData.Data.CoverPath;
+                            self.submitForm.Description = res.ReturnData.Data.Description;
+                            self.submitForm.Particulars = res.ReturnData.Data.Particulars;
+
+                            self.TeachingMethod = res.ReturnData.Data.TeachingMethod;
+                            setTimeout(function () { index = layedit.build('demo'); }, 0)
+                        })
+                    },
+                    //添加修改网课
+                    SaveCourse: function (params, cb) {
+                        var self = this;
+                        $.ajax({
+                            url: "/service/WebCourse/SaveCourse",
+                            data: params,
+                            method: "POST",
+                            success: function (res) {
+                                if (res.SuccessResponse) {
+                                    //self.submitForm.ID = res.ReturnData.Data.ID;
+                                    cb();
+                                }
+
+                            }
+                        })
+                    },
+                    //保存
+                    save: function () {
+                        this.submitForm.Particulars = layedit.getContent(index);
+                        this.SaveCourse(this.submitForm, function () {
+                            layer.msg('保存成功')
+                            //window.location.href = "/Html/ResourcesCenter/Classinfo/List.html";
+                        });
+                    },
+
+                }
+            });
+            //普通图片上传
+            var uploadInst = upload.render({
+                elem: '#test1'
+              , url: '/service/upload/'
+              , before: function (obj) {
+                  //预读本地文件示例，不支持ie8
+                  obj.preview(function (index, file, result) {
+                      $('#demo1').attr('src', result); //图片链接（base64）
+                  });
+              }
+              , done: function (res) {
+                  if (!res.SuccessResponse) {
+                      return layer.msg('上传失败')
+                  }
+                  rootApp.submitForm.CoverPath = res.Message
+                  layer.msg('上传成功')
+                  //上传成功
+              }
+              , error: function () {
+                  //演示失败状态，并实现重传
+                  var demoText = $('#demoText');
+                  demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                  demoText.find('.demo-reload').on('click', function () {
+                      uploadInst.upload();
+                  });
+              }
+            });
+            var index;
+        });
+</script>

@@ -1,0 +1,343 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>我的客户</title>
+    <style>
+        div.layui-table-cell {
+            height: 30px;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <blockquote class="layui-elem-quote">
+            <div class="layui-row layui-form">
+                <div class="layui-col-xs8">
+                    <div class="layui-input-inline">
+                        <remote-sel class="" v-bind:setting="searchKeySetting" laytips="跟进阶段" v-bind:value.sync="queryFormData.PhaseType_ID" initial="off"></remote-sel>
+                    </div>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="statusSetting" laytips="来源" v-bind:value.sync="queryFormData.Source_ID"
+                                    initial="off"></remote-sel>
+                    </div> 
+                    <div class="layui-input-inline">
+                        <input placeholder="客户名称/手机号" type="text" class="layui-input" v-model="queryFormData.ModelValue">
+                    </div>
+                    <button class="layui-btn layui-btn-primary" lay-submit lay-filter="btn" @click="doSearch">查询</button>
+                </div>
+                <div class="layui-col-xs4" style="text-align: right">
+                    <button class="layui-btn" @click="addClient1"><i class="layui-icon"></i> 添加客户</button>
+                    <button class="layui-btn layui-btn-primary" @click="ImportClient"><i class="layui-icon"></i> 导入客户</button>
+                </div>
+            </div>
+        </blockquote>
+        <div>
+            <button class="layui-btn layui-btn-primary layui-btn-small" v-bind:class="{'layui-btn-disabled':releaseClient.length<=0}" v-bind:disabled="releaseClient.length<=0" @click="clientRe">释放客户</button>
+            <button class="layui-btn layui-btn-primary layui-btn-small" v-bind:class="{'layui-btn-disabled':deleteClients.length<=0}" v-bind:disabled="deleteClients.length<=0" @click="deleteClientFn">批量删除</button>
+        </div>
+
+        <!--操作模板-->
+        <table id="listTable" lay-filter="listTable"></table> 
+    </div>
+</body>
+</html>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'laydate', 'layer'],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+            var layer = layui.layer;
+            function trim(str) {
+                return str.replace(/(^\s*)|(\s*$)/g, "");
+            }
+            //表格基本配置参数
+            var tableColsConfig =
+                [
+                    { fixed: true, checkbox: true },
+                    { fixed: true, field: 'ID', title: 'ID', width: 80, sort: true },
+                    {
+                        title: '客户名称', width: 150, sort: true, templet: function () {
+                            var array = new Array();
+                            array.push("<a href='javascript:;' lay-event='detail1' style='display: inline-block; width: 100%;white-space: nowrap; text-overflow: ellipsis;overflow: hidden;' title=" + (this.Name) + ">" + (this.Name) + "</a>");
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    },
+                    { field: 'ImportanceName', title: '重要程度', width: 150, sort: true },
+                    { field: 'SourceName', title: '来源', width: 120, sort: true },
+                    { field: 'PhaseTypeName', title: '跟进阶段', width: 120, sort: true },
+                    { field: 'SysGroupPath', title: '全局分组', width: 120, sort: true },
+                    {
+                        title: '时间', width: 160, sort: true, templet: function () {
+                            var array = new Array();
+                            array.push("<span>" + fnr.format(this.AddTime, "yyyy-MM-dd HH:mm") + "</span>");
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    },
+                    {
+                        title: '最新跟进记录', width: 300, sort: true, templet: function () {
+                            var array = new Array();
+                            array.push("<span>" + (this.Content == null || this.Content == '' ? "-" : this.Content) + "</span>");
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    },
+                    {
+                        fixed: 'right',
+                        title: '操作',
+                        width: 200,
+                        toolbar: function () {
+                            var array = new Array();
+                            array.push("<button href='javascript:;' class='layui-btn layui-btn-small layui-btn-normal' lay-event='detail2'>添加跟进</button><button type='button' class='layui-btn layui-btn-small' lay-event='modifyClient'>修改</button><button type='button' class='layui-btn layui-btn-danger layui-btn-small' lay-event='deleteClient'>删除</button>");
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    }
+                ];
+
+
+            //搜索条件
+            window.rootApp = new Vue({
+                el: '#root',
+                data: {
+                    //搜索选择框 --- 跟进阶段
+                    searchKeySetting: {
+                        search: true,
+                        options: [],
+                        fields: { root: 'Data', key: 'ID', value: 'Description' },
+                        remote: { url: '/service/public/HDictionary/GetHDictionaryList', data: { Valid: 1, ColumnName: 'PhaseType_ID' } }
+                    },
+                    //搜索选择框 --- 来源
+                    statusSetting: {
+                        search: true,
+                        options: [],
+                        fields: { root: 'Data', key: 'ID', value: 'Description' },
+                        remote: { url: '/service/public/HDictionary/GetHDictionaryList', data: { Valid: 1, ColumnName: 'Source_ID' } }
+                    },
+                    //搜索选择的参数列表
+                    queryFormData: {
+                        PhaseType_ID: 0,
+                        Source_ID: 0,
+                        ModelValue: ''
+                    },
+                    //释放客户的参数列表
+                    releaseClient: [],
+                    deleteClients: [],
+                    clientMsgs: []
+                },
+                ready: function () {
+                },
+                methods: {
+
+                    //按条件查询
+                    doSearch: function () {
+                        var self = this;
+                        self.queryFormData.ModelValue = trim(self.queryFormData.ModelValue);
+                        listTable.reload({
+                            where: this.queryFormData
+                        })
+                    },
+
+                    //添加客户测试
+                    addClient1: function () {
+                        fnr.openDialog({
+                            title: '添加客户',
+                            area: ['1000px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                            content: ['Add.html'],
+                            btn: ['确认添加'],
+                            events: {
+                                refresh: function (data) {
+                                    if (data.status) {
+                                        layer.msg('添加成功');
+                                        listTable.refresh();
+                                    } else {
+                                        layer.msg('添加失败');
+                                    }
+                                }
+                            }
+                        });
+                    },
+                    ImportClient: function () {
+                        fnr.openDialog({
+                            title: '导入客户',
+                            area: ['1000px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                            content: ['Import.html'],
+                            //btn: ['确认添加'],
+                            events: {
+                                add: function () {
+                                    listTable.refresh();
+                                }
+                            }
+                        });
+                    },
+                    //添加联系记录
+                    followStatus: function (data) {
+                        fnr.openDialog({
+                            title: '添加联系记录',
+                            area: ['710px', '500px'],
+                            content: ['/Html/Client/Contact/Add.html?ID=' + data.ID + "&PhaseType_ID=" + data.PhaseType_ID,'no'],
+                            btn: ['确认添加'],
+                            events: {
+                                refresh: function (data) {
+                                    if (data.status) {
+                                        layer.msg(data.msg);
+                                        listTable.refresh()
+                                    } else {
+                                        layer.msg(data.msg);
+                                    }
+                                }
+                            }
+                        });
+                    },
+
+                    //测试客户信息
+                    clientMsg1: function (data) {
+                        fnr.openDialog({
+                            title: '客户信息',
+                            area: ['1000px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                            content: ['/Html/Client/Client/Info.html?ID=' + data.ID + "&PhaseType_ID=" + data.PhaseType_ID],
+                            events: {
+                                add: function () {
+                                    listTable.refresh();
+                                }
+                            }
+                        });
+                    },
+
+                    //释放客户
+                    clientRe: function () {
+                        var releaseArr = this.releaseClient.join(',');
+                        layer.confirm('真的释放吗', function (index) {
+                            $.ajax({
+                                url: "/service/crm/Client/ReleaseClient",
+                                data: { Other: releaseArr },
+                                type: 'POST',
+                                dataType: 'json',
+                                success: function (data) {
+                                    if (data.SuccessResponse) {
+                                        layer.msg(data.Message);
+                                        listTable.refresh();
+                                    } else {
+                                        layer.msg(data.Message);
+                                    }
+                                }
+                            });
+                        })
+                    },
+
+
+                    //修改
+                    modifyC1: function (data) {
+                        fnr.openDialog({
+                            title: '修改客户信息',
+                            area: ['1000px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                            content: ['/Html/Client/Client/Modify.html?ID=' + data.ID],
+                            btn: ['确认修改'],
+                            events: {
+                                refresh: function (data) {
+                                    if (data.status) {
+                                        layer.msg(data.msg);
+                                        listTable.refresh();
+                                    } else {
+                                        layer.msg(data.msg ? '操作失败' : data.msg);
+                                    }
+                                }
+                            }
+                        });
+                    },
+
+                    //批量删除
+                    deleteClientFn: function () {
+                        var deleteArr = this.deleteClients.join(',');
+                        layer.confirm('确定删除吗，删除后将无法恢复', function (index) {
+                            $.ajax({
+                                url: '/service/crm/Client/DeleteClient',
+                                type: 'POST',
+                                data: { Other: deleteArr },
+                                dataType: 'json',
+                                success: function (data) {
+                                    if (data.SuccessResponse) {
+                                        layer.msg(data.Message);
+                                        listTable.refresh();
+                                    } else {
+                                        layer.msg(data.Message)
+                                    }                                   
+                                }
+                            });
+                        })
+                    }
+
+                }
+            });
+
+            //绑定列表
+            var listTable = table.render({
+                elem: '#listTable',
+                even: true, //开启隔行背景
+                page: true, //页分,
+                height: 'full-140',
+                id: 'listTable',
+                cols: [tableColsConfig],
+                url: "/service/crm/Client/GetMyCustomerList"
+            });
+            //获取选中的行相关数据
+            table.on('checkbox(listTable)', function (obj) {
+                var checkStatus = table.checkStatus('listTable');
+                rootApp.releaseClient = [];
+                rootApp.deleteClients = [];
+                $.each(checkStatus.data, function (k, v) {
+                    rootApp.releaseClient.push(v.ID);
+                    rootApp.deleteClients.push(v.ID);
+                });
+            });
+           
+            
+
+            //监听工具栏事件
+            tableExt.addEvent("tool(listTable)",
+                {
+                    "detail1": function (data, obj) {
+                        rootApp.clientMsg1(data);
+                    },
+
+                    "detail2": function (data, obj, e) {
+                        rootApp.followStatus(data);
+                    },
+
+                    //删除一行
+                    "deleteClient": function (data, obj) {
+                        layer.confirm('确定删除吗，删除后将无法恢复', function (index) {
+                            $.ajax({
+                                url: '/service/MyClient/DeleteClient',
+                                type: 'POST',
+                                data: { Other: data.ID },
+                                dataType: 'json',
+                                success: function (data) {
+                                    if (data.ReturnData.Data) {
+                                        if (data.SuccessResponse) {
+                                            obj.del();
+                                            layer.close(index);
+                                            layer.msg(data.Message)
+                                        } else {
+                                            layer.msg(data.Message)
+                                        }
+                                    } else {
+                                        layer.msg('data为空');
+                                    }
+                                }
+                            });
+                        })
+                    },
+
+                    //修改一行
+                    "modifyClient": function (data, obj) {
+                        rootApp.modifyC1(data);
+                    }
+                });
+        });
+</script>

@@ -1,0 +1,391 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        .isDisplay {
+            display: none;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+
+        .icon_input input {
+            width: 95%;
+            display: inline-block;
+        }
+    </style>
+</head>
+<!--
+    写在前面：
+    Html/ResourcesCenter/Question/Add.html
+    Html/ResourcesCenter/Question/Modify.html
+    Html/ResourcesCenter/Question/AddCombinationQuestion.html
+    Html/ResourcesCenter/Question/ModifyCombinationQuestion.html
+    四个页面内容相似，可以编写成一个页面，避免过于复杂，分开而写
+    如若修改某以页面逻辑，请确保其他页面有相应的修改
+    by nht 2017-11-17
+-->
+
+<body id="root" v-cloak>
+    <div class="OpenContainer">
+        <div class="layui-form" lay-filter="listSelect">
+            <div class="layui-form-item">
+                <label class="layui-form-label">所属题库</label>
+                <div class="layui-input-block">
+                    <remote-sel v-bind:setting="StoreSetting" v-bind:value.sync="queryFormData.QuestionStore_ID" laytips="题库列表" initial="off"></remote-sel>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">题型</label>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="TypeSetting" v-bind:value.sync="queryFormData.QuestionType_ID" v-bind:change="selectType" laytips="题型列表" initial="off"></remote-sel>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">难度</label>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="LevelSetting" v-bind:value.sync="queryFormData.Level" laytips="难度列表" initial="off"></remote-sel>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">题目</label>
+                <div class="layui-input-block">
+                    <textarea class="layui-textarea" v-model="queryFormData.Title" id="editTitle" placeholder="题目"></textarea>
+                </div>
+            </div>
+            <!--选择题选项-->
+            <div v-show="answerOption">
+                <template v-for="option in OptionList">
+                    <div class="layui-form-item layui-form-text">
+                        <label class="layui-form-label">选项{{option.text}}</label>
+                        <div class="layui-input-block icon_input">
+                            <input type="text" class="layui-input" v-model="option.value">
+                            <span>
+                                <i class="layui-icon" style="font-size: 25px;cursor:pointer" @click="deleteOptions(option)">&#xe640;</i>
+                            </span>
+                        </div>
+                    </div>
+                </template>
+            </div>
+            <div class="layui-form-item layui-form-text" v-if="answerOption">
+                <div class="layui-input-block">
+
+                    <a href="javascript:;" class="layui-btn layui-btn-mini" @click="addOptions">添加选项</a>
+                </div>
+            </div>
+            <!--单选题答案-->
+            <div class="layui-form-item layui-form-text" v-show="answerRadio">
+                <label class="layui-form-label">答案</label>
+                <div class="layui-input-block">
+                    <custom-rad v-ref:myradio layverify="required" v-bind:setting="RadioBox" v-bind:value.sync="queryFormData.Answer"
+                                initial="off"></custom-rad>
+                </div>
+            </div>
+            <!--多选题答案-->
+            <div class="layui-form-item layui-form-text" v-show="answerCheckbox">
+                <label class="layui-form-label">答案</label>
+                <div class="layui-input-block">
+                    <custom-chb v-ref:mycheckbox layverify="required" v-bind:setting="CheckBox" v-bind:value.sync="CheckBoxAnswer"
+                                initial="off"></custom-chb>
+                </div>
+            </div>
+            <!--判断题答案-->
+            <div class="layui-form-item layui-form-text" v-if="answerBool">
+                <label class="layui-form-label">答案</label>
+                <div class="layui-input-block">
+                    <remote-rad layverify="required" name="pdt" v-bind:setting="TrueOrFalse" v-bind:value.sync="queryFormData.Answer"
+                                initial="off"></remote-rad>
+                </div>
+            </div>
+            <!--答案-->
+            <div class="layui-form-item layui-form-text" v-if="answerText">
+                <label class="layui-form-label">答案</label>
+                <div class="layui-input-block">
+                    <textarea placeholder="" class="layui-textarea" v-model="queryFormData.Answer"></textarea>
+                </div>
+            </div>
+            <!--解析-->
+            <div class="layui-form-item">
+                <label class="layui-form-label">解析</label>
+                <div class="layui-input-block">
+                    <textarea placeholder="" class="layui-textarea" v-model="queryFormData.Mark" id="editMark"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item layui-hide">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit @click="saveUpdate">提交</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/Controls/Common.js"></script>
+<script>
+    var layedit, titleIndex, markIndex;
+    //建立编辑器
+    layui.use('layedit', function () {
+        layedit = layui.layedit;
+        layedit.set({
+            uploadImage: {
+                url: '/service/public/Upload/LayuiEditor/2' //接口url
+              , type: 'post' //默认post
+            }
+        });
+        titleIndex = layedit.build('editTitle', { height: 150 });//题目
+        markIndex = layedit.build('editMark', { height: 120 });//解析
+    });
+
+    require_js_file(["form", "jquery", "customUtil"],
+
+    function (fnr) {
+        var form = layui.form;
+        var $ = layui.jquery;
+
+        window.rootApp = new Vue({
+            el: '#root',
+            data: {
+                answerRadio: false,//单选题答案
+                answerCheckbox: false,//多选题答案
+                answerBool: false,//判断题答案
+                answerText: false,//其它题目答案
+                answerOption: false,//选择题选项
+                StoreSetting: {//题库下拉
+                    search: true,
+                    defaultValue: 0,
+                    fields: { root: 'Data', key: 'ID', value: 'Name' },
+                    options: [],
+                    remote: { url: "/service/datastore/Question/GetQuestionStoreList", data: { Valid: 1 } }
+                },
+                LevelSetting: {//难度下拉
+                    search: true,
+                    defaultValue: 0,
+                    options: [
+                        { key: '1', value: '难度一' },
+                        { key: '2', value: '难度二' },
+                        { key: '3', value: '难度三' },
+                        { key: '4', value: '难度四' },
+                        { key: '5', value: '难度五' }
+                    ]
+                },
+                selectTypeCount: 2,//题型下拉change次数
+                TypeSetting: {//题型下拉
+                    defaultValue: 0,
+                    search: true,
+                    fields: { root: 'Data', key: 'ID', value: 'Name' },
+                    options: [],
+                    remote: {
+                        url: "/service/datastore/Question/GetQuestionTypeList", filter: function (rsp) {
+                            rsp.pop();//过滤最后一个元素【组合题】
+                        }
+                    }
+                },
+                TrueOrFalse: {//判断题答案选项
+                    tags: { name: "pdt" },
+                    options: [{ key: "1", value: "对" }, { key: "0", value: "错" }]
+                },
+                RadioBox: ["A", "B", "C", "D"],//单选题答案选项
+                CheckBox: ["A", "B", "C", "D"],//多选题答案选项
+                CheckBoxAnswer: "",
+                OptionList: [],
+                queryFormData: {
+                    QuestionStore_ID: "",
+                    QuestionType_ID: "",
+                    Level: "3",
+                    Title: "",
+                    Body: "",
+                    Answer: "",
+                    Mark: "",
+                    AnswerCount: ""
+                },
+            },
+            watch: {
+            },
+            ready: function () {
+                if (!!GetQueryString('ID')) {
+                    this.selectTypeCount = 0;
+                    this.GetQuestionByID({ 'ID': GetQueryString('ID') });
+                }
+            },
+            methods: {
+                //根据id查询题目信息
+                GetQuestionByID: function (params) {
+                    var self = this;
+                    $.get("/service/datastore/Question/GetQuestion", params, function (res) {
+                        if (res != null && res.Data.length > 0) {
+                            self.queryFormData.QuestionStore_ID = res.Data[0].QuestionStore_ID;
+                            self.queryFormData.QuestionType_ID = res.Data[0].QuestionType_ID;
+                            self.queryFormData.Level = res.Data[0].Level;
+                            self.queryFormData.AnswerCount = res.Data[0].AnswerCount;
+                            $('#LAY_layedit_1').contents().find('body').html(res.Data[0].Title);
+                            $('#LAY_layedit_2').contents().find('body').html(res.Data[0].Mark);
+                            if (res.Data[0].QuestionType_ID == 1) {
+                                self.queryFormData.Answer = res.Data[0].Answer;
+                                self.answerRadio = true;
+                                self.answerOption = true;
+                                self.RadioBox = [];
+                                if (res.Data[0].Body != "") {
+                                    var json = eval('(' + res.Data[0].Body + ')');
+                                    $.each(json, function (i) {
+                                        self.OptionList.push({ text: i, value: json[i] });
+                                        self.RadioBox.push(i);
+                                    });
+                                } else {
+                                    var i = 1;
+                                    while (i <= res.Data[0].AnswerCount) {
+                                        var code = String.fromCharCode(i + 64);
+                                        self.OptionList.push({ text: code, value: "" });
+                                        self.RadioBox.push(code);
+                                        i++;
+                                    }
+                                }
+                                $(self.$refs.myradio.$el.parentElement).find("div.layui-unselect").remove();
+                                self.$refs.myradio.init();
+                            } else if (res.Data[0].QuestionType_ID == 2) {
+                                self.CheckBoxAnswer = res.Data[0].Answer.split(',');
+                                self.answerCheckbox = true;
+                                self.answerOption = true;
+                                self.CheckBox = [];
+                                if (res.Data[0].Body != "") {
+                                    var json = eval('(' + res.Data[0].Body + ')');
+                                    $.each(json, function (i) {
+                                        self.OptionList.push({ text: i, value: json[i] });
+                                        self.CheckBox.push(i);
+                                    });
+                                } else {
+                                    var i = 1;
+                                    while (i <= res.Data[0].AnswerCount) {
+                                        var code = String.fromCharCode(i + 64);
+                                        self.OptionList.push({ text: code, value: "" });
+                                        self.CheckBox.push(code);
+                                        i++;
+                                    }
+                                }
+                                $(self.$refs.mycheckbox.$el.parentElement).find("div.layui-unselect").remove();
+                                self.$refs.mycheckbox.init();
+                            } else if (res.Data[0].QuestionType_ID == 4) {
+                                self.queryFormData.Answer = res.Data[0].Answer;
+                                self.answerBool = true;
+                            } else {
+                                self.queryFormData.Answer = res.Data[0].Answer;
+                                self.answerText = true;
+                            }                            
+                        }
+                        else {
+                            layer.msg(Data.Message);
+                        }                        
+                    })
+
+                },
+                selectType: function () {//选择题型
+                    if (this.selectTypeCount >= 2) {
+                        this.queryFormData.AnswerCount = 0;
+                        this.queryFormData.Answer = "";
+                        this.answerOption = false;
+                        this.answerRadio = false;
+                        this.answerCheckbox = false;
+                        this.answerBool = false;
+                        this.answerText = false;
+                        var type = this.queryFormData.QuestionType_ID;
+                        if (type == 1) {
+                            this.queryFormData.Answer = "A";
+                            this.answerRadio = true;
+                            this.initOption();
+                        } else if (type == 2) {
+                            this.CheckBoxAnswer = ["A"];
+                            this.answerCheckbox = true;
+                            this.initOption();
+                        } else if (type == 4) {
+                            this.queryFormData.Answer = "1";
+                            this.answerBool = true;
+                        } else {
+                            this.answerText = true;
+                        }
+                    }
+                    this.selectTypeCount++;
+                },
+                initOption: function () {//初始化选择题选项
+                    this.answerOption = true;
+                    this.queryFormData.AnswerCount = 4;
+                    this.OptionList = [{ text: 'A', value: '' }, { text: 'B', value: '' }, { text: 'C', value: '' }, { text: 'D', value: '' }];
+                    this.RadioBox = ["A", "B", "C", "D"];
+                    this.CheckBox = ["A", "B", "C", "D"];
+                    $(this.$refs.myradio.$el.parentElement).find("div.layui-unselect").remove();
+                    $(this.$refs.mycheckbox.$el.parentElement).find("div.layui-unselect").remove();
+                    this.$refs.myradio.init();
+                    this.$refs.mycheckbox.init();
+                },
+                addOptions: function () {//添加选择题选项
+                    this.queryFormData.AnswerCount++;
+                    var code = String.fromCharCode(this.queryFormData.AnswerCount + 64);
+                    this.OptionList.push({ text: code, value: '' });
+                    this.RadioBox.push(code);
+                    this.CheckBox.push(code);
+                    this.$refs.myradio.init();
+                    this.$refs.mycheckbox.init();
+                },
+                deleteOptions: function (item) {//删除某个选项
+                    if (this.queryFormData.AnswerCount <= 2) {
+                        layer.msg("至少保留两个选项");
+                        return;
+                    }
+                    this.queryFormData.AnswerCount--;
+                    var self = this;
+                    $.each(self.OptionList, function (i) {
+                        if (item == this) {
+                            self.OptionList.splice(i, 1);
+                        }
+                        if (i < self.OptionList.length) {
+                            self.OptionList[i].text = String.fromCharCode(i + 65);
+                        }
+                    });
+                    self.queryFormData.Answer = "A";
+                    self.CheckBoxAnswer = ["A"];
+                    this.RadioBox.pop();
+                    this.CheckBox.pop();
+                    $(this.$refs.myradio.$el.parentElement).find("div.layui-unselect").remove();
+                    $(this.$refs.mycheckbox.$el.parentElement).find("div.layui-unselect").remove();
+                    this.$refs.myradio.init();
+                    this.$refs.mycheckbox.init();
+                },
+                saveUpdate: function () {//提交数据
+                    if (this.queryFormData.QuestionType_ID <= 2) {//选择题
+                        this.queryFormData.Body = "";
+                        var falg = false;
+                        var json = {};
+                        var arr = this.OptionList;
+                        $.each(arr, function (i) {
+                            json[arr[i].text] = arr[i].value;
+                            if (arr[i].value != "")//有选项
+                                falg = true;
+                        })
+                        if (falg)
+                            this.queryFormData.Body = JSON.stringify(json);
+                    }
+                    if (this.queryFormData.QuestionType_ID == 2)//多选
+                        this.queryFormData.Answer = this.CheckBoxAnswer.join(',');
+                    this.queryFormData.Title = layedit.getContent(titleIndex);
+                    this.queryFormData.Mark = layedit.getContent(markIndex);
+                    this.queryFormData.ID = GetQueryString('ID');
+                    $.post("/service/datastore/Question/UpdateQuestion", this.queryFormData, function (res) {
+                        fnr.callDialog('refresh', res);
+                        if (res.SuccessResponse) {
+                            fnr.closeDialog();
+                        }
+                    });
+                }
+            }
+
+        });
+    });
+</script>

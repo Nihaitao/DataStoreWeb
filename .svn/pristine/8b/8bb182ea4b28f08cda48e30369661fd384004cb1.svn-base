@@ -1,0 +1,138 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <form class="layui-form" action="" onsubmit="return false">
+            <div class="layui-form-item">
+                <label class="layui-form-label">资料标题</label>
+                <div class="layui-input-block">
+                    <input type="text" autocomplete="off" lay-verify="required" placeholder="资料标题" class="layui-input" v-model="queryFormData.Title">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">资料类型</label>
+                <div class="layui-input-block">
+                    <remote-sel v-bind:setting="DataInfoTypeSetting" layverify="required" v-bind:value.sync="queryFormData.DataInfoType" initial="off"></remote-sel>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">课程资料</label>
+                <div class="layui-input-block">
+                    <button type="button" class="layui-btn" id="test3"><i class="layui-icon"></i>上传文件</button>
+                </div>
+            </div>
+            <div class="layui-form-item layui-hide">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit @click="formDemo">立即提交</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</body>
+</html>
+
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/Controls/Common.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "upload"],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+            var upload = layui.upload;
+
+
+            var rootApp = new Vue({
+                el: "#root",
+                data: {
+                    queryFormData: {
+                        ID: 0,
+                        Title: '',
+                        DataInfoType: '',
+                        Content: '',
+                        Path: '',
+                        DataSize: 0,
+                        IsOpen: 0,
+                        Course_ID: '',
+                        CourseUnit_ID: 0,
+                        CourseChapters_ID: 0
+                    },
+                    DataInfoTypeSetting: {
+                        options: [
+                            {
+                                key: '1',
+                                value: '教材'
+                            }, {
+                                key: '2',
+                                value: '教辅'
+                            }, {
+                                key: '3',
+                                value: '其他'
+                            }
+                        ]
+                    },
+                },
+                ready: function () {
+                    if (GetQueryString("ID")) {
+                        this.queryFormData.Course_ID = GetQueryString("ID");
+                    }
+
+                },
+                methods: {
+                    formDemo: function (e) {
+                        if (!layui.form.checkInput(e)) {
+                            return false;
+                        }
+                        _this = this;
+                        $.post("/service/datastore/DataInfo/AddDataInfo", _this.queryFormData, function (res) {
+                            if (res.SuccessResponse) {
+                                fnr.callDialog('refresh'); //回调打开窗口events中的refresh
+                                fnr.closeDialog(); //关闭当前的对话框
+                            } else {
+                                layer.msg(res.Message);
+                            }
+                        })
+
+                    }
+                }
+            });
+            //指定允许上传的文件类型
+            var uploadInst = upload.render({
+                accept: 'file',
+                elem: '#test3'
+              , url: '/service/public/Upload/File/2'
+               , before: function (obj) {
+                   var files = obj.pushFile();
+                   $.each(files, function () {
+                       rootApp.queryFormData.Name = this.name;
+                       rootApp.queryFormData.DataSize = this.size;
+                   });
+               }
+              , done: function (res) {
+                  if (!res.SuccessResponse) {
+                      return layer.msg('上传失败')
+                  }
+                  rootApp._data.queryFormData.Path = res.Message
+                  layer.msg('上传成功')
+                  //上传成功
+              }
+              , error: function () {
+                  //演示失败状态，并实现重传
+                  var demoText = $('#demoText');
+                  demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                  demoText.find('.demo-reload').on('click', function () {
+                      uploadInst.upload();
+                  });
+              }
+            });
+        });
+</script>

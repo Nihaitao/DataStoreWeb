@@ -1,0 +1,167 @@
+﻿666 -->
+<script src="../Resources/js/jquery.js"></script>
+<script>
+    $(function () {
+
+        var loginState;
+        //读取COOKIE方法
+        function getCookie(name) {
+            var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+            if (arr = document.cookie.match(reg))
+                return unescape(arr[2]);
+            else
+                return null;
+        }
+
+        function delAllCookie() {
+            var myDate = new Date();
+            myDate.setTime(myDate.getTime() - 10000);//设置时间
+            var data = document.cookie;
+            var dataArray = data.split("; ");
+            for (var i = 0; i < dataArray.length; i++) {
+                var varName = dataArray[i].split("=");
+                document.cookie = varName[0] + "=''; expires=" + myDate.toGMTString();
+                document.cookie = varName[0] + "=''; expires=" + myDate.toGMTString() + ";path=/;domain=" + location.href.match(/((?:\w+\.){1}(?:cn|top|com\.cn|com\.tw|com))/)[1];
+            }
+        }
+        loginState = getCookie("UserKey")
+
+        if (loginState != undefined) {
+            $('.noheadLoginState').css('display', 'block');
+            $('.headLoginState').css('display', 'none');
+        } else {
+            $('.noheadLoginState').css('display', 'none');
+            $('.headLoginState').css('display', 'block');
+        }
+        function LayoutFn() {
+            $.get('/service/public/Mechanism/GetSetlist', function (res) {
+                if (res.SuccessResponse) {
+                    if (res.Data) {
+                        $('.headName').html('欢迎来到' + res.Data.HeaderName);
+                        if (res.Data.HeaderLogoOrName == 1) {
+                            $('.headerLogo').css('display', 'block');
+                            $('.headerLogo').attr('src', res.Data.HeaderLogo);
+                            $('.headerName').css('display', 'none');
+                        } else if (res.Data.HeaderLogoOrName == 0) {
+                            $('.headerLogo').css('display', 'none');
+                            $('.headerName').css('display', 'block');
+                            $('.headerName').html(res.Data.HeaderName);
+                        }
+                    }
+                }
+            });
+        }
+        LayoutFn();
+
+        function headPhotoFn() {
+            $.get("/service/edu/Student/GetStudentInfo", function (res) {
+                if (res.SuccessResponse) {
+                    $('.headerPhoto').attr('src', res.Data.HeadImg ? res.Data.HeadImg : '../../Resources/images/photo.png');
+                }
+            });
+        }
+        headPhotoFn();
+
+        $('#exit').on('click', function (e) {
+            e.preventDefault();
+            delAllCookie();
+            location.href = '../../usercenter/Login.shtml';
+        })
+    });
+
+
+</script>
+<script src="../../Resources/js/modules/vue/vue.min.js"></script>
+<script>
+    var rootApp = new Vue({
+        el: '#root',
+        data: {
+            LoginPageConfig: ''
+        },
+        ready: function () {
+            this.LoginPageFn();
+        },
+        methods: {
+            LoginPageFn: function () {
+                var self = this;
+                $.get('/service/datastore/HConfiguration/GetConfiguration', function (res) {
+                    if (res.SuccessResponse) {
+                        self.LoginPageConfig = res.Data.LoginPageConfig;
+                    }
+                });
+            },
+
+            RegisterFn: function () {
+                if (self.LoginPageConfig == 0) {
+                    layer.open({
+                        type: 2,
+                        area: ['400px', '550px'],
+                        fixed: false, //不固定
+                        maxmin: true,
+                        title: '欢迎注册',
+                        content: '../../usercenter/register_model.html'
+                    });
+                } else {
+                    location.href = '../../usercenter/Register.shtml';
+                }
+            },
+
+            //登录模态框
+            LoginFn: function () {
+                if (sessionStorage.getItem("thisUrl")) {
+                    sessionStorage.removeItem("thisUrl");
+                    sessionStorage.setItem("thisUrl", location.href);
+                } else {
+                    sessionStorage.setItem("thisUrl", location.href);
+                }
+                if (self.LoginPageConfig == 0) {
+                    layer.open({
+                        type: 2,
+                        area: ['400px', '550px'],
+                        fixed: false, //不固定
+                        maxmin: true,
+                        title: '欢迎登陆',
+                        content: '../../usercenter/login_model.html',
+                    });
+                } else {
+                    location.href = '../../usercenter/Login.shtml';
+                }
+            }
+        }
+    })
+</script>
+<!--顶部-->
+<body id="root">
+    <div class="top_head clearfix headLoginState" style="display: none;">
+        <div class="container">
+            <div class="pull-left" style="margin-left: 15px">
+                <span class="headName"></span>
+            </div>
+            <div class="pull-right">
+                <a href="javascript:;" @click="LoginFn">登录</a>
+                <a href="javascript:;" @click="RegisterFn">注册</a>
+                <a href="#">注册客服中心</a>
+            </div>
+        </div>
+    </div>
+    <div class="top_head noheadLoginState" style="display: none;">
+        <div class="container">
+            <div class="pull-left" style="margin-left: 15px">
+                <span class="headName"></span>
+            </div>
+            <div class="pull-right Gcenter">
+                <a>
+                    <img class="headerPhoto" src="../../Resources/images/photo.png" al alt="" width="30" height="30" style="border-radius: 50%">
+                    <i class="fa fa-angle-down" style="margin-left: 20px"></i>
+                </a>
+                <a href="#"><i class="fa fa-bell"></i></a>
+                <a href="#">客服中心</a>
+                <a id="exit">退出</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+
+

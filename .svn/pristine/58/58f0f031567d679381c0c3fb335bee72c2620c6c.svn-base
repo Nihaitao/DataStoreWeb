@@ -1,0 +1,279 @@
+.head{
+    padding: 0.24rem 0 0.24rem 0.26rem;
+    border-bottom: 0.01rem solid #ededed;
+}
+.companyName{
+    color: #333;
+    font-size: 0.3rem;
+    margin-bottom: 0.2rem;
+}
+.lf{
+    color: #999;
+}
+.lf-name{
+    color: #f76260;
+}
+.stating{
+    color: #333;
+}
+.head p:not(:first-child){
+    font-size: 0.26rem;
+}
+.head p:nth-child(2){
+    margin-bottom: 0.18rem;
+}
+.tabsBox{
+    margin-bottom: 1rem;
+}
+.tabs{
+    border-top: 0.01rem solid #f2f2f2;
+    border-bottom: 0.01rem solid #f2f2f2;
+    background-color: #F5F5F9;
+    height: 0.99rem;
+    box-sizing: border-box;
+    font-size: 0;
+}
+.tabs .tabItem{
+    display: inline-block;
+    font-size: 0.3rem;
+    color: #333;
+    width: 20%;
+    height: 100%;
+    line-height: 0.99rem;
+    text-align: center;
+    box-sizing: border-box;
+}
+.tabs .tabItem.active{
+    color: #f76260;
+    border-bottom: 0.03rem solid #f76260;
+}
+.timeItem.layui-timeline-item .timesDate{
+    font-size: 0.3rem;
+    left: -0.1rem;
+    width: 0.3rem;
+    height: 0.3rem;
+    line-height: 0.3rem;
+}
+/*.tabContent{*/
+    /*padding: 0 0.26rem 0 0.26rem;*/
+/*}*/
+.timeItem h3.layui-timeline-title{
+    font-size: 0.28rem;
+    color: #333;
+    font-weight: inherit;
+}
+div.layui-timeline-content{
+    padding-left: 0.38rem;
+}
+.itemContent{
+    background-color: #FAFAFA;
+    border-radius: 0.05rem;
+    padding: 0.27rem 0.28rem 0.27rem 0.18rem;
+    border: 0.01rem solid #ededed;
+    box-sizing: border-box;
+}
+.itemContent p:first-child,
+.itemContent p:nth-child(2){
+    margin-bottom: 0.27rem;
+}
+.itemContent p:first-child,
+.itemContent p:last-child{
+    font-size: 0.24rem;
+}
+.itemContent p:first-child .lf,
+.itemContent p:last-child .lf{
+    color: #666;
+}
+.itemContent p:first-child .lf-name{
+    color: #ffbe00;
+}
+.itemContent p:last-child .lf-name{
+    color: #fdd560;
+}
+.itemContent p:nth-child(2){
+    font-size: 0.26rem;
+    color: #333;
+}
+.itemContent .addTime{
+    float: right;
+    font-size: 0.24rem;
+    color: #666;
+}
+.layui-timeline{
+    margin-top: 0.2rem;
+}
+.footerBtnBox{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: 1rem;
+    width: 100%;
+    z-index: 999;
+}
+.footerBtnBox ul{
+    font-size: 0;
+}
+.footerBtnBox ul li{
+    width: 50%;
+    font-size: 0.32rem;
+    color: #fff;
+    text-align: center;
+    line-height: 1rem;
+    display: inline-block;
+}
+.footerBtnBox ul li:first-child{
+    background-color: #f76260;
+}
+.footerBtnBox ul li:last-child{
+    background-color: #ffbe00;
+}
+.normalDetail{
+    padding: 0 0.26rem;
+}
+.normalDetail .detailTitle{
+    margin: 0.24rem 0;
+    font-size: 0;
+}
+.normalDetail .detailTitle i{
+    display: inline-block;
+    width: 0.4rem;
+    height: 0.48rem;
+    font-size: 0.48rem;
+    color: #F76260;
+    margin-right: 0.2rem;
+}
+.normalDetail .detailTitle span{
+    display: inline-block;
+    font-size: 0.28rem;
+    color: #666;
+    vertical-align: bottom;
+}
+
+.companyBox{
+    border: 0.01rem solid #ededed;
+    border-radius: 5px;
+    background-color: #fafafa;
+    padding: 0.3rem;
+}
+.companyBox .layui-row{
+    margin-bottom: 0.34rem;
+}
+.companyBox p{
+    font-size: 0.26rem;
+}
+.companyBox .detailLeft{
+    color: #999;
+}
+.companyBox .detailMiddle{
+    color: #333;
+}
+.companyBox .detailMiddle.tel{
+    color: #ffbe00;
+}
+.companyBox p i{
+    font-size: 0.31rem;
+    color: #F76260;
+}
+.footerBtnBox p{
+    font-size: 0.32rem;
+    color: #fff;
+    text-align: center;
+    line-height: 1rem;
+    background-color: #F76260;
+}
+
+.clientData .clientTitle{
+    margin: 0.26rem 0;
+}
+.clientData .clientTitle p{
+    display: inline-block;
+}
+.clientData .clientTitle p.modifyBtn{
+    float: right;
+    font-size: 0.24rem;
+    color: #fff;
+    padding: 0.05rem 0.1rem;
+    background-color: #F76260;
+    border-radius: 0.03rem;
+}
+.clientData .clientTitle p.modifyBtn i{
+    display: inline-block;
+    font-size: 0.24rem;
+}
+.clientData .clientTitle p.clientName{
+    font-size: 0.3rem;
+    color: #333;
+    font-weight: bold;
+}
+.clientTitle{
+    padding: 0 0.3rem;
+}
+.stateZone{
+    padding: 0 0.3rem;
+}
+.tempBox{
+    padding: 0 0.3rem 0.34rem;
+    box-sizing: border-box;
+    border-bottom: 0.01rem solid #ededed;
+}
+
+.createTime{
+    margin-left: 0.3rem;
+    border-bottom: 0.01rem solid #ededed;
+    box-sizing: border-box;
+    padding: 0.2rem 0;
+}
+.createTime p{
+    font-size: 0.26rem;
+    color: #999;
+}
+.createTime p span{
+    color: #ffbe00;
+}
+.remindList .item{
+    height: 1.38rem;
+    border-bottom: 0.01rem solid #ededed;
+    box-sizing: border-box;
+    padding:0.26rem 0.3rem;
+}
+.remindList .item .concatTime{
+    font-size: 0.24rem;
+    font-weight: bold;
+    color: #ccc;
+    display: inline-block;
+    line-height: 0.84rem;
+    vertical-align: top;
+    padding-left: 0.25rem;
+}
+.remindList .item.active .concatTime{
+    color: #f76260;
+}
+.remindList .item .content{
+    display: inline-block;
+    margin: 0 0.3rem;
+    width: 68%;
+}
+.remindList .item .content p:first-child{
+    font-size: 0.28rem;
+    color: #333;
+    white-space: nowrap;
+    text-overflow:ellipsis;
+    overflow:hidden;
+}
+.remindList .item .content p:last-child{
+    font-size: 0.26rem;
+    color: #999;
+}
+.remindList .item .remindIcon{
+    display: inline-block;
+    line-height: 0.84rem;
+    vertical-align: top;
+}
+.remindList .item .remindIcon i{
+    font-size: 0.48rem;
+    color: #ccc;
+}
+.remindList .item.active .remindIcon i{
+    font-size: 0.48rem;
+    color: #f76260;
+}

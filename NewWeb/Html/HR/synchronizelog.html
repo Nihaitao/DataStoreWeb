@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        div.layui-table-cell { height: 30px; }
+    </style>
+
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <!--操作模板-->
+        <table id="listTable" lay-filter="listTable"></table>
+    </div>
+</body>
+</html>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="http://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/Excel.js"></script>
+<script>
+    var $;
+    require_js_file(['table', 'form', 'jquery', 'tableExt'],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            $ = layui.$;
+
+            //绑定列表
+            var listTable = table.render({
+                elem: '#listTable',
+                even: true, //开启隔行背景
+                cols: [
+                    [
+                        {
+                            field: 'Key', title: '序号', width: 160, templet: function () {
+                                var array = new Array();
+                                array.push("<span>" + fnr.format(this.Key, "yyyyMMddHHmmss") + "</span>");
+                                return array.join("")
+                            }
+                        },
+                        {
+                            field: 'Key', title: '时间', width: 160, templet: function () {
+                                var array = new Array();
+                                array.push("<span>" + fnr.format(this.Key, "yyyy-MM-dd HH:mm") + "</span>");
+                                return array.join("")
+                            }
+                        },
+                        {
+                            field: 'Value', title: '错误条数', width: 115, templet: function () {
+                                var array = new Array();
+                                array.push("<span>" + eval(this.Value).length + "条</span>");
+                                return array.join("")
+                            }
+                        },
+                        {
+                            fixed: 'right',
+                            field: 'name',
+                            title: '操作',
+                            width: 70,
+                            toolbar: function () {
+                                var array = new Array();
+                                array.push("<button class=\"layui-btn layui-btn-small\" lay-event='edit'>下载</button>");
+
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        }
+                    ]
+                ],
+                url: '/service/work/api/synchronizelog',
+            });
+
+            //监听工具栏事件
+            tableExt.addEvent("tool(listTable)",
+                {
+                    "edit": function (data, obj) {
+                        JsonToExcel(eval(data.Value), "错误日志" + data.Key);
+                    }
+                });
+        });
+</script>

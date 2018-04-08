@@ -1,0 +1,176 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>后台设置</title>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">后台Logo:</label> &nbsp;
+                <img class="layui-upload-img" id="BackstageLogoImg" v-bind:src="submitData.BackstageLogo" style="height:50px; width: auto;">&nbsp;
+                <button type="button" class="layui-btn layui-btn-normal" id="BackstageLogoBtn" style="margin:15px 0"><i class="layui-icon">&#xe67c;</i>选择图片</button><span style="padding-left:10px; color:red;"> * 建议上传 透明底色的PNG 图片。图像尺寸为:宽auto * 高50px</span>
+                <p id="BackstageLogoText" style="margin-left:-15px;margin-top:5px;"></p>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">后台登录Logo:</label> &nbsp;
+                <img class="layui-upload-img" id="BackstageLoginLogoImg" v-bind:src="submitData.BackstageLoginLogo" style="height:96px; width: 212px;">&nbsp;
+                <button type="button" class="layui-btn layui-btn-normal" id="BackstageLoginLogoBtn" style="margin:15px 0"><i class="layui-icon">&#xe67c;</i>选择图片</button><span style="padding-left:10px; color:red;"> * 建议上传 透明底色的PNG 图片。图像尺寸为:宽212px * 高96px</span>
+                <p id="BackstageLoginLogoText" style="margin-left:-15px;margin-top:5px;"></p>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-upload">
+                    <div class="layui-upload-list" style="">
+                        <label class="layui-form-label">浏览器图标:</label>
+                        <div class="layui-input-block">
+                            <img class="layui-upload-img" id="FaviconImg" v-bind:src="submitData.Favicon" style="width:32px;height:32px;">
+                            <button type="button" class="layui-btn layui-btn-normal" id="FaviconBtn" style="margin:15px 0"><i class="layui-icon">&#xe67c;</i>选择图片</button><span style="color:red;"> * 建议上传文件格式为ico类型，文件大小不能大于32x32</span>
+                            <p id="FaviconText" style="margin-left:-15px;margin-top:4px;"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">版权信息:</label>
+                <div class="layui-input-inline">
+                    <input type="text" lay-verify="empty|FooterCopyright" autocomplete="off" placeholder="请输入版权信息" class="layui-input"
+                           v-model="submitData.FooterCopyright" style="width:350px;">
+                </div>
+            </div>
+            <div div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" @click="saveAdd" lay-submit>保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="/Resources/js/Controls/Common.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate"],
+        function (fnr) {
+            var $ = layui.jquery;
+            //浏览器图标
+            layui.use('upload', function () {
+                upload = layui.upload;
+                var FaviconInst = upload.render({
+                    elem: '#FaviconBtn'
+                    , url: '/service/public/Upload/File/2'
+                    , exts: 'ico'
+                    , before: function (obj) {
+                        //预读本地文件示例，不支持ie8
+                        obj.preview(function (index, file, result) {
+                            $('#FaviconImg').attr('src', result); //图片链接（base64
+                        });
+                    }
+                    , done: function (res) {
+                        //如果上传失败
+                        if (res.code > 0) {
+                            return layer.msg('上传失败');
+                        }
+                        //上传成功
+                        rootApp.submitData.Favicon = res.Message
+                        layer.msg('上传成功')
+                    }
+                    , error: function () {
+                        //演示失败状态，并实现重传
+                        var demoText = $('#FaviconText');
+                        demoText.html('<span style="color: #FF5722;">上传失败</span> <a class=" favicon-reload" style="cursor:pointer;">重试</a>');
+                        demoText.find('.favicon-reload').on('click', function () {
+                            FaviconInst.upload();
+                        });
+                    }
+                })
+            });
+
+            //后台LOGO
+            layui.use('upload', function () {
+                upload = layui.upload;
+                //普通图片上传
+                var BackstageLogoInst = upload.render({
+                    elem: '#BackstageLogoBtn'
+                 , url: '/service/public/Upload/File/2'
+                 , before: function (obj) {
+                     //预读本地文件示例，不支持ie8
+                     obj.preview(function (index, file, result) {
+                         $('#BackstageLogoImg').attr('src', result); //图片链接（base64）
+                     });
+                 }
+                 , done: function (res) {
+                     //如果上传失败
+                     if (res.code > 0) {
+                         return layer.msg('上传失败');
+                     }
+                     //上传成功
+                     window.rootApp.submitData.BackstageLogo = res.Message
+                     layer.msg('上传成功')
+                 }
+                 , error: function () {
+                     //演示失败状态，并实现重传
+                     var demoText = $('#BackstageLogoText');
+                     demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="BackstageLogo-reload" style="cursor:pointer;">重试</a>');
+                     demoText.find('.BackstageLogo-reload').on('click', function () {
+                         BackstageLogoInst.upload();
+                     });
+                 }
+                });
+            });
+
+            //后台登录LOGO
+            layui.use('upload', function () {
+                upload = layui.upload;
+                //普通图片上传
+                var BackstageLoginLogoInst = upload.render({
+                    elem: '#BackstageLoginLogoBtn'
+                 , url: '/service/public/Upload/File/2'
+                 , before: function (obj) {
+                     //预读本地文件示例，不支持ie8
+                     obj.preview(function (index, file, result) {
+                         $('#BackstageLoginLogoImg').attr('src', result); //图片链接（base64）
+                     });
+                 }
+                 , done: function (res) {
+                     //如果上传失败
+                     if (res.code > 0) {
+                         return layer.msg('上传失败');
+                     }
+                     //上传成功
+                     rootApp.submitData.BackstageLoginLogo = res.Message
+                     layer.msg('上传成功')
+                 }
+                 , error: function () {
+                     //演示失败状态，并实现重传
+                     var demoText = $('#BackstageLoginLogoText');
+                     demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="BackstageLoginLogo-reload" style="cursor:pointer;">重试</a>');
+                     demoText.find('.BackstageLoginLogo-reload').on('click', function () {
+                         BackstageLoginLogoInst.upload();
+                     });
+                 }
+                });
+            });
+
+            window.rootApp = new Vue({
+                el: "#root",
+                data: {
+                    submitData: {
+                        BackstageLogo: '',
+                        BackstageLoginLogo: '',
+                        Favicon: '',
+                        FooterCopyright: ''
+                    }
+                },
+                ready: function () {
+            
+                },
+                methods: {
+            
+                }
+            });
+        });
+</script>

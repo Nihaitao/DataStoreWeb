@@ -1,0 +1,1129 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>课程-课程资料</title>
+    <style>
+        .tree { border-radius: 2px; }
+        .tree-content { padding-left: 30px; }
+        .tree-node { border-top: 1px solid #e2e2e2; position: relative; }
+        .tree-node:first-child { border-top: none; }
+        .tree-node .option-area { position: absolute; top: 50%; right: 15px; transform: translateY(-50%); }
+        .option-area .layui-icon { display: inline-block; color: #999; }
+        .option-area .layui-icon:hover { color: #333; }
+        .tree-tit { position: relative; height: 42px; line-height: 42px; padding: 0 15px; color: #333; background-color: #ffffff; cursor: pointer; margin-bottom: 10px; }
+        .tree-tit .layui-icon { display: inline-block; margin-right: 10px; transition: transform 0.4s;vertical-align: middle; }
+        .tree-tit .layui-icon.open { -webkit-transform: rotate(90deg); -moz-transform: rotate(90deg); transform: rotate(90deg); }
+        .tree-tit:hover { box-shadow: 2px 2px 5px #ccc; }
+        .layui-colla-content { display: none; padding: 10px 15px; line-height: 22px; border-top: 1px solid #f0f0f0; color: #666; }
+        .state-highlight { height: 50px; border: 1px dashed #5FB878; margin-bottom: 10px; }
+        [v-cloak] { display: none; }
+        .left-side { float: left; width: 18%; min-height: 576px; border: 1px solid #e9edee; background-color: #f6f6f6; }
+        .left-sides-title { height: 28px; line-height: 28px; color: #fdfdfd; background-color: #cccccc; text-align: center; font-size: 14px; border-bottom: 1px solid #f6f6f6; cursor: pointer; }
+        .subentry { height: 34px; line-height: 34px; /* text-align: center; */ font-size: 14px; color: #666; cursor: pointer; border-top: 1px solid #F6F6F6; padding-left: 38%; }
+        li.subentry { position: relative; }
+        .left-side li.subentry.active { background-color: #00aaff; color: #fff; }
+        .left-side li.subentry.active a { color: #fff; }
+        li.subentry span { position: absolute; left: 64px; font-size: 16px; margin-right: 5px; }
+        .right-side { float: right; width: 81%; min-height: 576px; border: 1px solid #e9edee; background-color: #f6f6f6; }
+        div.u-wrap { width: 98%; }
+        .right-side .classes { margin: 0; }
+        .u-wrap .mainbackground { position: relative; padding: 50px 100px 10px; background-color: #f6f6f6; }
+        .right-side .u-wrap .mainbackground.nopadding { padding: 0 25px; }
+        .heading { position: relative; margin: 15px 0; padding: 3px 8px; border-left: 3px solid #fa6900; }
+        .right-side .heading { position: relative; }
+        .company .heading { border-width: 4px; }
+        .right-side div.mainbackground .heading { border-left: 3px solid #0af; height: 18px; font-size: 14px; }
+        .progress-box { margin: 15px auto; }
+        .steps { position: relative; width: 100%; margin: 0 auto; text-align: center; overflow: hidden; }
+        .steps ul { width: 100%; height: 30px; overflow: hidden; }
+        .steps ul li { width: 33%; background-color: #ddd; display: inline-block; }
+        .steps ul li.active { background-color: #04a2ca; }
+        .steps ul li i { display: inline-block; width: 30px; height: 30px; line-height: 30px; text-align: center; font-style: normal; color: #fff; font-size: 18px; font-weight: 700; }
+        .steps ul li em { position: relative; top: 0; display: inline-block; color: #fff; line-height: 30px; font-size: 14px; font-style: normal; }
+        .ct-step { height: 30px; position: relative; margin-left: 0px; margin-right: 0px; }
+        .ct-step .step { float: left; height: 30px; line-height: 30px; color: #FFF; background: #cacaca; z-index: 1; text-align: center; position: relative; width: 33.33%; }
+        .ct-step .step-active { background-color: #00a0c7; }
+        .ct-step .step:after { content: ''; display: block; width: 20px; height: 30px; position: absolute; right: 0; z-index: 9; top: 0; border-top: 15px solid transparent !important; border-left: 15px solid #cacaca; border-bottom: 15px solid transparent !important; background-color: #fff; box-sizing: border-box; }
+        .ct-step .step-active:after { border-color: #00a0c7; }
+        .ct-step .step:not(:first-child):before { content: ''; display: block; position: absolute; left: -15px; z-index: 8; top: 0px; border-top: 15px solid #cacaca; border-left: 15px solid transparent !important; border-bottom: 15px solid #cacaca; }
+        .ct-step .step-active:before { border-color: #00a0c7 !important; }
+        .ct-step .step i { display: inline-block; width: 30px; height: 30px; line-height: 30px; text-align: center; font-style: normal; color: #fff; font-size: 18px; font-weight: 700; }
+        .ct-step .step em { position: relative; top: 0; display: inline-block; color: #fff; line-height: 30px; font-size: 14px; font-style: normal; }
+        .tit-area .h3 { font-size: 14px; color: #000; }
+        .tit-area .h3 input { border: none; border-bottom: solid 1px; border-radius: 0; width: 300px; background-color: inherit; }
+        .name { display:inline-block;white-space:nowrap; overflow:hidden; text-overflow:ellipsis;width:70%;}
+        .layui-icon.arrow { float:left;}
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+
+</head>
+<body id="root" v-cloak>
+    <div class="mainContainer">
+        <div class="layui-tab layui-tab-brief" lay-filter="tabcard">
+            <ul class="layui-tab-title">
+                <li class="layui-this" lay-id="1">基本信息</li>
+                <li lay-id="2" v-if="IsShow>0?true:false">课程详情</li>
+                <li lay-id="3" v-if="IsShow>0?true:false">{{TeachingMethod != 1 ? '排课表' : '视频课'}}</li>
+                <li lay-id="4" v-if="IsShow>0?true:false">课程资料</li>
+            </ul>
+            <div class="layui-tab-content">
+                <!--基本信息-->
+                <div class="layui-tab-item layui-show">
+                    <div class="layui-form">
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">网课名称</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="Name" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" v-model="baseInfoForm.Name">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">学科</label>
+                            <div class="layui-input-inline">
+                                <remote-sel v-bind:setting="FirstSetting" v-bind:value.sync="linkage.Discipline_OneLevelID" v-bind:change="FirstChange" laytips="请选择一级学科"
+                                            initial="off" lay-filter="First" lay-verify="required"></remote-sel>
+                            </div>
+                            <div class="layui-input-inline">
+                                <remote-sel v-bind:setting="SecondSetting" v-bind:value.sync="linkage.Discipline_TwoLevelID" v-bind:change="SecondChange" v-ref:second laytips="请选择二级学科"
+                                            initial="off" lay-filter="Second"></remote-sel>
+                            </div>
+                            <div class="layui-input-inline">
+                                <remote-sel v-bind:setting="ThreeSetting" v-bind:value.sync="linkage.Discipline_ThreeLevelID" v-ref:three laytips="请选择三级学科"
+                                            initial="off" lay-filter="Three"></remote-sel>
+
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">价格</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="Price" lay-verify="number" placeholder="请输入" autocomplete="off" class="layui-input" v-model="baseInfoForm.Price">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">优惠价</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="PreferentialPrice" lay-verify="number" placeholder="请输入" autocomplete="off" class="layui-input" v-model="baseInfoForm.PreferentialPrice">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">购买基数</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="BuyBase" lay-verify="number" placeholder="请输入" autocomplete="off" class="layui-input" v-model="baseInfoForm.BuyBase">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">总课时 </label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="TotalHours" lay-verify="number" placeholder="请输入" autocomplete="off" class="layui-input" v-model="baseInfoForm.TotalHours">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">是否上架</label>
+                                <div class="layui-input-block">
+                                    <remote-rad name="IsPutaway" v-bind:setting="IsPutawaySetting" v-bind:value.sync="baseInfoForm.IsPutaway"
+                                                initial="off"></remote-rad>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">是否推荐</label>
+                                <div class="layui-input-block">
+                                    <remote-rad name="IsRecommend" v-bind:setting="IsRecommendSetting" v-bind:value.sync="baseInfoForm.IsRecommend"
+                                                initial="off"></remote-rad>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item" style="text-align:center;">
+                            <div class="layui-block">
+                                <button class="layui-btn" @click="save">保存</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--课程详情-->
+                <div class="layui-tab-item">
+                    <div class="layui-form">
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">封面</label>
+                                <div class="layui-input-block">
+                                    <div class="layui-upload">
+                                        <div class="layui-upload-list">
+                                            <img class="layui-upload-img" id="demo1" v-bind:src="baseInfoForm.CoverPath" width="190">
+                                            <p id="demoText"></p>
+                                        </div>
+                                        <button type="button" class="layui-btn layui-btn-normal" id="test1"><i class="layui-icon">&#xe67c;</i>更换封面</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">名师</label>
+                                <div class="layui-input-block">
+                                    <remote-sel v-bind:setting="TeacherSetting" v-bind:value.sync="baseInfoForm.TeacherDetail_ID" laytips="请选择老师"
+                                                initial="off" v-ref:teacher></remote-sel>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">介绍</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="Description" placeholder="请输入" autocomplete="off" class="layui-input" v-model="baseInfoForm.Description">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">课程详情</label>
+                                <div class="layui-input-block">
+                                    <textarea id="demo" name="Particulars" style="display: none;" v-model="baseInfoForm.Particulars"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item" style="text-align:center;">
+                            <div class="layui-input-block">
+                                <button class="layui-btn" lay-filter="demo1" @click="saveCourseDetail">保存</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--视频课-->
+                <div class="layui-tab-item" v-if="TeachingMethod == 1">
+                    <blockquote class="layui-elem-quote">
+                        <div class="layui-row layui-form">
+                            <div class="layui-col-xs12" style="text-align: right">
+                                <button class="layui-btn" @click="addCourse"><i class="layui-icon"></i> 新增章节</button>
+                            </div>
+                        </div>
+                    </blockquote>
+                    <div class="block layui-clear" style="height:560px;overflow:hidden;padding:20px;background-color:#f6f6f6;">
+                        <div class="layui-col-xs5" style="overflow:auto;height:100%;">
+                            <div class="tree-wrap" v-cloak>
+                                <div class="tree" v-for="(index,item) in Chapters" v-bind:data-id="item.ID">
+                                    <div class="tree-node">
+                                        <div class="tree-tit" @click="setInfo(item,index)">
+                                            <h2 class="tit-area">
+                                                <i class="layui-icon open arrow" v-if="item.ChildNodeList.length>0">&#xe602;</i><i class="layui-icon" style="visibility:hidden;" v-else>&#xe602;</i><span class="name">{{item.Name}}</span>
+                                            </h2>
+                                            <div class="option-area">
+                                                <!--<button class="layui-btn layui-btn-small" v-bind:class='[item.Valid == 1 ? " layui-btn-warm" :"layui-btn-normal"]' @click.stop="SetDisciplineValid(item)">{{item.Valid ==0 ?'启用':'禁用'}}</button>-->
+                                                <i class="layui-icon add" @click.stop="addSub(item,index)">&#xe654;</i>
+                                                <i class="layui-icon del" @click.stop="delete1(item,index)">&#xe640;</i>
+                                            </div>
+                                        </div>
+                                        <div class="tree-content">
+                                            <div class="tree" v-if="item.ChildNodeList.length>0" v-for="(index2,item2) in item.ChildNodeList" v-bind:data-id="item2.ID">
+                                                <div class="tree-node">
+                                                    <div class="tree-tit" @click="setInfo(item2,index2,index)">
+                                                        <h2 class="tit-area" style="width: 80%;height: 100%;">
+                                                            <i class="layui-icon open arrow" v-if="item2.ChildNodeList.length>0">&#xe602;</i><i class="layui-icon" style="visibility:hidden;" v-else>&#xe602;</i><span class="name" style="display: inline-block; width: 90%; white-space: nowrap;text-overflow:ellipsis; overflow:hidden;">{{item2.Name}}</span>
+                                                        </h2>
+                                                        <div class="option-area">
+                                                            <!--<button class="layui-btn layui-btn-small" v-bind:class='[item2.Valid == 1 ? " layui-btn-warm" :"layui-btn-normal"]' @click.stop="SetDisciplineValid(item2)">{{item2.Valid ==0 ?'启用':'禁用'}}</button>-->
+                                                            <i class="layui-icon del" @click.stop="preview(item2)">&#xe6ed;</i>
+                                                            <i class="layui-icon del" @click.stop="delete1(item2,index2,index)">&#xe640;</i>
+                                                            
+                                                        </div>
+                                                    </div>
+                                                    <div class="tree-content">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-col-xs7" style="overflow:auto;height:100%;">
+                            <div class="layui-form" v-show="modifyDiscipline">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">学科名</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" lay-verify="required" autocomplete="off" placeholder="请输入学科名" class="layui-input" v-model="SaveCourse.Name" v-autofocus="modifyDiscipline">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item" v-if="onlyParent">
+                                    <label class="layui-form-label">是否公开</label>
+                                    <div class="layui-input-block">
+                                        <remote-rad name="IsOpen" v-bind:setting="IsOpenSetting" v-bind:value.sync="SaveCourse.IsOpen"
+                                                    initial="off"></remote-rad>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item" v-if="onlyParent">
+                                    <label class="layui-form-label">视频名称</label>
+                                    <div class="layui-input-inline" style="width:400px">
+                                        <input type="text" id="CourseWare_Name" name="password" lay-verify="pass" autocomplete="off" class="layui-input" v-model="SaveCourse.CourseWare_Name" readonly>
+                                    </div>
+                                    <button class="layui-btn" @click="choiceCourse">从库中选择</button>
+                                </div>
+                                <div class="layui-form-item ">
+                                    <div class="layui-input-block">
+                                        <button class="layui-btn" @click="saveCourseInfo">保存</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--排课表--->
+                <div class="layui-tab-item" v-if="TeachingMethod != 1">
+                    <blockquote class="layui-elem-quote">
+                        <div class="layui-row layui-form">
+                            <div class="layui-col-xs10">
+                                <h1 v-cloak style="font-size:20px;">{{baseInfoForm.Name}}</h1>
+                            </div>
+                            <div class="layui-col-xs2" style="text-align: right">
+                                <button class="layui-btn" @click="SaveDiscipline"><i class="layui-icon"></i> 添加一级学科</button>
+                            </div>
+                        </div>
+                    </blockquote>
+                    <div class="block layui-clear" style="background-color:#f2f2f2;padding:20px;">
+                        <div class="tree-wrap" v-cloak>
+                            <div class="tree" v-for="(index,item) in Unit">
+                                <div class="tree-node">
+                                    <div class="tree-tit">
+                                        <h2 class="tit-area">
+                                            <i class="layui-icon open arrow">&#xe61a;</i>
+                                            <span class="name" v-if="item.Edit != true">{{item.Name}}</span>
+                                            <span class="name_edit" v-if="item.Edit == true"><span class=" h3"><input type="text" name="name" v-model="item.Name" v-autofocus="item.Edit" /></span><button class="layui-btn layui-btn-primary layui-btn-small" @click.stop="SaveCourse_Unit(item,index)">保存</button></span>
+                                        </h2>
+                                        <div class="option-area">
+                                            <i class="layui-icon edit" @click.stop="editUnit(item,index)">&#xe642;</i>
+                                            <i v-if="item.Edit != true" class="layui-icon add" @click.stop="add(item,index)">&#xe654;</i>
+                                            <i class="layui-icon del" @click.stop="DeleteCourseUnit(item,index)">&#xe640;</i>
+                                        </div>
+                                    </div>
+                                    <div class="tree-content">
+                                        <div class="tree" v-if="item.UnitClassTimeList.length>0" v-for="(index2,item2) in item.UnitClassTimeList">
+                                            <div class="tree-node">
+                                                <div class="tree-tit">
+                                                    <h2 class="tit-area">
+                                                        <i class="layui-icon open arrow">&#xe61a;</i>
+                                                        <span class="name" v-if="item2.Edit != true">{{item2.Name}}</span>
+                                                        <span class="name_edit" v-if="item2.Edit == true"><span class="h3"><input type="text" name="name" v-model="item2.Name" /></span><button class="layui-btn layui-btn-primary layui-btn-small" @click.stop="SaveCourse_Unit_ClassTime(item2,index2,index)">保存</button></span>
+                                                    </h2>
+                                                    <div class="option-area">
+                                                        <!--<i class="layui-icon edit" @click.stop="editUnit_ClassTime(item2,index2,index)">&#xe642;</i>-->
+                                                        <i v-if="item2.Edit != true" item2.edit !=true class="layui-icon add" @click.stop="modify(item2,index2,index)">&#xe620;</i>
+                                                        <i class="layui-icon del" @click.stop="DeleteCourseUnitClassTime(item2,index2,index)">&#xe640;</i>
+                                                    </div>
+                                                </div>
+                                                <div class="tree-content">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--资料-->
+                <div class="layui-tab-item">
+                    <blockquote class="layui-elem-quote">
+                        <div class="layui-row layui-form">
+                            <div class="layui-col-xs12" style="text-align: right">
+                                <button class="layui-btn" style="float:right;" @click="uploadResource"><i class="layui-icon">&#xe654;</i> 上传资料</button>
+
+                            </div>
+                        </div>
+                    </blockquote>
+                    <table id="listTable" lay-filter="listTable"></table>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="https://cdn.bootcss.com/jquery/1.10.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.js"></script>
+<script src="/Resources/js/Controls/Common.js"></script>
+<script src="../Classroom/Sortable.js?v1.0.1"></script>
+<script>
+    var layedit, index;
+    //建立编辑器
+    layui.use('layedit', function () {
+        layedit = layui.layedit;
+        layedit.set({
+            uploadImage: {
+                url: '/service/upload?busType=Course&src=editor' //接口url
+              , type: 'post' //默认post
+            }
+        });
+        index = layedit.build('demo');
+    });
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'laydate', 'upload', 'element', 'layedit', 'upload', 'layedit', 'jqueryui'],
+                function (fnr) {
+                    var table = layui.table;
+                    var form = layui.form;
+                    var tableExt = layui.tableExt;
+                    var $ = layui.$;
+                    var upload = layui.upload;
+                    var layedit = layui.layedit;
+                    var element = layui.element;
+
+                    var rootApp = new Vue({
+                        el: '#root',
+                        directives: {
+                            autofocus: {
+                                inserted: function (value) {
+                                    if (value) {
+                                        this.el.focus();
+                                    }
+                                },
+                                update: function (value) {
+                                    if (value) {
+                                        var self = this;
+                                        this.vm.$nextTick(function () {
+                                            self.el.focus();
+                                        })
+                                    }
+                                }
+                            }
+                        },
+                        data: {
+                            ID: fnr.getQueryString("ID"),
+                            onlyParent: false,
+                            autofocus: false,
+                            modifyDiscipline: false,
+                            TeachingMethod: '',
+                            IsPutawaySetting: {
+                                tags: { name: "IsPutaway" },
+                                options: [
+                                    { key: "1", value: "上架" },
+                                    { key: "0", value: "下架" },
+                                ],
+                                fields: { key: 'key', value: 'value' }
+                            },
+                            IsRecommendSetting: {
+                                tags: { name: "IsRecommend" },
+                                options: [
+                                    { key: "1", value: "推荐" },
+                                    { key: "0", value: "不推荐" },
+                                ],
+                                fields: { key: 'key', value: 'value' }
+                            },
+                            
+                            baseInfoForm: {
+                                IsPutaway: 1,
+                                IsRecommend: 0
+                            },
+                            linkage: {
+                                Discipline_OneLevelID: '',
+                                Discipline_TwoLevelID: '',
+                                Discipline_ThreeLevelID: '',
+                            },
+                            FirstSetting: { //联动
+                                search: true,
+                                options: [
+                                ],
+                                remote: {
+                                    url: '/service/datastore/Discipline/GetDisciplineWithCID',
+                                    data: { CID: 0 }
+                                },
+                                fields: { root: 'Data', key: 'ID', value: 'Name' }
+                            },
+                            SecondSetting: {
+                                options: [],
+                                remote: {
+                                    url: '',
+                                    data: {}
+                                },
+                                fields: { root: 'Data', key: 'ID', value: 'Name' }
+                            },
+                            ThreeSetting: {
+                                options: [],
+                                remote: {
+                                    url: '',
+                                    data: {}
+                                },
+                                fields: { root: 'Data', key: 'ID', value: 'Name' }
+                            },
+                            //章节名称
+                            Name: '',
+                            //初始化添加章节
+                            emptyChapters: {
+                                ID: '',
+                                Name: '',
+                                CID: '',
+                                Course_ID: '',
+                                IsOpen: 3,
+                                CourseWare_ID: '',
+                                Orders: '',
+                            },
+                            //课次信息
+                            Chapters: [],
+                            //课次类型
+                            IsOpenSetting: {
+                                tags: { name: "IsOpen" },
+                                options: [
+                                    { key: "3", value: "收费" },
+                                    { key: "1", value: "免费" },
+                                    { key: "2", value: "试听" },
+                                ],
+                                fields: { key: 'key', value: 'value' }
+                            },
+                            //修改提交表单
+                            SaveCourse: '',
+                            //SaveCourse: {
+                            //    ID: '',
+                            //    Name: '',
+                            //    CID: '',
+                            //    Course_ID: '',
+                            //    IsOpen: '',
+                            //    CourseWare_Name: '',
+                            //    CourseWare_ID: '',
+                            //    Orders: '',
+                            //},
+                            //课程详情
+                            courseDetail: {
+                                ID: '',
+                                TeacherDetail_ID: '',
+                                CoverPath: '',
+                                Description: '',
+                                Particulars: '',
+                            },
+                            //教师选择框
+                            TeacherSetting: {
+                                search: true,
+                                options: [
+                                ],
+                                remote: {
+                                    url: '/service/Teacher/GetAllTeachers',
+                                    data: {valid:1,Discipline_ID:'0'}
+                                },
+                                fields: { root: 'ReturnData.Data', key: 'ID', value: 'Name' }
+                            },
+                            //科目
+                            UnitEmpty: {
+                                ID: 0,
+                                Name: '',
+                                Course_ID: '',
+                                Orders: '0',
+                                Edit: true,
+                            },
+                            UnitName: '',
+                            Unit: [],
+                            Unit_ClassTimeEmpty: {
+                                ID: '',
+                                Name: '',
+                                Unit_ID: '',
+                                BegInTime: '',
+                                EndTime: '',
+                                TeacherDetail_ID: '',
+                                ClassRoom_ID: '',
+                                Orders: '',
+                            },
+                            Unit_ClassTime: [],
+                            IsShow:''
+                        },
+                        watch: {
+                            linkage: {
+                                handler: function (newVal, oldVal) {
+                                    if (newVal.Discipline_ThreeLevelID == '') {
+                                        if (newVal.Discipline_TwoLevelID == '') {
+                                            this.baseInfoForm.Discipline_ID = this.linkage.Discipline_OneLevelID;
+                                        } else {
+                                            this.baseInfoForm.Discipline_ID = this.linkage.Discipline_TwoLevelID;
+                                        }
+                                    } else {
+                                        this.baseInfoForm.Discipline_ID = this.linkage.Discipline_ThreeLevelID;
+                                    }
+                                },
+                                deep: true
+                            },
+                        },
+                        ready: function () {
+                            index = layedit.build('demo');
+                            if (GetQueryString("ID")) {
+                                this.GetCourseByID({ Valid: 1, ID: this.ID });
+                                this.GetCourse_ChaptersNodeList({ Valid:1, Course_ID: this.ID })
+                                this.GetCourse_UnitNodeList({ Valid: 1, Course_ID: this.ID })
+                            }
+                            this.IsShow = GetQueryString("ID");
+                            this.TeachingMethod = GetQueryString("TeachingMethod");
+                        },
+                        methods: {
+                            preview: function (item) {
+                                fnr.openDialog({
+                                    title: '预览',
+                                    area: ['900px', '750px'],
+                                    content: ['../Course/Preview.html?cwid=' + item.CourseWare_ID],
+                                    btn: ['关闭'],
+                                    events: {
+                                        refresh: function () {
+
+                                        }
+                                    }
+                                });
+                            },
+                            //根据id查询网课
+                            GetCourseByID: function (params) {
+                                var self = this;
+                                $.get("/service/datastore/WebCourse/GetCourseByID", params, function (res) {
+                                    if (res.SuccessResponse) {
+                                        //双向绑定赋值
+                                        self.TeachingMethod = res.Data.TeachingMethod;
+                                        self.baseInfoForm = res.Data;
+                                        self.TeacherSetting.remote.data.Discipline_ID=res.Data.Discipline_ID
+                                        self.$refs.teacher.reset();
+                                        //联动赋值
+                                        self.linkage.Discipline_OneLevelID = res.Data.Discipline_OneLevelID;
+                                        self.linkage.Discipline_TwoLevelID = res.Data.Discipline_TwoLevelID;
+                                        self.linkage.Discipline_ThreeLevelID = res.Data.Discipline_ThreeLevelID;
+                                        setTimeout(function () { index = layedit.build('demo'); }, 0)
+                                        tableIns.reload({
+                                            where: {
+                                                Course_ID: self.baseInfoForm.ID
+                                            }
+                                        })
+                                    }
+                                })
+                            },
+                            //添加修改网课 基本信息
+                            SaveCourseFun1: function (params, cb) {
+                                var self = this;
+                                $.ajax({
+                                    url: "/service/datastore/WebCourse/SaveCourse1",
+                                    data: params,
+                                    method: "POST",
+                                    success: function (res) {
+                                        if (res.SuccessResponse) {
+                                            self.IsShow = res.Data.ID;
+                                            layer.msg('保存成功')
+                                            //self.baseInfoForm = res.ReturnData.Data;
+                                            if (cb && typeof cb == "function") {
+                                                cb(res)
+                                            }
+                                        } else {
+                                            layer.msg(res.Message)
+                                        }
+                                    }
+                                })
+                            },
+
+                            //添加修改网课 详情
+                            SaveCourseFun2: function (params, cb) {
+                                var self = this;
+                                $.ajax({
+                                    url: "/service/datastore/WebCourse/SaveCourse2",
+                                    data: params,
+                                    method: "POST",
+                                    success: function (res) {
+                                        if (res.SuccessResponse) {
+                                            self.IsShow = res.Data.ID;
+                                            layer.msg('保存成功')
+                                            //self.baseInfoForm = res.ReturnData.Data;
+                                            if (cb && typeof cb == "function") {
+                                                cb(res)
+                                            }
+                                        } else {
+                                            layer.msg(res.Message)
+                                        }
+                                    }
+                                })
+                            },
+                            SecondBind: function (CID) {
+                                return {
+                                    search: true,
+                                    fields: { key: 'ID', value: 'Name' },
+                                    options: [],
+                                    remote: { url: "", data: { CID: 0 } }
+                                }
+                            },
+                            ThreeBind: function (CID) {
+                                var data;
+                                if (CID > 0) {
+                                    data = {
+                                        search: true,
+                                        fields: { key: 'ID', value: 'Name' },
+                                        options: [],
+                                        remote: { url: "", data: { CID: CID } }
+                                    }
+                                } else {
+                                    data = {
+                                        search: true,
+                                        fields: { key: 'ID', value: 'Name' },
+                                        options: []
+                                    }
+                                }
+                                return data;
+                            },
+                            FirstChange: function () {
+                                if (this.linkage.Discipline_OneLevelID != '') {
+                                    this.SecondSetting.remote.url = '/service/datastore/Discipline/GetDisciplineWithCID';
+                                    this.SecondSetting.remote.data = { CID: this.linkage.Discipline_OneLevelID };
+                                    //fnr.mergeJson(this.SecondBind(this.linkage.Discipline_OneLevelID), this.SecondSetting);
+                                    this.$refs.second.reset();
+                                }
+                            },
+                            SecondChange: function () {
+                                if (this.linkage.Discipline_TwoLevelID != '') {
+                                    this.ThreeSetting.remote.url = '/service/datastore/Discipline/GetDisciplineWithCID';
+                                    this.ThreeSetting.remote.data = { CID: this.linkage.Discipline_TwoLevelID };
+                                    //fnr.mergeJson(this.ThreeBind(this.linkage.Discipline_TwoLevelID), this.ThreeSetting);
+                                    this.$refs.three.reset();
+                                }
+                            },
+                            //保存
+                            save: function (e) {
+                                if (!layui.form.checkInput(e)) {
+                                    return false;
+                                }
+                                var self=this;
+                                var obj = new Object();
+                                obj.ID = this.baseInfoForm.ID;
+                                obj.Name = this.baseInfoForm.Name;
+                                obj.Price = this.baseInfoForm.Price;
+                                obj.PreferentialPrice = this.baseInfoForm.PreferentialPrice;
+                                obj.BuyBase = this.baseInfoForm.BuyBase;
+                                obj.TotalHours = this.baseInfoForm.TotalHours;
+                                obj.TeachingMethod = this.TeachingMethod;
+                                obj.IsPutaway = this.baseInfoForm.IsPutaway;
+                                obj.IsRecommend = this.baseInfoForm.IsRecommend;
+                                obj.PreferentialPrice = this.baseInfoForm.PreferentialPrice;
+                                obj.Discipline_ID = this.baseInfoForm.Discipline_ID;
+                                this.SaveCourseFun1(obj, function (res) {
+                                    self.baseInfoForm = res.Data;
+                                    self.TeacherSetting.remote.data.Discipline_ID=res.Data.Discipline_ID;
+                                    console.log(self.$refs)
+                                    self.$refs.teacher.reset();
+                                })
+                                this.Chapters = [];
+                                this.GetCourse_ChaptersNodeList();
+                            },
+                            //添加修改网课章节(录播)
+                            SaveCourse_Chapters: function (params, cb) {
+                                $.post('/service/datastore/WebCourse/SaveCourse_Chapters', params, function (res) {
+                                    if (res.SuccessResponse) {
+                                        if (cb && typeof cb == "function") {
+                                            cb(res);
+                                        }
+                                    }
+                                    layer.msg(res.Message);
+                                })
+                            },
+                            addCourse: function () {
+                                var self = this;
+                                var timetamp = new Date().getTime().toString();
+                                var Obj = new Object();
+                                Obj.ID = 0;
+                                Obj.Name = '新增学科' + timetamp.substr(-4, 4);
+                                Obj.CID = 0;
+                                Obj.Course_ID = this.baseInfoForm.ID || 0;
+                                Obj.IsOpen = 1;
+                                Obj.CourseWare_ID = 0;
+                                Obj.Orders = 0;
+                                Obj.ChildNodeList = [];
+                                this.modifyDiscipline = false;
+                                this.SaveCourse_Chapters(Obj, function (res) {
+                                    res.Data.ChildNodeList = [];
+                                    self.onlyParent = false;
+                                    self.Chapters.push(res.Data);
+                                    self.Drag();
+                                    self.SaveCourse = res.Data;
+                                    self.modifyDiscipline = true;
+                                });
+                            },
+                            //根据网课id查找对应的章节 分子父节点 树形结构
+                            GetCourse_ChaptersNodeList: function (params) {
+                                var self = this;
+                                $.get("/service/datastore/WebCourse/GetCourse_ChaptersNodeList", params, function (res) {
+                                    if (res.SuccessResponse) {
+                                        self.Chapters = res.Data;
+                                        console.log(self.Chapters)
+                                        self.Drag();
+                                    }
+
+                                })
+                            },
+                            addSub: function (item, index) {
+                                var self = this;
+                                var timetamp = new Date().getTime().toString();
+
+                                var Obj = new Object();
+                                Obj.ID = 0;
+                                Obj.CID = this.Chapters[index].ID;
+                                Obj.Course_ID = this.baseInfoForm.ID;
+                                Obj.IsOpen = 3;
+                                Obj.CourseWare_ID = 0;
+                                Obj.Orders = 0;
+                                Obj.ChildNodeList = [];
+                                this.modifyDiscipline = true;
+                                if (typeof (parentIndex) == "undefined") {
+                                    Obj.CID = this.Chapters[index].ID
+                                    Obj.Name = "新增二级菜单" + timetamp.substr(-4, 4);
+                                    this.SaveCourse_Chapters(Obj, function (res) {
+                                        self.onlyParent = true;
+                                        self.Chapters[index].ChildNodeList.push(res.Data)
+                                        self.SaveCourse = res.Data;
+                                    })
+                                } else {
+                                    Obj.CID = this.Chapters[parentIndex].ChildNodeList[index].ID;
+                                    Obj.Name = "新增三级菜单" + timetamp.substr(-4, 4);
+                                    this.SaveCourse_Chapters(Obj, function (res) {
+                                        self.Chapters[parentIndex].ChildNodeList[index].ChildNodeList.push(res.Data);
+                                        self.SaveCourse = res.Data;
+                                    })
+
+                                }
+
+                            },
+                            delete1: function (item, index, parentIndex) {
+                                var self = this;
+                                layer.confirm('是否删除？', {
+                                    btn: ['确定', '取消'] //按钮
+                                }, function () {
+                                    $.post("/service/datastore/WebCourse/DeleteCourseChapters", { ID: item.ID }, function (res) {
+                                        if (res.SuccessResponse) {
+                                            if (parentIndex == undefined) {
+                                                self.Chapters.splice(index, 1);
+                                            } else {
+                                                self.Chapters[parentIndex].ChildNodeList.splice(index, 1);
+                                            }
+                                            self.modifyDiscipline = false;
+                                            layer.msg('删除成功', { icon: 1 });
+                                            //self.GetCourse_ChaptersNodeList({ Course_ID: self.baseInfoForm.ID });
+                                        }
+                                    })
+                                })
+                            },
+                            //设置科目
+                            setInfo: function (item, index, parentIndex) {
+                                this.modifyDiscipline = true;
+                                this.SaveCourse = JSON.parse(JSON.stringify(item));
+                                this.SaveCourse.index = index;
+                                if (parentIndex == undefined) {
+                                    this.onlyParent = false;
+                                } else {
+                                    this.SaveCourse.parentIndex = parentIndex;
+                                    this.onlyParent = true;
+                                }
+                            },
+                            //保存修改内容
+                            saveCourseInfo: function () {
+                                var self = this;
+                                var Obj = new Object();
+                                Obj.ID = this.SaveCourse.ID;
+                                Obj.Name = this.SaveCourse.Name;
+                                Obj.CID = this.SaveCourse.CID;
+                                Obj.Course_ID = this.SaveCourse.Course_ID;
+                                Obj.IsOpen = this.SaveCourse.IsOpen;
+                                Obj.CourseWare_ID = this.SaveCourse.CourseWare_ID;
+                                Obj.CourseWare_Name = this.SaveCourse.CourseWare_Name;
+                                Obj.Orders = this.SaveCourse.Orders;
+                                this.SaveCourse_Chapters(Obj, function (res) {
+                                    if (res.SuccessResponse) {
+                                        self.GetCourse_ChaptersNodeList({ Valid: 1, Course_ID: Obj.Course_ID })
+                                        //var index = self.SaveCourse.index;
+                                        //var parentIndex = self.SaveCourse.parentIndex;
+                                        //if (parentIndex == undefined) {
+                                        //    self.Chapters[index].Name = res.ReturnData.Data.Name;
+                                        //} else {
+                                        //    self.Chapters[parentIndex].ChildNodeList[index].Name = res.ReturnData.Data.Name;
+                                        //}
+                                    }
+                                })
+                            },
+                            //保存课程详情
+                            saveCourseDetail: function () {
+                                //this.courseDetail.ID = this.baseInfoForm.ID;
+                                var obj = new Object();
+                                obj.ID = this.baseInfoForm.ID;
+                                obj.TeacherDetail_ID = this.baseInfoForm.TeacherDetail_ID;
+                                obj.CoverPath = this.baseInfoForm.CoverPath;
+                                obj.Description = this.baseInfoForm.Description;
+                                obj.Particulars = layedit.getContent(index);
+                                this.SaveCourseFun2(obj, function (res) {
+                                })
+                            },
+                            //上传资料
+                            uploadResource: function () {
+                                var self = this;
+                                fnr.openDialog({
+                                    title: '上传资料',
+                                    area: ['470px', '500px'],
+                                    content: ['./addResource.html?ID=' + self.baseInfoForm.ID],
+                                    btn: ['确认添加'],
+                                    events: {
+                                        refresh: function (data) {
+                                            tableIns.reload();
+                                        }
+                                    }
+                                });
+                            },
+                            //从库中选择视频
+                            choiceCourse: function () {
+                                var self = this;
+                                fnr.openDialog({
+                                    title: '视频列表',
+                                    area: ['1100px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                                    content: ['./choiceCourse.html?Discipline_ID=' + self.baseInfoForm.Discipline_ID],
+                                    events: {
+                                        getData: function (data) {
+                                            if(data){
+                                                self.SaveCourse.CourseWare_ID = data.ID;
+                                                self.SaveCourse.CourseWare_Name = data.Name;
+                                            }else{
+                                            }
+
+                                        }
+                                    }
+                                });
+                            },
+                            //添加一级学科
+                            SaveDiscipline: function () {
+                                this.UnitEmpty.Course_ID = this.baseInfoForm.ID;
+                                this.Unit.push(JSON.parse(JSON.stringify(this.UnitEmpty)));
+                                this.Drag();
+                            },
+                            //添加修改网课单元
+                            SaveCourse_Unit: function (params, index) {
+                                var self = this;
+                                $.post("/service/datastore/WebCourse/SaveCourse_Unit", params, function (res) {
+                                    if (res.SuccessResponse) {
+                                        layer.msg("添加成功");
+                                        var data = res.Data;
+                                        Vue.set(self.Unit[index], 'UnitClassTimeList', res.Data.UnitClassTimeList);
+                                        self.Unit[index].ID = data.ID;
+                                        self.Unit[index].Name = data.Name;
+                                        self.Unit[index].Course_ID = data.Course_ID;
+                                        self.Unit[index].Orders = data.Orders;
+                                        self.Unit[index].Edit = false;
+                                    }
+                                })
+                            },
+                            //添加修改网课单元课次
+                            SaveCourse_Unit_ClassTime: function (params, index, parentIndex) {
+                                var self = this;
+                                $.post("/service/datastore/WebCourse/SaveCourse_Unit_ClassTime", params, function (res) {
+                                    if (res.SuccessResponse) {
+                                        //Vue.set(self.Unit[parentIndex].UnitClassTimeList[index], 'Edit', false);
+                                        self.Unit[parentIndex].UnitClassTimeList[index].Edit = false;
+                                        layer.msg('添加成功');
+                                    }
+                                })
+                            },
+                            //查询学科集合
+                            GetCourse_UnitNodeList: function (params) {
+                                var self = this;
+                                $.get("/service/datastore/WebCourse/GetCourse_UnitNodeList", params, function (res) {
+                                    if (res.SuccessResponse) {
+                                        self.Unit = res.Data;
+                                        self.$nextTick(function () {
+                                            self.Drag();
+
+                                        });
+                                    }
+
+                                })
+                            },
+                            //拖拽
+                            Drag: function () {
+                                 $(".tree-wrap").mySortable({
+                                    "tree": ".tree-wrap",
+                                    "treeContent": ".tree-content",
+                                    "treeTitle": ".tree-tit",
+                                    "optionArea": ".option-area",
+                                    "stop": function (event, ui) {
+                                        $.post("/service/Discipline/SortDiscipline", { old_prev_order: 0, old_next_order: 0, new_prev_order: 0, new_next_order: 0, currDisciplineId: 0, currParentId: 0 }, function (res) {
+                                            if (res.SuccessResponse) {
+                                                layer.msg('排序成功')
+                                            }
+                                        })
+                                    }
+                                });
+                            },
+                            //编辑网课单元
+                            editUnit: function (item, index) {
+                                Vue.set(this.Unit[index], 'Edit', true);
+                            },
+                            //编辑网课单元课次
+                            editUnit_ClassTime: function (item, index, parentIndex) {
+                                //if (parentIndex === undefined) {
+                                //    if (this.Unit[index].Edit) return false;
+                                //    Vue.set( this.Unit[index], 'Edit', true );
+                                //} else {
+                                //    if (this.Unit[parentIndex].UnitClassTimeList[index].Edit) return false;
+                                //    Vue.set(this.Unit[parentIndex].UnitClassTimeList[index], 'Edit', true )
+                                //}
+                                Vue.set(this.Unit[parentIndex].UnitClassTimeList[index], 'Edit', true)
+                            },
+                            //添加课次
+                            add: function (item, index, parentIndex) {
+                                var self = this;
+                                fnr.openDialog({
+                                    title: '添加课次',
+                                    area: ['701px', '450px'],
+                                    content: ['./addCourse.html?ID=' + item.ID + '&tmNum=' + GetQueryString("TeachingMethod")],
+                                    btn: ["确认添加"],
+                                    events: {
+                                        refresh: function (data) {
+                                            if (data) {
+                                                if (self.Unit[index].UnitClassTimeList == null) {
+                                                    Vue.$set(self.Unit[index].UnitClassTimeList, []);
+                                                    self.Unit[index].UnitClassTimeList.push(data)
+                                                } else if (self.Unit[index].UnitClassTimeList instanceof Array) {
+                                                    self.Unit[index].UnitClassTimeList.push(data)
+                                                }
+                                            }
+                                        }
+                                    },
+                                });
+                            },
+                            //修改课次
+                            modify: function (item, index, parentIndex) {
+                                var self = this;
+                                fnr.openDialog({
+                                    title: '修改课次',
+                                    area: ['701px', '400px'],
+                                    content: ['./modifyCourse.html?ID=' + item.ID + '&Unit_ID=' + item.Unit_ID+'&tmNum=' + GetQueryString("TeachingMethod")],
+                                    btn: ["确认添加"],
+                                    events: {
+                                        refresh: function (data) {
+                                            if (data) {
+                                                self.Unit[parentIndex].UnitClassTimeList.splice(index, 1, data);
+                                            }
+                                        }
+                                    },
+                                });
+                            },
+                            DeleteCourseUnit: function (item, index) {
+                                var self = this;
+                                if (item.Name == '') {
+                                    self.Unit.splice(index, 1);
+                                    return false;
+                                }
+                                layer.confirm('是否删除？', {
+                                    btn: ['确定', '取消'] //按钮
+                                }, function () {
+                                    $.post("/service/datastore/WebCourse/DeleteCourseUnit", { ID: item.ID }, function (res) {
+                                        if (res.SuccessResponse) {
+                                            layer.msg('删除成功');
+                                            self.Unit.splice(index, 1);
+                                        }
+                                    })
+                                })
+                            },
+                            //删除单元课次及对应的关系表
+                            DeleteCourseUnitClassTime: function (item, index, parentIndex) {
+                                var self = this;
+                                layer.confirm('是否删除？', {
+                                    btn: ['确定', '取消'] //按钮
+                                }, function () {
+                                    $.post("/service/datastore/WebCourse/DeleteCourseUnitClassTime", { ID: item.ID }, function (res) {
+                                        if (res.SuccessResponse) {
+                                            layer.msg('删除成功');
+                                            self.Unit[parentIndex].UnitClassTimeList.splice(index, 1);
+                                        }
+                                    })
+                                })
+                            }
+                        }
+                    });
+                    //课程资料
+                    var tableIns = table.render({
+                        elem: '#listTable',
+                        even: true, //开启隔行背景
+                        page: true, //页分
+                        cols: [
+                            [
+                                { field: 'ID', title: '课程名称', width: 120 },
+                                { field: 'Title', title: '资料名称', width: 120 },
+                                { field: 'DataSize', title: '资料大小', width: 120 },
+                                { field: 'AddPersonName', title: '上传人', width: 120 },
+                                {
+                                    field: 'AddTime', title: '上传时间', sort: true, width: 200, templet: function () {
+                                        return fnr.format(this.AddTime, "yyyy-MM-dd HH:mm:ss")
+                                    }
+                                },
+                                {
+                                    title: '操作',
+                                    fixed: 'right',
+                                    width: 180,
+                                    toolbar: function () {
+                                        var array = new Array();
+                                        array.push("<button class=\"layui-btn layui-btn-small\" lay-event='del'>删除</button>");
+                                        return "<div>" + array.join("") + "</div>";
+                                    }
+                                }
+                            ]
+                        ],
+                        url: '/service/datastore/DataInfo/GetDatainfoList',
+                        where: {
+                            Course_ID: rootApp.baseInfoForm.ID
+                        },
+                        response:{
+                            dataName:'Data'
+                        }
+                    });
+                    //上传封面
+                    var uploadInst = upload.render({
+                        elem: '#test1'
+                      , url: '/service/upload?busType=Course'
+                      , before: function (obj) {
+                          //预读本地文件示例，不支持ie8
+                          obj.preview(function (index, file, result) {
+                              $('#demo1').attr('src', result); //图片链接（base64）
+                          });
+                      }
+                      , done: function (res) {
+                          if (!res.SuccessResponse) {
+                              return layer.msg('上传失败')
+                          }
+                          rootApp.baseInfoForm.CoverPath = res.Message
+                          layer.msg('上传成功')
+                          //上传成功
+                      }
+                      , error: function () {
+                          //演示失败状态，并实现重传
+                          var demoText = $('#demoText');
+                          demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                          demoText.find('.demo-reload').on('click', function () {
+                              uploadInst.upload();
+                          });
+                      }
+                    });
+                    var layid = location.hash.replace(/^#tabcard=/, '');
+                    element.tabChange('tabcard', layid);
+                    element.on('tab(tabcard)', function () {
+                        location.hash = 'tabcard=' + this.getAttribute('lay-id');
+                        rootApp.Drag();
+                    });
+                    //删除资料
+                    tableExt.addEvent("tool(listTable)",
+                        {
+                            //工具栏编辑事件
+                            "del": function (data, obj) {
+                                layer.confirm('确认删除', function (index) {
+                                    $.post("/service/datastore/DataInfo/DeleteDatainfo", { ID: data.ID }, function (res) {
+                                        if (res.SuccessResponse) {
+                                            tableIns.reload();
+                                            layer.close(index);
+                                        }
+                                    })
+                                });
+                            },
+                        })
+                });
+</script>

@@ -1,0 +1,715 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+您 Web 项目的发布/打包进程将使用此文件。您可以通过编辑此 MSBuild 文件
+来自定义该进程的行为。若要了解与此相关的详细信息，请访问 http://go.microsoft.com/fwlink/?LinkID=208121。
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <_PublishTargetUrl>D:\公司项目-网校\NewWeb</_PublishTargetUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="bin/Aliyun.OSS.dll">
+      <publishTime>11/06/2017 10:04:27</publishTime>
+    </File>
+    <File Include="bin/Antlr3.Runtime.dll">
+      <publishTime>09/10/2013 16:29:20</publishTime>
+    </File>
+    <File Include="bin/CT.HttpProxy.dll">
+      <publishTime>01/20/2018 14:35:20</publishTime>
+    </File>
+    <File Include="bin/Nancy.dll">
+      <publishTime>11/24/2017 10:13:04</publishTime>
+    </File>
+    <File Include="bin/Nancy.Hosting.Aspnet.dll">
+      <publishTime>11/06/2017 10:04:27</publishTime>
+    </File>
+    <File Include="bin/Newtonsoft.Json.dll">
+      <publishTime>01/05/2018 15:23:09</publishTime>
+    </File>
+    <File Include="bin/NewWeb.dll">
+      <publishTime>01/20/2018 15:45:33</publishTime>
+    </File>
+    <File Include="bin/System.Net.Http.Formatting.dll">
+      <publishTime>01/20/2018 15:40:47</publishTime>
+    </File>
+    <File Include="bin/WebGrease.dll">
+      <publishTime>01/23/2014 13:57:34</publishTime>
+    </File>
+    <File Include="Content/bootstrap-theme.css">
+      <publishTime>01/20/2018 10:13:02</publishTime>
+    </File>
+    <File Include="Content/bootstrap-theme.css.map">
+      <publishTime>01/20/2018 10:13:02</publishTime>
+    </File>
+    <File Include="Content/bootstrap-theme.min.css">
+      <publishTime>01/20/2018 10:13:02</publishTime>
+    </File>
+    <File Include="Content/bootstrap-theme.min.css.map">
+      <publishTime>01/20/2018 10:13:02</publishTime>
+    </File>
+    <File Include="Content/bootstrap.css">
+      <publishTime>01/20/2018 10:13:02</publishTime>
+    </File>
+    <File Include="Content/bootstrap.css.map">
+      <publishTime>01/20/2018 10:13:02</publishTime>
+    </File>
+    <File Include="Content/bootstrap.min.css">
+      <publishTime>01/20/2018 10:13:02</publishTime>
+    </File>
+    <File Include="Content/bootstrap.min.css.map">
+      <publishTime>01/20/2018 10:13:02</publishTime>
+    </File>
+    <File Include="Default.html">
+      <publishTime>01/20/2018 10:12:55</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.eot">
+      <publishTime>01/20/2018 10:12:57</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.svg">
+      <publishTime>01/20/2018 10:12:57</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.ttf">
+      <publishTime>01/20/2018 10:12:57</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.woff">
+      <publishTime>01/20/2018 10:12:57</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.woff2">
+      <publishTime>01/20/2018 10:12:57</publishTime>
+    </File>
+    <File Include="Html/Client/Client/Add.html">
+      <publishTime>01/10/2018 17:03:39</publishTime>
+    </File>
+    <File Include="Html/Client/Client/AddContact.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/Client/Client/AllList.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/Client/Client/Distribution.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/Client/Client/Group.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/Client/Client/Import.html">
+      <publishTime>01/15/2018 19:25:13</publishTime>
+    </File>
+    <File Include="Html/Client/Client/Info.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/Client/Client/Modify.html">
+      <publishTime>01/15/2018 19:25:13</publishTime>
+    </File>
+    <File Include="Html/Client/Client/MyList.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/Client/Client/PublicList.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/Client/Client/Transfer.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/Client/Client/UpdataContacts.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/Client/Clue/AddClue.html">
+      <publishTime>01/10/2018 17:03:39</publishTime>
+    </File>
+    <File Include="Html/Client/Clue/CustomerClue.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/Client/Clue/Distribution.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/Client/Clue/Import.html">
+      <publishTime>01/15/2018 19:25:13</publishTime>
+    </File>
+    <File Include="Html/Client/Clue/Info.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/Client/Clue/ModifyClue.html">
+      <publishTime>01/15/2018 19:25:13</publishTime>
+    </File>
+    <File Include="Html/Client/Clue/MyClueList.html">
+      <publishTime>01/10/2018 17:03:39</publishTime>
+    </File>
+    <File Include="Html/Client/Clue/PublicClueList.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/Client/Clue/WholeClue.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/Client/Contact/Add.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/Client/Contact/AddContact.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/Client/Contact/info.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/Client/Contact/List.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/Client/Remind/Add.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/Client/Remind/AddRemind.html">
+      <publishTime>01/18/2018 17:22:25</publishTime>
+    </File>
+    <File Include="Html/Client/Remind/Info.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/Client/Remind/List.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/Client/Remind/Modify.html">
+      <publishTime>01/18/2018 17:22:25</publishTime>
+    </File>
+    <File Include="Html/Client/SystemSet/AddField.html">
+      <publishTime>01/15/2018 19:25:13</publishTime>
+    </File>
+    <File Include="Html/Client/SystemSet/Dictionaries.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/Client/SystemSet/GroupAccount.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/Client/SystemSet/GroupAdd.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/Client/SystemSet/GroupEdit.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/Client/SystemSet/Index.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/Client/SystemSet/SetGroup.html">
+      <publishTime>01/18/2018 17:22:25</publishTime>
+    </File>
+    <File Include="Html/Educational/comment/comment.html">
+      <publishTime>01/19/2018 19:49:32</publishTime>
+    </File>
+    <File Include="Html/Educational/ContactReminder/addContact.html">
+      <publishTime>01/18/2018 17:22:24</publishTime>
+    </File>
+    <File Include="Html/Educational/ContactReminder/ContactReminder.html">
+      <publishTime>01/18/2018 17:22:24</publishTime>
+    </File>
+    <File Include="Html/Educational/CourseQA/Details.html">
+      <publishTime>01/19/2018 19:49:32</publishTime>
+    </File>
+    <File Include="Html/Educational/CourseQA/QAndA.html">
+      <publishTime>01/19/2018 19:49:32</publishTime>
+    </File>
+    <File Include="Html/Educational/Order/Course.html">
+      <publishTime>01/10/2018 19:23:05</publishTime>
+    </File>
+    <File Include="Html/Educational/Order/Detail.html">
+      <publishTime>11/06/2017 10:04:29</publishTime>
+    </File>
+    <File Include="Html/Educational/Order/List.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/Educational/Order/StudentOrderList.html">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Html/Educational/Remind/AddAppointmentReminder.html">
+      <publishTime>11/06/2017 10:04:29</publishTime>
+    </File>
+    <File Include="Html/Educational/Remind/Info.html">
+      <publishTime>11/06/2017 10:04:29</publishTime>
+    </File>
+    <File Include="Html/Educational/Remind/List.html">
+      <publishTime>11/28/2017 10:45:07</publishTime>
+    </File>
+    <File Include="Html/Educational/Remind/Modify.html">
+      <publishTime>01/18/2018 17:22:24</publishTime>
+    </File>
+    <File Include="Html/HR/addCompay.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/HR/CompanyList.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/HR/DepartmentEdit.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/HR/DepartmentSelect.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/HR/UserEdit.html">
+      <publishTime>01/09/2018 10:15:07</publishTime>
+    </File>
+    <File Include="Html/HR/UserList.html">
+      <publishTime>01/15/2018 19:25:13</publishTime>
+    </File>
+    <File Include="Html/personnelManage/addCompay.html">
+      <publishTime>01/15/2018 19:25:13</publishTime>
+    </File>
+    <File Include="Html/personnelManage/addDepartment.html">
+      <publishTime>11/06/2017 10:04:34</publishTime>
+    </File>
+    <File Include="Html/personnelManage/addStudent.html">
+      <publishTime>01/15/2018 19:25:13</publishTime>
+    </File>
+    <File Include="Html/personnelManage/CompanyList.html">
+      <publishTime>11/06/2017 10:04:34</publishTime>
+    </File>
+    <File Include="Html/personnelManage/personnerlList.html">
+      <publishTime>12/05/2017 15:00:51</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/addClassType/step1.html">
+      <publishTime>11/06/2017 10:04:31</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/addClassType/step2.html">
+      <publishTime>11/06/2017 10:04:31</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/addClassType/step3.html">
+      <publishTime>12/05/2017 15:00:50</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/campus/add.html">
+      <publishTime>01/09/2018 20:20:20</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/campus/campus.html">
+      <publishTime>01/10/2018 17:16:56</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Chapters/Add.html">
+      <publishTime>12/05/2017 15:00:51</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Chapters/AddQuestionList.html">
+      <publishTime>11/23/2017 16:12:52</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Chapters/Index.html">
+      <publishTime>12/05/2017 15:00:51</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Chapters/List.html">
+      <publishTime>12/05/2017 15:00:51</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Chapters/modify.html">
+      <publishTime>12/05/2017 15:00:51</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Chapters/QuestionList.html">
+      <publishTime>12/05/2017 15:00:51</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Classinfo/Add.html">
+      <publishTime>11/06/2017 10:04:31</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Classinfo/List.html">
+      <publishTime>01/15/2018 19:25:13</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Classinfo/List1.html">
+      <publishTime>01/09/2018 14:13:11</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Classinfo/modify.html">
+      <publishTime>12/05/2017 15:00:50</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/classroom/add.html">
+      <publishTime>01/16/2018 09:17:48</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/classroom/classroom.html">
+      <publishTime>01/16/2018 09:17:48</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/classroom/Sortable.js">
+      <publishTime>01/12/2018 13:51:19</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/classroom/tree.html">
+      <publishTime>11/06/2017 10:04:32</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Course/Edit.html">
+      <publishTime>01/11/2018 16:25:10</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Course/List.html">
+      <publishTime>01/09/2018 20:20:20</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Course/OffsetUploadCouser.html">
+      <publishTime>12/05/2017 15:00:50</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Course/Preview.html">
+      <publishTime>01/09/2018 14:13:12</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Course/UpdateCouser.html">
+      <publishTime>12/05/2017 10:02:34</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Course/UploadCouser.html">
+      <publishTime>01/12/2018 17:44:07</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Course/upload_frombreakpoint.html">
+      <publishTime>11/06/2017 10:04:31</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Courseinfo/Add.html">
+      <publishTime>12/05/2017 15:00:51</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Courseinfo/List.html">
+      <publishTime>12/05/2017 15:00:51</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Courseinfo/modify.html">
+      <publishTime>12/05/2017 15:00:51</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/datainfo/Add.html">
+      <publishTime>11/06/2017 10:04:32</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/datainfo/List.html">
+      <publishTime>12/05/2017 15:00:50</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/datainfo/modify.html">
+      <publishTime>12/05/2017 15:00:50</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Discipline/Add.html">
+      <publishTime>12/05/2017 15:00:50</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Discipline/List.html">
+      <publishTime>01/15/2018 19:25:13</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Discipline/ListCopy.html">
+      <publishTime>11/28/2017 18:07:12</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Discipline/modify.html">
+      <publishTime>12/05/2017 15:00:50</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/editSimpleCourse/addCourse.html">
+      <publishTime>01/11/2018 09:24:09</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/editSimpleCourse/addResource.html">
+      <publishTime>12/05/2017 15:00:50</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/editSimpleCourse/choiceCourse.html">
+      <publishTime>01/11/2018 23:25:08</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/editSimpleCourse/classesResource.html">
+      <publishTime>12/05/2017 15:00:50</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/editSimpleCourse/editClassBaseInfo.html">
+      <publishTime>11/06/2017 10:04:31</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/editSimpleCourse/editClassTypeVideo.html">
+      <publishTime>12/05/2017 15:00:50</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/editSimpleCourse/editCourseDetail.html">
+      <publishTime>11/06/2017 10:04:31</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/editSimpleCourse/editliveOrface.html">
+      <publishTime>12/05/2017 15:00:50</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/editSimpleCourse/editSimpleCourse.html">
+      <publishTime>01/15/2018 19:25:13</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/editSimpleCourse/modifyCourse.html">
+      <publishTime>01/11/2018 19:24:20</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/ExamPaper/Add.html">
+      <publishTime>11/28/2017 10:45:07</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/ExamPaper/addExamPaperType.html">
+      <publishTime>12/05/2017 15:00:50</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/ExamPaper/AddQuestionList.html">
+      <publishTime>12/05/2017 15:00:50</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/ExamPaper/AddQuestions.html">
+      <publishTime>11/21/2017 15:17:38</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/ExamPaper/List.html">
+      <publishTime>12/08/2017 14:58:21</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/ExamPaper/modify.html">
+      <publishTime>12/05/2017 15:00:50</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/ExamPaper/modifyExamPaperType.html">
+      <publishTime>11/28/2017 10:45:07</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/ExamPaper/QuestionList.html">
+      <publishTime>12/05/2017 15:00:50</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/ExamPaper/ViewExamPaper.html">
+      <publishTime>11/20/2017 20:03:21</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Question/Add.html">
+      <publishTime>01/11/2018 17:26:40</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Question/AddCombinationQuestion.html">
+      <publishTime>11/21/2017 18:52:29</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Question/List.html">
+      <publishTime>12/08/2017 14:58:21</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Question/Modify.html">
+      <publishTime>11/21/2017 18:51:44</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Question/ModifyCombination.html">
+      <publishTime>11/20/2017 16:17:42</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Question/ModifyCombinationQuestion.html">
+      <publishTime>11/24/2017 11:39:54</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Question/View.html">
+      <publishTime>11/20/2017 16:17:19</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Question/ViewCombination.html">
+      <publishTime>11/21/2017 15:07:01</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/QuestionStore/Add.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/QuestionStore/List.html">
+      <publishTime>01/09/2018 14:13:11</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/QuestionStore/modify.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/QuestionType/List.html">
+      <publishTime>12/05/2017 15:00:50</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/SystemSet/SetPolyvInfo.html">
+      <publishTime>01/09/2018 16:57:27</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Teacher/Add.html">
+      <publishTime>01/18/2018 17:22:24</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Teacher/List.html">
+      <publishTime>01/12/2018 17:44:07</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Teacher/modify.html">
+      <publishTime>01/18/2018 17:22:24</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Unit/Add.html">
+      <publishTime>12/05/2017 15:00:50</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Unit/List.html">
+      <publishTime>12/05/2017 15:00:50</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Unit/modify.html">
+      <publishTime>12/05/2017 15:00:50</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Unit_classtime/Add.html">
+      <publishTime>12/05/2017 15:00:50</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Unit_classtime/List.html">
+      <publishTime>12/05/2017 15:00:50</publishTime>
+    </File>
+    <File Include="Html/ResourcesCenter/Unit_classtime/modify.html">
+      <publishTime>12/05/2017 15:00:50</publishTime>
+    </File>
+    <File Include="Html/Set/BackstageSetUp/AddBanner.html">
+      <publishTime>12/13/2017 15:59:14</publishTime>
+    </File>
+    <File Include="Html/Set/BackstageSetUp/BaseSet.html">
+      <publishTime>01/11/2018 15:21:45</publishTime>
+    </File>
+    <File Include="Html/Set/BackstageSetUp/CarouselFigure.html">
+      <publishTime>12/13/2017 15:59:14</publishTime>
+    </File>
+    <File Include="Html/Set/BackstageSetUp/HeaderSet.html">
+      <publishTime>12/13/2017 15:59:14</publishTime>
+    </File>
+    <File Include="Html/Set/BackstageSetUp/MarketingSet.html">
+      <publishTime>12/13/2017 15:59:14</publishTime>
+    </File>
+    <File Include="Html/Set/BackstageSetUp/TailSet.html">
+      <publishTime>12/13/2017 15:59:14</publishTime>
+    </File>
+    <File Include="Html/Set/ClientSet.html">
+      <publishTime>11/06/2017 10:04:32</publishTime>
+    </File>
+    <File Include="Html/Set/Curriculum/CurriculumSet.html">
+      <publishTime>01/09/2018 14:13:12</publishTime>
+    </File>
+    <File Include="Html/Set/MenuSet/Index.html">
+      <publishTime>12/05/2017 10:02:34</publishTime>
+    </File>
+    <File Include="Html/Set/MenuSet/SetMenuUrl.html">
+      <publishTime>01/11/2018 16:25:10</publishTime>
+    </File>
+    <File Include="Html/Set/PaySet/ApayForm.html">
+      <publishTime>12/13/2017 15:59:14</publishTime>
+    </File>
+    <File Include="Html/Set/PaySet/ApaySetForm.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/Set/PaySet/PayLayout.html">
+      <publishTime>12/13/2017 15:59:14</publishTime>
+    </File>
+    <File Include="Html/Set/PaySet/WpayForm.html">
+      <publishTime>12/13/2017 15:59:14</publishTime>
+    </File>
+    <File Include="Html/Set/PaySet/WpaySetForm.html">
+      <publishTime>12/13/2017 15:59:14</publishTime>
+    </File>
+    <File Include="Html/Set/Preview/DisciplineView.html">
+      <publishTime>01/09/2018 14:13:12</publishTime>
+    </File>
+    <File Include="Html/Set/Preview/ViewModel.html">
+      <publishTime>11/29/2017 14:26:23</publishTime>
+    </File>
+    <File Include="Html/Set/SystemSet/AddField.html">
+      <publishTime>01/05/2018 15:22:48</publishTime>
+    </File>
+    <File Include="Html/Set/SystemSet/DepartmentEdit.html">
+      <publishTime>12/05/2017 15:00:51</publishTime>
+    </File>
+    <File Include="Html/Set/SystemSet/DepartmentSelect.html">
+      <publishTime>11/09/2017 09:42:23</publishTime>
+    </File>
+    <File Include="Html/Set/SystemSet/Dictionaries.html">
+      <publishTime>01/11/2018 23:25:08</publishTime>
+    </File>
+    <File Include="Html/Set/SystemSet/UserEdit.html">
+      <publishTime>12/05/2017 15:00:51</publishTime>
+    </File>
+    <File Include="Html/Set/SystemSet/UserList.html">
+      <publishTime>12/05/2017 15:00:51</publishTime>
+    </File>
+    <File Include="Html/Set/User/LogAndResSet.html">
+      <publishTime>01/12/2018 14:47:38</publishTime>
+    </File>
+    <File Include="Html/Student/WX/Add.html">
+      <publishTime>12/08/2017 14:58:21</publishTime>
+    </File>
+    <File Include="Html/Student/WX/demo.html">
+      <publishTime>12/05/2017 15:00:50</publishTime>
+    </File>
+    <File Include="Html/Student/WX/Edit.html">
+      <publishTime>12/08/2017 14:58:21</publishTime>
+    </File>
+    <File Include="Html/Student/WX/editStudent.html">
+      <publishTime>11/06/2017 10:04:29</publishTime>
+    </File>
+    <File Include="Html/Student/WX/Import.html">
+      <publishTime>11/06/2017 10:04:29</publishTime>
+    </File>
+    <File Include="Html/Student/WX/List.html">
+      <publishTime>01/20/2018 15:40:47</publishTime>
+    </File>
+    <File Include="Html/Student/WX/listStudent.html">
+      <publishTime>11/28/2017 10:45:06</publishTime>
+    </File>
+    <File Include="Login.html">
+      <publishTime>01/20/2018 15:41:40</publishTime>
+    </File>
+    <File Include="packages.config">
+      <publishTime>01/20/2018 15:41:03</publishTime>
+    </File>
+    <File Include="Resources/css/iconfont.css">
+      <publishTime>11/06/2017 10:04:35</publishTime>
+    </File>
+    <File Include="Resources/css/iconfont.eot">
+      <publishTime>11/06/2017 10:04:35</publishTime>
+    </File>
+    <File Include="Resources/css/iconfont.js">
+      <publishTime>11/06/2017 10:04:35</publishTime>
+    </File>
+    <File Include="Resources/css/iconfont.svg">
+      <publishTime>11/06/2017 10:04:35</publishTime>
+    </File>
+    <File Include="Resources/css/iconfont.ttf">
+      <publishTime>11/06/2017 10:04:35</publishTime>
+    </File>
+    <File Include="Resources/css/iconfont.woff">
+      <publishTime>11/06/2017 10:04:35</publishTime>
+    </File>
+    <File Include="Resources/css/index.css">
+      <publishTime>11/23/2017 16:12:52</publishTime>
+    </File>
+    <File Include="Resources/css/indexType2.css">
+      <publishTime>12/08/2017 14:58:22</publishTime>
+    </File>
+    <File Include="Resources/css/layui.css">
+      <publishTime>11/23/2017 16:12:52</publishTime>
+    </File>
+    <File Include="Resources/css/uploadify.css">
+      <publishTime>11/06/2017 10:04:35</publishTime>
+    </File>
+    <File Include="Resources/images/AliPay01.png">
+      <publishTime>11/29/2017 14:26:24</publishTime>
+    </File>
+    <File Include="Resources/images/AliPay02.png">
+      <publishTime>11/29/2017 14:26:24</publishTime>
+    </File>
+    <File Include="Resources/images/backgroundImage.png">
+      <publishTime>11/29/2017 14:26:24</publishTime>
+    </File>
+    <File Include="Resources/images/banner33.jpg">
+      <publishTime>11/29/2017 14:26:24</publishTime>
+    </File>
+    <File Include="Resources/images/WeChat01.png">
+      <publishTime>11/29/2017 14:26:24</publishTime>
+    </File>
+    <File Include="Resources/images/WeChatPay02.png">
+      <publishTime>11/29/2017 14:26:24</publishTime>
+    </File>
+    <File Include="Resources/images/wxHead.png">
+      <publishTime>11/29/2017 14:26:24</publishTime>
+    </File>
+    <File Include="Resources/indexLogo.png">
+      <publishTime>11/06/2017 10:04:35</publishTime>
+    </File>
+    <File Include="Resources/js/Controls/Client/Client.js">
+      <publishTime>12/05/2017 15:00:51</publishTime>
+    </File>
+    <File Include="Resources/js/Controls/Client/dataSource.js">
+      <publishTime>01/18/2018 17:22:25</publishTime>
+    </File>
+    <File Include="Resources/js/Controls/Clue.js">
+      <publishTime>01/18/2018 17:22:25</publishTime>
+    </File>
+    <File Include="Resources/js/Controls/Common.js">
+      <publishTime>01/18/2018 17:22:25</publishTime>
+    </File>
+    <File Include="Resources/js/Controls/Order/DetailList.js">
+      <publishTime>01/09/2018 14:13:12</publishTime>
+    </File>
+    <File Include="Resources/js/Controls/Order/OrderList.js">
+      <publishTime>01/12/2018 17:44:07</publishTime>
+    </File>
+    <File Include="Resources/js/Controls/Student/AddStudent.js">
+      <publishTime>01/20/2018 15:40:48</publishTime>
+    </File>
+    <File Include="Resources/js/Controls/Student/Contact.js">
+      <publishTime>12/05/2017 15:00:51</publishTime>
+    </File>
+    <File Include="Resources/js/Controls/Student/EditStudent.js">
+      <publishTime>01/20/2018 15:40:48</publishTime>
+    </File>
+    <File Include="Resources/js/Controls/Student/StudentExcelAdd.js">
+      <publishTime>01/20/2018 15:40:48</publishTime>
+    </File>
+    <File Include="Resources/js/Controls/Student/StudentList.js">
+      <publishTime>01/20/2018 15:40:48</publishTime>
+    </File>
+    <File Include="Resources/js/Controls/UploadResource/UploadResource.js">
+      <publishTime>11/06/2017 10:04:35</publishTime>
+    </File>
+    <File Include="Scripts/bootstrap.js">
+      <publishTime>01/20/2018 10:12:55</publishTime>
+    </File>
+    <File Include="Scripts/bootstrap.min.js">
+      <publishTime>01/20/2018 10:12:55</publishTime>
+    </File>
+    <File Include="Scripts/jquery-3.2.1.js">
+      <publishTime>01/20/2018 10:12:55</publishTime>
+    </File>
+    <File Include="Scripts/jquery-3.2.1.min.js">
+      <publishTime>01/20/2018 10:12:55</publishTime>
+    </File>
+    <File Include="Scripts/jquery-3.2.1.min.map">
+      <publishTime>01/20/2018 10:12:55</publishTime>
+    </File>
+    <File Include="Scripts/jquery-3.2.1.slim.js">
+      <publishTime>01/20/2018 10:12:55</publishTime>
+    </File>
+    <File Include="Scripts/jquery-3.2.1.slim.min.js">
+      <publishTime>01/20/2018 10:12:55</publishTime>
+    </File>
+    <File Include="Scripts/jquery-3.2.1.slim.min.map">
+      <publishTime>01/20/2018 10:12:55</publishTime>
+    </File>
+    <File Include="Scripts/modernizr-2.8.3.js">
+      <publishTime>01/20/2018 10:12:55</publishTime>
+    </File>
+    <File Include="Web.config">
+      <publishTime>01/20/2018 15:45:34</publishTime>
+    </File>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,688 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="http://wangxiaocenter.chutoukj.com/Resources/fonts/iconfont.css" rel="stylesheet" />
+    <link rel="stylesheet" href="http://wangxiaocenter.chutoukj.com//Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link href="http://wangxiaocenter.chutoukj.com/Resources/CSS/Font/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="http://wangxiaocenter.chutoukj.com/Resources/CSS/video-js.css" rel="stylesheet" />
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <script src="http://wangxiaocenter.chutoukj.com/Resources/js/moment.js"></script>
+    <style>
+        a { text-decoration: none !important; }
+        a:hover { text-decoration: none; }
+    </style>
+</head>
+<body style="background-color: #f7f7f7" id="root" v-cloak>
+    <div class="dopra-con clearfix">
+        <div class="pra-left-con pra-right-font16">
+
+            <!-- 练习模式做题-->
+            <style>
+                #questionModule { width: 100%; min-height: 300px; background: none; overflow: hidden; position: relative; }
+
+                #questionModule > ul { width: 100%; height: auto; }
+
+                #questionModule.cross-range { margin-bottom: 20px; }
+
+                #questionModule.cross-range > ul { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
+
+                #questionModule.cross-range > ul > li { float: left; width: 100%; overflow: hidden; }
+            </style>
+
+            <!---->
+            <div id="RulesTab" class="" style="min-height: 905px;">
+                <!--单选题-->
+                <tempalte v-for="(index,item) in QuestionType">
+                    <div class="m__ruleTitle">
+                        <div class="m-secpart f-f14 linheight180" v-bind:id="item.ID">{{item.stem}}</div>
+                    </div>
+                    <!--单选-->
+                    <div class="Rulesclass" v-if="item.QuestionType_ID==1">
+                        <ul class="m__ruleQuest">
+                            <li v-for="(idx,item2) in item.QuestionList" v-bind:id="item2.ID">
+                                <div class="subject-con bor clearfix m-question">
+                                    <div class="subject-con">
+                                        <div class="sub-content2 sub-conanswer">
+                                            <div class="sub-dotitle"> <em>{{idx+1}}、</em><span v-html="item2.Title"></span></div>
+                                            <answer-singles v-bind:list="item2.Body" v-bind:value.sync="item2.MyAnswer" v-bind:answer="item2.Answer" v-bind:showanswer="item2.ShowAnswer"></answer-singles>
+                                        </div>
+                                        <div class="m_answerLine refer-answer clearfix jx_box " style="">
+                                            <div class="reck"> <div>参考答案：<em class="right">{{item2.Answer | toChinese}}</em></div></div>
+                                        </div>
+                                        <div class="m_analyse detail-intro">
+                                            <div class="solution  f-f14">
+                                                <ul>
+                                                    <li>
+                                                        <span class="s-stnd"><i></i>试题难度：</span>
+                                                        <div class="so-star"><b style="width:{{item2.Level*20}}%;"></b></div>
+                                                    </li>
+                                                    <li>
+                                                        <span class="s-jx"><i></i>参考解析：</span>
+                                                        <div class="so-timu">
+                                                            <div class="wenzi" v-html="item2.Mark || '暂无解析'"></div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <!--多选-->
+                    <div class="Rulesclass" v-if="item.QuestionType_ID==2">
+                        <ul class="m__ruleQuest">
+                            <li v-for="(idx,item2) in item.QuestionList" v-bind:id="item2.ID">
+                                <div class="subject-con bor clearfix m-question">
+                                    <div class="subject-con">
+                                        <div class="sub-content2 sub-conanswer">
+                                            <div class="sub-dotitle"> <em>{{idx+1}}、</em><span v-html="item2.Title"></span></div>
+                                            <answer-mult v-bind:list="item2.Body" v-bind:value.sync="item2.MyAnswer" v-bind:answer="item2.Answer" v-bind:showanswer="item2.ShowAnswer"></answer-mult>
+                                        </div>
+                                        <div class="m_answerLine refer-answer clearfix jx_box " style="">
+                                            <div class="reck"> <div>参考答案：<em class="right">{{item2.Answer | toChinese}}</em></div></div>
+                                        </div>
+                                        <div class="m_analyse detail-intro">
+                                            <div class="solution  f-f14">
+                                                <ul>
+                                                    <li>
+                                                        <span class="s-stnd"><i></i>试题难度：</span>
+                                                        <div class="so-star"><b style="width:{{item2.Level*20}}%;"></b></div>
+                                                    </li>
+                                                    <li>
+                                                        <span class="s-jx"><i></i>参考解析：</span>
+                                                        <div class="so-timu">
+                                                            <div class="wenzi" v-html="item2.Mark || '暂无解析'"></div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <!--判断-->
+                    <div class="Rulesclass" v-if="item.QuestionType_ID==4">
+                        <ul class="m__ruleQuest">
+                            <li v-for="(idx,item2) in item.QuestionList" v-bind:id="item2.ID">
+                                <div class="subject-con bor clearfix m-question">
+                                    <div class="subject-con">
+                                        <div class="sub-content2 sub-conanswer">
+                                            <div class="sub-dotitle"> <em>{{idx+1}}、</em><span v-html="item2.Title"></span></div>
+                                            <answer-judge v-bind:list="item2.Body" v-bind:value.sync="item2.MyAnswer" v-bind:answer="item2.Answer" v-bind:showanswer="item2.ShowAnswer"></answer-judge>
+                                        </div>
+                                        <div class="m_answerLine refer-answer clearfix jx_box " style="">
+                                            <div class="reck"> <div>参考答案：<em class="right">{{item2.Answer | toChinese}}</em></div></div>
+                                        </div>
+                                        <div class="m_analyse detail-intro">
+                                            <div class="solution  f-f14">
+                                                <ul>
+                                                    <li>
+                                                        <span class="s-stnd"><i></i>试题难度：</span>
+                                                        <div class="so-star"><b style="width:{{item2.Level*20}}%;"></b></div>
+                                                    </li>
+                                                    <li>
+                                                        <span class="s-jx"><i></i>参考解析：</span>
+                                                        <div class="so-timu">
+                                                            <div class="wenzi" v-html="item2.Mark || '暂无解析'"></div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <!--填空-->
+                    <div class="Rulesclass" v-if="item.QuestionType_ID==3 || item.QuestionType_ID==6">
+                        <ul class="m__ruleQuest">
+                            <li v-for="(idx,item2) in item.QuestionList" v-bind:id="item2.ID">
+                                <div class="subject-con bor clearfix m-question">
+                                    <div class="subject-con">
+                                        <div class="sub-content2 sub-conanswer">
+                                            <div class="sub-dotitle"> <em>{{idx+1}}、</em><span v-html="item2.Title"></span></div>
+                                            <div class="mater-respond">
+                                                <input type="text" v-model="item2.MyAnswer" />
+                                            </div>
+                                        </div>
+                                        <div class="m_answerLine refer-answer clearfix jx_box " style="">
+                                            <div class="reck"> <div>参考答案：<em class="right">{{item2.Answer | toChinese}}</em></div></div>
+                                        </div>
+                                        <div class="m_analyse detail-intro">
+                                            <div class="solution  f-f14">
+                                                <ul>
+                                                    <li>
+                                                        <span class="s-stnd"><i></i>试题难度：</span>
+                                                        <div class="so-star"><b style="width:{{item2.Level*20}}%;"></b></div>
+                                                    </li>
+                                                    <li>
+                                                        <span class="s-jx"><i></i>参考解析：</span>
+                                                        <div class="so-timu">
+                                                            <div class="wenzi" v-html="item2.Mark || '暂无解析'"></div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <!--问答-->
+                    <div class="Rulesclass" v-if="item.QuestionType_ID==5">
+                        <ul class="m__ruleQuest">
+                            <li v-for="(idx,item2) in item.QuestionList" v-bind:id="item2.ID">
+                                <div class="subject-con bor clearfix m-question">
+                                    <div class="subject-con">
+                                        <div class="sub-content2 sub-conanswer">
+                                            <div class="sub-dotitle"> <em>{{idx+1}}、</em><span v-html="item2.Title"></span></div>
+                                            <div class="mater-respond">
+                                                <textarea placeholder="请在此输入您的答案" v-model="item2.MyAnswer"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="m_answerLine refer-answer clearfix jx_box " style="">
+                                            <div class="reck"> <div>参考答案：<em class="right">{{item2.Answer | toChinese}}</em></div></div>
+                                        </div>
+                                        <div class="m_analyse detail-intro">
+                                            <div class="solution  f-f14">
+                                                <ul>
+                                                    <li>
+                                                        <span class="s-stnd"><i></i>试题难度：</span>
+                                                        <div class="so-star"><b style="width:{{item2.Level*20}}%;"></b></div>
+                                                    </li>
+                                                    <li>
+                                                        <span class="s-jx"><i></i>参考解析：</span>
+                                                        <div class="so-timu">
+                                                            <div class="wenzi" v-html="item2.Mark || '暂无解析'"></div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <!--组合题-->
+                    <div class="Rulesclass" v-if="item.QuestionType_ID==7">
+                        <ul class="m__ruleQuest">
+                            <li v-for="(idx,item2) in item.QuestionList" v-bind:id="item2.ID">
+                                <div class="subject-con bor clearfix m-question">
+                                    <div class="subject-con">
+                                        <div class="sub-content2 sub-conanswer">
+                                            <div class="sub-dotitle"> <em>{{idx+1}}、</em><span v-html="item2.QuestionData"></span></div>
+                                            <!--<div class="mater-respond">
+                                                <input type="text" v-model="item.MyAnswer" />
+                                            </div>-->
+                                            <ul class="m__ruleQuest">
+                                                <li v-for="(idx3,item3) in item2.data" v-bind:id="item3.ID">
+                                                    <!--单选-->
+                                                    <div class="subject-con bor clearfix m-question" v-if="item3.QuestionType_ID==1">
+                                                        <div class="subject-con">
+                                                            <div class="sub-content2 sub-conanswer">
+                                                                <div class="sub-dotitle"> <em>{{idx3+1}}、</em><span v-html="item3.Title"></span></div>
+                                                                <answer-singles v-bind:list="item3.Body" v-bind:value.sync="item3.MyAnswer" v-bind:answer="item3.Answer" v-bind:showanswer="item3.ShowAnswer"></answer-singles>
+                                                            </div>
+                                                            <div class="m_answerLine refer-answer clearfix jx_box " style="">
+                                                                <div class="reck"> <div>参考答案：<em class="right">{{item3.Answer | toChinese}}</em></div></div>
+                                                            </div>
+                                                            <div class="m_analyse detail-intro">
+                                                                <div class="solution  f-f14">
+                                                                    <ul>
+                                                                        <li>
+                                                                            <span class="s-stnd"><i></i>试题难度：</span>
+                                                                            <div class="so-star"><b style="width:{{item3.Level*20}}%;"></b></div>
+                                                                        </li>
+                                                                        <li>
+                                                                            <span class="s-jx"><i></i>参考解析：</span>
+                                                                            <div class="so-timu">
+                                                                                <div class="wenzi" v-html="item3.Mark || '暂无解析'"></div>
+                                                                            </div>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!--多选-->
+                                                    <div class="subject-con bor clearfix m-question" v-if="item3.QuestionType_ID==2">
+                                                        <div class="subject-con">
+                                                            <div class="sub-content2 sub-conanswer">
+                                                                <div class="sub-dotitle"> <em>{{idx3+1}}、</em><span v-html="item3.Title"></span></div>
+                                                                <answer-mult v-bind:list="item3.Body" v-bind:value.sync="item3.MyAnswer" v-bind:answer="item3.Answer" v-bind:showanswer="item3.ShowAnswer"></answer-mult>
+                                                            </div>
+                                                            <div class="m_answerLine refer-answer clearfix jx_box " style="">
+                                                                <div class="reck"> <div>参考答案：<em class="right">{{item3.Answer | toChinese}}</em></div></div>
+                                                            </div>
+                                                            <div class="m_analyse detail-intro">
+                                                                <div class="solution  f-f14">
+                                                                    <ul>
+                                                                        <li>
+                                                                            <span class="s-stnd"><i></i>试题难度：</span>
+                                                                            <div class="so-star"><b style="width:{{item3.Level*20}}%;"></b></div>
+                                                                        </li>
+                                                                        <li>
+                                                                            <span class="s-jx"><i></i>参考解析：</span>
+                                                                            <div class="so-timu">
+                                                                                <div class="wenzi" v-html="item3.Mark || '暂无解析'"></div>
+                                                                            </div>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!--判断-->
+                                                    <div class="subject-con bor clearfix m-question" v-if="item3.QuestionType_ID==4">
+                                                        <div class="subject-con">
+                                                            <div class="sub-content2 sub-conanswer">
+                                                                <div class="sub-dotitle"> <em>{{idx3+1}}、</em><span v-html="item3.Title"></span></div>
+                                                                <answer-judge v-bind:list="item3.Body" v-bind:value.sync="item3.MyAnswer" v-bind:answer="item3.Answer" v-bind:showanswer="item3.ShowAnswer"></answer-judge>
+                                                            </div>
+                                                            <div class="m_answerLine refer-answer clearfix jx_box " style="">
+                                                                <div class="reck"> <div>参考答案：<em class="right">{{item3.Answer | toChinese}}</em></div></div>
+                                                            </div>
+                                                            <div class="m_analyse detail-intro" v-show="item3.ShowAnswer">
+                                                                <div class="solution  f-f14">
+                                                                    <ul>
+                                                                        <li>
+                                                                            <span class="s-stnd"><i></i>试题难度：</span>
+                                                                            <div class="so-star"><b style="width:{{item3.Level*20}}%;"></b></div>
+                                                                        </li>
+                                                                        <li>
+                                                                            <span class="s-jx"><i></i>参考解析：</span>
+                                                                            <div class="so-timu">
+                                                                                <div class="wenzi" v-html="item3.Mark || '暂无解析'"></div>
+                                                                            </div>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!--填空-->
+                                                    <div class="subject-con bor clearfix m-question" v-if="item3.QuestionType_ID==3 || item3.QuestionType_ID==6">
+                                                        <div class="subject-con">
+                                                            <div class="sub-content2 sub-conanswer">
+                                                                <div class="sub-dotitle"> <em>{{idx3+1}}、</em><span v-html="item3.Title"></span></div>
+                                                                <div class="mater-respond">
+                                                                    <input type="text" v-model="item3.MyAnswer" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="m_answerLine refer-answer clearfix jx_box " style="">
+                                                                <div class="reck"> <div>参考答案：<em class="right">{{item3.Answer | toChinese}}</em></div></div>
+                                                            </div>
+                                                            <div class="m_analyse detail-intro">
+                                                                <div class="solution  f-f14">
+                                                                    <ul>
+                                                                        <li>
+                                                                            <span class="s-stnd"><i></i>试题难度：</span>
+                                                                            <div class="so-star"><b style="width:{{item3.Level*20}}%;"></b></div>
+                                                                        </li>
+                                                                        <li>
+                                                                            <span class="s-jx"><i></i>参考解析：</span>
+                                                                            <div class="so-timu">
+                                                                                <div class="wenzi" v-html="item3.Mark || '暂无解析'"></div>
+                                                                            </div>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!--问答-->
+                                                    <div class="subject-con bor clearfix m-question" v-if="item3.QuestionType_ID==5">
+                                                        <div class="subject-con">
+                                                            <div class="sub-content2 sub-conanswer">
+                                                                <div class="sub-dotitle"> <em>{{idx3+1}}、</em><span v-html="item3.Title"></span></div>
+                                                                <div class="mater-respond">
+                                                                    <textarea placeholder="请在此输入您的答案" v-model="item3.MyAnswer"></textarea>
+                                                                </div>
+                                                            </div>
+                                                            <div class="m_answerLine refer-answer clearfix jx_box " style="">
+                                                                <div class="reck"> <div>参考答案：<em class="right">{{item3.Answer | toChinese}}</em></div></div>
+                                                            </div>
+                                                            <div class="m_analyse detail-intro">
+                                                                <div class="solution  f-f14">
+                                                                    <ul>
+                                                                        <li>
+                                                                            <span class="s-stnd"><i></i>试题难度：</span>
+                                                                            <div class="so-star"><b style="width:{{item3.Level*20}}%;"></b></div>
+                                                                        </li>
+                                                                        <li>
+                                                                            <span class="s-jx"><i></i>参考解析：</span>
+                                                                            <div class="so-timu">
+                                                                                <div class="wenzi" v-html="item3.Mark || '暂无解析'"></div>
+                                                                            </div>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </tempalte>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        Vue.filter('toChinese', function (val) {
+            if (val == '1') {
+                return '对'
+            } else if ((val == '0')) {
+                return '错'
+            } else {
+                return val
+            }
+        })
+        Vue.filter('formatSeconds', function (s) {
+            var t;
+            if (s > -1) {
+                var hour = Math.floor(s / 3600);
+                var min = Math.floor(s / 60) % 60;
+                var sec = s % 60;
+                if (hour < 10) {
+                    t = '0' + hour + ":";
+                } else {
+                    t = hour + ":";
+                }
+
+                if (min < 10) { t += "0"; }
+                t += min + ":";
+                if (sec < 10) { t += "0"; }
+                t += sec.toFixed(0);
+            }
+            return t;
+        })
+        Vue.filter('format', function (time, format) {
+            if (time == undefined) {
+                return '';
+            }
+            var finalTime;
+            if (typeof (time) == 'string') {
+                time = time.replace("T", " ");
+                time = time.replace("Z", " ");
+                var timeIOS = time.replace(/\-/g, "/");
+                finalTime = new Date(timeIOS);
+            } else {
+                finalTime = time;
+            }
+
+            var t = new Date(finalTime);
+            var tf = function (i) {
+                return (i < 10 ? '0' : '') + i
+            };
+            return format.replace(/yyyy|MM|dd|HH|mm|ss/g,
+                function (a) {
+                    switch (a) {
+                        case 'yyyy':
+                            return tf(t.getFullYear());
+                            break;
+                        case 'MM':
+                            return tf(t.getMonth() + 1);
+                            break;
+                        case 'mm':
+                            return tf(t.getMinutes());
+                            break;
+                        case 'dd':
+                            return tf(t.getDate());
+                            break;
+                        case 'HH':
+                            return tf(t.getHours());
+                            break;
+                        case 'ss':
+                            return tf(t.getSeconds());
+                            break;
+                    }
+                });
+        })
+        Vue.filter('filterType', function (val) {
+            switch (val) {
+                case 1:
+                    return '单选题'
+                    break;
+                case 2:
+                    return '多选题'
+                    break;
+                case 3:
+                    return '填空题'
+                    break;
+                case 4:
+                    return '判断题'
+                    break;
+                case 5:
+                    return '问答题'
+                    break;
+                case 6:
+                    return '计算题'
+                    break;
+                case 7:
+                    return '组合题'
+                    break;
+            }
+        })
+        //单选
+        Vue.component('answer-singles', {
+            props: ['list', 'value', 'answer', 'showanswer'],
+            template: '<dl class="sub-answer sub-answer-no"><dd class="m-question-option" v-bind:class="{\'cho-this\':key==value,\'right-this\':isRigght(key)}" v-for="(key,val) in list"><i></i><span>{{key}}.</span>{{val}}</dd></dl>',
+            data: function () {
+
+            },
+            methods: {
+                isRigght: function (key) {
+                    return this.answer.indexOf(key) > -1
+                },
+                choice: function (key, val) {
+                    this.value.splice(0, 1, key)
+                    this.value.sort();
+                }
+            }
+        })
+        //判断
+        Vue.component('answer-judge', {
+            props: ['list', 'value', 'answer', 'showanswer'],
+            template: '<dl class="sub-answer"><dd class="m-question-option" @click=handleClick(1) v-bind:class="{\'right-this\':answer==1}"> <i></i><span>对</span> </dd><dd class="m-question-option" v-bind:class="{\'right-this\':answer==0}"><i></i><span>错</span></dd></dl>',
+            methods: {
+                handleClick: function (val) {
+                    this.value = val;
+                }
+            }
+        })
+        //多选
+        Vue.component('answer-mult', {
+            props: ['list', 'value', 'answer', 'showanswer'],
+            template: '<dl class="sub-answer sub-answer-double"><dd class="m-question-option" v-bind:class="{\'right-this\':isRigght(key)}" v-for="(key,val) in list"><i></i><span>{{key}}.</span>{{val}}</dd></dl>',
+            data: function () {
+                return {
+                }
+            },
+            methods: {
+                isRigght: function (key) {
+                    return this.answer.indexOf(key) > -1
+                },
+                idx: function (key) {
+                    return this.value.indexOf(key) > -1
+                },
+                choice: function (key, val) {
+                    if (this.value.indexOf(key) > -1) {
+                        this.value.splice(this.value.indexOf(key), 1)
+                    } else {
+                        this.value.push(key)
+                    }
+                    this.value.sort();
+                }
+            }
+        });
+        //判断是否为空
+        var isEmpty = function (v) {
+            switch (typeof v) {
+                case 'undefined':
+                    return true;
+                case 'string':
+                    if (v.replace(/(^[ \t\n\r]*)|([ \t\n\r]*$)/g, '').length == 0) return true;
+                    break;
+                case 'boolean':
+                    if (!v) return true;
+                    break;
+                case 'number':
+                    if (0 === v || isNaN(v)) return true;
+                    break;
+                case 'object':
+                    if (null === v || v.length === 0) return true;
+                    for (var i in v) {
+                        return false;
+                    }
+                    return true;
+            }
+            return false;
+        }
+        require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil'],
+            function (fnr) {
+                var $ = layui.$;
+                var table = layui.table;
+                var tableExt = layui.tableExt;
+                var vm = new Vue({
+                    el: "#root",
+                    data: {
+                        ID: fnr.getQueryString('ID'),
+                        PaperInfo: '',
+                        QuestionType: '',
+                        ResultId: fnr.getQueryString('ResultId'),
+                        disciplineId: fnr.getQueryString('disciplineId'),
+                        TotalTime: '',
+                        timer: null,
+                        count: '',
+                        fontSetting: false,
+                        fontSizeIndex: 1,
+                        bigNum: '',
+                        questionNum: ''
+                    },
+                    ready: function () {
+                        this.GetExamPaperQuestions(this.ID)
+                    },
+                    methods: {
+                        //做题
+                        GetExamPaperQuestions: function (examPaperId) {
+                            var that = this;
+                            $.get('/service/datastore/ExamPaper/GetExamPaperQuestions', { examPaperId: examPaperId}, function (res) {
+                                if (res.SuccessResponse) {
+                                    that.TotalTime = res.Data.TotalTime;
+                                    var DataList = res.Data.QuestionType;
+                                    that.bigNum = DataList.length;
+                                    that.questionNum = DataList.map(function (item) {
+                                        return item.Question.length
+                                    }).reduce(function (per, cur) { return per + cur })
+                                    for (var i = 0; i < DataList.length; i++) {
+                                        //过滤显示题型
+                                        switch (DataList[i].TypeInfo.QuestionType_ID) {
+                                            case 1:
+                                                DataList[i].TypeInfo.stem = (i + 1) + '、(单选题)本题共' + DataList[i].Question.length + '小题，每小题' + DataList[i].TypeInfo.Sorce + '分，共' + DataList[i].TypeInfo.Sorce * DataList[i].TypeInfo.Num + '分，在每小题给出的几个选项中，只有一项是符合题目要求的。';
+                                                break;
+                                            case 2:
+                                                DataList[i].TypeInfo.stem = (i + 1) + '、(多选题)本题共' + DataList[i].Question.length + '小题，每小题' + DataList[i].TypeInfo.Sorce + '分，共' + DataList[i].TypeInfo.Sorce * DataList[i].TypeInfo.Num + '分，多选、少选、错选、不选均不得分。';
+                                                break;
+                                            case 3:
+                                                DataList[i].TypeInfo.stem = (i + 1) + '、(填空题)本题共' + DataList[i].Question.length + '小题，每小题' + DataList[i].TypeInfo.Sorce + '分，共' + DataList[i].TypeInfo.Sorce * DataList[i].TypeInfo.Num + '分';
+                                                break;
+                                            case 4:
+                                                DataList[i].TypeInfo.stem = (i + 1) + '、(判断题)本题共' + DataList[i].Question.length + '小题，每小题' + DataList[i].TypeInfo.Sorce + '分，共' + DataList[i].TypeInfo.Sorce * DataList[i].TypeInfo.Num + '分';
+                                                break;
+                                            case 5:
+                                                DataList[i].TypeInfo.stem = (i + 1) + '、(问答题)本题共' + DataList[i].Question.length + '小题，每小题' + DataList[i].TypeInfo.Sorce + '分，共' + DataList[i].TypeInfo.Sorce * DataList[i].TypeInfo.Num + '分';
+                                                break;
+                                            case 6:
+                                                DataList[i].TypeInfo.stem = (i + 1) + '、(计算题)本题共' + DataList[i].Question.length + '小题，每小题' + DataList[i].TypeInfo.Sorce + '分，共' + DataList[i].TypeInfo.Sorce * DataList[i].TypeInfo.Num + '分';
+                                                break;
+                                            case 7:
+                                                DataList[i].TypeInfo.stem = (i + 1) + '、(组合题)本题共' + DataList[i].Question.length + '小题，每小题' + DataList[i].TypeInfo.Sorce + '分，共' + DataList[i].TypeInfo.Sorce * DataList[i].TypeInfo.Num + '分';
+                                                break;
+                                        }
+                                        var Question = DataList[i].Question;
+                                        for (var j = 0; j < Question.length; j++) {
+                                            if (Question[j].Body) {
+                                                Question[j].Body = JSON.parse(Question[j].Body)
+                                            }
+                                            if (Question[j].AnswerCount) {
+                                                Question[j].AnswerList = []
+                                                for (var k = 0; k < Question[j].AnswerCount; k++) {
+                                                    Question[j].AnswerList.push({ key: j, val: String.fromCharCode(k + 65) });
+                                                    if (/^<img/ig.test(Question[j].Title)) {
+                                                        Question[j].TitleImg = Question[j].Title;
+                                                    };
+                                                }
+                                            }
+                                            Question[j].Answer = Question[j].Answer.split(',').sort();
+                                            Question[j].ShowAnswer = false;
+                                            Question[j].ShowNoteList = false;
+                                            Question[j].ShowRemartList = false;
+                                            Question[j].Remart = '';
+                                        }
+                                        DataList[i].TypeInfo.QuestionList = Question;
+                                        DataList[i] = DataList[i].TypeInfo
+                                        delete DataList[i].Question
+                                        if (DataList[i].QuestionType_ID == 7) {
+                                            var aaa = that.GroupBy(DataList[i].QuestionList);
+                                            DataList[i].QuestionList = aaa;
+                                        }
+                                    }
+                                    that.QuestionType = DataList;
+                                    that.ResultId = res.Data.ResultId;
+                                    that.PaperInfo = res.Data.PaperInfo;
+                                    that.count = that.PaperInfo.time * 60
+                                    console.log(that.QuestionType.length)
+                                }
+                            })
+                        },
+                        //组合题分组
+                        GroupBy: function (arr) {
+                            var map = {},
+                                dest = [];
+                            for (var i = 0; i < arr.length; i++) {
+                                var ai = arr[i];
+                                ai.ShowAnswer = false;
+                                if (!map[ai.QuestionData_ID]) {
+                                    dest.push({
+                                        QuestionData_ID: ai.QuestionData_ID,
+                                        QuestionData: ai.QuestionData,
+                                        QuestionStore_ID: ai.QuestionStore_ID,
+                                        QuestionType_ID: ai.QuestionType_ID,
+                                        data: [ai]
+                                    });
+                                    map[ai.QuestionData_ID] = ai;
+                                } else {
+                                    for (var j = 0; j < dest.length; j++) {
+                                        var dj = dest[j];
+                                        if (dj.QuestionData_ID == ai.QuestionData_ID) {
+                                            dj.data.push(ai);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            return dest
+                        },
+                    }
+                });
+            })
+    </script>
+</body>
+
+</html>

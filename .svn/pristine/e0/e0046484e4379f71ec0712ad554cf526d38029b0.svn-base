@@ -1,0 +1,522 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.js"
+            integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+    <link href="Resources/CSS/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="shortcut icon" href="" type="image/x-icon" class="favIcon" />
+    <link href="Resources/CSS/Font/css/font-awesome.css" rel="stylesheet" />
+    <script src="Resources/CSS/bootstrap/js/bootstrap.min.js"></script>
+    <link href="Resources/CSS/indexType2.css" rel="stylesheet" />
+    <style>
+        .SectionAudition { display: inline-block; font-size: 12px; border: 1px solid #fe9455; vertical-align: baseline; color: #fe9455; margin-left: 5px; }
+        .leftBtn, .rightBtn { position: absolute; top: 31.5px; cursor: pointer; }
+        .leftBtn { left: 236px; }
+        .rightBtn { right: 0; }
+        .container { padding-left: 0; padding-right: 0; }
+        [v-cloak] {
+            display: none;
+        }
+        .nav_school .childsList li{
+            text-align: left;
+        }
+    </style>
+</head>
+<body id="root" v-cloak>
+    <!--顶部-->
+    <div class="top_head clearfix" v-if="!loginState">
+        <div class="container">
+            <div class="pull-left" style="margin-left: 15px">
+                <span>欢迎来到{{layoutData.HeaderName}}</span>
+            </div>
+            <div class="pull-right">
+                <a href="javascript:;" @click="LoginFn">登录</a>
+                <a href="javascript:;" @click="RegisterFn">注册</a>
+                <!--<a href="#">注册客服中心</a>-->
+            </div>
+        </div>
+    </div>
+    <div class="top_head" v-if="loginState">
+        <div class="container">
+            <div class="pull-left" style="margin-left: 15px">
+                <span>欢迎来到{{layoutData.HeaderName}}</span>
+            </div>
+            <div class="pull-right Gcenter">
+                <a href="javascript:;" style="text-decoration: none;">{{msg}}</a>
+                <a id="exit" @click="exit" style="cursor: pointer; text-decoration: none;">退出</a>
+            </div>
+        </div>
+    </div>
+    <!--logo and search-->
+    <div class="top_search">
+        <div class="container" style="height: 100%;">
+            <a href="/index.html" class="pull-left" style="width: 232px; height: 60px; display: block; overflow:hidden; margin-top: 30px; text-decoration: none;">
+                <img v-if="layoutData.HeaderLogoOrName == 1" v-bind:src="layoutData.HeaderLogo ? layoutData.HeaderLogo : '/usercenter/Resources/images/WxLogo.png'" alt="">
+                <span v-if="layoutData.HeaderLogoOrName == 0" style="width: 100%; height: 100%;display: inline-block;line-height: 60px;">{{layoutData.HeaderName}}</span>
+            </a>
+            <div class="search pull-left">
+                <span class="selected">课程 <i class="layui-icon" style="position: relative; top: 1px; left: 2px;">&#xe61a;</i></span>
+                <input type="text" class="search_input" placeholder="请输出课程名称" v-model="searchCourseValue">
+                <div class="gary" @click="doSearch">搜索</div>
+            </div>
+        </div>
+    </div>
+    <!--nav-->
+    <div class="nav_school">
+        <div class="container">
+            <ul class="clearfix" style="margin: 0;padding: 0">
+                <li class="firstLi"><a href="/usercenter/index.shtml" style="color:#fff; text-decoration: none; cursor: pointer;">进入我的网校</a></li>
+                <li v-for="(index, item) in navData" @mouseenter="mouseThis(item.Childs, $event)" @mouseleave="mouseleaveThis($event)" style="position: relative; top: 0; left: 0;right: 0; bottom: 0;height: 45px; line-height: 20px;" v-if="item.Valid == 1">
+                    <a v-bind:href="item.Url" v-if="item.OpenType == 0" style="display:inline-block; padding-bottom: 5px;text-decoration: none;">{{item.Name}}</a>
+                    <a v-bind:href="item.Url" v-else style="display:inline-block; padding-bottom: 5px;text-decoration: none;" target="_blank">{{item.Name}}</a>
+                    <ul class="childsList" style="position: absolute; top:30px;left:0; z-index: 9999;background-color: #fff; width: 190px;"></ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!--banner-->
+    <div class="banner">
+        <div class="container" v-cloak>
+            <!--定位分类导航-->
+            <div class="nav-block">
+                <div class="list-category">
+                    <!--地区分类-->
+                    <div class="clearfix" v-for="(index, item) in Discipline" style="margin-top: 15px;">
+                        <h4>
+                            <a class="notFloat" v-bind:href="'/onlineschool/CourseList.shtml?Des='+item.ID">{{item.Name}}</a>
+                        </h4>
+                        <div class="clearfix pp25">
+                            <a v-bind:href="'/onlineschool/CourseList.shtml?index='+items.ID+'&Des='+item.ID" v-for="(indexs,items) in item.ChildNodeList">{{items.Name}}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--轮播图-->
+            <div class="float-block">
+                <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                    <!-- Wrapper for slides -->
+                    <div class="carousel-inner" role="listbox">
+                        <div v-bind:class="{item: true, active: index == 0}" v-for="(index, item) in bannerData" v-bind:data-bgcolor="item.BgColor">
+                            <a v-bind:href="item.Url">
+                                <img v-bind:src="item.PicUrl ? item.PicUrl : '/usercenter/Resources/images/defBanner.jpg'" style="height: 460px;">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--登录-->
+            <div class="loginBlock">
+                <div class="login-head">
+                    <img v-bind:src="headPhoto ? headPhoto : 'Resources/images/photo.png'" width="80" height="80">
+                    <p class="welcome-word">{{msg}}</p>
+                </div>
+                <div class="button-block" v-if="!loginState">
+                    <a href="javascript:;" @click="LoginFn" class="btn btn-red">登录</a>
+                    <a href="javascript:;" @click="RegisterFn" class="btn" style="background-color: #ddd;">注册</a>
+                </div>
+                <div v-if="loginState" style="margin:0 25px;text-align:left;">
+                    <p class="welcome-word" style="margin:0;line-height:1.5em; width: 170px; white-space:nowrap;text-overflow:ellipsis;overflow:hidden; cursor:default;" title="{{msgCouse}}">{{msgCouse}}</p>
+                    <div style="">
+                        <a href="usercenter/index.shtml" style="color:#f45337;text-decoration: none;">前往个人中心</a>
+                    </div>
+                </div>
+                <div class="message">
+                    <i class="void"></i><span>最新消息</span>
+                    <ul>
+                        <li>-&nbsp;中国近代史纲要上线了</li>
+                        <li>-&nbsp;恭喜网校中心正式上线</li>
+                        <li>-&nbsp;中国近代史纲要上线了</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--main-->
+    <div class="main">
+        <div class="container">
+            <section v-for="(index,item) in Discipline1" v-if="item.CourseList.length > 0" class="clearfix">
+                <div class="section_top clearfix" style="position:relative;">
+                    <h4 class="title pull-left"><i class="red-line"></i>{{item.Name}}</h4>
+                    <i class="layui-icon leftBtn" @click="leftScroll($event)">&#xe603;</i>
+                    <i class="layui-icon rightBtn" @click="rightScroll($event)">&#xe602;</i>
+                    <nav class="pull-right" style="width: 850px; height: 80px; overflow: hidden;margin-right: 55px;">
+                        <ul class="section-top-nav" style="height: 80px; white-space: nowrap; clear: both;">
+                            <li class="text-red allCourse" style="cursor: pointer; display: inline-block;height: 80px;" @click="allClickCourse($event)">全部</li>
+                            <li style="display: inline-block;height: 80px;" v-for="item2 in item.ChildNodeList" v-if="item2.CourseList.length > 0" @click="changeCourse(item2,index,$event);"><a style="cursor: pointer; text-decoration: none;" v-bind:class="{'text-red':item2.selelted}">{{item2.Name}}</a></li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="section-body isShow">
+                    <div v-for="(index,course) in item.CourseList" style="position: relative;" v-if="course.IsPutaway == 1 && course.IsRecommend == 1 && course.Valid == 1">
+                        <a href="usercenter/onlinecourse/Detail.shtml?ID={{course.ID}}" class="p-text">
+                            <img v-bind:src="course.CoverPath ? course.CoverPath : 'Resources/images/def.jpg'" style="height: 127px;width: 224px">
+                            <span style="display: inline-block; margin-top: 10px; margin-bottom: 10px;">
+                                {{course.Name}}
+                            </span>
+                        </a>
+                        <div class="tmName">{{course.TeachingMethod == 1 ? '录播' : course.TeachingMethod == 2 ? '直播' : '面授'}}</div>
+                        <div>
+                            <span style="position: absolute; bottom: 0; left: 0; color: #72B727;" v-if="course.Price == 0">免费</span>
+                            <span class="text-red" style="position: absolute; bottom: 0; left: 0;" v-else>{{'￥' + (course.PreferentialPrice > 0 ? course.PreferentialPrice : course.Price)}}<span class="SectionAudition" v-if="course.IsShiT > 0">可试学</span></span>
+                            <div class="pull-right" style="position: absolute; bottom: 0; right: 0;"><i class="fa fa-user-o"></i> <span>{{course.BuyBase}}</span>人</div>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <!--footer-->
+    <div class="foot">
+        <ul class="clearfix info">
+            <li>eol简介</li>
+            <li>联系方式</li>
+            <li>招聘信息</li>
+            <li>京IC证140769号</li>
+            <li>京IC备12045350号</li>
+            <li>京IC网文[2014]2106-306号</li>
+            <li>京公网安备&nbsp;11010802020236号</li>
+        </ul>
+        <p class="copyright">{{layoutData.FooterCopyright ? layoutData.FooterCopyright : '版权所有 赛尔互联（北京）教育科技有限公司 CERNET Corporation'}}</p>
+    </div>
+</body>
+
+</html>
+
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    var HtmlUtil = {
+        /*.用正则表达式实现html解码*/
+        htmlDecodeByRegExp: function (str) {
+            var s = "";
+            if (str.length == 0) return "";
+            s = str.replace(/&amp;/g, "&");
+            s = s.replace(/&lt;/g, "<");
+            s = s.replace(/&gt;/g, ">");
+            s = s.replace(/&nbsp;/g, " ");
+            s = s.replace(/&#39;/g, "\'");
+            s = s.replace(/&quot;/g, "\"");
+            return s;
+        }
+    };
+    require_js_file(["table", "form", "jquery", "tableExt", "linq",'wxconfig'], function (fnr) {
+
+        function delAllCookie() {
+            var myDate = new Date();
+            myDate.setTime(myDate.getTime() - 10000);//设置时间
+            var data = document.cookie;
+            var dataArray = data.split("; ");
+            for (var i = 0; i < dataArray.length; i++) {
+                var varName = dataArray[i].split("=");
+                document.cookie = varName[0] + "=''; expires=" + myDate.toGMTString();
+            }
+        }
+
+        var $ = layui.$;
+        var linq = layui.linq;
+        var wxconfig = layui.wxconfig;
+        $('.carousel').on('slide.bs.carousel', function (e) {
+            var ev = e.target || e.currentTarget || e.delegateTarget;
+            var evArr = $(ev).find('.carousel-inner .item');
+            var n = '';
+            for (var i = 0; i < evArr.length; i++) {
+                if ($(evArr[i]).hasClass('active')) {
+                    if (i == evArr.length - 1) {
+                        n = $(evArr[0]).data('bgcolor');
+                    } else {
+                        n = $(evArr[i]).next().data('bgcolor');
+                    }
+                }
+            }
+            $('.banner').css('backgroundColor', n ? n : '#ce2c2c');
+        });
+        rootApp = new Vue({
+            el: "#root",
+            data: {
+                loginState: false,
+                ture: true,
+                Discipline: [],
+                Discipline1: [],
+                msg: '',
+                msgCouse: '',
+                headPhoto: "",
+                layoutData: {},
+                bannerData: [],
+                navData: [],
+                LoginPageConfig: '',
+                isBodyNow: true,
+                searchCourseValue: '', //课程搜索内容
+                RegisterValid: ''  //判断注册页面是否可用
+            },
+            ready: function () {
+                this.LayoutFn();
+                $('body').css('min-height', document.body.clientHeight);
+            },
+            methods: {
+                doSearch: function(){
+                    var self = this;
+                    if(!!self.searchCourseValue){
+                        location.href = '/onlineschool/CourseList.shtml?name=' + self.searchCourseValue;
+                    }
+                },
+
+                //首页各个配置
+                LayoutFn: function () {
+                    var self = this;
+                    $.get('/service/public/Mechanism/GetSetlist', function (res) {
+                        if (res.SuccessResponse) {
+                            if (res.Data) {
+                                self.layoutData = res.Data;
+                                $('.favIcon').attr('href', res.Data.Favicon ? res.Data.Favicon : 'favicon.ioc');
+                                if (res.Data.Home_Setting == 0) {
+                                    self.isBodyNow = true;
+                                    self.GetAllDiscipline();
+                                    self.GetAllDiscipline1();
+                                    self.checkLogin();
+                                    self.bannerFn();
+                                    self.navFn();
+                                    self.LoginPageFn();
+                                } else {
+                                    self.isBodyNow = false;
+                                    $('html').html(HtmlUtil.htmlDecodeByRegExp(res.Data.Home_Html));
+                                }
+                            }
+                        }
+                    });
+                },
+
+                LoginPageFn: function () {
+                    var self = this;
+                    $.get('/service/datastore/HConfiguration/GetConfiguration', function (res) {
+                        if (res.SuccessResponse) {
+                            self.LoginPageConfig = res.Data.LoginPageConfig; 
+                            self.RegisterValid = res.Data.RegisterValid;
+                        }
+                    });
+                },
+                RegisterFn: function () {
+                    var self = this;
+                    if(self.RegisterValid == 0){
+                        layer.msg('当前机构未开通注册功能！');
+                    }else{
+                        if (self.LoginPageConfig == 0) {
+                            layer.open({
+                                type: 2,
+                                area: ['400px', '550px'],
+                                fixed: false, //不固定
+                                maxmin: true,
+                                title: '欢迎注册',
+                                content: '/usercenter/register_model.html'
+                            });
+                        } else {
+                            location.href = '/usercenter/Register.shtml';
+                        }
+                    }
+                },
+
+                //登录模态框
+                LoginFn: function () {
+                    var self = this;
+                    if (sessionStorage.getItem("thisUrl")) {
+                        sessionStorage.removeItem("thisUrl");
+                        sessionStorage.setItem("thisUrl", location.href);
+                    } else {
+                        sessionStorage.setItem("thisUrl", location.href);
+                    }
+                    if (self.LoginPageConfig == 0) {
+                        layer.open({
+                            type: 2,
+                            area: ['400px', '550px'],
+                            fixed: false, //不固定
+                            maxmin: true,
+                            title: '欢迎登陆',
+                            content: '/usercenter/login_model.html',
+                        });
+                    } else {
+                        location.href = '/usercenter/Login.shtml';
+                    }
+                },
+                rightScroll: function (e) {
+                    var ev = e.srcElement || e.target || e.toElement;
+                    var n = 1;
+                    var times = setInterval(function () {
+                        $(ev).next('nav').scrollLeft($(ev).next('nav').scrollLeft() + 5);
+                        n++;
+                        if (n >= 20) {
+                            clearInterval(times);
+                        }
+                    }, 1);
+
+                },
+                leftScroll: function (e) {
+                    var ev = e.srcElement || e.target || e.toElement;
+                    var n = 1;
+                    var times = setInterval(function () {
+                        $(ev).next().next('nav').scrollLeft($(ev).next().next('nav').scrollLeft() - 5);
+                        n++;
+                        if (n >= 20) {
+                            clearInterval(times);
+                        }
+                    }, 1);
+                },
+
+                //退出
+                exit: function () {
+                    delAllCookie();
+                    location.href = '/usercenter/Login.shtml';
+                },
+
+                //获取所有学科信息
+                GetAllDiscipline: function () {
+                    _this = this;
+                    $.get('/service/datastore/Discipline/GetAllDiscipline', {IsRecommend: 1, Valid: 1}, function (res) {
+                        if (res.SuccessResponse) {
+                            _this.Discipline = res.Data;
+                        } else {
+                            layer.msg('网络请求出错')
+                        }
+                    })
+                },
+
+                //获取所有学科信息1
+                GetAllDiscipline1: function () {
+                    _this = this;
+                    $.get('/service/datastore/Discipline/GetAllDisciplineInfo', function (res) {
+                        if (res.SuccessResponse) {
+                            if (res.Data) {
+                                //判断一级，二级学科下是否有推荐，上架，启用的课程
+                                _this.Discipline1 = res.Data;
+                                linq.from(_this.Discipline1).forEach(function (x, i) {
+                                    x.CourseList = linq.from(x.CourseList).where(y => y.IsPutaway == 1 && y.IsRecommend == 1 && y.Valid == 1 ).toArray();
+                                    linq.from(x.ChildNodeList).forEach(function(_x, _i){
+                                        _x.CourseList = linq.from(_x.CourseList).where( _y => _y.IsPutaway == 1 && _y.IsRecommend == 1 && _y.Valid == 1).toArray();
+                                    });
+                                });
+                            }
+                        } else {
+                            layer.msg('网络请求出错')
+                        }
+                    })
+                },
+
+                //全部
+                allClickCourse: function (e) {
+                    var self = this;
+                    var ev = e.srcElement || e.target || e.toElement;
+                    if (!$(ev).hasClass('text-red')) {
+                        $(ev).addClass('text-red').siblings('li').removeClass('text-red');
+                    }
+                    self.GetAllDiscipline1();
+                },
+
+                //根据学科ID查询课程
+                changeCourse: function (data, index, e) {
+                    _this = this;
+                    var ev = e.srcElement || e.target || e.toElement;
+                    if (!$(ev).hasClass('text-red')) {
+                        $(ev).addClass('text-red').parent().siblings('li').find('a').removeClass('text-red');
+                        $(ev).addClass('text-red').parent().siblings('li.allCourse').removeClass('text-red');
+                    }
+                    $.get('/service/datastore/WebCourse/GetCourseList', { Discipline_ID: data.ID, Valid: 1, IsPutaway: 1, IsRecommend: 1 }, function (res) {
+                        if (res.SuccessResponse) {
+                            _this.Discipline1[index].CourseList = res.Data;
+                            _this.Discipline1[index].ChildNodeList.map(function (a, b) {
+                                a.CoverPath = '/Resources/images/def.jpg';
+                            })
+                        } else {
+                            layer.msg('网络请求出错')
+                        }
+                    });
+
+                },
+                //查询stuID
+                checkLogin: function () {
+                    _this = this;
+                    if (fnr.Cookie.get('UserKey') && fnr.Cookie.get('UserKey') != 'undefined') {
+                        _this.loginState = true;
+                        $.get("/service/datastore/WebCourse/GetCourseLookInfo", function (res) {
+                            if (res.SuccessResponse) {
+                                if (res.Data[0]) { _this.msgCouse = '最近学习到《' + res.Data[0].Name + '》' } else { _this.msgCouse = '您最近还没在学习的课程' }
+                            }
+                        });
+                        var studentInfo = wxconfig.GetStudentInfo();
+                        _this.msg = 'hi，' + studentInfo.Name;
+                        _this.headPhoto = studentInfo.HeadImg ? studentInfo.HeadImg : '/Resources/images/photo.png'
+                    }
+                },
+
+                //动态轮播图
+                bannerFn: function () {
+                    var self = this;
+                    $.get('/service/public/Mechanism/GetBannerList', function (res) {
+                        if (res.SuccessResponse) {
+                            if (res.Data.length > 0) {
+                                var Datas = res.Data,
+                                    len = res.Data.length;
+                                for (var i = 0; i < len; i++) {
+                                    for (var j = 0; j < len - 1 - i; j++) {
+                                        if (parseFloat(Datas[j].Sort) > parseFloat(Datas[j + 1].Sort)) {
+                                            var temp = Datas[j + 1];
+                                            Datas[j + 1] = Datas[j];
+                                            Datas[j] = temp;
+                                        }
+                                    }
+                                }
+                                $('.banner').css('backgroundColor', res.Data[0].BgColor ? res.Data[0].BgColor : '#ce2c2c');
+                                self.bannerData = Datas;
+                            } else {
+                                self.bannerData.push({ PicUrl: '/Resources/images/defBanner.jpg', BgColor: '#ce2c2c' })
+                            }
+                        } else {
+                            layer.msg(res.Message);
+                        }
+                    });
+                },
+
+                //动态导航栏
+                navFn: function () {
+                    var self = this;
+                    $.get('/service/public/Menu/GetMenuData', function (res) {
+                        if (res.SuccessResponse) {
+                            if (res.Data != []) {
+                                $.each(res.Data, function (k, v) {
+                                    self.navData.push(v);
+                                });
+                            }
+                        }
+                    });
+                },
+
+                mouseThis: function (arr, e) {
+                    var ev = e.srcElement || e.target || e.toElement;
+                    var self = this;
+                    if (arr.length > 0) {
+                        var html = '';
+                        $.each(arr, function (k, v) {
+                            if (v.Valid == 1) {
+                                if(v.OpenType == 1){
+                                    html += '<li style="white-space:nowrap;text-overflow:ellipsis;overflow:hidden;width: 100%;" title="' + v.Name + '"><a style="text-decoration: none; cursor: pointer;" href="' + v.Url + '">' + v.Name + '</a></li>';
+                                }else if(v.OpenType == 0){
+                                    html += '<li style="white-space:nowrap;text-overflow:ellipsis;overflow:hidden;width: 100%;" title="' + v.Name + '"><a style="text-decoration: none; cursor: pointer;" href="' + v.Url + '" target="_blank">' + v.Name + '</a></li>';
+                                }else{
+                                    layer.msg('OpenType不存在');
+                                }
+                            }
+                        });
+                        $(ev).find('.childsList').html(html);
+                    }
+                },
+
+                mouseleaveThis: function (e) {
+                    var ev = e.srcElement || e.target || e.toElement;
+                    $(ev).find('.childsList').html('');
+                }
+            },
+        });
+    })
+</script>

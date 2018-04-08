@@ -1,0 +1,295 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我的订单</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="../../Resources/fonts/iconfont.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../../Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link href="../../Resources/CSS/Font/css/font-awesome.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../../Resources/CSS/PC_css.css">
+    <link href="../../Resources/CSS/question.css" rel="stylesheet" />
+</head>
+<body style="background-color: #f7f7f7;user-select: none;" id="root">
+    <!--顶部-->
+    <!--#<!--#include file="../UserControl/stepHeader.html"-->
+    <!--学校图标以及当前专业-->
+    <div class="nav">
+        <div class="w1200 clearfix">
+            <div class="nav-header pull-left">
+                <a href="#"><img src="../../Resources/images/hd.png" /></a>
+            </div>
+            <div class="nav-bar-right pull-right">
+                <div class="toggle-switch">
+                    <span class="inlineblock subject-label">当前专业</span>
+                    <div class="drowntoggle inlineblock">
+                        <i class="iconfont icon-lianxijilu"></i>
+                        <span class="current">自学考试-本科-人力资源管理</span>
+                        <i class="glyphicon glyphicon-triangle-bottom"></i>
+                    </div>
+                    <div class="drownmenu">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="w1200 clearfix">
+
+        <!--左侧导航-->
+        <div class="nav-left">
+            <div class="nav-title">
+                <h3>首页</h3>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">我的网课</div>
+                <ul class="sub-nav">
+                    <li><a href="#"><i class="iconfont icon-kechengguanli"></i>课程管理</a></li>
+                    <li><i class="iconfont icon-tingkejilu"></i>听课记录</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">我的题库</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-kaishizuoti"></i>开始做题</li>
+                    <li><i class="iconfont icon-zuotijilu"></i>做题记录</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">我的学费</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-lijijiaofei"></i>立即缴费</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">我的教务</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-wodechengji"></i>我的成绩</li>
+                    <li><i class="iconfont icon-wodebaokao"></i>我的报考</li>
+                    <li><i class="iconfont icon-wodeshuji"></i>我的书籍</li>
+                    <li><i class="iconfont icon-lianxijilu"></i>联系记录</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">我要毕业</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-xuexijindu"></i>学习进度</li>
+                    <li><i class="iconfont icon-lunwendabian"></i>论文答辩</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">个人管理</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-wodedingdan"></i>我的订单</li>
+                    <li><i class="iconfont icon-zhanghaoshezhi"></i>账号设置</li>
+                    <li><i class="iconfont icon-tousuyutiwen"></i>投诉提问</li>
+                    <li><i class="iconfont icon-xiaoxizhongxin"></i>消息中心</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">过程性考核</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-kaishixuexi"></i>开始学习</li>
+                    <li><i class="iconfont icon-peiyangjihua"></i>培养计划</li>
+                    <li><i class="iconfont icon-xuankeguanli"></i>选课管理</li>
+                    <li><i class="iconfont icon-chengjichaxun"></i>成绩查询</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="main">
+            <div class="order-top">
+                <ul class="orderTabs">
+                    <li class="active" @click="selectChange(-1,$event)">全部</li>
+                    <li @click="selectChange(0,$event)">待支付</li>
+                    <li @click="selectChange(1,$event)">已开通</li>
+                </ul>
+            </div>
+            <div class="order-middle">
+                <b>共 <span>{{dataLength}}</span> 个订单</b>
+                <div class="middle-main">
+                    <!--全选和删除按钮-->
+                    <div class="btnBox">
+                        <form class="layui-form" lay-filter="chb" action="">
+                            <input type="checkbox" lay-filter="chb" lay-skin="primary" title="全选" id="chbAll">
+                        </form>
+                        <button class="layui-btn layui-btn-primary">删除订单</button>
+                    </div>
+
+                    <!--订单集合-->
+                    <div class="listItems" v-if="dataLength > 0">
+                        <ul class="item" v-for="item in data">
+                            <li class="title">
+                                <form class="layui-form" action="">
+                                    <local-chb class="chbClass" lay-id="{{item.ID}}" v-bind:checked="isChecked"></local-chb>
+                                </form>
+                                <span class="orderNum">订单编号: <span>{{item.OrderNo}}</span></span>
+                                <span class="orderTime">{{item.PayTime | format "yyyy-MM-dd HH:mm"}}</span>
+                            </li>
+                            <li class="layui-row">
+                                <table style="width: 100%;">
+                                    <tr v-for="(indexx, itemx) in item.OrderDetailList">
+                                        <td style="width: 55%; padding: 21px 18px 18px;">
+                                            <img src="{{itemx.CoverPath != null ? itemx.CoverPath : 'http://ctfive.oss-cn-hangzhou.aliyuncs.com/School/2017/11/20/4a8d2babf4ed405381012225b19266940001.JPG'}}" style="width: 160px; height: 90px;" />
+                                            <div class="courseWarp">
+                                                <h3 class="courseName">{{itemx.Name}}</h3>
+                                                <p class="teacherMsg">{{itemx.JobTitle}} <span class="teacName">{{itemx.teachName}}</span> <span class="courseNum">{{itemx.TotalHours}}</span>课</p>
+                                            </div>
+                                        </td>
+                                        <td style="width: 15%; text-align: center;">
+                                            <p style="color: #ee1715; font-weight:bold; height: 100%; line-height: 130px;">￥ <span>{{itemx.Price}}</span> </p>
+                                        </td>
+                                        <td style="width: 15%; text-align: center;">
+                                            <p style="color: #333; height: 100%; line-height: 130px;">{{item.PayStatus==1?"支付成功":"等待付款"}}</p>
+                                        </td>
+                                        <td v-if="indexx == 0" style="width: 15%;" v-bind:rowspan="item.OrderDetailList.length">
+                                            <p style="display: inline-block; width: 100%; margin-top: 35px; text-align: center;">
+                                                <span class="ljzf">立即支付</span>
+                                            </p>
+                                            <p><a @click="deleteOrder(item.ID)" class="qxdd" style="cursor:pointer">删除订单</a></p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </li>
+                        </ul>                        
+                    </div>
+
+                    <div class="listItems" v-if="dataLength == 0">
+                        <h4 style="text-align:center;color:#666">暂无订单</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--footer-->
+    <!--#<!--#include file="../UserControl/Footer.html"-->
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <script>
+        require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil'],
+            function (fnr) {
+                var $ = layui.$;
+                var table = layui.table;
+                var tableExt = layui.tableExt;
+                var form = layui.form;
+                var vm = new Vue({
+                    el: "#root",
+                    data: {
+                        StuId: "",
+                        data: '',
+                        dataLength: 0,
+                        isChecked: false,
+                        status: -1,
+                        Ids: '',
+                    },
+                    ready: function () {
+                        _self = this;
+                        _self.getOrder();
+
+                        form.on('checkbox(chb)', function (data) {                            
+                            _self.isChecked = data.elem.checked;
+                            _self.$nextTick(function () {
+                                layui.form.render("checkbox");
+                            });
+                            //console.log(data.elem); //得到checkbox原始DOM对象
+                            //console.log(data.elem.checked); //是否被选中，true或者false
+                            //console.log(data.value); //复选框value值，也可以通过data.elem.value得到
+                            //console.log(data.othis); //得到美化后的DOM对象
+                        });
+                    },
+                    methods: {
+                        getOrder: function () {
+                            _self = this;
+                            $.get("/service/datastore/Order/GetOrderDetailListByStuId", { PayStatus: _self.status }, function (datas) {
+                                if (datas.Data.length > 0) {
+                                    _self.data = datas.Data;
+                                    _self.dataLength = datas.Data.length;
+                                } else {
+                                    _self.dataLength = 0;
+                                }
+                            });
+                        },
+                        selectChange: function (key, element) {
+                            _self = this;
+                            _self.isChecked = false;
+                            $('#chbAll').attr('checked', false);
+                            var ev = element.target || element.srcElement || element.toElement;
+                            if (!$(ev).hasClass('active')) {
+                                $(ev).addClass('active').siblings().removeClass('active');
+                            }
+                            _self.status = key;
+                            _self.getOrder();
+                        },
+                        deleteOrder: function (id)
+                        {
+                            _self = this;
+                            _self.Ids = id;
+                            layer.confirm("确认要删除吗？", function (index) {
+                                $.post('/service/datastore/Order/DeleteOrderCourseByCID', { Ids: _self.Ids }, function (res) {
+                                    if (res.SuccessResponse) {
+                                        layer.close(index);
+                                        layer.msg('删除成功')
+                                        _self.getOrder();
+
+                                    } else {
+                                        layer.close(index);
+                                        layer.msg("删除失败")
+                                    }
+                                });
+                            });
+                        },
+                    },
+                    filters: {
+                        format: function (time, format) {
+                            if (time == undefined) {
+                                return '';
+                            }
+                            var finalTime;
+                            if (typeof (time) == 'string') {
+                                time = time.replace("T", " ");
+                                time = time.replace("Z", " ");
+                                var timeIOS = time.replace(/\-/g, "/");
+                                finalTime = new Date(timeIOS);
+                            } else {
+                                finalTime = time;
+                            }
+
+                            var t = new Date(finalTime);
+                            var tf = function (i) { return (i < 10 ? '0' : '') + i };
+                            return format.replace(/yyyy|MM|dd|HH|mm|ss/g,
+                                function (a) {
+                                    switch (a) {
+                                        case 'yyyy':
+                                            return tf(t.getFullYear());
+                                            break;
+                                        case 'MM':
+                                            return tf(t.getMonth() + 1);
+                                            break;
+                                        case 'mm':
+                                            return tf(t.getMinutes());
+                                            break;
+                                        case 'dd':
+                                            return tf(t.getDate());
+                                            break;
+                                        case 'HH':
+                                            return tf(t.getHours());
+                                            break;
+                                        case 'ss':
+                                            return tf(t.getSeconds());
+                                            break;
+                                    }
+                                });
+                        }
+                    },
+                });
+            });
+    </script>
+</body>
+
+</html>

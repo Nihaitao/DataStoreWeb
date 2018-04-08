@@ -1,0 +1,383 @@
+﻿<div class="mainContainer" id="root">
+    <div class="layui-tab layui-tab-card">
+        <ul class="layui-tab-title" v-cloak>
+            <li class="m-l-lg "
+                v-for="(index,item) in BusType"
+                v-bind:class="{ 'layui-this': index === selected }"
+                @click="choose(index,item)">
+                <a href="javascript:;" v-bind:data-bustype="item.val">{{item.BusType}}</a>
+            </li>
+        </ul>
+        <div class="layui-tab-content">
+            <form class="layui-form" style="margin-bottom:30px;">
+                <div class="layui-row custom-title">
+                    <div class="layui-col-md3">字段名称</div>
+                    <div class="layui-col-md3">启用</div>
+                    <div class="layui-col-md2">必填</div>
+                    <div class="layui-col-md2">常用</div>
+                    <div class="layui-col-md1">操作</div>
+                    <div class="layui-col-md1">排序</div>
+                </div>
+                <div class="custom-field">
+                    <div class="tree" v-data :self="rootItem" v-for="(rootIndex,rootItem) in formList">
+                        <div class="custom-block" v-cloak>
+                            <div class="layui-col-md10">{{rootItem.ShowName}}</div>
+                            <div class="layui-col-md1">
+                                <a href="javascript:;" @click="editCustomField(rootItem)">编辑</a>
+                                <a href="javascript:;" v-if="rootItem.Childs.length==0" @click="deleteField(rootItem)">删除</a>
+                            </div>
+                            <div class="layui-col-md1"> 
+                                <a href="javascript:;" class="handle">
+                                    <i class="layui-icon">&#xe671;</i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="tree-content" v-cloak>
+                            <div class="layui-row custom-empty" v-show="rootItem.Childs.length==0">
+                                <div class="layui-col-md12">暂无字段</div>
+                            </div>
+                            <div class="layui-row custom-ele" v-data :self="elementItem" v-bind:parent="rootItem.Childs" v-bind:index="elementIndex" v-for="(elementIndex,elementItem) in rootItem.Childs" v-bind:class="elementItem.enableEdit==0?'custom-disable':''">
+                                <div class="layui-col-md3">{{elementItem.ShowName}}</div>
+                                <div class="layui-col-md3">
+                                    <local-switch1 text="启用|禁用" v-bind:enableflag="elementItem.IsEnable" v-bind:value.sync="elementItem.IsEnable" v-bind:item="elementItem" v-bind:disabled="elementItem.Editable!=0" data-fieldtype="2" v-bind:data-pindex="rootIndex" v-bind:data-cindex="elementIndex"></local-switch1>
+                                    <span v-if="elementItem.Editable==2" class="spical">特殊字段，不能修改</span>
+                                </div>
+                                <div class="layui-col-md2">
+                                    <local-switch1 text="开启|关闭" v-bind:value.sync="elementItem.Required" v-bind:item="elementItem" v-bind:disabled="elementItem.Editable==2 || elementItem.IsEnable !=1" data-fieldtype="1"></local-switch1>
+                                    <span v-if="elementItem.Editable==2" class="spical">特殊字段，不能修改</span>
+                                </div>
+                                <div class="layui-col-md2">
+                                    <local-switch1 text="开启|关闭" v-bind:value.sync="elementItem.Common" v-bind:item="elementItem" v-bind:disabled="elementItem.Editable==2 || elementItem.IsEnable !=1 || elementItem.forbid" data-fieldtype="0"></local-switch1>
+                                    <span v-if="elementItem.Editable==2" class="spical">特殊字段，不能修改</span>
+                                </div>
+                                <div class="layui-col-md1">
+                                    <a href="javascript:;" @click="editCustomField(elementItem)">编辑</a>
+                                    <a v-if="elementItem.FieldName.indexOf('customField') >= 0" href="javascript:;" @click="deleteField(elementItem)">删除</a>
+                                </div>
+                                <div class="layui-col-md1">
+                                    <a href="javascript:;" class="handle">
+                                        <i class="layui-icon">&#xe671;</i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <button class="layui-btn" @click="addCustomField">添加字段</button>
+        </div>
+    </div>
+</div>
+
+
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<!--<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/util.js"></script>-->
+
+<style>
+    .custom-title { line-height: 45px; background: #f5f5f5; padding-left: 10px; }
+
+    .custom-block { line-height: 45px; height: 45px; background: #e0e0e0; padding-left: 10px; }
+
+    .custom-ele, .custom-empty { line-height: 45px; height: 45px; border-bottom: 1px solid #ebebeb; padding-left: 10px; }
+
+    .custom-ele:hover { line-height: 45px; height: 45px; background: #f5f5f5; }
+
+    [v-cloak] { display: none; }
+    .spical { font-size: 12px; position: relative; display: inline-block; vertical-align: middle; height: 22px; line-height: 22px; padding: 0 5px; margin-top: 8px; color: #C9C9C9;}
+    .layui-checkbox-disbaled {
+        border-color: #c9c9c9 !important;
+        background-color: #c9c9c9 !important;
+    }
+</style>
+<script>
+    Vue.component('local-switch1',
+    {
+        template:
+            '<input type="checkbox" id="{{setting.tags.id}}" name="{{setting.tags.name}}" item="" lay-skin="switch" lay-filter="{{layfilter}}" lay-text="{{text||\'ON|OFF\'}}" v-model="value" />',
+        props: ['setting', 'value', "text", "item", "enableflag"],
+        data: function () {
+            return {
+                layfilter: ""
+            };
+        },
+        watch: {
+            'value': function (val) {
+                var fieldtype = this.$el.dataset.fieldtype;
+                if (fieldtype == 2){
+                    if(!val){
+                        this.item.Required = false;
+                        this.item.Common = false;
+                    }
+                }
+                if (fieldtype == 1) {
+                    if (!val) {
+                        this.item.Common = false;
+                        this.item.forbid=false;
+                    }else{
+                        this.item.Common = true; 
+                        this.item.forbid=true;
+                    }
+                }
+                this.$dispatch('child-msg', this.item, val, this.$el.dataset.fieldtype, this.$el.dataset.pindex, this.$el.dataset.cindex)
+                this.$nextTick(function () {
+                    layui.form.render('checkbox');
+                });
+            }
+        },
+        ready: function () {
+            this.initEvent();
+            this.$nextTick(function () {
+                layui.form.render('checkbox');
+            });
+        },
+        methods: {
+            initEvent: function () {
+                var self = this;
+                this.layfilter = "layfilter" + (Math.random() + "").substr(2);
+                layui.form.on("switch(" + this.layfilter + ")",
+                    function (data) {
+                        self.value = data.elem.checked;
+                    });
+            }
+        }
+    });
+
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'jqueryui'],
+        function (fnr) {
+            var $ = layui.$;
+            var jqueryui = layui.jqueryui;
+
+            var vm = new Vue({
+                el: "#root",
+                directives: {
+                    "data":
+                    {
+                        params: ["self", "parent", "index"],
+                        bind: function () {
+                            $(this.el).data("self", this.params.self);
+                            $(this.el).data("parent", this.params.parent);
+                        }
+                    }
+                },
+                computed: {
+                    BusTypes: function () {
+                        return this.BusType[this.selected].val;
+                    }
+                },
+                data:
+                {
+                    selected: 0,
+                    isnew: '',
+                    BusType: [
+                        { 'BusType': '客户', "val": 1 },
+                        { 'BusType': '线索', "val": 2 },
+                        { 'BusType': '学生', "val": 3 },
+                    ],
+                    formList: [],
+                    content: ''
+                },
+                ready: function () {
+                    this.reload(1);
+                },
+                events: {
+                    'child-msg': function (info, val, FieldType, pindex, cindex) {
+                        var self = this;
+                        $.post("/service/public/CustomSettings/UpdateLayoutStatus", { ID: info.ID, Status: Number(val), FieldType: FieldType, BusType: this.selected + 1 }, function (res) {
+                            //delete info.isUpdated;
+                            if (res.SuccessResponse) {
+                                switch (FieldType) {
+                                    case '0':
+                                        self.infomodel(info, val, '常用');
+                                        break;
+                                    case '1':
+                                        self.infomodel(info, val, '必填');
+                                        break;
+                                    case '2':
+                                        self.infomodel(info, val, '可用');
+                                        break;
+                                    default:
+                                        layer.msg('状态修改禁用成功')
+                                }
+                            }
+                        })
+                    },
+                },
+                methods: {
+                    infomodel: function (info, val, str) {
+                        if (val) {
+                            layer.msg(info.ShowName + str + '启用成功')
+                        } else {
+                            layer.msg(info.ShowName + str + '禁用成功')
+                        };
+                    },
+                    choose: function (index, item) {
+                        this.selected = index;
+                        this.reload(item.val);
+                    },
+                    addCustomField: function (isnew) {
+                        var self = this;
+                        fnr.openDialog({
+                            offset: [(document.body.clientHeight -500)/2,(document.body.clientWidth -700)/2 ],
+                            content: ["/html/Client/SystemSet/AddField.html?isnew=" + self.isnew, "yes"],
+                            area: ["700px", "500px"],
+                            btn: ["保存"],
+                            events: {
+                                new: function (data) {
+                                    var lastNode = self.formList[self.formList.length - 1];
+                                    data.BusType = self.selected + 1;                                    
+                                    if (data.FieldType != 0) {
+                                        data.PID=lastNode.ID;
+                                    }
+                                    $.ajax({
+                                        url: "/service/public/CustomSettings/SaveLayout",
+                                        method: "post",
+                                        data: data,
+                                        success: function (resp) {
+                                            if(resp.SuccessResponse){
+                                                self.reload(self.selected + 1);
+                                                layer.msg(resp.Message);
+                                            }else{
+                                               return layer.msg(resp.Message);
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    },
+                    editCustomField: function (item) {
+                        var self = this;
+                        fnr.openDialog({
+                            offset: [(document.body.clientHeight -500)/2,(document.body.clientWidth -700)/2 ],
+                            content: ["/html/Client/SystemSet/AddField.html?ID=" + item.ID+'&BusType='+this.BusType[this.selected].val, "yes"],
+                            area: ["700px", "500px"],
+                            btn: ["保存"],
+                            events: {
+                                new: function (data) {
+                                    var lastNode = self.formList[self.formList.length - 1];
+                                    data.SortID = lastNode.SortID + 1;
+                                    data.BusType = lastNode.BusType;
+                                    data.System_Station_ID = lastNode.System_Station_ID;
+                                    if (data.fieldType != 0) {
+                                        var childs = self.formList[self.formList.length - 1].Childs;
+                                        if (childs.length > 0) {
+                                            data.SortID = childs[childs.length - 1].SortID + 1;
+                                        }
+                                    }
+                                    $.ajax({
+                                        url: "/service/public/CustomSettings/UpdateLayout",
+                                        method: "post",
+                                        data: data,
+                                        success: function (resp) {
+                                            if (resp.SuccessResponse) {
+                                                self.reload(self.selected + 1);
+                                                layer.msg(item.Name + '字段修改成功')
+                                            } else {
+                                                layer.msg(resp.Message ? resp.Message : '');
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    },
+                    deleteField: function (item) {
+                        var self = this;
+                        var ID = item.ID;
+                        layer.confirm('确定删除？', {
+                            offset: [(document.body.clientHeight -77)/2,(document.body.clientWidth -130)/2 ],
+                            btn: ['确定', '取消'] //按钮
+                        }, function (index) {
+                            $.post("/service/public/CustomSettings/DeleteLayout", { Other: ID }, function (res) {
+                                if (res.SuccessResponse) {
+                                    self.reload(self.selected + 1);
+                                    layer.close(index);
+                                    layer.msg(res.Message);
+                                } else {
+                                    layer.msg(res.Message ? res.Message : '');
+                                }
+                            });
+                        }, function (index) {
+                            layer.close(index)
+                        });
+                    },
+                    reload: function (val) {
+                        var self = this;
+                        $.get("/service/public/CustomSettings/GetLayoutConfig",
+                            { BusType: val,Status:1 },
+                            function (resp) {
+                                if (resp.SuccessResponse) {
+                                    self.formList = resp.Data.map(function(item){
+                                                        if(item.Childs && item.Childs.length>0){
+                                                            item.Childs.map(function(child){
+                                                                if(!!child.Required){
+                                                                    child.forbid=true;
+                                                                }else{
+                                                                    child.forbid=false;
+                                                                }
+                                                            })
+                                                        }
+                                                        return item
+                                                    })
+                                    self.isnew = !!!self.formList.length;
+                                    self.$nextTick(function () {
+                                        $("div.tree-content").sortable({
+                                            connectWith: "div.tree-content",
+                                            cancel: "div.custom-empty",
+                                            handle: "a.handle",
+                                            stop: function (e, ui) {
+                                                vm.saveLayout();
+                                            }
+                                        }).disableSelection();
+
+                                        $("div.custom-field").sortable({
+                                            connectWith: "div.tree",
+                                            handle: "a.handle",
+                                            stop: function (e, ui) {
+                                                vm.saveLayout();
+                                            }
+                                        }).disableSelection();
+                                    });
+                                } 
+                            },
+                            "json");
+                    },
+                    saveLayout: function () {
+                        var self = this;
+                        var list = [];
+                        $("div.tree").each(function (i) {
+                            var parent = $(this).data("self");
+                            var model = {
+                                ID: parent.ID,
+                                BusType: self.BusTypes,
+                                SortId: i,
+                                Childs: []
+                            }
+                            $(this).find("div.custom-ele").each(function (j) {
+                                var selfData = $(this).data("self");
+                                model.Childs.push({ ID: selfData.ID, BusType: self.BusTypes, SortId: j });
+                            });
+                            list.push(model);
+                        });
+                        $.ajax({
+                            url: "/service/public/CustomSettings/ReSortLayout",
+                            method: "post",
+                            contentType: "application/json",
+                            data: JSON.stringify(list),
+                            success: function (resp) {
+                                if (resp.SuccessResponse) {
+                                    self.reload(self.selected + 1);
+                                    layer.msg(resp.Message);
+                                } else {
+                                    layer.msg(resp.Message ? resp.Message : '');
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        });
+</script>

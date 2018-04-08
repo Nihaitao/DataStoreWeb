@@ -1,0 +1,704 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>新增客户公海</title>
+    <style>
+        div.layui-form-switch {
+            width: 62px;
+        }
+
+            div.layui-form-switch em {
+                width: 44px;
+            }
+
+        div.layui-form-onswitch i {
+            left: 51px;
+        }
+
+        div.layui-form-switch {
+            margin-top: 0;
+        }
+
+        .maxNum {
+            color: #5d5d5d;
+            line-height: 24px;
+            display: inline-block;
+            vertical-align: top;
+            padding-left: 10px;
+            border-left: 1px solid #e8e8e8;
+            margin-left: 10px;
+        }
+
+        .maxNum1 {
+            color: #5d5d5d;
+            line-height: 24px;
+            display: inline-block;
+            padding-left: 10px;
+            border-left: 1px solid #e8e8e8;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+
+        .select2-container--default.select2-container--focus .select2-selection--multiple {
+            border-color: #C9C9C9 !important;
+        }
+
+        .select2-container--default .select2-selection--multiple {
+            border: 1px solid #e6e6e6 !important;
+            line-height: 27px;
+        }
+
+        .xingIcon {
+            color: #0b73df !important;
+            vertical-align: bottom;
+            display: inline-block;
+            font-size: 25px;
+            line-height: 30px;
+        }
+
+        .xingIcon2 {
+            color: #0b73df !important;
+            vertical-align: -webkit-baseline-middle;
+            display: inline-block;
+            font-size: 25px;
+            line-height: 26px;
+        }
+
+        label.layui-form-label {
+            width: 95px;
+        }
+
+        div.layui-input-block {
+            margin-left: 125px;
+        }
+
+        input.layui-input {
+            width: 80px;
+            display: inline-block;
+        }
+
+        .ww_groupSelBtn_item {
+            float: left;
+            max-width: 231px;
+            line-height: 1.5;
+            margin: 6px 0 3px 0;
+            padding: 3px 0 3px 7px;
+            background-color: #fff;
+        }
+
+        .ww_groupSelBtn_item_text {
+            max-width: 174px;
+            overflow: hidden;
+            line-height: 18px;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">客户公海名称</label>
+                <div class="layui-input-block">
+                    <input type="text" autocomplete="off" lay-verify="required" placeholder="请输入客户公海名称" class="layui-input" style="width: 100%;" v-model="AddPublicData.Name">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">公海管理员</label>
+                <div class="layui-input-block">
+                    <remote-sel2 v-bind:setting="CustomerSetting" laytips="请选择客服人员" layverify="required" v-bind:value.sync="CustomerList" initial="off"></remote-sel2>
+                    <div style="color: #999;">
+                        <span class="xingIcon">*</span>
+                        客户公海管理员可对客户公海客户进行编辑、转移、导出、删除等操作。
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">客户公海成员</label>
+                <div class="layui-input-block">
+                    <div class="layui-input-inline" style="width: auto;" v-for="item in queryFormData.Visrange">
+                        <div class="ww_groupSelBtn_item">
+                            <span class="ww_groupSelBtn_item_text">{{item.Name}}</span>
+                        </div>
+                    </div>
+                    <div class="layui-input-inline" style="margin-left:20px; float: none;">
+                        <a href="javascript:;" style="float:left;color:#1E9FFF" @click="SelectPage">{{operateName}}</a>
+                    </div>
+
+                    <div style="color: #999;">
+                        <span class="xingIcon">*</span>
+                        客户公海规则对客户公海成员生效(超级管理员除外)，客户公海成员可查看公海以及在客户公海"抢"客户。
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">自动划入规则</label>
+                <div class="layui-input-block">
+                    <div class="layui-collapse" lay-accordion="">
+                        <div class="layui-colla-item">
+                            <h2 class="layui-colla-title" @click="RuleType(1)">超过N天"未跟进"的客户，由系统定时划入客户公海</h2>
+                            <div class="layui-colla-content RuleType1">
+                                <input type="checkbox" lay-skin="primary" lay-filter="checkboxLimit" title="此规则仅限制“未成交”客户（“未成交”客户指的是跟进状态不是“成交客户”的客户）" v-bind:checked="AddPublicData.NotTraded">
+                                <div class="layui-collapse" lay-accordion="" style="margin-top: 20px;">
+                                    <div class="layui-colla-item">
+                                        <h2 class="layui-colla-title" @click="UniformRules(0)">所有客户统一设置</h2>
+                                        <div class="layui-colla-content UniformRules00">
+                                            <table class="layui-table">
+                                                <colgroup>
+                                                    <col width="90">
+                                                    <col width="210">
+                                                    <col width="220">
+                                                    <col>
+                                                </colgroup>
+                                                <thead>
+                                                    <tr>
+                                                        <th>客户</th>
+                                                        <th>未跟进天数</th>
+                                                        <th>划入客户公海时间</th>
+                                                        <th>销售人员提醒时间</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>所有客户</td>
+                                                        <td>
+                                                            超过
+                                                            <input type="number" v-model="RuleTypeOneData.MoreThanTime" class="layui-input" style="height: 24px;" />
+                                                            天未跟进,
+                                                        </td>
+                                                        <td>
+                                                            系统会在每天的
+                                                            <lay-date v-bind:value.sync="RuleTypeOneData.Time" type='time' initial="off" style="height: 24px;"></lay-date>
+                                                            将超过未跟进天数的客户划入客户公海,
+                                                        </td>
+                                                        <td>
+                                                            并在划入客户公海前
+                                                            <input type="number" v-model="RuleTypeOneData.AppointmentDay" class="layui-input" style="height: 24px;" />
+                                                            天的
+                                                            <lay-date v-bind:value.sync="RuleTypeOneData.AppointmentTime" type='time' initial="off" style="height: 24px;"></lay-date>
+                                                            ，提醒销售人员及时跟进。
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="layui-colla-item">
+                                        <h2 class="layui-colla-title" @click="UniformRules(1)">根据客户类型分别设置</h2>
+                                        <div class="layui-colla-content UniformRules11">
+                                            <table class="layui-table">
+                                                <colgroup>
+                                                    <col width="130">
+                                                    <col width="210">
+                                                    <col width="220">
+                                                    <col>
+                                                </colgroup>
+                                                <thead>
+                                                    <tr>
+                                                        <th>客户</th>
+                                                        <th>未跟进天数</th>
+                                                        <th>划入客户公海时间</th>
+                                                        <th>销售人员提醒时间</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="(index, item) in RuleTypeOneData.TypeMoreThanDay">
+                                                        <td>{{item.ImportanceName}}</td>
+                                                        <td>
+                                                            超过
+                                                            <input type="number" v-model="item.Day" class="layui-input" style="height: 24px;" />
+                                                            天未跟进,
+                                                        </td>
+                                                        <td v-if="index == 0" v-bind:rowspan="RuleTypeOneData.ClientImpDataLength">
+                                                            系统会在每天的
+                                                            <lay-date v-bind:value.sync="RuleTypeOneData.Time" type='time' initial="off" style="height: 24px;"></lay-date>
+                                                            将超过未跟进天数的客户划入客户公海,
+                                                        </td>
+                                                        <td v-if="index == 0" v-bind:rowspan="RuleTypeOneData.ClientImpDataLength">
+                                                            并在划入客户公海前
+                                                            <input type="number" v-model="RuleTypeOneData.AppointmentDay" class="layui-input" style="height: 24px;" />
+                                                            天的
+                                                            <lay-date v-bind:value.sync="RuleTypeOneData.AppointmentTime" type='time' initial="off" style="height: 24px;"></lay-date>
+                                                            ，提醒销售人员及时跟进。
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="color: #999;margin-top:10px;">
+                                    <span class="xingIcon2">*</span>
+                                    从开启客户公海或获得客户（新增、转移、从客户公海抢到客户）开始，对客户和客户的商机、合同写跟进以及新增商机、合同都视为跟进了客户。
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-colla-item">
+                            <h2 class="layui-colla-title" @click="RuleType(2)">超过N天"未成交"的客户，由系统定时划入客户公海</h2>
+                            <div class="layui-colla-content RuleType2">
+                                <div class="layui-collapse" lay-accordion="" style="margin-top: 20px;">
+                                    <div class="layui-colla-item">
+                                        <h2 class="layui-colla-title" @click="UniformRules(0)">所有客户统一设置</h2>
+                                        <div class="layui-colla-content UniformRules0">
+                                            <table class="layui-table">
+                                                <colgroup>
+                                                    <col width="90">
+                                                    <col width="210">
+                                                    <col width="220">
+                                                    <col>
+                                                </colgroup>
+                                                <thead>
+                                                    <tr>
+                                                        <th>客户</th>
+                                                        <th>未跟进天数</th>
+                                                        <th>划入客户公海时间</th>
+                                                        <th>销售人员提醒时间</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>所有客户</td>
+                                                        <td>
+                                                            超过
+                                                            <input type="number" v-bind:value.sync="RuleTypeSecondData.MoreThanTime" class="layui-input" style="height: 24px;" />
+                                                            天未跟进,
+                                                        </td>
+                                                        <td>
+                                                            系统会在每天的
+                                                            <lay-date v-bind:value.sync="RuleTypeSecondData.Time" type='time' initial="off" style="height: 24px;"></lay-date>
+                                                            将超过未跟进天数的客户划入客户公海,
+                                                        </td>
+                                                        <td>
+                                                            并在划入客户公海前
+                                                            <input type="number" v-model="RuleTypeSecondData.AppointmentDay" class="layui-input" style="height: 24px;" />
+                                                            天的
+                                                            <lay-date v-bind:value.sync="RuleTypeSecondData.AppointmentTime" type='time' initial="off" style="height: 24px;"></lay-date>
+                                                            ，提醒销售人员及时跟进。
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="layui-colla-item">
+                                        <h2 class="layui-colla-title" @click="UniformRules(1)">根据客户类型分别设置</h2>
+                                        <div class="layui-colla-content UniformRules1">
+                                            <table class="layui-table">
+                                                <colgroup>
+                                                    <col width="130">
+                                                    <col width="210">
+                                                    <col width="220">
+                                                    <col>
+                                                </colgroup>
+                                                <thead>
+                                                    <tr>
+                                                        <th>客户</th>
+                                                        <th>未跟进天数</th>
+                                                        <th>划入客户公海时间</th>
+                                                        <th>销售人员提醒时间</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="(index, item) in RuleTypeSecondData.TypeMoreThanDay">
+                                                        <td>{{item.ImportanceName}}</td>
+                                                        <td>
+                                                            超过
+                                                            <input type="number" v-model="item.Day" class="layui-input" style="height: 24px;" />
+                                                            天未跟进,
+                                                        </td>
+                                                        <td v-if="index == 0" v-bind:rowspan="RuleTypeSecondData.ClientImpDataLength">
+                                                            系统会在每天的
+                                                            <lay-date v-bind:value.sync="RuleTypeSecondData.Time" type='time' initial="off" style="height: 24px;"></lay-date>
+                                                            将超过未跟进天数的客户划入客户公海,
+                                                        </td>
+                                                        <td v-if="index == 0" v-bind:rowspan="RuleTypeSecondData.ClientImpDataLength">
+                                                            并在划入客户公海前
+                                                            <input type="number" v-model="RuleTypeSecondData.AppointmentDay" class="layui-input" style="height: 24px;" />
+                                                            天的
+                                                            <lay-date v-bind:value.sync="RuleTypeSecondData.AppointmentTime" type='time' initial="off" style="height: 24px;"></lay-date>
+                                                            ，提醒销售人员及时跟进。
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="color: #999;margin-top:10px;">
+                                    <span class="xingIcon">*</span>
+                                    从开启客户公海或获得客户（新增、转移、从客户公海抢到客户）开始来计算客户多久未达到“成交”状态。
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-colla-item">
+                            <h2 class="layui-colla-title" @click="RuleType(0)"> 不自动划入</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">抢回限制</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" lay-skin="switch" lay-text="已启用|已停用" lay-filter="switchLimit" v-bind:checked="AddPublicData.Recover">
+                    <input type="number" v-model="AddPublicData.RecoverDay" class="layui-input" style="height:24px; vertical-align: middle;" />
+                    <span class="maxNum1">天内不能连续"抢"同一个客户</span>
+                    <div style="color: #999;height: 26px; line-height: 26px;">
+                        <span class="xingIcon2">*</span>
+                        从开启客户公海或获得客户（新增、转移、从客户公海抢到客户）开始，对客户和客户的商机、合同写跟进以及新增商机、合同都视为跟进了客户。
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-hide">
+                <button class="layui-btn" lay-submit @click="submit">提交</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/select2.min.css" rel="stylesheet" />
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'laydate', 'layer', 'element', 'select2'],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+            var layer = layui.layer;
+            var element = layui.element;
+            function trim(str) {
+                return str.replace(/(^\s*)|(\s*$)/g, "");
+            }
+
+            //监听抢回限制开关
+            form.on('switch(switchLimit)', function (data) {
+                window.rootApp.AddPublicData.Recover = Number(this.checked);
+            });
+            //监听复选框开关
+            form.on('checkbox(checkboxLimit)', function (data) {
+                window.rootApp.AddPublicData.NotTraded = Number(this.checked);
+            });
+            //表格基本配置参数
+            var tableColsConfig =
+                [
+                    { field: 'ID', title: '客户公海名称', sort: true },
+
+                    { field: 'ImportanceName', title: '客户公海管理员', sort: true },
+                    { field: 'SourceName', title: '客户公海成员', sort: true },
+                    { field: 'PhaseTypeName', title: '客户公海规则', sort: true },
+                    {
+                        fixed: 'right',
+                        title: '操作',
+                        toolbar: function () {
+                            var array = new Array();
+                            array.push("<button type='button' class='layui-btn layui-btn-small' lay-event='modifyClient'>客户公海规则</button>");
+                            array.push("<button type='button' class='layui-btn layui-btn-danger layui-btn-small' lay-event='deleteClient'>删除</button>");
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    }
+                ];
+
+
+            //搜索条件
+            window.rootApp = new Vue({
+                el: '#root',
+                data: {
+                    AddPublicData: {
+                        ID: '',
+                        Name: '',                   //公海名称
+                        RuleType: '',              //自动划入规则 0不自动划入 1超过N天”未跟进” 2超过N天”未成交”
+                        NotTraded: '',             //此规则仅限制“未成交”客户 1仅限制未成交 0所有状态，RuleType为1时可用
+                        UniformRules: '',           //是否统一规则 0所有客户统一规则 1按重要程度
+                        Time: '',                   //自动划入时间
+                        AppointmentDay: '',         //划入前 N天提醒
+                        AppointmentTime: '',        //提醒时间
+                        Recover: '',                //是否允许 抢回 0不允许 1允许
+                        RecoverDay: '',             //抢回天数限制
+                        AdminsList: [],              //{BusType: 0\1\2\3, BusID: 账号ID\部门ID}
+                        RulesList: [],              //{Importance_ID: 0/*, Day: 超过天数}
+                    },
+                    RuleTypeOneData: {              //超过N天未跟进
+                        MoreThanTime: '',
+                        Time: '',
+                        AppointmentDay: '',
+                        AppointmentTime: '',
+                        TypeMoreThanDay: [],
+                        ClientImpDataLength: ''
+                    },
+                    RuleTypeSecondData: {              //超过N天未成交
+                        MoreThanTime: '',
+                        Time: '',
+                        AppointmentDay: '',
+                        AppointmentTime: '',
+                        TypeMoreThanDay: [],
+                        ClientImpDataLength: ''
+                    },
+                    MoreThanTime: '',               //超出天数
+                    CustomerList: [],               //客户管理员数据
+                    ClientImpData: [],              //客户重要等级数据
+                    StationID: '',                  //机构ID
+                    StationName: '',                //机构名称
+                    ClientImpDataLength: '',
+                    TypeMoreThanDay: [],
+                    operateName: "修改",
+                    queryFormData: {
+                        Visrange: []
+                    },
+                    CustomerSetting: {
+                        search: true,
+                        options: [],
+                        fields: { root: 'Data', key: 'Account_ID', value: 'Name' },
+                        remote: { url: "/service/crm/Form/GetCustomerlist?Status=1", options: { method: 'get' } },
+                        sel2Opts: {
+                            width: "100%",
+                            multiple: true
+                        }
+                    },
+                },
+
+                ready: function () {
+                    this.GetHDictionaryList();
+                    this.GetOnlyPublicClient();
+                },
+                methods: {
+                    //查看当前信息
+                    GetOnlyPublicClient: function () {
+                        var self = this;
+                        $.get('/service/crm/PublicClient/GetOnlyPublicClient', { ID: fnr.getQueryString('ID') }, function (res) {
+                            console.log(res);
+                            if (res.SuccessResponse) {
+                                self.AddPublicData.Name = res.Data.Name;                                                  //公海名称
+
+                                if (res.Data.AdminName != null && res.Data.AdminName != '') {                             //公海管理员
+                                    if (res.Data.AdminName.split(',').length > 0) {
+                                        res.Data.AdminName.split(',').map(function (_v, _i) {
+                                            self.CustomerList.push(_v.split("|")[0]);
+                                        });
+                                    }
+                                }
+                                if (res.Data.AdminsList) {                                                                //公海成员
+                                    res.Data.AdminsList.map(function (v, k) {
+                                        self.AddPublicData.AdminsList.push({ BusID: v.BusID, BusType: v.BusType });
+                                        if (v.BusType == 1) {
+                                            self.queryFormData.Visrange.push({ DepartmentID: v.BusID, Name: v.Name, IsAccount: 3 })
+                                        } else if (v.BusType == 2) {
+                                            self.queryFormData.Visrange.push({ DepartmentID: v.BusID, Name: v.Name, IsAccount: 0 })
+                                        } else if (v.BusType == 3) {
+                                            self.queryFormData.Visrange.push({ DepartmentID: v.BusID, Name: v.Name, IsAccount: 1 })
+                                        }
+                                    });
+                                }
+
+                                self.AddPublicData.RecoverDay = res.Data.RecoverDay;                                      //抢回时间限制
+                                self.AddPublicData.NotTraded = res.Data.NotTraded;
+                                self.AddPublicData.RuleType = res.Data.RuleType;
+                                self.AddPublicData.UniformRules = res.Data.UniformRules;
+                                self.AddPublicData.Recover = res.Data.Recover;                                      //是否允许抢回
+                                self.$nextTick(function () {
+                                    form.render("checkbox");
+                                });
+
+                                if (res.Data.RuleType == 0) {
+
+                                } else if (res.Data.RuleType == 1) {
+                                    $('.RuleType1').addClass('layui-show');
+
+                                    self.RuleTypeSecondData.TypeMoreThanDay = self.TypeMoreThanDay;
+                                    if (res.Data.UniformRules == 0) {
+                                        $('.UniformRules00').addClass('layui-show');
+                                        self.RuleTypeOneData.MoreThanTime = res.Data.RulesList[0].Day;
+                                    } else {
+                                        $('.UniformRules11').addClass('layui-show');
+                                        self.RuleTypeOneData.TypeMoreThanDay = res.Data.RulesList;
+                                    }
+                                    self.RuleTypeOneData.Time = res.Data.Time;
+                                    self.RuleTypeOneData.AppointmentDay = res.Data.AppointmentDay;
+                                    self.RuleTypeOneData.AppointmentTime = res.Data.AppointmentTime;
+                                } else {
+                                    $('.RuleType2').addClass('layui-show');
+
+                                    self.RuleTypeOneData.TypeMoreThanDay = self.TypeMoreThanDay;
+                                    if (res.Data.UniformRules == 0) {
+                                        $('.UniformRules0').addClass('layui-show');
+                                        self.RuleTypeSecondData.MoreThanTime = res.Data.RulesList[0].Day;
+                                    } else {
+                                        $('.UniformRules1').addClass('layui-show');
+                                        self.RuleTypeSecondData.TypeMoreThanDay = res.Data.RulesList;
+                                    }
+                                    self.RuleTypeSecondData.Time = res.Data.Time;
+                                    self.RuleTypeSecondData.AppointmentDay = res.Data.AppointmentDay;
+                                    self.RuleTypeSecondData.AppointmentTime = res.Data.AppointmentTime;
+                                }
+                            }
+                        });
+                    },
+
+                    //自动划入规则
+                    RuleType: function (num) {
+                        var self = this;
+                        self.AddPublicData.RuleType = num;
+
+                        if (num != 2) {
+                            $('.RuleType2').removeClass('layui-show');
+                            $('.UniformRules0').removeClass('layui-show');
+                            $('.UniformRules1').removeClass('layui-show');
+                            self.RuleTypeSecondData.MoreThanTime = '';
+                            self.RuleTypeSecondData.Time = '';
+                            self.RuleTypeSecondData.AppointmentDay = '';
+                            self.RuleTypeSecondData.AppointmentTime = '';
+                            self.RuleTypeSecondData.TypeMoreThanDay = self.TypeMoreThanDay;
+                        } else if (num != 1) {
+                            $('.RuleType1').removeClass('layui-show');
+                            $('.UniformRules00').removeClass('layui-show');
+                            $('.UniformRules11').removeClass('layui-show');
+                            self.RuleTypeOneData.MoreThanTime = '';
+                            self.RuleTypeOneData.Time = '';
+                            self.RuleTypeOneData.AppointmentDay = '';
+                            self.RuleTypeOneData.AppointmentTime = '';
+                            self.RuleTypeOneData.TypeMoreThanDay = self.TypeMoreThanDay;
+
+                            self.AddPublicData.NotTraded = '0';
+                        }
+                    },
+                    //是否统一规则
+                    UniformRules: function (num) {
+                        var self = this;
+                        self.AddPublicData.UniformRules = num;
+                    },
+                    
+                    //获取字典列表
+                    GetHDictionaryList: function () {
+                        var self = this;
+                        $.get('/service/public/HDictionary/GetHDictionaryList', { Valid: 1, ColumnName: 'Importance_ID' }, function (res) {
+                            if (res.SuccessResponse) {
+                                self.ClientImpData = res.Data;
+                                self.ClientImpData.map(function (val, ind) {
+                                    self.TypeMoreThanDay.push({ Importance_ID: val.ID, Day: '', ImportanceName: val.Description });
+                                });
+                                //self.ClientImpDataLength = res.Data.length;
+                                self.RuleTypeOneData.ClientImpDataLength = res.Data.length;
+                                self.RuleTypeSecondData.ClientImpDataLength = res.Data.length;
+                            }
+                        });
+                    },
+                    //客户公海成员数据处理
+                    ClientHighSeaDataFn: function (data) {
+                        var self = this;
+                        self.AddPublicData.AdminsList = [];
+                        data.map(function (val, ind) {
+                            if (val.IsAccount == 3) {
+                                self.AddPublicData.AdminsList.push({ BusType: 1, BusID: val.DepartmentID });
+                            } else if (val.IsAccount == 1) {
+                                self.AddPublicData.AdminsList.push({ BusType: 3, BusID: val.DepartmentID });
+                            } else if (val.IsAccount == 0) {
+                                self.AddPublicData.AdminsList.push({ BusType: 2, BusID: val.DepartmentID });
+                            }
+                        });
+                    },
+                    //选择可见范围
+                    SelectPage: function () {
+                        var self = this;
+                        var Json = "";
+                        $.each(self.queryFormData.Visrange, function () {
+                            Json += this.DepartmentID + "|" + this.Name + "|3,";
+                        });
+                        Json = Json.substring(0, Json.length - 1);
+                        fnr.openDialog({
+                            title: '选择用户或部门',
+                            area: ['500px', '600px'],
+                            content: ['AddDepartment.html?json=' + Json],
+                            btn: ['确认'],
+                            events: {
+                                refresh: function (data) {
+                                    var jsondata = [];
+                                    $.each(self.queryFormData.Visrange, function (i, x) {
+                                        var flg = false;
+                                        $.each(data, function (ii, xx) {
+                                            if (x.DepartmentID == xx.ID)
+                                                flg = true;
+                                        });
+                                        if (flg)
+                                            jsondata.push(x);
+                                    })
+                                    self.queryFormData.Visrange = jsondata;
+
+                                    $.each(data, function (i, x) {
+                                        var flg = false;
+                                        $.each(self.queryFormData.Visrange, function (ii, xx) {
+                                            if (xx.DepartmentID == x.ID) {
+                                                flg = true;
+                                            }
+                                        })
+                                        if (!flg) {
+                                            self.queryFormData.Visrange.push({ "DepartmentID": x.ID, "Name": x.Name, "IsAccount": x.IsAccount });
+                                            self.operateName = "修改";
+                                        }
+                                    })
+                                    self.ClientHighSeaDataFn(self.queryFormData.Visrange);
+                                }
+                            }
+                        });
+                    },
+                    //提交
+                    submit: function (e) {
+                        var self = this;
+                        if (!layui.form.checkInput(e)) {
+                            return false;
+                        }
+                        //客户AdminsList数据处理
+                        if (self.CustomerList.length > 0) {
+                            self.CustomerList.map(function (val, ind) {
+                                self.AddPublicData.AdminsList.push({ BusType: 0, BusID: val })
+                            })
+                        }
+                        //客户RulesList/AppointmentDay/AppointmentTime/Time数据处理
+                        if (self.AddPublicData.RuleType == 2) {
+                            self.AddPublicData.AppointmentDay = self.RuleTypeSecondData.AppointmentDay;
+                            self.AddPublicData.AppointmentTime = self.RuleTypeSecondData.AppointmentTime;
+                            self.AddPublicData.Time = self.RuleTypeSecondData.Time;
+                            if (self.AddPublicData.UniformRules == 1) {
+                                self.AddPublicData.RulesList = [];
+                                self.RuleTypeSecondData.TypeMoreThanDay.map(function (v, k) {
+                                    self.AddPublicData.RulesList.push({ Importance_ID: v.Importance_ID, Day: v.Day });
+                                });
+                            } else {
+                                self.AddPublicData.RulesList = [];
+                                self.AddPublicData.RulesList.push({ Importance_ID: 0, Day: self.RuleTypeSecondData.MoreThanTime });
+                            }
+                        } else if (self.AddPublicData.RuleType == 1) {
+                            self.AddPublicData.AppointmentDay = self.RuleTypeOneData.AppointmentDay;
+                            self.AddPublicData.AppointmentTime = self.RuleTypeOneData.AppointmentTime;
+                            self.AddPublicData.Time = self.RuleTypeOneData.Time;
+
+                            if (self.AddPublicData.UniformRules == 1) {
+                                self.AddPublicData.RulesList = [];
+                                self.RuleTypeOneData.TypeMoreThanDay.map(function (v, k) {
+                                    self.AddPublicData.RulesList.push({ Importance_ID: v.Importance_ID, Day: v.Day });
+                                });
+                            } else {
+                                self.AddPublicData.RulesList = [];
+                                self.AddPublicData.RulesList.push({ Importance_ID: 0, Day: self.RuleTypeOneData.MoreThanTime });
+                            }
+                        } else {
+                            self.AddPublicData.RulesList = [];
+                            self.AddPublicData.AppointmentDay = '';
+                            self.AddPublicData.AppointmentTime = '';
+                            self.AddPublicData.Time = '';
+                        }
+                        self.AddPublicData.ID = fnr.getQueryString('ID');
+                        $.post('/service/crm/PublicClient/UpdatePublicClient', self.AddPublicData, function (res) {
+                            if (res.SuccessResponse) {
+                                fnr.callDialog('refresh', { status: res.SuccessResponse, Message: res.Message });
+                                fnr.closeDialog();
+                            }
+                        });
+                    },
+                }
+            });
+           
+        });
+</script>

@@ -1,0 +1,278 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>订单开课列表</title>
+    <style>
+        #root .layui-form-item:last-child{
+            margin-bottom:0;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <!--操作模板-->
+        <blockquote class="layui-elem-quote">
+            <div class="layui-form">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">学科</label>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="FirstSetting" laytips="一级学科" v-bind:value.sync="submitForm.Discipline_OneLevelID" v-bind:change="FirstChange" layverify="required"></remote-sel>
+                    </div>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="SecondSetting" laytips="二级学科" v-bind:value.sync="submitForm.Discipline_TwoLevelID" v-bind:change="SecondChange" v-ref:second></remote-sel>
+                    </div>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="ThreeSetting" laytips="三级学科" v-bind:value.sync="submitForm.Discipline_ThreeLevelID" v-ref:three></remote-sel>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">课程</label>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="Course" laytips="选择课程" v-bind:value.sync="test" layverify="required" v-ref:coursereset></remote-sel>
+                    </div>
+                    <div class="layui-input-inline">
+                        <button class="layui-btn" @click="addWaitPay">加入该课程</button>
+                    </div>
+                </div>
+        </blockquote>
+        <div style="display:none;">
+            <button class="layui-btn layui-btn-normal" lay-submit @click="goPay">去支付</button>
+        </div>
+        <table id="listTable" lay-filter="listTable"></table>
+    </div>
+</body>
+</html>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/Excel.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/Controls/Common.js"></script>
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'laydate'],
+    function (fnr) {
+        var table = layui.table;
+        var form = layui.form;
+        var tableExt = layui.tableExt;
+        var $ = layui.$;
+        var laydate = layui.laydate;
+        var rootApp = new Vue({
+            el: '#root',
+            data: {
+                StuId: "",
+                FirstSetting: SelectDisciplineBind(0),
+                SecondSetting: SelectDisciplineBind(null),
+                ThreeSetting: SelectDisciplineBind(null),
+                courselist: [],
+                waitPay:[],
+                submitForm: {
+                
+                    Discipline_OneLevelID: '',
+                    Discipline_TwoLevelID: '',
+                    Discipline_ThreeLevelID: ''
+                },
+                checkCourse: {
+                    Discipline_ID: ""
+                },
+                test:"",
+                Course: {
+                    search: true,
+                    options: [],
+                    fields: { root: 'Data', key: 'ID', value: 'Name' },
+                    
+                }
+
+               
+            },
+            ready: function () {
+                this.StuId = fnr.getQueryString("StuID");
+            },
+            mounted: {
+
+
+            },
+
+            methods: {
+                //下单
+                goPay: function () {
+                    var _this=this;
+                    var Course_IDs = [];
+                    var Prices = [];
+                    var sum = 0;
+                    this.waitPay.map(function (a, b) {
+                        Course_IDs.push(a.ID);
+                        //console.log(a.PreferentialPrice)
+                        if (a.PreferentialPrice > 0) {
+                            Prices.push(a.PreferentialPrice);
+                        }
+                        else {
+                            Prices.push(a.Price);
+                        }
+                    });
+                    Prices.map(function (a, b) {
+                        sum += Number(a);
+                    })
+                    $.post("/service/datastore/Order/AddOrderStudent", { StuId: _this.StuId, PayPrice: sum, Price: sum, PayStatus: 1, PayType: 0, Course_IDs: Course_IDs.join(","), Prices: Prices.join(",") }, function (res) {
+                        if (res.SuccessResponse) {
+                            fnr.callDialog('refresh', res.SuccessResponse);
+                            fnr.closeDialog()
+                        }
+                    })
+                },
+                //删除
+                delete: function (ID) {
+                    var _this = this;
+                    _this.waitPay.splice(_this.waitPay.map(function (a, b) {
+                        if (a.ID == ID) {
+                            return b
+                        }
+                    }), 1);
+                    listTable.reload();
+                },
+                addWaitPay: function () {
+                    var _this = this
+                    var statu = false;
+                    if (!_this.test) { layer.msg("请选择课程加入"); return };
+                    this.waitPay.map(function (a, b) {
+                        if (a.ID == _this.test) {
+                            layer.msg("请不要重复加入课程");
+                            statu = true;
+                            return 
+                        }
+                    })
+                    if (!statu) {
+                        _this.courselist.map(function (c, d) {
+                            if (c.ID == _this.test) {
+                                _this.waitPay.push(c);
+                            }
+                        })
+                    }
+                   
+                    listTable.reload();
+                },
+                getCourse: function () {
+                    var self = this;
+                    if (self.submitForm.Discipline_OneLevelID != "")
+                        self.checkCourse.Discipline_ID = self.submitForm.Discipline_OneLevelID;
+                    if (self.submitForm.Discipline_TwoLevelID != "")
+                        self.checkCourse.Discipline_ID = self.submitForm.Discipline_TwoLevelID;
+                    if (self.submitForm.Discipline_ThreeLevelID != "")
+                        self.checkCourse.Discipline_ID = self.submitForm.Discipline_ThreeLevelID;
+                    self.Course.remote = {};
+                    if (self.submitForm.Discipline_OneLevelID != "")
+                    {
+                        self.Course.remote = {
+                            url: "/service/datastore/WebCourse/GetCourseList", data: { Discipline_ID: self.checkCourse.Discipline_ID, StuID: self.StuId, Valid: 1, IsPutaway: -1, IsRecommend: -1 }, ajaxSuccess: function (rsp) {
+                                self.courselist = rsp;
+                            }
+                        };
+                    }else
+                    {
+                        self.Course.remote = {};
+                        self.Course.remote.data = {};
+                    }
+                    self.$refs.coursereset.reset();
+
+                },
+                OpenCourse: function () {
+                    _this = this;
+                    fnr.openDialog({
+                        title: '选择课程',
+                        area: ['1000px', "600px"],
+                        content: ['./Course.html' + _this.StuId] //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+                    });
+                },
+                FirstChange: function () {
+                    var self = this;
+                    self.submitForm.Discipline_TwoLevelID = "";
+                    self.submitForm.Discipline_ThreeLevelID = "";
+                    self.test = '';
+                    if (self.submitForm.Discipline_OneLevelID == '') {
+                        self.SecondSetting.remote = {};
+                        self.SecondSetting.remote.url = "";
+                        self.SecondSetting.remote.data = {};
+                        self.$refs.second.reset();  //重置select
+                    } else {
+                        fnr.mergeJson(SelectDisciplineBind(self.submitForm.Discipline_OneLevelID), self.SecondSetting);//合并ajax值
+                        self.$refs.second.reset();
+                    }
+                    if (self.ThreeSetting.remote != undefined) {
+                        self.ThreeSetting.remote = {};
+                        self.ThreeSetting.remote.url = "";
+                        self.ThreeSetting.remote.data = {};
+                        
+                        self.$refs.three.reset();
+                    }
+                    self.getCourse();
+                },
+                SecondChange: function () {
+                    var self = this;
+                    self.submitForm.Discipline_ThreeLevelID = "";
+                    self.test = '';
+                    if (self.submitForm.Discipline_TwoLevelID == '') {
+                        self.ThreeSetting.remote.url = "";
+                        self.ThreeSetting.remote.data = {};
+                    } else {
+                        fnr.mergeJson(SelectDisciplineBind(self.submitForm.Discipline_TwoLevelID), self.ThreeSetting);//合并ajax值
+                    }
+                    self.$refs.three.reset();
+                    self.getCourse();
+                },
+            }
+        });
+        //绑定列表
+        var listTable = table.render({
+            elem: '#listTable',
+            even: true, //开启隔行背景
+            page: false, //页分
+            id: 'listTable',
+            data: rootApp.waitPay,
+            cols: [
+                [
+                    { field: 'Name', title: '网课名称', width: 180 },
+                    { field: 'Price', title: '网课金额', width: 120 },
+                    { field: 'PreferentialPrice', title: '网课优惠金额', width: 120 },
+                    { field: 'TotalHours', title: '总课时', width: 140 },
+                    {
+                         title: '授课方式', sort: true, width: 120, templet: function () {
+                            var array = new Array();
+                            if (this.TeachingMethod == 1)
+                                array.push("<div>录播</div>");
+                            else if (this.TeachingMethod == 2)
+                                array.push("<div>直播</div>");
+                            else if (this.TeachingMethod == 3)
+                                array.push("<div>面授</div>");
+                            return array.join("");
+                        }
+                    },
+                    {
+                        fixed: 'right',
+                        field: 'name',
+                        title: '操作',
+                        width: 240,
+                        toolbar: function () {
+                            var array = new Array();
+                            array.push("<button class=\"layui-btn layui-btn-small layui-btn-normal \" lay-event='delete'>删除</button>");
+                         
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    }
+                   
+                ]
+            ],
+        
+        });
+        tableExt.addEvent("tool(listTable)",
+               {
+                  
+
+                   //工具栏删除事件
+                   "delete": function (data, obj) {
+                       rootApp.delete(data.ID)
+                   }
+               });
+     
+    });
+
+</script>

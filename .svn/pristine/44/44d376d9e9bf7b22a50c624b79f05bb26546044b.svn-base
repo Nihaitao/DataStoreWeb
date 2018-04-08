@@ -1,0 +1,118 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <form class="layui-form" action="" onsubmit="return false">
+            <div class="layui-form-item">
+                <label class="layui-form-label">	联系方式 </label>
+                <div class="layui-input-block">
+                    <remote-sel v-bind:setting="option" layverify="required" v-bind:value.sync="queryFormData.ContactType_ID"
+                                initial="off" lay-filter="Education_ID"></remote-sel>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">联系时间</label>
+                <div class="layui-input-block" style="width:50% ">
+                    <input type="text" v-model="queryFormData.ContactTime" id="ContactTime" name="title" required lay-verify="required" placeholder="点击输入时间" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">	联系内容 </label>
+                <div class="layui-input-block">
+                    <textarea rows="3" class="layui-textarea" lay-verify="required" v-model="queryFormData.Content"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item layui-hide">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit @click="formDemo">立即提交</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</body>
+</html>
+
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt","laydate"],
+        function (fnr) {
+            var laydate = layui.laydate;
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+            laydate.render({
+                elem: '#ContactTime',
+                done: function (value) {
+                    rootApp.queryFormData.ContactTime = value
+                }
+            });
+            window.rootApp = new Vue({
+                el: "#root",
+                data: {
+                    _userId:'',
+                    name: '',
+                    queryFormData: {
+                        Student_ID: "",
+                        ContactType_ID: "",
+                        Content: "",
+                        ContactTime: ''
+                    },
+                    option: {
+                        search: true,
+                        options: [],
+                        fields: { root: "ReturnData.Data", key: 'ID', value: 'Description' },
+                        remote: { url: '/service/HDictionary/GetHDictionaryList', data: { Valid: 1, ColumnName: 'ContactType_ID' } }
+                    }
+                },
+                ready: function () {
+                    _this = this;
+                    _this._userId = fnr.getQueryString("ID");
+                    //请求借口填充数据
+                    if (_this._userId) {
+                        $.get("/service/ContactRecord/GetContactReminder", { ID: _this._userId }, function (rsp) {
+                            if (rsp.SuccessResponse) {
+                                _this.queryFormData.Student_ID = rsp.ReturnData.Data.Student_ID;
+                                _this.queryFormData.ContactType_ID = rsp.ReturnData.Data.ContactType_ID;
+                                _this.queryFormData.Content = rsp.ReturnData.Data.Content;
+                                _this.queryFormData.ContactTime = rsp.ReturnData.Data.ContactTime;
+                            } else {
+                                layer.msg(rsp.Message)
+                            }
+
+                        })
+                    }
+
+                },
+                methods: {
+                    //保存数据关闭弹窗
+                    formDemo: function (e) {
+                        if (!layui.form.checkInput(e)) {
+                            return false;
+                        }
+                        _this = this;
+                        _this.queryFormData.Student_ID = fnr.getQueryString("StuID");
+                        $.post("/service/ContactRecord/AddContactReminder", _this.queryFormData, function (rsp) {
+                            if (rsp.SuccessResponse) {
+                                fnr.callDialog('refresh', rsp.SuccessResponse);
+                                fnr.closeDialog()
+                            } else {
+                                layer.msg(rsp.Message)
+                            }
+                        })
+                        return false;
+                    },
+                }
+            });
+        });
+</script>

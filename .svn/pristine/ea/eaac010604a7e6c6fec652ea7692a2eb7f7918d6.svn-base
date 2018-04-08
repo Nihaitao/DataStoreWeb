@@ -1,0 +1,239 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <style>
+        a {
+            color: #459df5;
+        }
+
+            a:hover {
+                color: #459df5;
+            }
+
+        .marl20 {
+            margin-left: 20px;
+        }
+
+        .marl5 {
+            margin-left: 15px;
+        }
+
+        .clearfix {
+            margin-top: 10px;
+            clear: both;
+            line-height: 200%;
+        }
+
+        .nhttext {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 160px;
+            height: 40px;
+        }
+
+        .mytable {
+            table-layout: fixed;
+        }
+
+            .mytable tr td {
+                text-overflow: ellipsis; /* for IE */
+                -moz-text-overflow: ellipsis; /* for Firefox,mozilla */
+                overflow: hidden;
+                white-space: nowrap;
+                text-align: left;
+            }
+
+        .layui-font-green {
+            color: green;
+        }
+
+        .layui-font-red {
+            color: red;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li v-bind:class="showIndex==0?'layui-this':''">上传文档</li>
+                <li v-bind:class="showIndex==1?'layui-this':''">云端导入</li>
+                <li v-bind:class="showIndex==2?'layui-this':''">完成</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item" v-bind:class="showIndex==0?'layui-show':''">
+                    <div class="prepare">
+                        <div class="clearfix">
+                            <p>
+                                1、
+                                <a href="javascript:void(0)" @click="DownloadExcelTemplate">点击下载导入数据模板</a>
+                                将要导入的数据填充到数据导入模板文件中。
+                            </p>
+                            <div class="marl20">
+                                <p>注意事项：</p>
+                                <p class="">1）模板中的表头不可更改，表头行不可删除； </p>
+                                <p class="">2）有指定的列需在Excel文件的其他工作簿中查找； </p>
+                                <p class="">3）单次导入的数据不超过1000条。</p>
+                            </div>
+                        </div>
+
+                        <div class="clearfix">
+                            <p>2、选择要导入的数据文件。</p>
+                            <div class=" marl20 layui-form">
+                                <button type="button" class="layui-btn" id="uploadchoice"><i class="layui-icon"></i>上传文件</button> <button class="layui-btn" id="upload" lay-submit>立即导入</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-tab-item" v-bind:class="showIndex==1?'layui-show':''">
+                    <table class="layui-table mytable">
+                        <tr>
+                            <td style="width:60px">序号</td>
+                            <td>题库</td>
+                            <td>题目</td>
+                            <td>状态</td>
+                            <td>说明</td>
+                        </tr>
+                        <tr v-for="(index,item ) in dataTable">
+                            <td style="width:60px">{{index+1}}</td>
+                            <td>{{getStoreName(item.data.MyAnswer,item.data.QuestionStore_Name,item.data.QuestionStore_ID)}}</td>
+                            <td>{{item.data.Title}}</td>
+                            <td v-bind:class="(item.model.Status==0?'':(item.model.Status==1?'layui-font-green':'layui-font-red'))">{{getStatus(item.model.Status)}}</td>
+                            <td v-bind:class="(item.model.Status==0?'':(item.model.Status==1?'layui-font-green':'layui-font-red'))">{{item.model.Remark}}</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="layui-tab-item" v-bind:class="showIndex==2?'layui-show':''">
+                    <div class="clearfix" style="margin-top:50px">
+                        <p style="text-align:center">
+                            导入完成，共{{dataTable.length}}条，导入成功<span class="layui-bg-green">{{SucessCount}}</span>条，导入失败<span class="layui-bg-red">{{FailCount}}</span>条
+                        </p>
+                    </div>
+                    <div class="clearfix" style="margin-top:50px">
+                        <p>
+                            下载错误报告，查看失败原因：
+                        </p>
+                        <p><a href="javascript:void(layer.msg('功能待开发'));">点击下载错误报告</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/CEdu/static/js/Comon.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate", "element", "upload"],
+
+function (fnr) {
+    var table = layui.table;
+    var form = layui.form;
+    var tableExt = layui.tableExt;
+    var $ = layui.$;
+    var layer = layui.layer;
+    var element = layui.element;
+    var upload = layui.upload;
+    var rootApp = new Vue({
+        el: '#root',
+        data: {
+            dataTable: [],
+            showIndex: 0,
+            SucessCount: 0,
+            FailCount: 0,
+        },
+        methods: {
+            /*Excel模版下载*/
+            DownloadExcelTemplate: function () {
+                fnr.download("http://ctfive.oss-cn-hangzhou.aliyuncs.com/Course/2018/02/03/5490ce66cb96426aa66746116a7b29f60104.xlsx");
+            },
+            show: function () {
+                //console.log(this.dataTable)
+            },
+            uploadRow: function (rowIndex) {
+                var self = this;
+                if (rowIndex >= self.dataTable.length) {
+                    layer.alert("上传完成");
+                    self.showIndex = 2;
+                    return;
+                }
+                if (self.dataTable[rowIndex].model.Status == 0) {
+                    $.post("/service/datastore/Question/ImportQuestion", self.dataTable[rowIndex].data, function (rsp) {
+                        if (rsp.SuccessResponse && rsp.Data.Result) {
+                            self.SucessCount++;
+                            self.dataTable[rowIndex].model.Status = 1;
+                        }
+                        else {
+                            self.FailCount++;
+                            self.dataTable[rowIndex].model.Status = 2;
+                            self.dataTable[rowIndex].model.Remark = rsp.Data == null ? rsp.Message : rsp.Data.Text;
+                            console.log(rsp);
+                        }
+                        self.uploadRow(++rowIndex);
+                    });
+                } else {
+                    self.uploadRow(++rowIndex);
+                }
+            },
+            startUpload: function () {
+                this.uploadRow(0);
+            },
+            getStatus: function (status) {
+                switch (status) {
+                    case 0: {
+                        return "未上传"
+                    } break;
+                    case 1: {
+                        return "上传成功"
+                    } break;
+                    case 2: {
+                        return "上传失败"
+                    } break;
+                }
+                return "-";
+            },
+            getStoreName: function (str, name, id) {
+                if (str == "MoreStore")
+                    return name + "[" + id + "]";
+                else if (str == "Normal")
+                    return name;
+                else
+                    return "-"
+            }
+        }
+    });
+    /*Excel上传 Start*/
+    upload.render({
+        elem: '#uploadchoice'
+           , url: '/service/datastore/Question/ExcelToQuestionList'
+           , auto: false
+           , accept: 'file' //普通文件
+           , exts: "xls|xlsx"
+           , bindAction: '#upload'
+           , done: function (res) {
+
+               //循环遍历json集合
+               $.each(res.Data, function (i, v) {
+                   if (this.MyAnswer == "NoStore")
+                       rootApp.dataTable.push({ data: this, model: { Status: 2, Remark: "没有找到题库" } });
+                   else if (this.MyAnswer == "TextError")
+                       rootApp.dataTable.push({ data: this, model: { Status: 2, Remark: "格式有误" } });
+                   else
+                       rootApp.dataTable.push({ data: this, model: { Status: 0, Remark: "" } });
+               });
+               rootApp.showIndex = 1;
+               rootApp.startUpload();
+           }
+    });
+    /*Excel上传 End*/
+});
+
+</script>

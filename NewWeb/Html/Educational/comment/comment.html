@@ -1,0 +1,203 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+    </style>
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <blockquote class="layui-elem-quote">
+            <div class="layui-row layui-form">
+                <div class="layui-col-xs9">
+                    <label style="margin:0 10px">选择学科</label>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="Course" lay-verify="required" v-bind:value.sync="Discipline_ID" v-bind:change="searchCourse"
+                                    initial="off" lay-filter="Education_ID"></remote-sel>
+                    </div>
+                    <label style="margin:0 10px">选择课程</label>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="courseSetting" lay-verify="required" v-bind:value.sync="Course_ID"
+                                    initial="off" lay-filter="Education_ID" v-ref:course></remote-sel>
+                    </div>
+                    <label style="margin:0 10px">启用状态</label>
+                    <div class="layui-input-inline">
+                        <remote-sel name="Valid" v-bind:setting="validSetting" v-bind:value.sync="Valid" initial="off"></remote-sel>
+                    </div>
+
+                    <button style="margin-left:10px" class="layui-btn layui-btn-primary" lay-submit lay-filter="btn" @click="tableReload">查询</button>
+                </div>
+            </div>
+        </blockquote>
+        <!--操作模板-->
+        <table id="listTable" lay-filter="listTable"></table>
+    </div>
+</body>
+</html>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt'],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+
+
+            //搜索条件
+            var rootApp = new Vue({
+                el: '#root',
+                data: {
+                    queryFormData: {
+                        SearchValue: '',
+                        Valid: -1
+                    },
+                    Discipline_ID: '',
+                    Course_ID: '',
+                    Valid:-1,
+                    Course: {
+                        search: true,
+                        options: [],
+                        fields: { root: 'Data', key: 'ID', value: 'Name' },
+                        remote: { url: "/service/datastore/Discipline/GetDisciplineWithWebCourse", options: { method: 'get' } }
+                    },
+                    validSetting: {
+                        defaultValue: -1,
+                        search: true,
+                        options: [
+                            { key: '1', value: '启用' },
+                            { key: '0', value: '禁用' }
+                        ]
+                    },
+                    courseSetting: {
+                        search: true,
+                        options: [
+
+                        ]
+
+                    }
+
+                },
+                ready: function () {
+                },
+                mounted: {
+
+                },
+
+                methods: {
+                    tableReload: function () {
+                        _this = this;
+                        listTable.reload({
+                            where: {
+                                Discipline_ID: _this.Discipline_ID,
+                                Course_ID: _this.Course_ID,
+                                Valid:_this.Valid
+                            }
+                        })
+                    },
+                    searchCourse: function () {
+                        this.courseSetting.remote = {};
+                        this.courseSetting.fields = { root: 'Data', key: 'ID', value: 'Name' };
+                        this.courseSetting.remote.url = "/service/datastore/WebCourse/GetCourseList";
+                        this.courseSetting.remote.data = { Discipline_ID: this.Discipline_ID };
+                        this.courseSetting.remote.option = { method: "get" };
+                        this.$refs.course.reset();
+
+                    }
+
+                }
+            });
+
+
+
+
+            //绑定列表
+            var listTable = table.render({
+                elem: '#listTable',
+                even: true, //开启隔行背景
+                page: true, //页分
+                id: "listTable",
+                cols: [
+                    [
+                        { field: 'ID', title: 'ID', width: 120, sort: true },
+                        { field: 'CourseName', title: '课程名称', width: 220 },
+                        { field: 'ChapterName', title: '章节名称', width: 220},
+                        { field: 'StudentName', title: '学生姓名', width: 220 },
+                        { field: 'Content', title: '内容', width: 220 },
+                        {
+                            field: 'AddTime', title: '添加时间', width: 140, templet: function () {
+                                var array = new Array();
+                                array.push("<span>" + fnr.format(this.AddTime, "yyyy-MM-dd HH:mm") + "</span>");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        },
+                        {
+                            field: 'Valid', title: '状态', width: 120, templet: function () {
+                                var array = new Array();
+                                array.push("<a href='javascript:;'>" + (this.Valid ==1? "启用" : "禁用") + "</a>");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        },
+
+                        {
+                            fixed: 'right',
+                            field: 'name',
+                            title: '操作',
+                            width: 160,
+                            toolbar: function () {
+                                var array = new Array();
+                                array.push("<button class=\"layui-btn layui-btn-small layui-btn-danger \" lay-event='delete'>删除</button>");
+                                array.push("<button class=\"layui-btn layui-btn-small " + (this.Valid ==0 ? "layui-btn-warm" : "layui-btn-normal") + " \" lay-event='editisenable'>" + (this.Valid == 0 ? "启用" : "禁用") + "</button>");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        }
+                    ]
+                ],
+                url: '/service/datastore/CourseInterlocution/GetCourseCommentList',
+                where:{Valid:-1}
+            });
+
+
+            //监听工具栏事件
+            tableExt.addEvent("tool(listTable)",
+                {
+                    "showDetails": function (data, obj) {
+                        rootApp.showDetails(data)
+                    },
+                    //工具栏删除事件
+                    "delete": function (data, obj) {
+                        layer.confirm('确定要删除么', { icon: 2, title: '提示' }, function (index) {
+                            var params = { Ids: data.ID }
+                            $.post("/service/datastore/CourseInterlocution/DeleteCourseComment", params, function (res) {
+                                if (res.SuccessResponse) {
+                                    this.CourseInfoList = res.Data;
+                                    listTable.refresh();
+                                } else {
+                                    layer.msg(res.Message)
+                                }
+                            })
+                            layer.close(index);
+                        });
+                        
+                    },
+                    //工具栏禁用启用事件
+                    "editisenable": function (data, obj) {
+                        layer.confirm('确定' + (data.Valid == 1 ? '禁用吗?' : '启用吗?'), { icon: 3, title: '提示' }, function (index) {
+                            var params = { Ids: data.ID, Valid: data.Valid == 1 ? 0 : 1 }
+                            $.post("/service/datastore/CourseInterlocution/UpdataCommentValid", params, function (res) {
+                                if (res.SuccessResponse) {
+                                    listTable.refresh();
+                                }
+                                layer.msg(res.Message);
+                            });
+
+                            layer.close(index);
+                        });
+                    }
+                });
+        });
+</script>

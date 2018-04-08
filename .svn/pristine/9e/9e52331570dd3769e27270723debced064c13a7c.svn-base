@@ -1,0 +1,304 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        .right_contant { position: absolute; top: 0; bottom: 0; left: 210px; right: 0; }
+
+        .left_contant { position: fixed; top: 0; bottom: 0; left: 0; width: 300px; }
+
+        .right_contant .layui-table-tool { left: 300px; right: 0; width: auto; }
+
+        .tree { border-radius: 2px; transition: all .5s; }
+
+        .tree-content { padding-left: 30px; transition: all .5s; }
+
+        .tree-node { border-top: 1px solid #e2e2e2; position: relative; }
+
+        .tree-node:first-child { border-top: none; }
+
+        .tree-node .option-area { position: absolute; top: 50%; right: 0px; transform: translateY(-50%); }
+
+        .option-area .layui-icon { display: inline-block; color: #999; }
+
+        .option-area .layui-icon:hover { color: #333; }
+
+        .tree-tit { position: relative; height: 42px; line-height: 42px; padding-left: 15px; padding-right: 5px; color: #333; background-color: #f0f0f0; cursor: pointer; margin-bottom: 10px; }
+
+        .tree-tit .layui-icon { margin-right: 5px; display: inline-block; transition: all 0.3s linear; }
+
+        .tree-tit:hover { box-shadow: 2px 2px 5px #ccc; }
+
+        .tree_hide { height: 0; overflow: hidden; }
+
+        .layui-colla-content { display: none; padding: 10px 15px; line-height: 22px; border-top: 1px solid #f0f0f0; color: #666; }
+
+        .state-highlight { height: 50px; border: 1px dashed #5FB878; margin-bottom: 10px; }
+        /* always present */
+        .expand-transition { transition: all .3s ease; height: auto; padding: 0px; }
+        /* .expand-enter defines the starting state for entering */
+        /* .expand-leave defines the ending state for leaving */
+        .expand-enter, .expand-leave { height: 0; padding: 0 10px; opacity: 0; }
+        .R90 { transform: rotate(-90deg); }
+        span.name { max-width: 86px; overflow: hidden; text-overflow: ellipsis; display: inline-block; vertical-align: middle; }
+        .m43 { margin-left: 24px; }
+    </style>
+    <script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+</head>
+<body id="root">
+    <div class="mainContainer" style="overflow:hidden;">
+        <div style="float:left;width:200px;">
+            <ul id="demo" style="position:relative;width:200px;"></ul>
+            <div id="rMenu" style="top: 0; left: 0; visibility: hidden;">
+                <ul>
+                    <li id="add_Depart">添加部门</li>
+                    <li id="modify_Depart">部门修改</li>
+                    <li id="del_Depart">删除部门</li>
+                </ul>
+            </div>
+        </div>
+        <div class="right_contant">
+            <blockquote class="layui-elem-quote">
+                <div class="layui-col-xs6">
+
+                    <div class="layui-input-inline">
+                        <input placeholder="学生关键字" type="text" name="1" class="layui-input" v-model="queryFormData.StudentInfo">
+                    </div>
+                    <button class="layui-btn layui-btn-primary" lay-submit lay-filter="btn" @click="doSearch">查询</button>
+                </div>
+                <div class="layui-row layui-form">
+                    <div class="layui-col-xs6" style="text-align: right;float:right;">
+                        <button class="layui-btn" @click="addUser"><i class="layui-icon"></i> 添加用户</button>
+                    </div>
+                </div>
+            </blockquote>
+            <div>
+                <button class="layui-btn layui-btn-primary layui-btn-small" @click="deleteList">批量删除</button>
+            </div>
+            <!--操作模板-->
+            <table id="listTable" lay-filter="listTable"></table>
+        </div>
+    </div>
+
+</body>
+</html>
+
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<style>
+    .layui-tree li i { color: #7da4d1; }
+    .selected { position: absolute; width: 100%; height: 26px; background: #4A77AC; left: 0px; z-index: -1; }
+    .this > a { color: #fff; }
+    .this > a:hover { color: #fff; }
+    .layui-tree li a { width: 100%; }
+    .iconmenu { cursor: pointer; display: inline-block; width: 18px; height: 26px; position: absolute; right: 0px; background: url("https://rescdn.qqmail.com/node/ww/wwmng/style/images/independent/status/DotsWhiteSmall$33adf86f.png") no-repeat; background-size: 100%; font-size: 0; }
+    #rMenu { position: absolute; visibility: hidden; top: 0; background-color: #e2e2e2; text-align: left; padding: 2px; -webkit-box-sizing: border-box; box-sizing: border-box; }
+    #rMenu ul li { margin: 1px 0; padding: 0 5px; cursor: pointer; list-style: none outside none; background-color: #fff; height: 26px; -webkit-box-sizing: border-box; box-sizing: border-box; }
+    #rMenu ul li:hover { background-color: #f2f2f2; }
+</style>
+
+<script>
+    require_js_file(["table", 'tree', "form", "jquery", "tableExt"],
+    function (fnr) {
+        var $ = layui.$;
+        var table = layui.table;
+        var treeList = [];
+        var itemIndex;
+        var obje;
+        //查询所有数据
+        $.get("/service/Company/GetListDepartment", function (rsp) {
+            Bind(rsp.ReturnData.Data)
+        })
+        function Bind(data) {
+            $.get("/service/Company/GetCompanyList", function (rsp) {
+                rsp.ReturnData.Data.map(function (a, b) {
+                    treeList.push({ name: a.Name, id: undefined, Company_ID: a.ID, Department_ID: null, spread: true, children: [] });
+                    var newData = treeList[treeList.length - 1];
+                    showall(0, "CID", data, newData.children, a.ID);
+                })
+
+                $("#demo").html("");
+                layui.tree({
+                    elem: '#demo' //传入元素选择器
+                    //, drag: true
+                    , nodes: treeList
+                    , click: function (item, e) {
+                        itemIndex = item;
+                        obje = e;
+                        $(".selected").remove();
+                        $(".iconmenu").remove();
+                        $(".this").removeClass("this");
+                        e.prepend("<div class='selected'></div>");
+                        e.prepend("<span class=\"iconmenu\"></span>");
+                        e.addClass("this");
+                        listTable.reload({
+                            where: { CompanyID: item.Company_ID, DepartmentID: item.Department_ID },
+                        });
+                    }
+                });
+                $("#demo li").on("click", ".iconmenu", function (e) {
+                    e.stopPropagation();
+                    var top = e.target.offsetTop,
+                        left = e.target.offsetLeft,
+                        W = $("#rMenu").width(),
+                        scrollTop = $("#demo").scrollTop(),
+                        scrollLeft = $("#demo").scrollLeft();
+                    if ($("#rMenu").css("visibility") == "hidden") {
+                        $("#rMenu").css({
+                            "visibility": "visible",
+                            "top": top + scrollTop + 36,
+                            "left": left + scrollLeft - W + 18
+                        })
+                    } else {
+                        return;
+                    }
+                })
+                function onBodyMouseDown(event) {
+                    if (!(event.target.id == "rMenu" || $(event.target).parents("#rMenu").length > 0)) {
+                        $("#rMenu").css({ "visibility": "hidden" });
+                    }
+                }
+                $("body").bind("mousedown", onBodyMouseDown);
+                function hideRMenu() {
+                    if ($("#rMenu").css("visibility") == "visible") {
+                        $("#rMenu").css({
+                            "visibility": "hidden",
+                        })
+                    }
+                    $("body").unbind("mousedown", onBodyMouseDown);
+                };
+                //添加部门
+                $("#add_Depart").click(function () {
+                    fnr.openDialog({
+                        title: '添加部门',
+                        area: ['470px', '200px'],
+                        content: ['./addDepartment.html?CID=' + (itemIndex.id ? itemIndex.id : 0) + "&Company_ID=" + itemIndex.Company_ID],
+                        btn: ['确认添加'],
+                        yes: function (index, layero) {
+
+                            var iframeWin = window[layero.find('iframe')[0]['name']];
+                            $(iframeWin.document).find(".layui-btn").click();
+
+                        },
+                        events: {
+                            refresh: function (data) {
+                                treeList = [];
+                                $.get("/service/Company/GetListDepartment", function (rsp) {
+                                    Bind(rsp.ReturnData.Data)
+
+                                })
+                                //listTable.reload();
+                                layer.msg("添加成功")
+                            }
+                        },
+                    });
+                });
+                //修改部门
+                $("#modify_Depart").click(function () {
+                    fnr.openDialog({
+                        title: '添加部门',
+                        area: ['470px', '200px'],
+                        content: ['./addDepartment.html?CID=' + itemIndex.id + "&Company_ID=" + itemIndex.Company_ID],
+                        btn: ['确认添加'],
+                        yes: function (index, layero) {
+
+                            var iframeWin = window[layero.find('iframe')[0]['name']];
+                            $(iframeWin.document).find(".layui-btn").click();
+
+                        },
+                        events: {
+                            refresh: function (data) {
+                                listTable.reload();
+                                layer.msg("添加成功")
+                            }
+                        },
+                    });
+                });
+                //删除部门
+                $("#del_Depart").click(function () {
+                    fnr.openDialog({
+                        title: '添加部门',
+                        area: ['470px', '200px'],
+                        content: ['./addDepartment.html?CID=' + itemIndex.id + "&Company_ID=" + itemIndex.Company_ID],
+                        btn: ['确认添加'],
+                        yes: function (index, layero) {
+
+                            var iframeWin = window[layero.find('iframe')[0]['name']];
+                            $(iframeWin.document).find(".layui-btn").click();
+
+                        },
+                        events: {
+                            refresh: function (data) {
+                                listTable.reload();
+                                layer.msg("添加成功")
+                            }
+                        },
+                    });
+                })
+            })
+        }
+        //这是一个假递归
+        function showall(number, C, data, target, CompanyID) {
+            data.map(function (a, b) {
+                if (a[C] == number && a.Company_ID == CompanyID) {
+                    target.push({ name: a.Name, id: a.ID, Company_ID: a.Company_ID, Department_ID: a.ID, spread: true, children: [] });
+                    var newData = target[target.length - 1];
+                    showall(newData.id, "CID", data, newData.children, CompanyID)
+                } else {
+                    return false;
+                }
+            });
+        }
+
+        //绑定列表
+        var listTable = table.render({
+            elem: '#listTable',
+            even: true, //开启隔行背景
+            page: true, //页分
+            id: "listTable",
+            cols: [
+                [
+                    { fixed: true, checkbox: true },
+                    { field: 'ID', title: 'ID', width: 120, sort: true },
+                    { field: 'Name', title: '姓名', width: 120, sort: true },
+                    { field: 'Phone', title: '手机号码', width: 120, sort: true },
+                     {
+                         title: '用户状态', width: 120, templet: function () {
+                             var array = new Array();
+                             array.push("<a href='javascript:;'>" + (this.Valid ? "启用" : "禁用") + "</a>");
+                             return "<div>" + array.join("") + "</div>";
+                         }
+                     },
+                     {
+                         title: '超级管理员', width: 120, templet: function () {
+                             var array = new Array();
+                             array.push("<a href='javascript:;'>" + (this.IsAdministrator ? "是 " : "否") + "</a>");
+                             return "<div>" + array.join("") + "</div>";
+                         }
+                     },
+                     { field: 'LoginTime', title: '登录时间', width: 220, sort: true },
+                     { field: 'LoginCount', title: '登录次数', width: 120, sort: true },
+                    {
+                        fixed: 'right',
+                        field: 'name',
+                        title: '操作',
+                        width: 180,
+                        toolbar: function () {
+                            var array = new Array();
+                            array.push("<button class=\"layui-btn layui-btn-small\" lay-event='edit'>修改</button>");
+                            array.push("<button class=\"layui-btn layui-btn-small " + (this.Valid == 1 ? "layui-btn-warm" : "layui-btn-normal") + " \" lay-event='editisenable'>" + (this.Valid == 1 ? "禁用" : "启用") + "</button>");
+                            array.push("<button class=\"layui-btn layui-btn-small layui-btn-danger \" lay-event='delete'>删除</button>");
+                            return "<div>" + array.join("") + "</div>";
+                        }
+                    }
+                ]
+            ],
+            url: '/service/Station/GetListStationAccount',
+            response: {
+                dataName: 'ReturnData.data'
+            }
+        });
+    });
+</script>

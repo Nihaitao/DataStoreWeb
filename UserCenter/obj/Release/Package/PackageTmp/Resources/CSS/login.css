@@ -1,0 +1,175 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video, input {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    list-style: none;
+}
+
+.login{
+    background-image: url("../images/login_bot_bg.png");
+}
+body,html{
+    height: 100%;
+    width: 100%;
+}
+.login{
+    height: 100%;
+    overflow: hidden;
+}
+.login-Block{
+    width: 400px;
+    text-align: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-top:-291.5px;
+    margin-left: -200px;
+}
+.login-Block a{
+    color: #666;
+    cursor: pointer;
+}
+
+.login-form{
+    background-color: #fff;
+    border-radius: 8px;
+    margin-top: 25px;
+    padding:0 30px;
+    overflow: hidden;
+}
+.login-tabs{
+    margin-bottom: 30px;
+    margin-top: 23px;
+    border-bottom: 1px solid #ddd;
+}
+
+.login-tabs li a{
+    display: block;
+    font-size: 18px;
+    color: #999;
+    padding:15px 0;
+
+}
+.login-tabs li.active a{
+    border-bottom: 1px solid #D90000;
+    color: #333;
+}
+.login-tabs li a:active,.login-tabs li a:hover,.login-tabs li a:focus{
+    text-decoration: none;
+}
+.tab-content input{
+    margin-bottom: 20px;
+}
+.tab-content input:focus{
+    background-color: #fff;
+}
+.form-control{
+    height: 48px;
+    background-color: #F9F9F9;
+}
+.form-control:focus {
+    border-color: #c1bfbf;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(224,181,181,.6);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(224,181,181,.6);
+}
+.loginButton{
+    width: 100%;
+    background-color: #E60012;
+    color: #fff;
+    font-size: 18px;
+    margin-bottom: 20px;
+    line-height: 18px;
+    padding: 15px;
+    border: none;
+    border-radius: 4px;
+}
+.chk_1 {
+    display: none;
+}
+
+.chk_1 + label {
+    background-color: #FFF;
+    border: 1px solid #C1CACA;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0px -15px 10px -12px rgba(0, 0, 0, 0.05);
+    padding: 9px;
+    border-radius: 5px;
+    display: inline-block;
+    position: relative;
+    margin-right: 10px;
+    vertical-align: bottom;
+}
+.chk_1 + label:active {
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1);
+}
+
+.chk_1:checked + label {
+    background-color: #ECF2F7;
+    border: 1px solid #92A1AC;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0px -15px 10px -12px rgba(0, 0, 0, 0.05), inset 15px 10px -12px rgba(255, 255, 255, 0.1);
+    color: #243441;
+}
+
+.chk_1:checked + label:after {
+    content: '\2714';
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: #758794;
+    width: 100%;
+    text-align: center;
+    padding: 1px 0 0 0;
+    vertical-align: text-top;
+}
+.other{
+    border-top: 1px solid #ddd;
+}
+.other .slot{
+    position: absolute;
+    left: 50%;
+    background-color: #fff;
+    padding: 0 10px;
+    transform:translate(-50%,-50%) ;
+}
+.other-list{
+    margin-top:20px;
+    margin-bottom: 33px;
+}
+.other-list a{
+    display: inline-block;
+    margin-right: 45px;
+}
+.other-list a:last-child{
+    margin: 0;
+}
+.form-code{
+    position: relative;
+}
+.form-code span{
+	cursor:pointer;
+    position: absolute;
+    right: 10px;
+    bottom: 14px;
+    color: #999;
+    padding-left:15px ;
+    border-left: 1px solid #ddd;
+}
+.foot {
+    position: fixed;
+    bottom: 0;
+    }
+[v-cloak] {
+display: none;
+} 

@@ -1,0 +1,147 @@
+header {
+  position: relative;
+  line-height: 0.775862rem;
+  border-top: 0.017241rem solid #ddd ;
+  border-bottom: 0.017241rem solid #ddd ;
+}
+header i {
+  position: absolute;
+  left: 0.344827rem;
+  font-size: 0.293103rem;
+  color: #333;
+}
+header p {
+  font-size: 0.293103rem;
+  text-align: center;
+  color: #000;
+}
+.centerbox {
+  display: block;
+  width: 100%;
+  height: 0.086206rem;
+  background: #f5f5f7;
+  border-bottom: 0.017241rem solid #ddd;
+}
+main {
+  padding-bottom: 0.853448rem;
+}
+main .myQuestion {
+  border-bottom: 0.017241rem solid #ddd;
+  padding-left: 0.25862rem;
+}
+main .myQuestion .title {
+  line-height: 0.775862rem;
+  color: #000;
+  font-size: 0.275862rem;
+}
+main .myQuestion .title i {
+  color: #4faaff;
+  font-size: 0.396551rem;
+}
+main .myQuestion .question {
+  line-height: 0.741379rem;
+  font-size: 0.25862rem;
+  color: #999999;
+  padding-bottom: 0.206896rem;
+}
+main .questionAsker {
+  position: relative;
+  padding-bottom: 0.172413rem;
+}
+main .questionAsker .pic {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: inline-block;
+  width: 0.689655rem;
+  height: 0.689655rem;
+}
+main .questionAsker .pic img {
+  width: 100%;
+  height: 100%;
+}
+main .questionAsker .name {
+  display: inline-block;
+  padding-left: 1rem;
+  font-style: normal;
+  line-height: 0.689655rem;
+  font-size: 0.172413rem;
+  color: #999;
+}
+main .questionAsker .askTime {
+  display: block;
+  position: absolute;
+  right: 0.25862rem;
+  top: 0;
+  font-size: 0.206896rem;
+  color: #a7a7a7;
+}
+main .questionAsker .askTime .day {
+  font-style: normal;
+}
+main .answer {
+  position: relative;
+  padding-left: 0.25862rem;
+  padding-bottom: 0.25862rem;
+  border-bottom: 0.017241rem solid #ddd;
+}
+main .answer .pic {
+  position: absolute;
+  top: 0.172413rem;
+  width: 0.517241rem;
+  height: 0.517241rem;
+  border-radius: 50%;
+  display: block;
+}
+main .answer .pic img {
+  width: 100%;
+  height: 100%;
+}
+main .answer .teacher {
+  font-size: 0.224137rem;
+  padding-left: 0.724137rem;
+  padding-top: 0.172413rem;
+  line-height: 0.5rem;
+  color: #999999;
+}
+main .answer .Q-answer {
+  padding-top: 0.120689rem;
+  padding-right: 0.25862rem;
+  line-height: 0.465517rem;
+  font-size: 0.241379rem;
+  color: #000;
+}
+main .answer .askTime {
+  float: right;
+  margin-right: 0.25862rem ;
+  font-size: 0.206896rem;
+  color: #a7a7a7;
+}
+main .answer .askTime .day {
+  font-style: normal;
+}
+footer {
+  position: fixed;
+  width: 100%;
+  padding: 0.120689rem 0.25862rem;
+  border-top: 0.017241rem solid #ddd;
+  bottom: 0;
+  background: #fafafa;
+}
+footer .ipt {
+  border: none;
+  line-height: 0.603448rem;
+  width: 271px;
+  border: 0.017241rem solid #DDDDDD;
+  border-radius: 0.051724rem;
+  margin-right: 0.25862rem;
+}
+footer .go {
+  width: 1.017241rem;
+  line-height: 0.603448rem;
+  border-radius: 0.051724rem;
+  border: none;
+  background: #4faaff;
+  color: #fff;
+  font-size: 0.224137rem;
+}

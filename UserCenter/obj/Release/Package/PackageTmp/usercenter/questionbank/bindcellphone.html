@@ -1,0 +1,188 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>绑定手机</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="../Resources/fonts/iconfont.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link href="../Resources/CSS/Font/css/font-awesome.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../Resources/CSS/PC_css.css">
+    <script src="../script/artTemplate.js"></script>
+    <link href="../Resources/CSS/question.css" rel="stylesheet" />
+</head>
+<body style="background-color: #f7f7f7;user-select: none;" id="root">
+    <!--顶部-->
+    <!--#<!--#include file="../UserControl/stepHeader.html"-->
+    <!--学校图标以及当前专业-->
+    <div class="nav">
+        <div class="w1200 clearfix">
+            <div class="nav-header pull-left">
+                <a href="#"><img src="../Resources/images/hd.png" /></a>
+            </div>
+            <div class="nav-bar-right pull-right">
+                <div class="toggle-switch">
+                    <span class="inlineblock subject-label">当前专业</span>
+                    <div class="drowntoggle inlineblock">
+                        <i class="iconfont icon-lianxijilu"></i>
+                        <span class="current">自学考试-本科-人力资源管理</span>
+                        <i class="glyphicon glyphicon-triangle-bottom"></i>
+                    </div>
+                    <div class="drownmenu">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> 
+
+
+    <div class="w1200 clearfix">
+
+        <!--左侧导航-->
+        <div class="nav-left">
+            <div class="nav-title">
+                <h3>首页</h3>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">我的网课</div>
+                <ul class="sub-nav">
+                    <li><a href="#"><i class="iconfont icon-kechengguanli"></i>课程管理</a></li>
+                    <li><i class="iconfont icon-tingkejilu"></i>听课记录</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">我的题库</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-kaishizuoti"></i>开始做题</li>
+                    <li><i class="iconfont icon-zuotijilu"></i>做题记录</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">我的学费</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-lijijiaofei"></i>立即缴费</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">我的教务</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-wodechengji"></i>我的成绩</li>
+                    <li><i class="iconfont icon-wodebaokao"></i>我的报考</li>
+                    <li><i class="iconfont icon-wodeshuji"></i>我的书籍</li>
+                    <li><i class="iconfont icon-lianxijilu"></i>联系记录</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">我要毕业</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-xuexijindu"></i>学习进度</li>
+                    <li><i class="iconfont icon-lunwendabian"></i>论文答辩</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">个人管理</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-wodedingdan"></i>我的订单</li>
+                    <li><i class="iconfont icon-zhanghaoshezhi"></i>账号设置</li>
+                    <li><i class="iconfont icon-tousuyutiwen"></i>投诉提问</li>
+                    <li><i class="iconfont icon-xiaoxizhongxin"></i>消息中心</li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-title">过程性考核</div>
+                <ul class="sub-nav">
+                    <li><i class="iconfont icon-kaishixuexi"></i>开始学习</li>
+                    <li><i class="iconfont icon-peiyangjihua"></i>培养计划</li>
+                    <li><i class="iconfont icon-xuankeguanli"></i>选课管理</li>
+                    <li><i class="iconfont icon-chengjichaxun"></i>成绩查询</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="main">
+            <div class="order-top">
+                <ul class="orderTabs">
+                    <li>基本信息</li>
+                    <li>修改密码</li>
+                    <li class="active">绑定手机</li>
+                    <li>第三方账号绑定</li>
+                </ul>
+            </div>
+            <div class="bind-middle">
+                <div style="text-align: center;">
+                    <p class="title">
+                        * 重新绑定手机请验证您的用户信息
+                    </p>
+                    <form class="layui-form" style="overflow: hidden;">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">登录密码</label>
+                            <div class="layui-inline">
+                                <input type="text" autocomplete="off" placeholder="" class="layui-input" style="width: 240px; box-sizing: border-box;">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">绑定手机号</label>
+                            <div class="layui-inline">
+                                <input type="text" autocomplete="off" placeholder="" class="layui-input" style="background-color: #f7f7f7;width: 240px; box-sizing: border-box;" disabled>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">短信验证码</label>
+                            <div class="layui-inline" style="position: relative;">
+                                <input type="text" autocomplete="off" placeholder="" class="layui-input" style="width: 240px; box-sizing: border-box;">
+                                <p class="yzmBtn">发送验证码</p>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <p style="padding-left: 150px;color: #999;">密码可以为6-16位英文字母，数字、"."、"_"、"?" ，且下划线不能在最后。</p>
+                        </div>
+
+                        <div class="layui-form-item" style="text-align: center;">
+                            <p class="bindBtn">重新绑定</p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--footer-->
+    <!--#<!--#include file="../UserControl/Footer.html"-->
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    <script src="/Resources/js/headFootLayout.js"></script>
+    <script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil'],
+        function (fnr) {
+            var $ = layui.$;
+            var table = layui.table;
+            var tableExt = layui.tableExt;
+            var vm = new Vue({
+                el: "#root",
+                data: {
+                    Discipline:[],
+                    tip:[],
+                },
+                ready: function () {
+                    this.tabsToggle();
+                },
+                methods: {
+                    tabsToggle: function () {
+                        $('.orderTabs').on('click', 'li', function () {
+                            if (!$(this).hasClass('active')) {
+                                $(this).addClass('active').siblings().removeClass('active');
+                            }
+                        });
+                    }
+                }
+            });
+        })
+    </script>
+</body>
+
+</html>

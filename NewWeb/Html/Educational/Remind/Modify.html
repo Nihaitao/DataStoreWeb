@@ -1,0 +1,189 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        .isDisplay {
+            display: none;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">预约类型：</label>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="AppointmentTypeSetting" v-bind:value.sync="submitForm.AppointmentType_ID" layverify="required"
+                                    initial="off"></remote-sel>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">提醒方式：</label>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="RemindTypeSetting" v-bind:value.sync="submitForm.RemindType" layverify="required"
+                                    initial="off"></remote-sel>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">提醒时间：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="Sex" lay-verify="required" id="reserveDate" autocomplete="off"
+                               class="layui-input" v-model="submitForm.Date">
+                    </div>
+
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">是否提醒：</label>
+                    <div class="layui-input-inline">
+                        <local-switch v-bind:value.sync="submitForm.IsRemind" text="开|关"
+                                      initial="off"></local-switch>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">记录信息：</label>
+                <div class="layui-input-block">
+                    <textarea class="layui-textarea" v-model="submitForm.Content"></textarea>
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-hide">
+                <button class="layui-btn" @click="updateClient">提交</button>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
+
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/Controls/Common.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate"],
+    function (fnr) {
+        var laydate = layui.laydate;
+        var $ = layui.jquery;
+        laydate.render({
+            elem: '#reserveDate',
+            min: 0,
+            max: 365,
+            done: function (value) {
+                rootApp.submitForm.Date = value;
+            }
+        });
+    
+        var AppointmentTypeOptions = [];
+
+        var RemindTypeOptions = [
+            {
+                id: '1',
+                value: '短信提醒'
+            },
+            {
+                id: '2',
+                value: '冒泡提醒'
+            }
+        ];
+
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+                ClientName: '',
+                submitForm: {
+                    ID: '',
+                    RemindType: '',
+                    AppointmentType_ID: '',
+                    Date: '',
+                    Content: '',
+                    IsRemind: 1
+                },
+                RemindTypeSetting: {
+                    search: true,
+                    options: RemindTypeOptions,
+                    fields: { root: "data", key: 'id', value: 'value' }
+                },
+                AppointmentTypeSetting: {
+                    search: true,
+                    options: AppointmentTypeOptions,
+                    fields: { root: "Data", key: 'ID', value: 'Description' },
+                    remote: { url: '/service/public/HDictionary/GetHDictionaryList', data: { Valid: 1, ColumnName: 'AppointmentType_ID' } }
+                },
+            },
+            ready: function () {
+                this.submitForm.ID = fnr.getQueryString("ID");
+                if (this.submitForm.ID) {
+                    this.modifyClients();
+                }
+
+            },
+            methods: {
+                //获取客户详细信息
+                modifyClients: function () {
+                    _this = this;
+                    $.ajax({
+                        url: '/service/AppointmentReminder/GetAppointmentReminder',
+                        type: 'GET',
+                        dataType: 'json',
+                        data: { ID: _this.submitForm.ID },
+                        success: function (data) {
+                            if (data.SuccessResponse) {
+
+                                fnr.mergeJson(data.ReturnData.Data, _this.submitForm)
+                                _this.submitForm.Date = fnr.format(data.ReturnData.Data.Date, "yyyy-MM-dd")
+
+                            } else {
+                                layer.msg('查询失败')
+                            }
+                        }
+                    });
+                },
+                updateClient: function (e) {
+                    if (!layui.form.checkInput(e)) {
+                        return false;
+                    }
+                    _this = this;
+                    _this.submitForm.Contact_ID = null;
+                    if (fnr.getQueryString("ID")) {
+                        $.ajax({
+                            url: '/service/AppointmentReminder/UpdateAppointmentReminder',
+                            type: 'POST',
+                            dataType: 'json',
+                            data: this.submitForm,
+                            success: function (data) {
+                                if (data.SuccessResponse) {
+                                    fnr.callDialog('refresh'); //回调打开窗口events中的refresh
+                                    fnr.closeDialog(); //关闭当前的对话框
+                                } else {
+                                    layer.msg('修改失败');
+                                }
+                            }
+                        });
+                    } else {
+
+
+                        $.post("/service/AppointmentReminder/AddAppointmentReminder", fnr.mergeJson({ Student_ID: fnr.getQueryString("StuID") }, _this.submitForm), function (rsp) {
+                            if (rsp.SuccessResponse) {
+                                fnr.callDialog('refresh'); //回调打开窗口events中的refresh
+                                fnr.closeDialog(); //关闭当前的对话框
+                            } else {
+                                layer.msg('rsp.Message');
+                            }
+                        })
+                    }
+
+
+                }
+            }
+        });
+    });
+</script>

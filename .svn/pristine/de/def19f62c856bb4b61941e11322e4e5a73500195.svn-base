@@ -1,0 +1,132 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        .isDisplay {
+            display: none;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+
+        .icon_input input {
+            width: 95%;
+            display: inline-block;
+        }
+
+        .layui-form-span {
+            position: relative;
+            float: left;
+            display: block;
+            padding: 9px 15px;
+            max-width: 580px;
+            font-weight: normal;
+            line-height: 20px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body id="root" v-cloak>
+    <div class="OpenContainer">
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">所属题库</label>
+                <div class="layui-form-span">{{QuestionInfo.QuestionStoreName}}</div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">题型</label>
+                    <div class="layui-form-span">{{QuestionInfo.QuestionTypeName}}</div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">难度</label>
+                    <div class="layui-form-span">{{QuestionInfo.Level}}</div>
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">题目</label>
+                <div class="layui-form-span" v-html="QuestionInfo.Title"></div>
+            </div>
+            <!--选择题选项-->
+            <div class="layui-form-item layui-form-text" v-show="answerOption">
+                <label class="layui-form-label">选项</label>
+                <div class="layui-form-span" v-html="QuestionInfo.Body"></div>
+            </div>
+            <!--答案-->
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">答案</label>
+                <div class="layui-form-span">{{QuestionInfo.Answer}}</div>
+            </div>
+            <!--解析-->
+            <div class="layui-form-item">
+                <label class="layui-form-label">解析</label>
+                <div class="layui-form-span" v-html="QuestionInfo.Mark"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="/Resources/js/Controls/Common.js"></script>
+<script>
+
+    require_js_file(["form", "jquery", "customUtil"],
+
+    function (fnr) {
+        var form = layui.form;
+        var $ = layui.jquery;
+
+        window.rootApp = new Vue({
+            el: '#root',
+            data: {
+                answerOption: false,//选择题选项
+                QuestionInfo: {}
+            },
+            ready: function () {
+                if (!!GetQueryString('ID')) {
+                    this.GetQuestionByID({ 'ID': GetQueryString('ID') });
+                }
+            },
+            methods: {
+                //根据id查询题目信息
+                GetQuestionByID: function (params) {
+                    var self = this;
+                    $.get("/service/datastore/Question/GetQuestion", params, function (res) {
+                        if (res != null && res.Data.length > 0) {
+                            if (res.Data[0].QuestionType_ID <= 2) {//选择题
+                                self.answerOption = true;
+                                var body = ""; br = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+                                if (res.Data[0].Body != "") {
+                                    if (res.Data[0].Body.length > 55)
+                                        br = "</br>"
+                                    var json = eval('(' + res.Data[0].Body + ')');
+                                    $.each(json, function (i) {
+                                        body += i + "&nbsp;&nbsp;" + json[i] + br;
+                                    });
+                                }
+                                res.Data[0].Body = body;
+                            }
+                            else if (res.Data[0].QuestionType_ID == 3) {//判断题
+                                res.Data[0].Answer = res.Data[0].Answer == 1 ? "正确" : "错误";
+                            }
+                            self.QuestionInfo = res.Data[0];
+
+                        }
+                        else {
+                            layer.msg(Data.Message);
+                        }
+                    })
+
+                }
+            }
+
+        });
+    });
+</script>

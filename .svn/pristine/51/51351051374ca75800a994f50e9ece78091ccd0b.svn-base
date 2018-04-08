@@ -1,0 +1,43 @@
+﻿
+function clickMeChat() {
+    if (!!getCookie("UseKey") && !!getCookie("UserPhoneKey"))
+        return;
+    if (sessionStorage.getItem("thisUrl")) {
+        sessionStorage.removeItem("thisUrl");
+        sessionStorage.setItem("thisUrl", location.href);
+    } else {
+        sessionStorage.setItem("thisUrl", location.href);
+    }
+    location.href = "login_model.html";
+}
+function loginWangxiao() {
+    location.href = "index.shtml";
+}
+
+function checkOut() {
+    delAllCookie();
+    location.reload();
+}
+function setCookie(name, value) {
+    var Days = 30;
+    var exp = new Date();
+    exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
+    document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString() + ";path=/";
+}
+function getCookie(name) {
+    var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+    if (arr = document.cookie.match(reg))
+        return unescape(arr[2]);
+    else
+        return null;
+};
+function delAllCookie() {
+    var myDate = new Date();
+    myDate.setTime(myDate.getTime() - 10000);//设置时间
+    var data = document.cookie;
+    var dataArray = data.split("; ");
+    for (var i = 0; i < dataArray.length; i++) {
+        var varName = dataArray[i].split("=");
+        document.cookie = varName[0] + "=''; expires=" + myDate.toGMTString() + ";path=/";
+    }
+}

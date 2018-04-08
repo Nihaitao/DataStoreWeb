@@ -1,0 +1,124 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>集团分配</title>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <div class="layui-form">
+            <div class="layui-form-item">
+             
+                <div class="layui-inline">
+                    <label class="layui-form-label">机构:</label>
+                    <div class="layui-input-block">
+                        <remote-sel v-bind:setting="SettingList" v-bind:tag="'Province' + 1"
+                                    v-bind:value.sync="submitForm.ID" initial="off" v-bind:change="provinceChangeShool"></remote-sel>
+                    </div>
+               </div>
+               <div class="layui-inline">
+                   <label class="layui-form-label">接收人:</label>
+                    <div class="layui-input-block">
+                        <remote-sel v-bind:setting="AccountbutionSetting" v-bind:tag="'Shool' +1"
+                                    v-bind:value.sync="submitForm.Account_ID" v-bind:change="" initial="off"></remote-sel>
+                    </div>
+               </div>
+               
+            </div>
+            <div class="layui-form-item layui-hide">
+                <button class="layui-btn" lay-submit @click="submit">提交</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate"],
+    function (fnr) {
+
+        var laydate = layui.laydate;
+        var $ = layui.jquery;
+        var form = layui.form;
+        function trim(str) {
+            return str.replace(/(^\s*)|(\s*$)/g, "");
+            }
+
+        function listsd() {
+            var data = {
+                    search: true,
+                    fields: { root: "Data", key: 'ID', value: 'Name' },
+                    options: [],
+                    remote: { url: "/service/crm//Bloc/GetStationInfoByAccountID", data: {} }
+                    }
+            return data;
+        }
+
+        function list1(ProvinceID) {
+            var data;
+            if (ProvinceID > 0) {
+                data = {
+                        search: true,
+                        fields: { root: "Data", key: 'Account_ID', value: 'Name' },
+                        options: [],
+                        remote: { url: "/service/crm/Client/GetRecipientList", data: { ID: ProvinceID } }
+                    }
+                    } else {
+                data = {
+                        search: true,
+                        fields: { key: 'ID', value: 'Name' },
+                        options: [],
+                        remote: { url: "", data: {} }
+                    }
+                    }
+            return data;
+        }
+      
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+                SettingList: listsd(),
+                AccountbutionSetting :list1(),
+                submitForm: {
+                    ID: 0,
+                    Account_ID:0
+                },
+                myClientData: '',
+                
+            },
+            ready: function () {
+            },
+            methods: {
+                submit: function (e) {
+                    if (!layui.form.checkInput(e)) {
+                        return false;
+                    }
+                    if (this.submitForm.ID > 0) {
+                        fnr.callDialog('refresh', this.submitForm);
+                        fnr.closeDialog();
+                    } else {
+                        layer.msg('请选择机构！');
+                    } 
+                }, 
+                provinceChangeShool: function (o) {
+                    var index = o.tag.replace('Province', '');
+                    var ShoolTag = 'Shool' + index;
+                    var self = this;
+                    if (self.submitForm.ID == "") {
+                        self.AccountbutionSetting.remote.url = "";
+                        self.AccountbutionSetting.remote.data = {};
+                        fnr.findComponent(self, ShoolTag).reset();
+                    } else {
+                        fnr.mergeJson(list1(self.submitForm.ID), self.AccountbutionSetting);//合并ajax值
+                        fnr.findComponent(self, ShoolTag).reset();
+
+                    }
+                },
+               
+            }
+        });
+    });
+</script>

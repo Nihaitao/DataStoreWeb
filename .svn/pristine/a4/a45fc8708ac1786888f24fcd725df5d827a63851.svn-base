@@ -1,0 +1,212 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery-1.4.4.min.js"></script>
+    <script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery.ztree.core.js"></script>
+    <script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery.ztree.excheck.js"></script>
+    <script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery.ztree.exedit.js"></script>
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <blockquote class="layui-elem-quote">
+            <div class="layui-row layui-form">
+                <div class="layui-col-xs12" style="text-align:right;">
+                    <button class="layui-btn" @click="addExamPaperType"><i class="layui-icon"></i> 添加试卷题型</button>
+                </div>
+            </div>
+        </blockquote>
+        <!--操作模板-->
+        <table id="listTable" lay-filter="listTable"></table>
+        <div class="layui-form-item" v-if="!ExamPaperDo">
+            <div class="layui-input-block" style="text-align:right;">
+                <a href="javascript:;" class="layui-btn layui-btn" @click="constituteExamPaper">自动组卷</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'laydate'],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+
+
+            //搜索条件
+            var rootApp = new Vue({
+                el: '#root',
+                data: {
+                    linkage: {
+                        Title: "",
+                        Type: -1,
+                        Province_ID: 0,
+                        Store: 0,
+                        DoType: -1
+                    },
+                    ExamPaperDo: false
+                },
+
+                ready: function () {
+                    if (fnr.getQueryString('ExamPaperDo') == 1)//手动组卷
+                        this.ExamPaperDo = true;
+                },
+
+                methods: {
+                    doSearch: function () {
+                        tableIns.reload({
+                            where: this.linkage
+                        });
+                    },
+                    //添加题型
+                    addExamPaperType: function () {
+                        fnr.openDialog({
+                            title: '添加题型',
+                            area: ['800px', '600px'],
+                            content: ['/Html/ResourcesCenter/ExamPaper/addExamPaperType.html?ID=' + fnr.getQueryString('ID')],
+                            btn: ['确认添加'],
+                            events: {
+                                refresh: function (data) {
+                                    if (data.status) {
+                                        layer.msg('添加成功');
+                                        tableIns.refresh();
+                                    } else {
+                                        layer.msg('添加失败');
+                                    }
+                                }
+                            }
+                        });
+                    },
+                    //修改试题
+                    modifyData: function (data) {
+                        fnr.openDialog({
+                            title: '修改题型',
+                            area: ['800px', '600px'],
+                            content: ['/Html/ResourcesCenter/ExamPaper/modifyExamPaperType.html?ID=' + data.ID + "&ExamPaper_ID=" + fnr.getQueryString('ID')],
+                            btn: ['确认修改'],
+                            events: {
+                                refresh: function (data) {
+                                    if (data.SuccessResponse) {
+                                        tableIns.refresh();
+                                    }
+                                    layer.msg(data.Message);
+                                }
+                            }
+                        });
+                    },
+                    //添加试题
+                    addData: function (data) {
+                        fnr.openDialog({
+                            title: '添加试题',
+                            area: ['800px', '650px'],
+                            content: ['/Html/ResourcesCenter/ExamPaper/QuestionList.html?QuestionType_ID=' + data.QuestionType_ID + "&QuestionStore_ID=" + fnr.getQueryString('QuestionStore_ID') + "&QuestionID=" + data.ID + "&ExamPaper_ID=" + fnr.getQueryString('ID')],
+                            btn: ['关闭'],
+                            yes: function (index, layero) {
+                                layer.close(index);
+                            },
+                            events: {
+                                refresh: function (data) {
+                                    if (data.status) {
+                                        layer.msg('添加成功');
+                                        tableIns.refresh();
+                                    } else {
+                                        layer.msg('添加失败');
+                                    }
+                                }
+                            }
+                        });
+                    },
+                    constituteExamPaper: function () {
+                        $.post("/service/datastore/ExamPaper/CombinationExamPaper", { ID: fnr.getQueryString('ID') }, function (res) {
+                            if (res.SuccessResponse) {
+                                tableIns.reload();
+                            }
+                            layer.msg(res.Message);
+                        })
+                    }
+                }
+            });
+
+            var tableIns = table.render({
+                elem: '#listTable',
+                even: true, //开启隔行背景
+                page: false, //页分
+                cols: [
+                    [
+                        { field: 'ID', fixed: true, title: 'ID', width: 55 },
+                        { field: 'Title', title: '题型', width: 90 },
+                        { field: 'QuestionType_Name', title: '标题', width: 120 },
+                        { field: 'QuestionType_Mark', title: '说明', width: 155 },
+                        { field: 'Sorce', title: '单题分数', width: 90 },
+                        {
+                            field: 'Num', title: '题目数量', width: 100, templet: function () {
+                                return this.HasCount + "/" + this.Num;
+                            }
+                        },
+                        {
+                            field: 'Sum', title: '分数', width: 100, templet: function () {
+                                return this.HasCount * this.Sorce + "/" + this.Num * this.Sorce;
+                            }
+                        },
+                        { field: 'Sort', title: '排序', width: 60 },
+                        {
+                            fixed: 'right',
+                            field: 'Valid',
+                            title: '操作',
+                            width: 200,
+                            toolbar: function () {
+                                var array = new Array();
+                                if (rootApp.ExamPaperDo) {
+                                    array.push("<button class=\"layui-btn layui-btn-small\" lay-event='add'>添加试题</button>");
+                                } else {
+                                    array.push("<button class=\"layui-btn layui-btn-small\" lay-event='view'>浏览试题</button>");
+                                }
+                                array.push("<button class=\"layui-btn layui-btn-small\" lay-event='edit'>编辑</button>");
+                                array.push("<button class=\"layui-btn layui-btn-small layui-btn-danger \" lay-event='delete'>删除</button>");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        }
+                    ]
+                ],
+                url: '/service/datastore/ExamPaper/GetExamPaperType',
+                where: {
+                    examPaperId: fnr.getQueryString('ID')
+                },
+                response: {
+                    dataName: 'Data'
+                },
+            });
+            tableExt.addEvent("tool(listTable)",
+                {
+                    //工具栏编辑事件
+                    "edit": function (data, obj) {
+                        rootApp.modifyData(data)
+                    },
+                    "add": function (data, obj) {
+                        rootApp.addData(data)
+                    },
+                    //工具栏删除事件
+                    "delete": function (data, obj) {
+                        layer.confirm('确认要删除吗?', { icon: 3, title: '提示' }, function (index) {
+                            $.post("/service/datastore/ExamPaper/DeleteExamPaperDetail", { ID: data.ID }, function (res) {
+                                if (res.SuccessResponse) {
+                                    tableIns.reload();
+                                }
+                                layer.msg(res.Message);
+                            })
+                            layer.close(index);
+                        });
+                    },
+                    //工具栏浏览试题
+                    "view": function (data, obj) {
+                        layer.msg("正在努力开发中，爱等不等")
+                    }
+                });
+        });
+</script>

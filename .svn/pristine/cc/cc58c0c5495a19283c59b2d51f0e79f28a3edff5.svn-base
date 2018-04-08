@@ -1,0 +1,221 @@
+﻿-->
+<style>
+    .bs-docs-nav { background-color: #333; margin-bottom: 0; }
+    .nav > li:hover { text-decoration: none; background-color: #000; }
+    .nav > li > a:focus, .nav > li > a:hover { text-decoration: none; background-color: inherit; }
+    .navbar { min-height: 45px; }
+    .header-nav li { padding: 5px 0; }
+    .header-nav li > a { padding: 0 10px !important; }
+</style>
+<body id="root1">
+    <div class="navbar navbar-static-top bs-docs-nav">
+        <div class="w1200">
+            <nav class="collapse navbar-collapse">
+                <ul class="nav navbar-nav header-nav">
+                    <li>
+                        <a href="">网校中心</a>
+                    </li>
+                    <li>
+                        <a href="">手机端</a>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right header-nav">
+                    <li v-if="loginState"><a href="">登录</a></li>
+                    <li v-else><a href="">周可，欢迎你</a></li>
+                    <li><a href="">退出</a></li>
+                    <li><a href="">客服中心</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <div class="masthead">
+        <div class="w1200 clearfix">
+            <div class="nav-header pull-left">
+                <a href="#"><img src="/usercenter/Resources/images/hd.png" /></a>
+            </div>
+            <!--<div class="nav-bar-right pull-right">
+                <div class="toggle-switch">
+                    <span class="inlineblock subject-label">当前专业</span>
+                    <div class="drowntoggle inlineblock">
+                        <i class="iconfont icon-lianxijilu"></i>
+                        <span class="current">自学考试-本科-人力资源管理</span>
+                        <i class="glyphicon glyphicon-triangle-bottom"></i>
+                    </div>
+                    <div class="drownmenu">
+                    </div>
+                </div>
+            </div>-->
+        </div>
+    </div>
+</body>
+<script src="../../Resources/js/jquery.js"></script>
+<!--<script>
+    (function ($) {
+    //获取指定参数的值
+    $.Query = function (name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    }
+    //获取所有参数 集合
+    $.QueryObjArry = function () {
+        var data = new Object();
+        var arry = window.location.search.substr(1).split('&');
+        $.each(arry, function (key, value) {
+            var arry1 = value.split('=');
+            if (arry1.length > 1)
+                data[arry1[0]] = unescape(arry1[1])
+        });
+        return data;
+    }
+
+    $.QueryString = function () {
+        return window.location.search.substr(1);
+    }
+
+    //获取所有参数 集合
+    $.ParentQueryObjArry = function () {
+        var data = new Object();
+        var arry = parent.window.location.search.substr(1).split('&');
+        $.each(arry, function (key, value) {
+            var arry1 = value.split('=');
+            if (arry1.length > 1)
+                data[arry1[0]] = unescape(arry1[1])
+        });
+        return data;
+    }
+
+    //数组转url参数
+    $.QueryToStar = function (arry) {
+        var str = "";
+        $.each(arry, function (key, value) {
+            str += key + "=" + escape(value) + "&";
+        });
+        str = str.length > 0 ? str.substring(0, str.length - 1) : str;
+        return str;
+    }
+    $.GetFormData = function () {
+        var arry = new Object();
+        $(":input").each(function () {
+            if ($(this).attr("readonly") == undefined) {
+                if ($(this).attr("id") != undefined && $(this).val() != undefined && this.type != "checkbox" && this.type != "radio" && this.type != "button") {
+                    arry[$(this).attr("id")] = $.trim($(this).val());
+                } else if ($(this).attr("id") != undefined && this.type == "checkbox") {
+                    arry[$(this).attr("id")] = $(this).prop("checked") ? 1 : 0;
+                } else if (this.type == "radio" && $(this).prop("checked")) {
+                    arry[$(this).attr("name")] = $.trim($(this).val());
+                }
+            }
+        });
+        $("[class^='group_']").each(function () {
+            if ($(this).attr("readonly") == undefined) {
+                var _key = $(this).attr("class").split('_')[1];
+                var _value = "";
+                $(this).find(":checkbox:checked").each(function () {
+                    _value += $.trim($(this).val()) + ",";
+                });
+                _value = _value.length > 0 ? _value.substring(0, _value.length - 1) : _value;
+                if (_value != "")
+                    arry[_key] = _value;
+            }
+        });
+        return arry;
+    }
+    //格式化图片访问地址（OSS不认识两个斜杠）
+    $.ImageUrl = function (url) {
+        var reg = new RegExp("//", "g");
+        return url.replace(reg, "/");
+        //return url.replace("\\", "/").replace("///", "/").replace("//", "/");
+    }
+
+})(jQuery);
+
+
+function CheckData(rsp) {
+    try {
+        if (typeof (rsp) == 'object' && rsp.code && rsp.code == -1) {
+            if (top !== self)
+                top.location.href = rsp.loginUrl;
+            else
+                parent.location.href = rsp.loginUrl;
+            return false;
+        } else {
+            if (rsp.error != undefined) {
+                if (typeof (rsp) == 'object' && rsp.error) {
+                    return true;
+                } else {
+                    layer.msg(rsp.message);
+                    return false;
+                }
+            } else
+                return true;
+        }
+    } catch (e) { }
+}
+
+
+//二级左侧菜单JS
+$(function () {
+
+    $(".navbar-box").click(function () {
+        $(".container-fluid").toggleClass("product-col");
+    });
+    $(".product-nav-item li").click(function () {
+        $(this).addClass("active").siblings().removeClass("active");
+    });
+});
+
+; (function () {
+    $.get('/service/Station/GetStationBySystemStationID', function (res) {
+        var href = res.ReturnData.Data
+        browserRedirect(href);
+    })
+    var StuId = GetCookie('StuId');
+    if (StuId == 0 || !StuId) {
+        if (location.pathname == '/Login.shtml') {
+            return false;
+        } else {
+            location.href = "/Login.shtml"
+        }
+    } else {
+        if (location.pathname == '/Login.shtml') {
+            location.href = "/Center/index.html"
+        }
+    }
+})()
+function GetCookie(name) {
+    var arg = name + "=";
+    var alen = arg.length;
+    var clen = document.cookie.length;
+    var i = 0;
+    while (i < clen) {
+        var j = i + alen;
+        if (document.cookie.substring(i, j) == arg)
+            return GetCookieVal(j);
+        i = document.cookie.indexOf(" ", i) + 1;
+        if (i == 0) break;
+    }
+    return null;
+}
+function GetCookieVal(offset) {
+    var endstr = document.cookie.indexOf(";", offset);
+    if (endstr == -1)
+        endstr = document.cookie.length;
+    return decodeURIComponent(document.cookie.substring(offset, endstr));
+}
+function browserRedirect(href) {
+    var sUserAgent = navigator.userAgent.toLowerCase();
+    var bIsIpad = sUserAgent.match(/ipad/i) == "ipad";
+    var bIsIphoneOs = sUserAgent.match(/iphone os/i) == "iphone os";
+    var bIsMidp = sUserAgent.match(/midp/i) == "midp";
+    var bIsUc7 = sUserAgent.match(/rv:1.2.3.4/i) == "rv:1.2.3.4";
+    var bIsUc = sUserAgent.match(/ucweb/i) == "ucweb";
+    var bIsAndroid = sUserAgent.match(/android/i) == "android";
+    var bIsCE = sUserAgent.match(/windows ce/i) == "windows ce";
+    var bIsWM = sUserAgent.match(/windows mobile/i) == "windows mobile";
+
+    if (bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM) {
+        window.location.href = "http://" + href.Dominphone;
+    }
+}-->
+</script>

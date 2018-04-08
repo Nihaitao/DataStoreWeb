@@ -1,0 +1,122 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <form class="layui-form" action="" onsubmit="return false" novalidate>
+            <div class="layui-form-item">
+                <label class="layui-form-label">系统名称</label>
+                <div class="layui-input-block">
+                    <input type="text" v-model="submitForm.Name" name="title" disabled autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">显示名称</label>
+                <div class="layui-input-block">
+                    <input type="text" v-model="submitForm.ShowName" name="title" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div v-if="submitForm.IsSystem==0">
+                <div class="layui-inline">
+                    <label class="layui-form-label">启用状态</label>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="searchKeySetting" v-bind:value.sync="submitForm.IsSetting" initial="off"></remote-sel>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item layui-hide">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit @click="formDemo">立即提交</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</body>
+</html>
+
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt"],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+
+
+            window.rootApp = new Vue({
+                el: "#root",
+                data: {
+                    submitForm:
+                        {
+                            ID: 0,
+                            Name: "",
+                            ShowName: "",
+                            IsSetting: 1,
+                            IsSystem: "",
+                        },
+                    searchKeySetting: {
+                        options: [
+                            {
+                                key: '1',
+                                value: '启用'
+                            }, {
+                                key: '0',
+                                value: '禁用'
+                            }
+                        ]
+                    },
+                },
+                ready: function () {
+                    _this = this;
+                    _this.submitForm.ID = fnr.getQueryString("ID");
+
+                    //请求借口填充数据
+                    if (_this.submitForm.ID) {
+                        $.get("/service/hr/Module/GetCustomBusinessByID", { ID: _this.submitForm.ID }, function (rsp) {
+                            if (rsp.SuccessResponse) {
+                                _this.submitForm.Name = rsp.Data[0].Name;
+                                _this.submitForm.IsSystem = rsp.Data[0].IsSystem;
+                                if (rsp.Data[0].ShowName != null) {
+                                    _this.submitForm.ShowName = rsp.Data[0].ShowName;
+                                    _this.submitForm.IsSetting = 1;
+
+                                } else {
+                                    _this.submitForm.ShowName = rsp.Data[0].Name;
+                                    _this.submitForm.IsSetting = 0;
+                                }
+
+                            } else {
+                                layer.msg(Message)
+                            }
+
+                        })
+                    }
+
+                },
+                methods: {
+                    //保存数据关闭弹窗
+                    formDemo: function () {
+                        _this = this;
+                        $.post("/service/hr/Module/EditCustomBusiness", _this.submitForm, function (rsp) {
+                            if (rsp.SuccessResponse) {
+                                fnr.callDialog('refresh'); //回调打开窗口events中的refresh
+                                fnr.closeDialog(); //关闭当前的对话框
+                            } else {
+                                layer.msg(rsp.Message)
+                            }
+                        })
+                        return false;
+                    },
+                }
+            });
+        });
+</script>

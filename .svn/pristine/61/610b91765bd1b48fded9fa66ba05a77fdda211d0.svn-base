@@ -1,0 +1,72 @@
+.selectMain{
+    margin-top: 0.96rem;
+}
+
+.rankItems{
+    padding: 0 0.26rem;
+    height: 1.08rem;
+    border-bottom: 0.01rem solid #ededed;
+    box-sizing: border-box;
+}
+.leftImgBox{
+    display: inline-block;
+    vertical-align: top;
+    line-height: 1.08rem;
+    margin-right: 0.3rem;
+    width: 0.4rem;
+    height: 0.56rem;
+}
+.middleBox{
+    display: inline-block;
+}
+.borderBox{
+    width: 0.54rem;
+    height: 0.54rem;
+    border: 0.01rem solid #D9D9D9;
+    border-radius: 50%;
+    margin-right: 0.3rem;
+    box-sizing: border-box;
+    margin-top: 0.27rem;
+    margin-bottom: 0.27rem;
+    display: inline-block;
+}
+.borderBox img{
+    width: 0.5rem;
+    height: 0.5rem;
+    padding:0.01rem;
+}
+.leftImgBox img{
+    width: 100%;
+    height: 100%;
+}
+.leftName{
+    display: inline-block;
+    font-size: 0.28rem;
+    color: #333;
+    vertical-align: middle;
+}
+.rightNum{
+    font-size: 0.28rem;
+    color: #666;
+    float: right;
+}
+.rightBox{
+    display: inline-block;
+    float: right;
+    line-height: 1.08rem;
+}
+.leftTextBox{
+    display: inline-block;
+    margin-right: 0.3rem;
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    background-color: #d9d9d9;
+    text-align: center;
+    vertical-align: middle;
+}
+.leftTextBox span{
+    font-size: 0.28rem;
+    color: #fff;
+    line-height: 0.4rem;
+}

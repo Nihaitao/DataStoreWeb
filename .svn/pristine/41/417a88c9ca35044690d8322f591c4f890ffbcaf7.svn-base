@@ -1,0 +1,82 @@
+﻿layui.define(['table', 'form', 'jquery', 'tableExt', 'element', 'customUtil', 'linq'],
+    function (exports) {
+        var fnr = layui.fnr;
+        var table = layui.table;
+        var tableExt = layui.tableExt;
+        var linq = layui.linq;
+        var $ = layui.jquery;
+
+        $.ajaxSetup({
+            async: false
+        });
+
+        function GetSetting() {
+            var Setting = getCookie("setting");
+            if (Setting == null || Setting == undefined) {
+                Setting = [];
+                $.get('/service/public/Mechanism/GetSetlist', function (rsp) {
+                    if (rsp.SuccessResponse) {
+                        if (rsp.Data) {
+                            rsp.Data.Home_Html = "";
+                            Setting = rsp.Data;
+                            setCookie("setting", JSON.stringify(Setting));
+                        }
+                    } else {
+                        layer.msg(res.Message);
+                    }
+                });
+            } else {
+                Setting = eval("(" + unescape(Setting) + ")");
+            }
+            return Setting;
+        }
+
+        function GetConfig() {
+            var Config = getCookie("config");
+            if (Config == null || Config == undefined) {
+                Config = [];
+                $.get('/service/datastore/HConfiguration/GetConfiguration', function (rsp) {
+                    if (rsp.SuccessResponse) {
+                        if (rsp.Data) {
+                            Config = rsp.Data;
+                            setCookie("config", JSON.stringify(Config));
+                        }
+                    } else {
+                        layer.msg(res.Message);
+                    }
+                });
+            } else
+                Config = eval("(" + unescape(Config) + ")");
+            return Config;
+        }
+
+        function GetStudentInfo() {
+            var studentinfo = getCookie("studentinfo");
+            if (studentinfo == null || studentinfo == undefined || studentinfo == "") {
+                return null;
+            } else
+                studentinfo = eval("(" + unescape(studentinfo) + ")");
+            return studentinfo;
+        }
+
+
+
+        function setCookie(name, value) {
+            var Days = 30;
+            var exp = new Date();
+            exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
+            document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString() + ";path=/";
+        }
+        function getCookie(name) {
+            var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+            if (arr = document.cookie.match(reg))
+                return unescape(arr[2]);
+            else
+                return null;
+        }
+        exports('wxconfig', {
+            GetConfig: GetConfig,
+            GetSetting: GetSetting,
+            GetStudentInfo: GetStudentInfo
+        });
+    })

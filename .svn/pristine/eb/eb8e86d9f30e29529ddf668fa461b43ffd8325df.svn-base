@@ -1,0 +1,392 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <meta charset="UTF-8">
+    <title>专业筛选列表</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.js"
+            integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+    <link rel="shortcut icon" href="" type="image/x-icon" class="favIcon" />
+    <link rel="stylesheet" href="../Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../Resources/CSS/Font/css/font-awesome.min.css">
+    <script src="../Resources/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../Resources/CSS/PC_css.css">
+   
+
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body id="root" v-cloak>
+    <!--顶部-->
+    <div class="top_head clearfix" v-if="!loginState">
+        <div class="container">
+            <div class="pull-left" style="margin-left: 15px">
+                <span>欢迎来到{{layoutData.HeaderName}}</span>
+            </div>
+            <div class="pull-right">
+                <a href="../Login.html">登录</a>
+                <a href="../Register.html">注册</a>
+                <a href="#">注册客服中心</a>
+            </div>
+        </div>
+    </div>
+    <div class="top_head" v-if="loginState">
+        <div class="container">
+            <div class="pull-left" style="margin-left: 15px">
+                <span>欢迎来到{{layoutData.HeaderName}}</span>
+            </div>
+            <div class="pull-right Gcenter">
+                <a>
+                    <img v-bind:src="headPhoto" al alt="" width="30" height="30" style="border-radius: 50%">
+                    <i class="fa fa-angle-down" style="margin-left: 20px"></i>
+                </a>
+                <a href="#"><i class="fa fa-bell"></i></a>
+                <a href="#">客服中心</a>
+                <a id="exit" @click="exit">退出</a>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix" style="height: 60px">
+        <div class="container">
+            <a href="../index.html" class="Pro-logo pull-left" style="display: inline-block; width: 230px; height: 40px;">
+                <img v-if="layoutData.HeaderLogoOrName == 1" v-bind:src="layoutData.HeaderLogo" alt="" style="width: 100%; height: 100%;">
+                <span v-if="layoutData.HeaderLogoOrName == 0" style="width: 100%; height: 100%;display: inline-block;padding-top: 7px;padding-left: 14px;">{{layoutData.HeaderName}}</span>
+            </a>
+            <div class="Pro-nav pull-right">
+                <ul>
+                    <li><a href="../Course/CourseList.html">课程中心</a></li>
+                    <li><a href="#">问答</a></li>
+                    <li><a href="#">专业</a></li>
+                    <li><a href="#">题库</a></li>
+                    <li><a href="#">名师</a></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    <!--专业筛选-->
+    <div class="Pro-screen">
+        <div class="container">
+            <div class="Pro-BreadcrumbNavigation">
+                <i class="icon_weizhi"></i>
+                <span>当前位置：</span>
+                <span>首页</span>
+                &gt;
+                <span>专业列表</span>
+            </div>
+            <div class="Pro-list">
+                <ul class="clearfix ProvinceList">
+                    <li class="ProText">地区：</li>
+                    <li class="active" @click="ProvinceClear">全部</li>
+                    <li v-for="(index, item) in ProvinceData" @click="ClickProvince(item.ProvinceID)">
+                        <a style="text-decoration: none;" href="javascript:;">{{item.ProvinceName}}</a>
+                    </li>
+                </ul>
+                <ul class="clearfix LevelList">
+                    <li class="LevText">层次：</li>
+                    <li class="active" @click="LevelClear">全部</li>
+                    <li v-for="(index, item) in LevelData" @click="ClickLeval(item.ID)">
+                        <a style="text-decoration: none;" href="javascript:;">{{item.Name}}</a>
+                    </li>
+                </ul>
+                <ul class="clearfix CategoryList" style="display: none;">
+                    <li class="CatText">分类：</li>
+                    <li class="active" @click="CategoryClear">全部</li>
+                    <li v-for="(index, item) in CategoryData" @click="ClickCategory(item.ID)">
+                        <a style="text-decoration: none;" href="javascript:;">{{item.Name}}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--显示列表-->
+    <div class="Pro-showList">
+        <div class="container">
+            <div class="Pro-chose">
+                <a href="#" class="choseIndex active">最热</a>
+                <a href="#" class="choseIndex">最新</a>
+            </div>
+            <div class="Pro-list">
+                <div class="poC" v-if="rspListData.length > 0" v-for="(index, item) in rspListData">
+                    <a style="text-decoration: none;" href="IntrList.html?id={{item.ID}}">
+                        <img src="../Resources/images/picture.png" style="height: 127px;width: 224px">
+                        <span class="p-text">{{item.Name}}</span>
+                    </a>
+                    <!--<div>
+                            <div class="poA userNum"><i class="fa fa-user-o"></i> <span>{{item.Number}}</span>人</div>
+                        </div>-->
+                </div>
+                <div class="poC" v-if="rspListData.length == 0">
+                    <h4>暂无专业</h4>
+                    <!--<div>
+                <div class="poA userNum"><i class="fa fa-user-o"></i> <span>{{item.Number}}</span>人</div>
+            </div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--分页-->
+    <div class="Pro-pageCount clearfix">
+        <div class="clearfix" style="margin: 0 auto;width: 680px" id="pages">
+            <!--<span>首页</span>
+            <span>上一页</span>
+            <ul>
+                <li class="active">1</li>
+                <li>2</li>
+                <li>3</li>
+                <li>4</li>
+                <li>5</li>
+                <li>6</li>
+                <li>7</li>
+            </ul>
+            <span>下一页</span>
+            <span>尾页</span>-->
+        </div>
+
+    </div>
+    <!--footer-->
+    <div class="foot">
+        <ul class="clearfix info">
+            <li>eol简介</li>
+            <li>联系方式</li>
+            <li>招聘信息</li>
+            <li>京IC证140769号</li>
+            <li>京IC备12045350号</li>
+            <li>京IC网文[2014]2106-306号</li>
+            <li>京公网安备&nbsp;11010802020236号</li>
+        </ul>
+        <p class="copyright">{{layoutData.FooterCopyright}}</p>
+    </div>
+    
+</body>
+</html>
+<link href="../Resources/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="../Resources/js/modules/vue/vue.min.js"></script>
+<script src="../Resources/js/modules/layer/layui.js"></script>
+<script src="../Resources/js/require_config.js"></script>
+<script src="../Resources/js/Page.js"></script>
+<script src="../Resources/js/headFootLayout.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt"], function (fnr) {
+        function delAllCookie() {
+            var myDate = new Date();
+            myDate.setTime(-1000);//设置时间    
+            var data = document.cookie;
+            var dataArray = data.split("; ");
+            for (var i = 0; i < dataArray.length; i++) {
+                var varName = dataArray[i].split("=");
+                document.cookie = varName[0] + "=''; expires=" + myDate.toGMTString();
+            }
+        }
+
+        window.rootApp = new Vue({
+            el: '#root',
+            data: {
+                loginState: false,
+                headPhoto: '',
+                ProvinceId: 0,
+                LevalId: 0,
+                CategoryId: 0,
+                ModelId: 1,
+                PageIndex: 1,
+                PageSize: 2,
+                rspListData: [],
+                ProvinceData: [],
+                LevelData: [],
+                CategoryData: [],
+                layoutData: {}
+            },
+            ready: function () {
+                this.requestList(this.ProvinceId, this.LevalId, this.CategoryId, this.ModelId, this.PageIndex, this.PageSize);
+                this.ProvinceList();
+                this.LevelList();
+                this.CategoryList();
+                this.checkLogin();
+            },
+            methods: {
+                //退出
+                exit: function () {
+                    delAllCookie();
+                    location.href = '../Login.html';
+                },
+
+                //查询stuID
+                checkLogin: function () {
+                    _this = this;
+                    if (fnr.Cookie.get('StuId') && fnr.Cookie.get('StuId') != 'undefined') {
+                        _this.loginState = true;
+                        $.get("/service/Student/GetStudentInfo", function (res) {
+                            if (res.SuccessResponse) {
+                                _this.msg = 'hi，' + res.ReturnData.Data.Name;
+                                _this.headPhoto = res.ReturnData.Data.HeadImg ? res.ReturnData.Data.HeadImg : '../../Resources/images/photo.png'
+                                _this.loginState = true;
+                            }
+                        });
+                    }
+                },
+
+                //分页
+                paging: function (pId, lId, cId, mId, pNum, sNum, totalPages) {
+                    var self = this;
+                    return $("#pages").Page({
+                        pageIndex: pNum,
+                        totalPages: Math.ceil(totalPages / 2),
+                        totalSize: totalPages,
+                        callback: function (num) {
+                            self.rspListData = [];
+                            self.requestList(pId, lId, cId, mId, num, sNum);
+                        }
+                    })
+                },
+
+                // 请求筛选列表参数
+                // Province_ID省份ID，Level_ID层次ID，Category_ID专业分类ID，Model_ID模型ID，Orderstr排序字段，Order排序方式
+                requestList: function (pId, lId, cId, mId, pNum, sNum) {
+                    var self = this;
+                    $.get('/service/edu/Specialty/GetSpecialtyLevalList', { Province_ID: pId, Level_ID: lId, Category_ID: cId, Model_ID: mId, Orderstr: 'AddTime', Order: 'desc', PageIndex: pNum, PageSize: sNum }, function (rsp) {
+                        if (rsp.SuccessResponse) {
+                            if (rsp.Data) {
+                                $.each(rsp.Data, function (k, v) {
+                                    self.rspListData.push(v);
+                                });
+                            } else {
+                                layer.msg('data为空')
+                            }
+                            self.paging(pId, lId, cId, mId, pNum, sNum, rsp.TotalCount);
+                        } else {
+                            layer.msg(rsp.Message ? rsp.Message : '操作失败')
+                        }
+                    });
+                },
+
+                //省份
+                ProvinceList: function () {
+                    var self = this;
+                    $.get('/service/edu/Specialty/GetSpecialtyProvince', { Model_ID: 1 }, function (rsp) {
+                        if (rsp.SuccessResponse) {
+                            if (rsp.Data) {
+                                $.each(rsp.Data, function (k, v) {
+                                    self.ProvinceData.push(v);
+                                });
+                            } else {
+                                layer.msg('data为空')
+                            }
+                        } else {
+                            layer.msg(rsp.Message ? rsp.Message : '操作失败')
+                        }
+                    });
+                },
+
+                //层次
+                LevelList: function () {
+                    var self = this;
+                    $.get('/service/edu/SpecialtyLevel/GetSpecialtyLevelList', { Valid: -1 }, function (rsp) {
+                        if (rsp.SuccessResponse) {
+                            if (rsp.Data) {
+                                $.each(rsp.Data, function (k, v) {
+                                    self.LevelData.push(v);
+                                });
+                            } else {
+                                layer.msg('data为空')
+                            }
+                        } else {
+                            layer.msg(rsp.Message ? rsp.Message : '操作失败')
+                        }
+                    });
+                },
+
+                //分类
+                CategoryList: function (Pid, Lid) {
+                    var self = this;
+                    $.get('/service/edu/Specialty/GetSpecialtyCategoryList', { Province_ID: Pid, Level_ID: Lid, Model_ID: 1 }, function (rsp) {
+                        if (rsp.SuccessResponse) {
+                            if (rsp.Data) {
+                                $.each(rsp.Data, function (k, v) {
+                                    self.CategoryData.push(v);
+                                });
+                                if (self.CategoryData.length > 0) {
+                                    $('.CategoryList').slideDown();
+                                } else {
+                                    $('.CategoryList').slideUp();
+                                }
+                            } else {
+                                layer.msg('data为空')
+                            }
+                        } else {
+                            layer.msg(rsp.Message ? rsp.Message : '操作失败')
+                        }
+                    });
+                },
+
+                //点击省份触发事件
+                ClickProvince: function (pId) {
+                    var self = this;
+                    self.rspListData = [];
+                    self.ProvinceId = pId;
+                    self.requestList(pId, self.LevalId, self.CategoryId, self.ModelId, self.PageIndex, self.PageSize);
+                    $('.ProvinceList').on('click', 'li:not(.ProText)', function () {
+                        if (!$(this).hasClass('active')) {
+                            $(this).find('a').css('color', '#fff');
+                            $(this).addClass('active').siblings('li:not(.ProText)').removeClass('active').find('a').css('color', '#333');
+                        }
+                    });
+                    self.CategoryData = [];
+                    self.CategoryList(pId, self.LevalId);
+                    
+                },
+
+                //点击层次触发事件
+                ClickLeval: function (lId) {
+                    var self = this;
+                    self.rspListData = [];
+                    self.LevalId = lId;
+                    self.requestList(self.ProvinceId, lId, self.CategoryId, self.ModelId, self.PageIndex, self.PageSize);
+                    $('.LevelList').on('click', 'li:not(.LevText)', function () {
+                        if (!$(this).hasClass('active')) {
+                            $(this).find('a').css('color', '#fff');
+                            $(this).addClass('active').siblings('li:not(.LevText)').removeClass('active').find('a').css('color', '#333');
+                        }
+                    });
+                    self.CategoryData = [];
+                    self.CategoryList(self.ProvinceId, lId);
+                },
+
+                //点击分类触发事件
+                ClickCategory: function (cId) {
+                    var self = this;
+                    self.rspListData = [];
+                    self.CategoryId = cId;
+                    self.requestList(self.ProvinceId, self.LevalId, cId, self.ModelId, self.PageIndex, self.PageSize);
+                    $('.CategoryList').on('click', 'li:not(.CatText)', function () {
+                        if (!$(this).hasClass('active')) {
+                            $(this).find('a').css('color', '#fff');
+                            $(this).addClass('active').siblings('li:not(.CatText)').removeClass('active').find('a').css('color', '#333');
+                        }
+                    });
+                },
+
+                //`全部`按钮触发事件
+                ProvinceClear: function () {
+                    var self = this;
+                    self.ClickProvince(0);
+                },
+                LevelClear: function () {
+                    var self = this;
+                    self.ClickLeval(0);
+                },
+                CategoryClear: function () {
+                    var self = this;
+                    self.ClickCategory(0);
+                }
+            }
+        });
+        LayoutFn()
+    });
+</script>

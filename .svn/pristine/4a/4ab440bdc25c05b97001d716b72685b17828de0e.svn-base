@@ -1,0 +1,175 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        [v-cloak] {
+            display: none
+        }
+    </style>
+</head>
+<body id="root" v-cloak>
+    <div class="mainContainer">
+        <blockquote class="layui-elem-quote">
+            <div class="layui-row layui-form">
+                <div class="layui-col-xs8">
+                    <div class="layui-input-inline">
+                        <div style="float:left;padding: 8px 10px 0px 10px">
+                            所属合同：
+                        </div>
+                        <div style="float:left;">
+                            <remote-sel v-bind:setting="ContractSetting" laytips="" v-bind:value.sync="Contracting" initial="on" style="width:10%"></remote-sel>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-xs4" style="text-align: right">
+                    <button class="layui-btn" v-bind:class="layui-btn" @click="addPlan"><i class="layui-icon"></i>新增计划</button>
+                </div>
+            </div>
+        </blockquote>
+        <div class="layui-row" v-cloak>
+            <table lay-filter="listTable" id="listTable"></table>
+        </div>
+    </div>
+</body>
+</html>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate"],
+        function (fnr) {
+            var laydate = layui.laydate;
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+
+            var table = layui.table;
+            var tableExt = layui.tableExt;
+            var tableOption = {
+                elem: '#listTable',
+                id: 'listTable',
+                even: true, //开启隔行背景
+                page: true, cellMinWidth: 200,
+                limit: 15,
+                height: 'full-110',
+                cols: [
+                    [
+                        { field: 'ContractName', title: '所属合同', width: 120 },
+                        { field: 'Number', title: '回款期次', width: 100, sort: true },
+                        {
+                            field: 'PlanDate', title: '计划回款日期', width: 140, sort: true, templet: function () {
+                                var array = new Array();
+                                array.push("<span>" + (fnr.format(this.PlanDate, "yyyy-MM-dd HH:mm") == "2001-01-01 00:00" ? "" : fnr.format(this.PlanDate, "yyyy-MM-dd")) + "</span>");
+                                return array.join("")
+                            }
+                        },
+                        { field: 'PlanMoney', title: '计划回款金额', width: 140, sort: true },
+                        { field: 'Proportion', title: '计划回款占比', width: 140 },
+                        {
+                            field: 'AddTime', title: '添加时间', width: 160, sort: true, templet: function () {
+                                var array = new Array();
+                                array.push("<span>" + (fnr.format(this.AddTime, "yyyy-MM-dd HH:mm") == "2001-01-01 00:00" ? "" : fnr.format(this.AddTime, "yyyy-MM-dd HH:mm")) + "</span>");
+                                return array.join("")
+                            }
+                        },
+                        { field: 'PersonName', title: '添加人', width: 100 },
+                        { field: 'Remart', title: '备注', width: 150 },
+                        {
+                            fixed: 'right',
+                            title: '操作',
+                            width: 100,
+                            toolbar: function () {
+                                var array = new Array();
+                                array.push("<button class=\"layui-btn layui-btn-small\" lay-event='updatePlan'>修改</button>");
+                                return "<div>" + array.join("") + "</div>";
+                            }
+                        }
+                    ]
+                ],
+                url: '/service/crm/Repaymentplan/GetRepaymentplanList',
+                response: {
+                    dataName: 'Data'
+                },
+                method: 'get',
+                where: { Contract_ID: 0 }
+            }
+            //监听工具栏事件
+            tableExt.addEvent("tool(listTable)",
+                {
+                    "updatePlan": function (data, obj) {
+                        fnr.openDialog({
+                            title: "修改回款计划",
+                            area: ['768px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                            content: ['EditRepaymentPlan.html?Plan_ID=' + data.ID + '&Contract_ID=' + data.Contract_ID],
+                            //btn: ['确定'],
+                            events: {
+                                refresh: function () {
+                                    listTable.refresh();
+                                    layer.msg("保存成功！");
+                                }
+                            },
+                            //end: function () {
+                            //    listTable.refresh();
+                            //}
+                        });
+                    },
+                });
+
+            window.rootApp = new Vue({
+                el: "#root",
+                data: {
+                    ContractSetting: {
+                        search: true,
+                        options: [],
+                        fields: { root: 'Data', key: 'ID', value: 'Name' },
+                        remote: { url: "/service/crm/Contract/GetContractList", options: { method: 'get' } }
+                    },
+                    Contracting: 0,//所属合同ID
+                    queryFormData: {
+
+                    },
+                },
+                watch: {
+                    'Contracting': function (val, oldval) {
+                        listTable.reload({
+                            where: {
+                                Contract_ID: val
+                            }
+                        })
+                    },
+                },
+                ready: function () {
+                    _this = this;
+                    listTable = table.render(tableOption);
+                },
+                methods: {
+                    addPlan: function () {
+                        var self = this;
+                        if (self.Contracting == 0) {
+                            layer.msg("请先选择所属合同!");
+                            return false;
+                        }
+                        fnr.openDialog({
+                            title: '新增回款计划',
+                            area: ['768px', (parent.document.documentElement || parent.document.body).clientHeight - 140 + "px"],
+                            content: ['EditRepaymentPlan.html?Contract_ID=' + self.Contracting],
+                            //btn: ['保存'],
+                            events: {
+                                refresh: function () {
+                                    listTable.refresh();
+                                    layer.msg("保存成功！");
+                                }
+                            },
+                            //end: function () {
+                            //    listTable.refresh();
+                            //}
+                        });
+                    },
+                }
+            });
+        });
+</script>

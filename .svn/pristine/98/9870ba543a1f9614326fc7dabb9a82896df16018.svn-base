@@ -1,0 +1,845 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        label.layui-form-label {
+            width: 130px;
+        }
+
+        div.layui-input-block {
+            margin-left: 160px;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+            <ul class="layui-tab-title">
+                <li class="layui-this" lay-id="1">基本信息</li>
+                <li lay-id="2" @click="nextChange1(1)">客服信息</li>
+                <li lay-id="3" @click="nextChange1(2)">字段信息</li>
+            </ul>
+            <div class="layui-tab-content" style="height: 100px;">
+                <div class="layui-tab-item layui-show">
+                    <div class="layui-form">
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">表单名称：</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="FormName" lay-verify="required" autocomplete="off"
+                                           class="layui-input" v-model="SubmitCustomForm.FormName">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">分配方式：</label>
+                                <div class="layui-input-block">
+                                    <remote-rad v-bind:setting="FormAllotSetting" v-bind:value.sync="SubmitCustomForm.FormAllot" initial="off"></remote-rad>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">表单分类：</label>
+                                <div class="layui-input-block">
+                                    <remote-rad v-bind:setting="FormSetting" v-bind:value.sync="SubmitCustomForm.FormType" initial="off"></remote-rad>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">是否启用验证码：</label>
+                                <div class="layui-input-block">
+                                    <remote-rad v-bind:setting="IsVerificationSetting" v-bind:value.sync="SubmitCustomForm.IsVerification" initial="off"></remote-rad>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">表单类别：</label>
+                                <div class="layui-input-inline">
+                                    <remote-sel v-bind:setting="Setting" v-bind:value.sync="SubmitCustomForm.FormTypeID" initial="off"></remote-sel>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">提交成功文字提示：</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="TipMsg" lay-verify="required" autocomplete="off"
+                                           class="layui-input" v-model="SubmitCustomForm.TipMsg">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div style="display: block; width: 100%; position: fixed;bottom: 0;right: 0; padding: 20px 20px 20px 0; background-color: #fff; text-align:right;">
+                        <button class="layui-btn" lay-submit @click="nextChange1($event)">进入下一步</button>
+                    </div>
+                </div>
+                <div class="layui-tab-item" id="div">
+                    <div class="layui-form">
+                        <div class="layui-row custom-title">
+                            <div class="layui-col-md3 layui-col-sm1">
+                          
+                                <input type="checkbox" lay-filter="chb" lay-skin="primary" title="全选" id="chbAll">
+                            </div>
+
+                            <div class="layui-col-md3 layui-col-sm1">名字</div>
+                            <div class="layui-col-md3 layui-col-sm1">权重</div>
+                        </div>
+                        <div class="custom-field">
+                            <div class="tree" v-for="(index,item) in formListCustomer">
+                                <div class="layui-row custom-ele">
+
+                                    <div class="layui-col-md3 layui-col-sm1">
+                                       
+                                        <local-chb class="chbClass" v-bind:value.sync="item.Check" v-bind:checked="isChecked"></local-chb>
+                                       
+                                    </div>
+
+                                    <div class="layui-col-md3 layui-col-sm1">{{item.Name}}</div>
+
+                                    <div class="layui-col-md3 layui-col-sm1"><input type="text" lay-verify="required" class="layui-input" v-model="item.Weight"></div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: block; width: 100%; position: fixed;bottom: 0;right: 0; padding: 20px 20px 20px 0; background-color: #fff; text-align:right;">
+                            <button class="layui-btn" lay-submit @click="nextChange2($event)">进入下一步</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-tab-item" style="">
+                    <form class="layui-form" style="margin-bottom: 80px;" onsubmit="return false">
+                        <div class="layui-row custom-title">
+                            <div class="layui-col-md2 layui-col-sm2">字段名称</div>
+                            <div class="layui-col-md1 layui-col-sm1">是否显示</div>
+                            <div class="layui-col-md1 layui-col-sm1">必填</div>
+                            <div class="layui-col-md8 layui-col-sm8">默认值</div>
+                        </div>
+                        <div class="custom-field">
+                            <div class="tree" v-data self="rootItem" v-for="(rootIndex,rootItem) in formList">
+                                <div class="tree-content" v-cloak>
+                                    <div class="layui-row custom-ele" v-data self="elementItem" v-bind:parent="rootItem.Childs" v-bind:index="elementIndex" v-for="(elementIndex,elementItem) in rootItem.Childs"
+                                         v-bind:class="elementItem.enableEdit==0?'custom-disable':''">
+
+                                        <div class="layui-col-md2 layui-col-sm2">{{elementItem.ShowName}}</div>
+
+                                        <div class="layui-col-md1 layui-col-sm1">
+                                            <local-switch1 text="是|否" v-bind:enableflag="elementItem.IsEnable" v-bind:value.sync="elementItem.IsEnable" v-bind:item="elementItem" v-bind:disabled="elementItem.Editable!=0"
+                                                           data-fieldtype="2" v-bind:data-pindex="rootIndex" v-bind:data-cindex="elementIndex"></local-switch1>
+                                        </div>
+                                        <div class="layui-col-md1 layui-col-sm1">
+                                            <local-switch1 text="是|否" v-bind:value.sync="elementItem.Required" v-bind:item="elementItem"
+                                                           v-bind:disabled="elementItem.Editable==2 || elementItem.IsEnable !=1" data-fieldtype="1"></local-switch1>
+                                        </div>
+                                        <div class="layui-col-md8 layui-col-sm8">
+                                            <!--显示字段判断-->
+                                            <div class="layui-inline" v-if="elementItem.Editable!=2 && elementItem.FieldType!=11 && elementItem.FieldType != 109 && elementItem.FieldType !=110 && elementItem.FieldType !=103 &&
+                                     elementItem.FieldType !=108 && elementItem.FieldType !=33 && elementItem.FieldType !=2 && elementItem.FieldType !=3 && elementItem.FieldType !=4 && elementItem.FieldType !=5 && elementItem.FieldType !=6 && elementItem.FieldType !=66">
+                                                <input type="text" lay-verify="required" autocomplete="off" class="layui-input" v-model="elementItem.Value">
+                                            </div>
+                                            <!--下拉框-->
+                                            <div class="layui-input-inline" v-if="elementItem.FieldType==109">
+                                                <custom-sel v-bind:setting="elementItem.DataSource" v-bind:layverify="elementItem.Required == 1 ? 'required' : ''"
+                                                            v-bind:value.sync="elementItem.Value" initial="off"></custom-sel>
+                                            </div>
+                                            <!--多选框-->
+                                            <div class="layui-input-inline" v-if="elementItem.FieldType==110">
+                                                <custom-chb v-bind:setting="elementItem.DataSource" v-bind:layverify="elementItem.Required == 1 ? 'required' : ''" v-bind:value.sync="elementItem.Value"
+                                                            initial="off"></custom-chb>
+                                            </div>
+                                            <!--单选框-->
+                                            <div class="layui-input-inline" v-if="elementItem.FieldType==103">
+                                                <custom-rad v-bind:setting="elementItem.DataSource" v-bind:value.sync="elementItem.Value"
+                                                            initial="off" v-bind:layverify="elementItem.Required == 1 ? 'required' : ''"></custom-rad>
+                                            </div>
+                                            <!--时间-->
+                                            <div class="layui-input-inline" v-if="elementItem.FieldType==108">
+                                                <!--<lay-date placehol-->
+                                                <lay-date placeholder="请选择日期" v-bind:layverify="elementItem.Required == 1 ? 'required' : ''"
+                                                          v-bind:value.sync="elementItem.Value"></lay-date>
+                                            </div>
+                                            <!--性别-->
+                                            <div class="layui-input-inline" v-if="elementItem.FieldType==33">
+                                                <remote-rad v-bind:layverify="elementItem.Required == 1 ? 'required' : ''" v-bind:setting="SelectSex" v-bind:value.sync="elementItem.Value"
+                                                            initial="off"></remote-rad>
+                                            </div>
+                                            <!--报考类别处理-->
+                                            <div class="" v-if="elementItem.FieldType==66">
+                                                <div class="layui-input-inline">
+                                                    <remote-sel v-bind:setting="ModelSetting"
+                                                                v-bind:value.sync="submitForm.Model" initial="off"></remote-sel>
+                                                </div>
+                                                <div class="layui-input-inline">
+                                                    <remote-sel v-bind:setting="provinceSettingShool" v-bind:tag="'Province' + elementItem.ID"
+                                                                v-bind:value.sync="submitForm.NowProvinceShool" initial="off" v-bind:change="provinceChangeShool"></remote-sel>
+                                                </div>
+                                                <div class="layui-input-inline">
+                                                    <remote-sel v-bind:setting="ShoolSetting" v-bind:tag="'Shool' + elementItem.ID"
+                                                                v-bind:value.sync="submitForm.Shool" v-bind:change="LevelChange" initial="off"></remote-sel>
+                                                </div>
+                                                <div class="layui-input-inline">
+                                                    <remote-sel v-bind:setting="LevelIDSetting" v-bind:tag="'Level' + elementItem.ID"
+                                                                v-bind:value.sync="submitForm.Level" v-bind:change="SpecialtyChange" initial="off"></remote-sel>
+                                                </div>
+                                                <div class="layui-input-inline">
+                                                    <remote-sel v-bind:setting="SpecialtySetting" v-bind:tag="'Specialty' + elementItem.ID"
+                                                                v-bind:value.sync="submitForm.Specialty" initial="off"></remote-sel>
+                                                </div>
+                                                <button class="layui-btn" lay-submit @click="Add">报考信息</button>
+                                            </div>
+
+                                            <!--省份处理-->
+                                            <div class="" v-if="elementItem.FieldType==11">
+                                                <div class="layui-input-inline">
+                                                    <remote-sel v-bind:setting="provinceSetting" v-bind:tag="'Province' + elementItem.ID"
+                                                                v-bind:value.sync="submitForm.NowProvince" initial="off" v-bind:change="provinceChange"></remote-sel>
+                                                </div>
+                                                <div class="layui-input-inline">
+                                                    <remote-sel v-bind:setting="citySetting" v-bind:tag="'City' + elementItem.ID"
+                                                                v-bind:value.sync="submitForm.NowCity" v-bind:change="cityChange" initial="off"></remote-sel>
+                                                </div>
+                                                <div class="layui-input-inline">
+                                                    <remote-sel v-bind:setting="areaSetting" v-bind:tag="'Area' + elementItem.ID"
+                                                                v-bind:value.sync="submitForm.NowArea" initial="off"></remote-sel>
+                                                </div>
+                                            </div>
+                                            <div class="" v-if="elementItem.FieldType==2">
+                                                <div class="layui-input-inline">
+                                                    <remote-sel v-bind:layverify="item.Required == 1 ? 'required' : ''" v-bind:setting="createSetting(elementItem.FieldName)" v-bind:value.sync="elementItem.Value"
+                                                                initial="off"></remote-sel>
+                                                </div>
+                                            </div>
+                                            <div class="" v-if="elementItem.FieldType==3">
+                                                <div class="layui-input-inline">
+                                                    <remote-sel v-bind:layverify="item.Required == 1 ? 'required' : ''" v-bind:setting="createSetting(elementItem.FieldName)" v-bind:value.sync="elementItem.Value"
+                                                                initial="off"></remote-sel>
+                                                </div>
+                                            </div>
+                                            <div class="" v-if="elementItem.FieldType==4">
+                                                <div class="layui-input-inline">
+                                                    <remote-sel v-bind:layverify="item.Required == 1 ? 'required' : ''" v-bind:setting="createSetting(elementItem.FieldName)" v-bind:value.sync="elementItem.Value"
+                                                                initial="off"></remote-sel>
+                                                </div>
+                                            </div>
+                                            <div class="" v-if="elementItem.FieldType==5">
+                                                <div class="layui-input-inline">
+                                                    <remote-sel v-bind:layverify="item.Required == 1 ? 'required' : ''" v-bind:setting="createSetting(elementItem.FieldName)" v-bind:value.sync="elementItem.Value"
+                                                                initial="off"></remote-sel>
+                                                </div>
+                                            </div>
+                                            <div class="" v-if="elementItem.FieldType==6">
+                                                <div class="layui-input-inline">
+                                                    <remote-sel v-bind:layverify="item.Required == 1 ? 'required' : ''" v-bind:setting="createSetting(elementItem.FieldName)" v-bind:value.sync="elementItem.Value"
+                                                                initial="off"></remote-sel>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div style="display: block; width: 100%; position: fixed;bottom: 0;right: 0; padding: 20px 20px 20px 0; background-color: #fff; text-align:right;">
+                        <button class="layui-btn" lay-submit @click="Addsubmit1">保存</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+
+<script src="/Resources/js/Controls/Common.js"></script>
+
+<!--<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/select2.min.css" rel="stylesheet" />-->
+
+<style>
+    .custom-title {
+        line-height: 45px;
+        background: #f5f5f5;
+        padding-left: 10px;
+    }
+
+    .custom-block {
+        line-height: 45px;
+        min-height: 45px;
+        background: #e0e0e0;
+        padding-left: 10px;
+    }
+
+    .custom-ele, .custom-empty {
+        line-height: 45px;
+        min-height: 45px;
+        border-bottom: 1px solid #ebebeb;
+        padding-left: 10px;
+    }
+
+        .custom-ele:hover {
+            line-height: 45px;
+            min-height: 45px;
+            background: #f5f5f5;
+        }
+
+    [v-cloak] {
+        display: none;
+    }
+
+    .spical {
+        font-size: 12px;
+        position: relative;
+        display: inline-block;
+        vertical-align: middle;
+        height: 22px;
+        line-height: 22px;
+        padding: 0 5px;
+        margin-top: 8px;
+        color: #C9C9C9;
+    }
+
+    .layui-checkbox-disbaled {
+        border-color: #c9c9c9 !important;
+        background-color: #c9c9c9 !important;
+    }
+</style>
+<script>
+    Vue.component('local-switch1',
+    {
+        template: '<input type="checkbox" id="{{setting.tags.id}}" name="{{setting.tags.name}}" item="" lay-skin="switch" lay-filter="{{layfilter}}" lay-text="{{text||\'ON|OFF\'}}" v-model="value" />',
+        props: ['setting', 'value', "text", "item", "enableflag"],
+
+        data: function () {
+            return {
+                layfilter: ""
+            };
+        },
+        watch: {
+            'value': function (val) {
+                var fieldtype = this.$el.dataset.fieldtype;
+                if (fieldtype == 2) {
+                    if (!val) {
+                        this.item.Required = false;
+                        this.item.Common = false;
+                    }
+                }
+                if (fieldtype == 1) {
+                    if (!val) {
+                        this.item.Common = false;
+                        this.item.forbid = false;
+                    } else {
+                        this.item.Common = true;
+                        this.item.forbid = true;
+                    }
+                }
+                this.$dispatch('child-msg', this.item, val, this.$el.dataset.fieldtype, this.$el.dataset.pindex, this.$el.dataset.cindex)
+
+                this.$nextTick(function () {
+                    layui.form.render('checkbox');
+                });
+            }
+        },
+        ready: function () {
+            this.initEvent();
+            this.$nextTick(function () {
+                layui.form.render('checkbox');
+            });
+        },
+        methods: {
+            initEvent: function () {
+                var self = this;
+                this.layfilter = "layfilter" + (Math.random() + "").substr(2);
+                layui.form.on("switch(" + this.layfilter + ")",
+                    function (data) {
+                        self.value = data.elem.checked;
+                    });
+            },
+        }
+    });
+
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'jqueryui', "customUtil", "laydate", "element"],
+        function (fnr) {
+            var $ = layui.$;
+            var jqueryui = layui.jqueryui;
+            var $ = layui.jquery;
+            var form = layui.form;
+            var table = layui.table;
+            var element = layui.element;
+            //获取hash来切换选项卡，假设当前地址的hash为lay-id对应的值
+            //var layid = location.hash.replace(/^#layuitab=/, '');
+            //element.tabChange('layuitab', layid);
+            //监听Tab切换，以改变地址hash值
+            //element.on('tab(layuitab)', function () {
+            //    location.hash = 'layuitab=' + this.getAttribute('lay-id');
+            //});
+
+            function trim(str) {
+                return str.replace(/(^\s*)|(\s*$)/g, "");
+            }
+            var laydate = layui.laydate;
+            var TransferOptions = [];
+            var provinceOptions = [];
+            var cityOptions = [];
+            var Examinatio = [];
+            fnr.findComponent = function (currComponent, tagName) {
+                if (currComponent.$children) {
+                    var childComponent = undefined;
+                    $.each(currComponent.$children, function (k, v) {
+                        if (v.tag == tagName) {
+                            childComponent = v;
+                            return false;
+                        }
+                    })
+                    return childComponent;
+                }
+            };
+            window.vm = new Vue({
+                el: "#root",
+                data:
+                {
+                    isChecked: false,
+                    FormDataList: [],
+                    GetCustomerExt: [],
+                    //allCheck: false, //是否选择
+                    SelectSex: SelectSex(),
+                    provinceSetting: SelectProvinceBind(),//省份
+                    provinceSettingShool: SelectProvinceBind(),//省份学校
+                    ModelSetting: SelectModelBind(),//模型
+                    ShoolSetting: SelectSchool(),//学校
+                    LevelIDSetting: SelectLevelID(),//层次
+                    SpecialtySetting: SelectSpecialty(),//专业
+                    citySetting: SelectCityBind(),//城市
+                    areaSetting: SelectDistrictBind(),//区域
+
+                    FormAllotSetting: {
+                        tags: { name: "FormAllot" },
+                        options: [
+                        { key: "0", value: "随机分配 " },
+                        { key: "1", value: "循环分配" }
+                        ]
+                    }, IsVerificationSetting: {
+                        tags: { name: "IsVerification" },
+                        options: [
+                        { key: "0", value: "不启动 " },
+                        { key: "1", value: "启动" }
+                        ]
+                    },
+                    FormSetting: {
+                        tags: { name: "FormType" },
+                        options: [
+                        { key: "1", value: "客户" },
+                        { key: "2", value: "线索" }
+                        ]
+                    },
+                    Setting: {
+                        search: true,
+                        options: TransferOptions,
+                        fields: { root: "Data", key: 'ID', value: 'TypeName' },
+                        remote: { url: '/service/crm/Form/GetFormList' }
+                    },
+                    SubmitCustomForm: {
+                        CustomerID: '',
+                        FormName: '',
+                        FormAllot: '0',
+                        IsVerification: '0',
+                        FormTypeID: '',
+                        FormType: '1',
+                        TipMsg: '',
+                        Weight: ''
+                    },
+                    submitForm: {
+                        NowProvince: 0,
+                        NowProvinceShool: 0,
+                        NowCity: 0,
+                        NowArea: 0,
+                        NowAddress: 0,
+                        Shool: 0,
+                        Sex: 1,
+                        Model: 0,
+                        Level: 0,
+                        Specialty: 0
+
+                    },
+                    selected: 0,
+                    isnew: '',
+                    formList: [],
+                    Examination: [],
+                    formListCustomer: [],
+                    CustomerValue:[],
+                    content: '',
+
+                },
+
+                ready: function () {
+                    var self = this;
+                    if (GetQueryString('ID') > 0) {
+                        self.Customerlist();
+                        self.GetFormList();
+                       } 
+                    else {
+                        self.GetCustomerlistAdd();
+                    }
+                    form.on('checkbox(chb)', function (data) {
+                        self.isChecked = data.elem.checked;
+                        $.each(self.formListCustomer, function (k, v) {
+                            v.Check = self.isChecked;
+                        })
+                        self.$nextTick(function () {
+                            layui.form.render("checkbox");
+                        });
+
+                    });
+
+                },
+               
+                watch: {
+                  
+                },
+                methods: {
+                    //下一步获取表单类别状态
+                    nextChange1: function (e) {
+                        var self = this;
+                        if (self.SubmitCustomForm.FormName != "") {
+                            if (e == 1) {
+
+                                if (GetQueryString('ID') > 0) {
+                                    self.GetCustomerlist();
+                                  }
+                            } else if (e == 2) {
+
+                                self.reload(self.SubmitCustomForm.FormType);
+                                //if (GetQueryString('ID') > 0) {
+                                //    self.GetCustomerlist();
+                                //}
+                            }
+                            var ev = e.target || e.toElement || e.srcElement;
+                            $(ev).parents('.layui-tab-content').prev().find('.layui-this').next().click();
+                        } else {
+                            layer.msg("表单名称不能为空");
+                        }
+                    },
+                    nextChange2:function(e){
+                        var self = this;
+                        $.each(self.formListCustomer, function (k, v) {
+                            if (v.Check) {
+                                self.CustomerValue.push({ CustomerID: v.ID, Weight: v.Weight })
+                            }
+                        })
+                        if (self.CustomerValue.length != 0) {
+                            var ev = e.target || e.toElement || e.srcElement;
+                            $(ev).parents('.layui-tab-content').prev().find('.layui-this').next().click();
+                        } else {
+                            layer.msg("分配客服不能为空");
+                        }
+                    },
+                    reload: function (val) {
+                        var self = this;
+                        $.get("/service/public/CustomSettings/GetLayoutConfig",
+                            { BusType: val, Other: 1 },
+                            function (resp) {
+                                if (resp.SuccessResponse) {
+                                    self.formList = resp.Data.map(function (item) {
+                                        if (item.Childs && item.Childs.length > 0) {
+                                            item.Childs.map(function (child) {
+                                                child.Required = !!child.Required;
+                                                if (!!child.Required) {
+                                                    child.forbid = true;
+                                                } else {
+                                                    child.forbid = false;
+                                                }
+                                                if (child.DataSource != null) {
+                                                    child.DataSource = eval(child.DataSource);
+                                                } else {
+                                                    child.DataSource;
+                                                }
+                                            })
+                                        }
+                                        return item
+                                    });
+                                    //绑定默认值
+                                    $.each(self.FormDataList.FeildData, function (k1, v1) {
+                                        $.each(self.formList, function (k, v) {
+                                            $.each(v.Childs, function (m, n) {
+                                                if (v1.FieldID == n.ID) {
+                                                    n.Value = v1.DefaultValue
+                                                    n.IsEnable = v1.IsEnble
+                                                    n.Required = v1.Required
+                                                }
+                                            });
+                                        });
+                                        if (v1.FieldID == 139 || v1.FieldID == 148) {
+                                            if (v1.DefaultValue != null && v1.DefaultValue != "") {
+                                                var splitV = v1.DefaultValue.split(',');
+                                                self.submitForm['NowProvince'] = splitV[0].split(',')[0];
+                                                fnr.mergeJson(SelectCityBind(self.submitForm.NowProvince), self.citySetting);//合并ajax值
+                                                self.submitForm['NowCity'] = splitV[1].split(',')[0];
+                                                fnr.mergeJson(SelectDistrictBind(self.submitForm.NowCity), self.areaSetting);//合并ajax值
+                                                self.submitForm['NowArea'] = splitV[2].split(',')[0];
+                                                //self.submitForm['NowAddress'] = splitV[3];
+                                            }
+                                        }
+                                        if (v1.FieldID == 128) {
+                                            if (v1.DefaultValue != null && v1.DefaultValue != "") {
+                                                var splitV = v1.DefaultValue.split(',');
+                                                self.submitForm.Model = splitV[0].split(',')[0];
+                                                self.submitForm.NowProvinceShool = splitV[1].split(',')[0];
+                                                fnr.mergeJson(SelectSchool(self.submitForm.NowProvinceShool, self.submitForm.Model), self.ShoolSetting);//合并ajax值
+                                                self.submitForm.Shool = splitV[2].split(',')[0];
+                                                self.submitForm.Level = splitV[3].split(',')[0];
+                                                fnr.mergeJson(SelectSpecialty(self.submitForm.NowProvinceShool, self.submitForm.Model, self.submitForm.Shool, self.submitForm.Level), self.SpecialtySetting);//合并ajax值
+                                                self.submitForm.Specialty = splitV[4].split(',')[0];
+                                            }
+                                        }
+                                    })
+                                }
+                            },
+                            "json");
+                    },
+                    GetFormList: function () {
+                        var self = this;
+                        $.get("/service/crm/Form/GetFormDetailInfo", { ID: GetQueryString('ID') },
+                           function (resp) {
+                               if (resp.SuccessResponse) {
+                                   self.FormDataList = resp.Data;
+                                   self.SubmitCustomForm = resp.Data.FormSignUp;
+                               }
+                           },
+                           "json");
+                    },
+                    //学校
+                    provinceChangeShool: function (o) {
+                        var index = o.tag.replace('Province', '');
+                        var ShoolTag = 'Shool' + index;
+                        var self = this;
+                        if (self.submitForm.NowProvinceShool == "") {
+                            self.ShoolSetting.remote.url = "";
+                            self.ShoolSetting.remote.data = {};
+                            fnr.findComponent(self, ShoolTag).reset();
+                        } else {
+                            fnr.mergeJson(SelectSchool(self.submitForm.NowProvinceShool, self.submitForm.Model), self.ShoolSetting);//合并ajax值
+                            fnr.findComponent(self, ShoolTag).reset();
+
+                        }
+                    },
+                    //专业
+                    SpecialtyChange: function (o) {
+                        var index = o.tag.replace('Level', '');
+                        var SpecialtyTag = 'Specialty' + index;
+                        var self = this;
+                        if (self.submitForm.Level == "") {
+                            self.SpecialtySetting.remote.url = "";
+                            self.SpecialtySetting.remote.data = {};
+                            fnr.findComponent(self, SpecialtyTag).reset();
+                        } else {
+                            fnr.mergeJson(SelectSpecialty(self.submitForm.NowProvinceShool, self.submitForm.Model, self.submitForm.Shool, self.submitForm.Level), self.SpecialtySetting);//合并ajax值
+                            fnr.findComponent(self, SpecialtyTag).reset();
+
+                        }
+                    },
+                    //省份
+                    provinceChange: function (o) {
+                        var index = o.tag.replace('Province', '');
+                        var cityTag = 'City' + index;
+                        var areaTag = 'Area' + index;
+
+                        var self = this;
+                        if (self.submitForm.NowProvince == "") {
+
+                            self.citySetting.remote.url = "";
+                            self.citySetting.remote.data = {};
+                            fnr.findComponent(self, cityTag).reset();
+                        } else {
+                            fnr.mergeJson(SelectCityBind(self.submitForm.NowProvince), self.citySetting);//合并ajax值
+                            fnr.findComponent(self, cityTag).reset();
+
+                        }
+                    },
+                    //市
+                    cityChange: function (o) {
+                        var index = o.tag.replace('City', '');
+                        var areaTag = 'Area' + index;
+                        var self = this;
+                        if (self.submitForm.NowCity == "") {
+                            self.areaSetting.remote.url = "";
+                            self.areaSetting.remote.data = {};
+                        } else {
+                            fnr.mergeJson(SelectDistrictBind(self.submitForm.NowCity), self.areaSetting);//合并ajax值
+                            fnr.findComponent(self, areaTag).reset();
+                        }
+                        fnr.findComponent(self, areaTag).reset();
+                    },
+                    createSetting: function (fieldName) {
+                        return {
+                            search: true,
+                            //selectedIndex: 0,
+                            options: [],
+                            fields: { root: 'Data', key: 'ID', value: 'Description' },
+                            remote: { url: '/service/public/HDictionary/GetHDictionaryList', data: { Valid: 1, ColumnName: fieldName } }
+                        }
+                    },
+                    reloade: function () {
+                        var self = this;
+                        $.get()
+                    },
+                    Addsubmit1: function () {
+                        var self = this;
+                        var FeildData = [];
+                        var CustomerData = [];
+                        var list = {};//自定义数据保存
+                        $.each(self.formList, function (k, v) {
+                            $.each(v.Childs,
+                                function (m, n) {
+                                    //if (n.FieldName != null && n.IsEnable == 1) {
+                                    if (n.Value != undefined && n.Value != null) {
+                                        if (n.FieldType == 11){
+                                            n.Value = self.submitForm.NowProvince + "," + self.submitForm.NowCity + "," + self.submitForm.NowArea;
+                                        }
+                                        if (n.FieldType == 66) {
+                                            n.Value = self.submitForm.Model + "," + self.submitForm.NowProvinceShool + "," + self.submitForm.Shool + "," + self.submitForm.Level + "," + self.submitForm.Specialty;
+                                        }
+                                            n.Value = trim(n.Value + '');
+                                        }
+                                        else {
+                                            if (n.FieldType == 66) {
+                                                n.Value = self.submitForm.Model + "," + self.submitForm.NowProvinceShool + "," + self.submitForm.Shool + "," + self.submitForm.Level + "," + self.submitForm.Specialty;
+                                            }
+                                            if (n.FieldType == 11) {
+                                                n.Value = self.submitForm.NowProvince + "," + self.submitForm.NowCity + "," + self.submitForm.NowArea;
+                                            }
+                                        }
+                                        FeildData.push({ FieldID: n.ID, IsEnble: n.IsEnable == true ? 1:0, DefaultValue: n.Value, Required: n.Required == true ? 1 : 0 })
+                                    //}
+
+                                });
+
+                        });
+                        $.each(self.formListCustomer, function (k, v) {
+                            if (v.Check) {
+                                CustomerData.push({ CustomerID: v.ID, Weight: v.Weight })
+                            }
+                        })
+                        list.FormAllot = self.SubmitCustomForm.FormAllot,
+                        list.IsVerification = self.SubmitCustomForm.IsVerification,
+                        list.FormTypeID = self.SubmitCustomForm.FormTypeID,
+                        list.FormType = self.SubmitCustomForm.FormType,
+                        list.TipMsg = self.SubmitCustomForm.TipMsg,
+                        list.FormName = self.SubmitCustomForm.FormName
+                        list.FeildData = FeildData;
+                        list.CustomerData = CustomerData;
+                        //if (self.Examination.length != 0 && FormType  == 1) {
+                        //    list.Examination = self.Examination;
+                        //} else {
+                        //    layer.msg("报考信息没有专业");
+                        //    return false;
+                        //}
+                        if (self.Examination.length == 0 && list.FormType == 1) {
+                            layer.msg("报考信息没有专业");
+                            return false;
+                        } 
+                        if (list.CustomerData.length == 0) {
+                            layer.msg("分配客服不能为空");
+                            return false;
+                        }
+                       
+                        if (GetQueryString('ID') > 0) {//修改
+                            list.ID = GetQueryString('ID');
+                            $.ajax({
+                                url: '/service/crm/Form/UpdateFormSignUp',
+                                type: 'post',
+                                data: list,
+                                dataType: 'json',
+                                success: function (data) {
+                                    if (data.SuccessResponse) {
+                                        fnr.callDialog('refresh', { status: data.SuccessResponse, msg: data.Message });
+                                        fnr.closeDialog();
+                                    }
+                                }
+                            });
+                        } else {
+                            $.ajax({
+                                url: '/service/crm/Form/AddFormSignUp',
+                                type: 'post',
+                                data: list,
+                                dataType: 'json',
+                                success: function (data) {
+                                    if (data.SuccessResponse) {
+                                        fnr.callDialog('refresh', { status: data.SuccessResponse, msg: data.Message });
+                                        fnr.closeDialog();
+                                    }
+                                }
+                            });
+                        }
+                    },
+                    Add: function () {
+                        var self = this;
+                        fnr.openDialog({
+                            title: '选择',
+                            area: ['710px', '500px'],
+                            content: ['Examination.html?ID=' + GetQueryString('ID')],
+                            btn: ['保存'],
+                            events: {
+                                refresh: function (data) {
+                                    self.Examination = data;
+                                   
+                                }
+                            }
+                        });
+                    },
+                    GetCustomerlist: function () {//修改客服
+                        var self = this;
+                        $.get("/service/crm/Form/GetCustomerlist", { ID: GetQueryString('ID'), Status: 1 },
+                            function (resp) {
+                                if (resp.SuccessResponse) {
+
+                                    $.each(resp.Data, function (k, v) {
+                                        
+                                        $.each(self.GetCustomerExt, function (k1, v1) {
+
+                                            if(v.ID == v1.CustomerID ){
+                                                v.Check = true;
+                                                if (v1.Weight1 > 0) {
+                                                    v.Weight = v1.Weight1;
+                                                }
+                                            }
+                                        })
+                                    })
+                                    self.formListCustomer = resp.Data;
+                                }
+                            },
+                            "json");
+                    },
+                    Customerlist:function(){
+                        var self = this;
+                        $.get("/service/crm/Form/GetCustomerExt", { ID: GetQueryString('ID') },
+                            function (resp) {
+                                if (resp.SuccessResponse) {
+                                    self.GetCustomerExt = resp.Data;
+                                }
+                            },
+                            "json");
+                    },
+                    GetCustomerlistAdd: function () {
+                        var self = this;
+                        $.get("/service/crm/Form/GetCustomerlist", { Status: 1 },
+                           function (resp) {
+                               if (resp.SuccessResponse) { 
+                                   self.formListCustomer = resp.Data;
+                               }
+                           },
+                           "json");
+                    }
+                },
+            });
+
+        });
+</script>

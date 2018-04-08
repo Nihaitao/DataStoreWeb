@@ -1,0 +1,296 @@
+﻿<div class="mainContainer" id="root" v-cloak>
+    <div class="layui-tab layui-tab-card">
+        <ul class="layui-tab-title">
+            <li class="m-l-lg "
+                v-for="(index,item) in ColumnName"
+                v-bind:class="{ 'layui-this': index === selected }"
+                @click="choose(index,item)">
+                <a href="javascript:;" v-bind:data-bustype="item.val">{{item.Name}}</a>
+            </li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <div class="layui-collapse">
+                    <div class="layui-colla-item" v-for="(index,item) in CurrentColumnName">
+                        <h2 class="layui-colla-title" @click="shouqi(item,$event)">{{item.column}}</h2>
+                        <div class="layui-colla-content" v-bind:class="[index==0?'layui-show':'']">
+                            <div v-if="item.formList.length<1" style="height:200px;line-height:200px;text-align:center;">
+                                <i class="layui-icon layui-anim layui-anim-rotate layui-anim-loop" style="font-size: 60px;">&#x1002;</i>
+                            </div>
+                            <div class="layui-form" style="margin-bottom:30px;" v-else>
+                                <div class="layui-row custom-title">
+                                    <div class="layui-col-md3">序号</div>
+                                    <div class="layui-col-md3">描述</div>
+                                    <div class="layui-col-md2">状态</div>
+                                    <div class="layui-col-md2">操作</div>
+                                    <div class="layui-col-md2">排序</div>
+                                </div>
+                                <div class="custom-field">
+                                    <div class="tree" v-bind:id="'tree'+index">
+                                        <div class="tree-content" v-for="(indexs,items) in item.formList" v-bind:data-id="items.ID" v-bind:data-columnstr="items.ColumnName">
+                                            <div class="layui-row custom-ele" v-cloak>
+                                                <div class="layui-col-md3">{{items.ID}}</div>
+                                                <div class="layui-col-md3">{{items.Description}}</div>
+                                                <div class="layui-col-md2">
+                                                    <local-switch1 text="启用|禁用" v-bind:enableflag="items.Valid" v-bind:value.sync="items.Valid" v-bind:item="items" v-bind:disabled="items.Editable==1" data-fieldtype="2" v-bind:data-pindex="rootIndex" v-bind:data-cindex="item"></local-switch1>
+                                                    <span v-if="items.Editable==1" class="spical">特殊字段，不能修改</span>
+                                                </div>
+                                                <div class="layui-col-md2">
+                                                    <button class="layui-btn layui-btn-small" @click="modifyField(item,items,indexs)">修改</button>
+                                                    <button class="layui-btn layui-btn-small layui-btn-danger" v-bind:class="{ 'layui-btn-disabled':items.Editable == 1}" @click="del(item,indexs)" v-bind:disabled="items.Editable==1">删除</button>
+                                                </div>
+                                                <div class="layui-col-md2"><i class="layui-icon sort-icon">&#xe65f;</i>   </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="layui-btn" @click="addField(item)">添加字段</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<style>
+    [v-cloak] { display:none;}
+    .custom-title { line-height: 45px; background: #f5f5f5; padding-left: 10px; }
+
+    .custom-block { line-height: 45px; height: 45px; background: #e0e0e0; padding-left: 10px; }
+
+    .custom-ele, .custom-empty { line-height: 45px; height: 45px; border-bottom: 1px solid #ebebeb; padding-left: 10px; }
+
+    .custom-ele:hover { line-height: 45px; height: 45px; background: #f5f5f5; }
+
+    .sort-icon { cursor: move; }
+
+    [v-cloak] { display: none; }
+    .spical { color: #C9C9C9; font-size: 12px; position: relative; display: inline-block; vertical-align: middle; height: 22px; line-height: 22px; padding: 0 5px; margin-top: 8px; }
+</style>
+<script>
+    Vue.component('local-switch1',
+{
+    template:
+        '<input type="checkbox" id="{{setting.tags.id}}" name="{{setting.tags.name}}" item="" lay-skin="switch" lay-filter="{{layfilter}}" lay-text="{{text||\'ON|OFF\'}}" v-model="value" />',
+    props: ['setting', 'value', "text", "item"],
+    data: function () {
+        return {
+            layfilter: ""
+        };
+    },
+    watch: {
+        'value': function (val) {
+            layui.form.render('checkbox');
+            this.$dispatch('child-msg', this.item.ID, val)
+        }
+    },
+    ready: function () {
+        this.initEvent();
+        this.$nextTick(function () {
+            layui.form.render('checkbox');
+        });
+    },
+    methods: {
+        initEvent: function () {
+            var self = this;
+            this.layfilter = "layfilter" + (Math.random() + "").substr(2);
+            layui.form.on("switch(" + this.layfilter + ")",
+                function (data) {
+                    self.value = data.elem.checked;
+                });
+        }
+    }
+});
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'jqueryui', 'element'],
+        function (fnr) {
+            var $ = layui.$;
+            var jqueryui = layui.jqueryui;
+            var vm = new Vue({
+                el: "#root",
+                data:
+                {
+                    selected: 0,
+                    isnew: '',
+                    ColumnName: [
+                        {
+                            'Name': '线索',
+                            "ColumnArr": [
+                                { 'column': '线索状态', 'columnStr': 'ClueStatus_ID', 'formList': [] },
+                                { 'column': '线索来源', 'columnStr': 'Source_ID', 'formList': [] }
+                            ]
+                        },
+                        {
+                            'Name': '客户',
+                            "ColumnArr": [
+                                { 'column': '客户来源', 'columnStr': 'Source_ID', 'formList': [] },
+                                { 'column': '客户阶段', 'columnStr': 'PhaseType_ID', 'formList': [] },
+                                { 'column': '重要程度', 'columnStr': 'Importance_ID', 'formList': [] },
+                                { 'column': '关系等级', 'columnStr': 'ConnectionLevel_ID', 'formList': [] }
+                            ]
+                        },
+                        {
+                            'Name': '商机',
+                            "ColumnArr": [
+                                { 'column': '跟进阶段', 'columnStr': 'OpportunityPhase_ID', 'formList': [] },
+                                { 'column': '商机来源', 'columnStr': 'OpportunitySource_ID', 'formList': [] },
+                                { 'column': '商机类型', 'columnStr': 'OpportunityType_ID', 'formList': [] }
+                            ]
+                        },
+                        {
+                            'Name': '其他',
+                            "ColumnArr": [
+                                { 'column': '跟进方式', 'columnStr': 'ContactType_ID', 'formList': [] },
+                                { 'column': '预约类型', 'columnStr': 'AppointmentType_ID', 'formList': [] },
+                                { 'column': '学历', 'columnStr': 'Education_ID', 'formList': [] }
+                            ]
+                        },
+                    ],
+                    formList: [],
+                    content: ''
+                },
+                events: {
+                    'child-msg': function (ID, val) {
+                        var Valid = Number(val)
+                        this.SetValid(ID, Valid)
+                    },
+                },
+                ready: function () {
+                    this.GetHDictionaryList(-1, this.CurrentColumnName[0], this.CurrentColumnName[0]);
+                },
+                computed: {
+                    CurrentColumnName: function () {
+                        return this.ColumnName[this.selected].ColumnArr;
+                    }
+                },
+                methods: {
+                    shouqi: function (item, event) {
+                        var nextElement = event.target.nextElementSibling
+                        nextElement.classList.toggle("layui-show");
+                        if (item.formList.length < 1) {
+                            this.GetHDictionaryList(-1, item);
+                        }
+                    },
+                    choose: function (index, item) {
+                        this.selected = index;
+                        this.GetHDictionaryList(-1, item.ColumnArr[0]);
+                    },
+                    addField: function (item) {
+                        console.log(item)
+                        var that = this;
+                        //添加
+                        fnr.openDialog({
+                            title: "添加" + item.column,
+                            content: ["/Html/Set/SystemSet/AddField.html?ColumnName=" + item.columnStr],
+                            area: ["700px", "500px"],
+                            btn: ["保存"],
+                            events: {
+                                refresh: function (data) {
+                                    that.GetHDictionaryList(-1, item);
+                                }
+                            }
+                        });
+                    },
+                    //修改
+                    modifyField: function (item, items, indexs) {
+                        console.log(items)
+                        var that = this;
+                        fnr.openDialog({
+                            title: "修改" + items.Description,
+                            content: ["/Html/Set/SystemSet/AddField.html?ColumnName=" + items.ColumnName + '&ID=' + items.ID],
+                            area: ["700px", "500px"],
+                            btn: ["保存"],
+                            events: {
+                                refresh: function (data) {
+                                    that.GetHDictionaryList(-1, item);
+                                }
+                            }
+                        });
+                    },
+                    GetHDictionaryList: function (Valid, item) {
+                        var that = this;
+                        $.get("/service/public/HDictionary/GetHDictionaryList", { Valid: Valid, ColumnName: item.columnStr }, function (res) {
+                            if (res.SuccessResponse) {
+                                item.formList = res.Data;
+                                that.$nextTick(function () {
+                                    $(".tree").sortable({
+                                        stop: function () {
+                                            that.sort(item)
+                                        }
+                                    }).disableSelection();
+                                });
+                            }
+                        });
+                    },
+
+                    //启用禁用数据字典
+                    SetValid: function (ID, Valid) {
+                        $.post("/service/public/HDictionary/UpdateHDictionarySetValid", { ID: ID, Valid: Valid }, function (res) {
+                            if (res.SuccessResponse) {
+                                layer.msg(res.Message)
+                            }
+                        });
+                    },
+
+                    //根据ID删除字典
+                    LogicDeleteHDictionaryByID: function (ID, cb) {
+                        layer.confirm('确定删除？', {
+                            offset: [(document.body.clientHeight - 77) / 2, (document.body.clientWidth - 130) / 2],
+                            btn: ['确定', '取消'] //按钮
+                        }, function (index) {
+                            $.post("/service/public/HDictionary/LogicDeleteHDictionaryByID", { ID: ID }, function (res) {
+                                if (res.SuccessResponse) {
+                                    layer.msg(res.Message)
+                                    cb && cb(res)
+                                }
+                            });
+                        }, function (index) {
+                            layer.close(index)
+                        });
+                    },
+                    //字典排序
+                    sort: function (item) {
+                        var that = this;
+                        var list = [];
+                        $("div.tree-content").each(function (i, item) {
+                            var model = {
+                                ColumnName: item.dataset.columnstr,
+                                ID: $(this).data('id'),
+                                SortID: i,
+                            }
+                            list.push(model)
+                        });
+                        $.ajax({
+                            url: "/service/public/HDictionary/ReSortHDictionary",
+                            method: "post",
+                            contentType: "application/json",
+                            data: JSON.stringify(list),
+                            success: function (resp) {
+                                if (resp.SuccessResponse) {
+                                    that.GetHDictionaryList(-1, item);
+                                    layer.msg(resp.Message);
+                                } else {
+                                    layer.msg(resp.Message ? resp.Message : '操作失败');
+                                }
+                            }
+                        });
+                    },
+
+                    //删除字典
+                    del: function (item, indexs) {
+                        console.log(item)
+                        var that = this;
+                        this.LogicDeleteHDictionaryByID(item.formList[indexs].ID, function (res) {
+                            if (res.SuccessResponse) {
+                                item.formList.splice(indexs, 1);
+                            }
+                        });
+                    }
+                }
+            });
+        });
+</script>

@@ -1,0 +1,98 @@
+header {
+  position: relative;
+  line-height: 0.862068rem;
+  background: #f6f6f6;
+  text-align: center;
+  border-top: 0.017241rem solid #dddddd;
+  border-bottom: 0.017241rem solid #dddddd;
+}
+header .log {
+  position: absolute;
+  top: 0;
+  right: 0.189655rem;
+  color: #f12532;
+}
+header .icon-sanjiao-copy {
+  position: absolute;
+  top: 0;
+  left: 0.344827rem;
+}
+.main {
+  padding: 0 0.25862rem;
+}
+.main .nameIpt {
+  position: relative;
+  margin-top: 0.706896rem;
+  padding-bottom: 0.310344rem;
+}
+.main .nameIpt .iconfont {
+  position: absolute;
+  top: 0.224137rem;
+  font-size: 0.310344rem;
+  padding-left: 0.25862rem;
+}
+.main .nameIpt .username {
+  padding-left: 0.793103rem;
+  border: 1px solid #dddddd;
+  line-height: 0.775862rem;
+  width: 100%;
+}
+.main .passIpt {
+  position: relative;
+  padding-bottom: 0.448275rem;
+}
+.main .passIpt .phoneBack {
+  margin: 0;
+  padding-left: 0.793103rem;
+  border: 1px solid #dddddd;
+  line-height: 0.75862rem;
+  width: 2.844827rem;
+  margin-right: 0.120689rem;
+  font-size: 0.206896rem;
+  display: inline-block;
+  height: 0.75862rem;
+}
+.main .passIpt .icon-yuechi {
+  position: absolute;
+  top: 0.224137rem;
+  font-size: 0.310344rem;
+  padding-left: 0.25862rem;
+}
+.main .passIpt .obtain {
+  float: right;
+  height: 0.75862rem;
+  margin: 0;
+  padding: 0;
+  width: 2.544827rem;
+  line-height: 0.75862rem;
+  display: inline-block;
+  border: none;
+  background-color:#ddd;
+}
+.main .nextbtn {
+  padding: 0;
+  margin: 0 auto;
+  border: none;
+  width: 100%;
+  text-align: center;
+  background: #f10013;
+  margin-bottom: 0.344827rem;
+  line-height: 0.75862rem;
+  color: #ffffff;
+  font-size: 0.224137rem;
+}
+.main .forgetPassword {
+  float: right;
+}
+.errMsg{
+    position: absolute;
+    left: 0.25862rem;
+    right: 0.25862rem;
+    top: 0.2rem;
+    color: #666;
+    padding-left: 1em;
+    border: #ffc2b3;
+    background-color: #ffd1ca;
+    border-radius: 4px;
+    display:none;
+}

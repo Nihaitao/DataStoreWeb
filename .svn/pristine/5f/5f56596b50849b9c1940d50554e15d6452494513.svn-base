@@ -1,0 +1,196 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body id="root">
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+        <legend>注册设置</legend>
+    </fieldset>
+    <form class="layui-form" action="" onsubmit="return false">
+
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">注册方式</label>
+                <div class="layui-input-inline"style="width:107px;">
+                    <input type="radio" name ="phone" value="手机号" title="手机号" >
+                    <input type="radio" name="phone" value="用户名" title="用户名" >
+                    <input type="radio" name="phone" value="关闭注册" title="关闭注册">
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">协议</label>
+            <div class="layui-input-block" @click="changeProtocol">
+                <local-switch value.sync="submitForm.chbSwitch" text="开|关"
+                              initial="close" v-model="localswitch"></local-switch>
+            </div>
+        </div>
+       
+
+
+        <div class="offToOn">
+            <textarea id="lay_demo"></textarea>
+        </div>
+
+
+        <div class="layui-form-item">
+            <div class="layui-input-block" style="margin-top:30px;" id="layerDemo">
+                <button class="layui-btn" lay-submit="" lay-filter="demo1" data-method="offset" data-type="auto" @click="saveUpdate">保存</button>
+            </div>
+        </div>
+    </form>
+</body>
+</html>
+
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "layedit"],
+    function (fnr) {
+        var $ = layui.$;
+        var layedit = layui.layedit;
+
+        layedit.build("lay_demo")
+
+
+        var etext;//声明保存一个弹框的文本值
+
+
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+                localswitch:false,
+            },
+            ready: function () {
+
+                $.get("/Base/Aciton?urlData=HConfiguration/GetConfiguration", function (data) {
+                    //注册方式
+                    var that = data.ReturnData.Data
+
+                    //获取的数据0为手机 1为用户名
+                    console.log(that.RegisterValid + '0关闭注册;' + that.RegisterType + '0手机号;' + that.RegisterType + '1用户名')
+                    if (that.RegisterValid == 0) {
+                        text = '关闭注册'
+                    }else if (that.RegisterType == 0) {
+                        text = "手机号"
+                    } else if (that.RegisterType == 1) {
+                        text = "用户名"
+                    }
+                    
+                    //text为选中的值
+
+                    $("span:contains('" + text + "')").parent().addClass( "layui-form-radioed" )
+                    $("span:contains('" + text + "')").parent().find('i').addClass("layui-anim-scaleSpring")
+                    $("span:contains('" + text + "')").parent().find('i').html('&#xe643;')
+
+                    //协议开关
+                    if (that.RegisterProtocolValid == 0) {
+
+                        $(".layui-form-switch").removeClass("layui-form-onswitch")
+                        $(".layui-form-switch").find("em").html('关')
+                        $(".offToOn").hide()
+                    } else {
+                        $(".layui-form-switch").addClass("layui-form-onswitch")
+                        $(".layui-form-switch").find("em").html('开')
+                    }
+
+                });
+                
+
+            },
+            methods: {
+                //事件监听
+
+                changeProtocol: function () {
+                    console.log(this.localswitch)
+                    var self = $(".layui-form-switch").find("em").html()
+                    if (self == '开') {
+                        $(".offToOn").show()
+                        console.log("显示下方")
+                    }else if(self == '关'){
+                        console.log("关闭下方")
+                        $(".offToOn").hide()
+                    }
+                },
+
+
+                saveUpdate: function () {
+                    //注册方式版块
+                    var checkbox = $(".layui-anim-scaleSpring").next().html()              // 获取页面上的选框值 0为手机 1为名字
+                    console.log(checkbox)
+                    if (checkbox != '关闭注册') {
+                        that_RegisterValid = 1
+                        if (checkbox == '手机号') {
+                            that_RegisterType = 0
+                        } else if (checkbox == '用户名') {
+                            that_RegisterType = 1
+                        }
+                        $.post("/Base/Aciton?urlData=HConfiguration/SetConfiguration", { RegisterType: that_RegisterType, RegisterValid: that_RegisterValid })
+                    } else {
+                        that_RegisterValid = 0
+
+                        $.post("/Base/Aciton?urlData=HConfiguration/SetConfiguration", { RegisterValid: that_RegisterValid })
+                    }
+                    console.log(that_RegisterValid)
+                    //协议版块
+                    var Protocol = $(".layui-form-switch").find("em").html()
+                    if (Protocol == "开") {
+                        that_RegisterProtocolValid = 1
+                    } else {
+                        that_RegisterProtocolValid = 0
+                    }
+
+                    //console.log(that_RegisterProtocolValid) // 协议开关 0为隐藏 1为显示
+                    
+                    $.post("/Base/Aciton?urlData=HConfiguration/SetConfiguration", { RegisterProtocolValid: that_RegisterProtocolValid })
+
+                    return false;
+                },
+
+            }
+        });
+
+        //设置保存按钮的弹框
+        var active = {
+            offset: function (othis) {
+
+                $.ajax({
+                    url: "/Base/Aciton?urlData=HConfiguration/SetConfiguration",
+                    type: "post",
+                    async: false,
+                    data: { ok: "1" },
+                    success: function (data) {
+                        etext = data.Message
+                    }
+                })
+                if (etext == '成功！') {
+                    etext = '保存成功'
+                }
+                var type = othis.data("type");
+                var text = etext
+                // console.log(text)
+                layer.open({
+                    type: 1,
+                    offset: type,
+                    id: "laydemo" + type,
+                    content: '<div style="padding: 20px 100px;">' + text + '</div>',
+                    btn: "确定",
+                    btnAlign: 'c',//按钮居中
+                    shade: 0,//不显示遮罩
+                    yes: function () {
+                        layer.closeAll();
+                    }
+                })
+            }
+        };
+        $('#layerDemo .layui-btn').on('click', function () {
+            var othis = $(this), method = othis.data('method');
+            active[method] ? active[method].call(this, othis) : '';
+        });
+    });
+</script>

@@ -1,0 +1,66 @@
+body {
+  background: #f5f5f9;
+}
+.centerbox {
+  display: block;
+  width: 100%;
+  height: 0.172413rem;
+  border-bottom: 0.017241rem solid #dddddd;
+}
+main .firstCon {
+  background: #fff;
+  border-bottom: 0.017241rem solid #dddddd;
+  padding-left: 0.25862rem;
+}
+main .firstCon p {
+  line-height: 0.741379rem;
+  height: 0.741379rem;
+  border-bottom: 0.017241rem solid #dddddd;
+  color: #333;
+  font-size: 0.25862rem;
+  position: relative;
+}
+main .firstCon p:last-of-type {
+  border: none;
+}
+main .firstCon p .txt {
+  float: right;
+  color: #999;
+  margin-right: 0.25862rem;
+}
+main .firstCon p img{
+        height: 0.541379rem;
+        width:0.541379rem;
+        border-radius:50%;
+    vertical-align: middle;
+    position: absolute;
+    right: 0.65862rem;
+    top: 0.125rem;
+}
+main .firstCon p input {
+  border: none;
+  line-height: 0.606896rem;
+  height: 0.589655rem;
+  float:right;
+  text-align:right;
+  margin-right: 0.25862rem;
+}
+main .saveUp {
+  width: 5.948275rem;
+  margin-left: 0.25862rem;
+  margin-top: 0.344827rem;
+  line-height: 0.75862rem;
+  background: #F10013;
+  text-align: center;
+  color: #fff;
+  border: none;
+  border-radius: 0.051724rem;
+}
+.edit .txt{
+    margin-right:0.65862rem!important;
+}
+.edit i{
+    position: absolute;
+    right: 0.185555rem;
+    color:#666;
+}

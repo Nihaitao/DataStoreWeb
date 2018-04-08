@@ -1,0 +1,85 @@
+﻿(function () {
+    //ele判断元素，clsClass名
+    function hasClass(ele, cls) {
+        return (new RegExp('(\\s|^)' + cls + '(\\s|$)')).test(ele.className);
+    }
+    function removeClass(ele, cls) {
+        if (hasClass(ele, cls)) {
+            var reg = new RegExp('(\\s|^)' + cls + '(\\s|$)');
+            ele.className = ele.className.replace(reg, ' ');
+        }
+    }
+    function addClass(ele, cls) {
+        if (!hasClass(ele, cls)) {
+            ele.className += ' ' + cls;
+        }
+    }
+    ///参数获取
+    function GetQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    }
+
+    window.rootApp = new Vue({
+        el: '#root',
+        data: {
+            isActive: false,
+            ProvinceData: [],
+            CourseData: [],
+            CourseDetailData: {},
+        },
+        ready: function () {
+            this.requestList();
+            //this.ActiveStatus();
+            this.CourseMsg();
+        },
+        methods: {
+            //课程列表active状态切换
+            ActiveStatus: function (e) {
+                var ev = e.currentTarget;
+                console.log(ev);
+                if (hasClass(ev, 'active')) {
+                    removeClass(ev, 'active');
+                } else {
+                    addClass(ev, 'active');
+                }
+                var money = 0;
+                var MoneyData = $('.Pro-course-care.active .Pro-price span');
+                $.each(MoneyData, function (k, v) {
+                    money += parseFloat(v.innerText);
+                });
+                $('.Pro-detail-price .price b').text(money.toFixed(2));
+            },
+
+            // 请求课程列表
+            // SpecialtyID专业ID，ModelID模型ID
+            requestList: function () {
+                var self = this;
+                $.get('/service/edu/Specialty/GetSpecialtyCurriculumList', { SpecialtyID: 7, ModelID: 1 }, function (rsp) {
+                    console.log(rsp);
+                    if (rsp.SuccessResponse) {
+                        if (rsp.Data) {
+                            $.each(rsp.Data, function (k, v) {
+                                self.CourseData.push(v);
+                            });
+                        }
+                    }
+                });
+            },
+            
+            //单个课程信息
+            //Specialty_ID专业ID
+            CourseMsg: function () {
+                var self = this;
+                $.get('/service/edu/Specialty/GetSpecialty', { Specialty_ID: GetQueryString('id') }, function (rsp) {
+                    if (rsp.Data) {
+                        $.each(rsp.Data, function (k, v) {
+                            Vue.set(window.rootApp.CourseDetailData, k, v);
+                        });
+                    }
+                });
+            }
+        }
+    });
+})();

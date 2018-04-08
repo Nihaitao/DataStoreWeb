@@ -1,0 +1,53 @@
+.clientList{
+    margin-top: 0.96rem;
+    margin-bottom: 0.98rem;
+}
+.clientItems li{
+    box-sizing: border-box;
+    margin-left: 0.26rem;
+    border-bottom: 0.01rem solid #ededed;
+}
+.clientItems .firstItem{
+    height: 0.7rem;
+    line-height: 0.7rem;
+}
+.clientItems .firstItem p{
+    font-size: 0.26rem;
+    color: #999;
+}
+.clientItems .firstItem p span{
+    color: #ffbe00;
+}
+.items .clientName{
+    font-size: 0.3rem;
+    color: #333;
+    margin-bottom: 0.2rem;
+}
+.items{
+    height: 1.28rem;
+}
+.items .degree{
+    font-size: 0.26rem;
+    color: #666;
+}
+.items div{
+    margin: 0.26rem 0;
+}
+.items .degree span{
+    font-size: 0.28rem;
+    color: #ffbe00;
+}
+.footerBtn{
+    height: 0.98rem;
+    width: 100%;
+    background-color: #f76260;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    text-align: center;
+    line-height: 0.98rem;
+}
+.footerBtn span{
+    font-size: 0.32rem;
+    color: #fff;
+}

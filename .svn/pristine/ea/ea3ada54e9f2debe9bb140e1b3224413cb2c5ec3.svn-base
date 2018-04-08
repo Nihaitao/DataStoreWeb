@@ -1,0 +1,357 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>课程-排课表</title>
+    <style>
+        .left-side { float: left; width: 18%; min-height: 576px; border: 1px solid #e9edee; background-color: #f6f6f6; }
+        .left-sides-title { height: 28px; line-height: 28px; color: #fdfdfd; background-color: #cccccc; text-align: center; font-size: 14px; border-bottom: 1px solid #f6f6f6; cursor: pointer; }
+        .subentry { height: 34px; line-height: 34px; /* text-align: center; */ font-size: 14px; color: #666; cursor: pointer; border-top: 1px solid #F6F6F6; padding-left: 38%; }
+        li.subentry { position: relative; }
+        .left-side li.subentry.active { background-color: #00aaff; color: #fff; }
+         .left-side li.subentry.active a{color: #fff; }
+        li.subentry span { position: absolute; left: 64px; font-size: 16px; margin-right: 5px; }
+        .right-side { float: right; width: 81%; min-height: 576px; border: 1px solid #e9edee; background-color: #f6f6f6; }
+        div.u-wrap { width: 98%; }
+        .right-side .classes { margin: 0; }
+        .u-wrap .mainbackground { position: relative; padding: 50px 100px 10px; background-color: #f6f6f6; }
+        .right-side .u-wrap .mainbackground.nopadding { padding: 0 25px; }
+        .heading { position: relative; margin: 15px 0; padding: 3px 8px; border-left: 3px solid #fa6900; }
+        .right-side .heading { position: relative; }
+        .company .heading { border-width: 4px; }
+        .right-side div.mainbackground .heading { border-left: 3px solid #0af; height: 18px; font-size: 14px; }
+        .tree { border-radius: 2px; }
+        .tree-content { padding-left: 30px; }
+        .tree-node { border-top: 1px solid #e2e2e2; position: relative; }
+        .tree-node:first-child { border-top: none; }
+        .tree-node .option-area { position: absolute; top: 50%; right: 15px; transform: translateY(-50%); }
+        .option-area .layui-icon { display: inline-block; color: #999; }
+        .option-area .layui-icon:hover { color: #333; }
+        .tree-tit { position: relative; height: 42px; line-height: 42px; padding: 0 15px; color: #333; background-color: #ffffff; cursor: pointer; margin-bottom: 10px; }
+        .tree-tit .layui-icon { margin-right: 10px; }
+        .tree-tit:hover { box-shadow: 2px 2px 5px #ccc; }
+        .layui-colla-content { display: none; padding: 10px 15px; line-height: 22px; border-top: 1px solid #f0f0f0; color: #666; }
+        .state-highlight { height: 50px; border: 1px dashed #5FB878; margin-bottom: 10px; }
+        .progress-box { margin: 15px auto; }
+        .steps { position: relative; width: 100%; margin: 0 auto; text-align: center; overflow: hidden; }
+        .steps ul { width: 100%; height: 30px; overflow: hidden; }
+        .steps ul li { width: 33%; background-color: #ddd; display: inline-block; }
+        .steps ul li.active { background-color: #04a2ca; }
+        .steps ul li i { display: inline-block; width: 30px; height: 30px; line-height: 30px; text-align: center; font-style: normal; color: #fff; font-size: 18px; font-weight: 700; }
+        .steps ul li em { position: relative; top: 0; display: inline-block; color: #fff; line-height: 30px; font-size: 14px; font-style: normal; }
+        .ct-step { height: 30px; position: relative; margin-left: 0px; margin-right: 0px; }
+        .ct-step .step { float: left; height: 30px; line-height: 30px; color: #FFF; background: #cacaca; z-index: 1; text-align: center; position: relative; width: 33.33%; }
+        .ct-step .step-active { background-color: #00a0c7; }
+        .ct-step .step:after { content: ''; display: block; width: 20px; height: 30px; position: absolute; right: 0; z-index: 9; top: 0; border-top: 15px solid transparent !important; border-left: 15px solid #cacaca; border-bottom: 15px solid transparent !important; background-color: #fff; box-sizing: border-box; }
+        .ct-step .step-active:after { border-color: #00a0c7; }
+        .ct-step .step:not(:first-child):before { content: ''; display: block; position: absolute; left: -15px; z-index: 8; top: 0px; border-top: 15px solid #cacaca; border-left: 15px solid transparent !important; border-bottom: 15px solid #cacaca; }
+        .ct-step .step-active:before { border-color: #00a0c7 !important; }
+        .ct-step .step i { display: inline-block; width: 30px; height: 30px; line-height: 30px; text-align: center; font-style: normal; color: #fff; font-size: 18px; font-weight: 700; }
+        .ct-step .step em { position: relative; top: 0; display: inline-block; color: #fff; line-height: 30px; font-size: 14px; font-style: normal; }
+        [v-cloak] { display:none;}
+        .tit-area .h3{ font-size:14px;color:#000;}
+        .tit-area .h3 input{border:none;border-bottom: solid 1px;border-radius: 0;width: 300px;background-color:inherit;}
+    </style>
+
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <div class="left-side">
+            <ul class="menuList_choose">
+                <li class="subentry" data-local="/Html/ResourcesCenter/editSimpleCourse/editClassBaseInfo.html?ID={{ID}}">基本信息</li>
+                <li class="subentry" v-cloak  data-local="/Html/ResourcesCenter/editSimpleCourse/editClassTypeVideo.html?ID={{ID}}">视频课</li>
+                <li class="subentry" data-local="/Html/ResourcesCenter/editSimpleCourse/editCourseDetail.html?ID={{ID}}">课程详情</li>
+                <li class="lines"></li>
+                <li class="subentry" data-local="/Html/ResourcesCenter/editSimpleCourse/classesResource.html?ID={{ID}}">课程资料</li>
+                <li class="subentry active" v-cloak  data-local="/Html/ResourcesCenter/editSimpleCourse/editliveOrface.html?ID={{ID}}">排课表</li>
+            </ul>
+        </div>
+        <div class="right-side">
+            <div class="u-wrap classes">
+                <div class="mainbackground nopadding">
+                    <blockquote class="layui-elem-quote">
+                        <div class="layui-row layui-form">
+                            <div class="layui-col-xs10">
+                                <h1 v-cloak style="font-size:20px;">{{UnitName}}</h1>
+                                <!--<div class="layui-inline">
+                    <div class="layui-input-inline">
+                        <input type="text" name="Name" autocomplete="off" placeholder="学科名称" class="layui-input" v-model="queryFormData.Name">
+                    </div>
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="validSetting" v-bind:value.sync="queryFormData.SearchIsEnable" initial="off"></remote-sel>
+                    </div>
+                </div>
+                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="btn" @click="doSearch">查询</button>-->
+                            </div>
+                            <div class="layui-col-xs2" style="text-align: right">
+                                <button class="layui-btn" @click="SaveDiscipline"><i class="layui-icon"></i> 添加一级学科</button>
+                            </div>
+                        </div>
+                    </blockquote>
+                    <div class="block layui-clear" style="height:600px;overflow:auto;">
+                        <div class="tree-wrap" v-cloak style="width:90%;margin:0 auto;">
+                            <div class="tree" v-for="(index,item) in Unit">
+                                <div class="tree-node">
+                                    <div class="tree-tit">
+                                        <h2 class="tit-area">
+                                            <i class="layui-icon open arrow">&#xe61a;</i>
+                                            <span class="name" v-if="item.Edit != true">{{item.Name}}</span>
+                                            <span class="name_edit" v-if="item.Edit == true"><span class=" h3"><input type="text" name="name" v-model="item.Name" /></span><button class="layui-btn layui-btn-primary layui-btn-small" @click.stop="SaveCourse_Unit(item,index)">保存</button></span>
+                                        </h2>
+                                        <div class="option-area">
+                                            <i class="layui-icon edit" @click.stop="editUnit(item,index)">&#xe642;</i>
+                                            <i v-if="item.Edit != true" class="layui-icon add" @click.stop="add(item,index)">&#xe654;</i>
+                                            <i class="layui-icon del" @click.stop="DeleteCourseUnit(item,index)">&#xe640;</i>
+                                        </div>
+                                    </div>
+                                    <div class="tree-content">
+                                        <div class="tree" v-if="item.UnitClassTimeList.length>0" v-for="(index2,item2) in item.UnitClassTimeList">
+                                            <div class="tree-node">
+                                                <div class="tree-tit">
+                                                    <h2 class="tit-area">
+                                                        <i class="layui-icon open arrow">&#xe61a;</i>
+                                                        <span class="name" v-if="item2.Edit != true">{{item2.Name}}</span>
+                                                        <span class="name_edit" v-if="item2.Edit == true"><span class="h3"><input type="text" name="name" v-model="item2.Name" /></span><button class="layui-btn layui-btn-primary layui-btn-small" @click.stop="SaveCourse_Unit_ClassTime(item2,index2,index)">保存</button></span>
+                                                    </h2>
+                                                    <div class="option-area">
+                                                        <i class="layui-icon edit" @click.stop="editUnit_ClassTime(item2,index2,index)">&#xe642;</i>
+                                                        <!--<i v-if="item2.Edit != true" item2.edit !=true class="layui-icon add" @click.stop="add(item2,index2,index)">&#xe654;</i>-->
+                                                        <i class="layui-icon del" @click.stop="DeleteCourseUnitClassTime(item2,index2,index)">&#xe640;</i>
+                                                    </div>
+                                                </div>
+                                                <div class="tree-content">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="https://cdn.bootcss.com/jquery/1.10.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/Controls/Common.js"></script>
+<script src="../Classroom/Sortable.js?v1.0.1"></script>
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'laydate', 'upload'],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+            var upload = layui.upload;
+
+            //搜索条件
+            var rootApp = new Vue({
+                el: '#root',
+                data: {
+                    Name:'',
+                    modifyDiscipline: false,
+                    ID:'',
+                    TeachingMethod:'',
+                    UnitEmpty: {
+                        ID: 0,
+                        Name: '',
+                        Course_ID: '',
+                        Orders: '0',
+                        Edit:true,
+                    },
+                    UnitName:'',
+                    Unit:[],
+                    Unit_ClassTimeEmpty:{
+                        ID:'',
+                        Name:'',
+                        Unit_ID:'',
+                        BegInTime:'',
+                        EndTime:'',
+                        TeacherDetail_ID:'',
+                        ClassRoom_ID:'',
+                        Orders:'',
+                    },
+                    Unit_ClassTime:[],
+
+                },
+                computed:{
+
+                },
+                ready: function () {
+                    if (GetQueryString("ID")) {
+                        this.ID= ID = GetQueryString("ID");
+                        this.GetCourseByID({ ID: ID })
+                        this.GetCourse_UnitNodeList({ Course_ID: ID });
+                    }
+                    $(".menuList_choose").on('click', 'li.subentry', function () {
+                        var href = $(this).attr("data-local");
+                        window.location.href = href;
+                    });
+                },
+                methods: {
+                    GetCourseByID:function(params){
+                        var self=this;
+                        $.get("/service/WebCourse/GetCourseByID",params,function(res){
+                            if(res.SuccessResponse){
+                                self.TeachingMethod=res.ReturnData.Data.TeachingMethod;
+                                self.UnitName=res.ReturnData.Data.Name;
+                                self.UnitEmpty.Course_ID=res.ReturnData.Data.ID
+                            }
+                        })
+                    },
+                    //添加一级学科
+                    SaveDiscipline: function () {
+                        this.Unit.push(JSON.parse(JSON.stringify(this.UnitEmpty)));
+                        this.Drag();
+                    },
+                    //添加修改网课单元
+                    SaveCourse_Unit: function (params, index) {
+                        var self = this;
+                        $.post("/service/WebCourse/SaveCourse_Unit", params, function (res) {
+                            if (res.SuccessResponse) {
+                                layer.msg("添加成功");
+                                //Vue.set(self.Unit[index], 'Edit', false);
+                                self.Unit[index].Edit = false;
+                            }
+                        })
+                    },
+                    //添加修改网课单元课次
+                    SaveCourse_Unit_ClassTime:function(params,index,parentIndex){
+                        var self=this;
+                        $.post("/service/WebCourse/SaveCourse_Unit_ClassTime",params,function(res){
+                            if(res.SuccessResponse){
+                                //Vue.set(self.Unit[parentIndex].UnitClassTimeList[index], 'Edit', false);
+                                self.Unit[parentIndex].UnitClassTimeList[index].Edit=false;
+                                layer.msg('添加成功')
+                            }
+                        })
+                    },
+                    //查询学科集合
+                    GetCourse_UnitNodeList: function (params) {
+                        var self = this;
+                        $.get("/service/WebCourse/GetCourse_UnitNodeList", params, function (res) {
+                            if(res.SuccessResponse){
+                                self.Unit = res.ReturnData.Data;
+                                self.$nextTick(function () {
+                                    $(".tree-wrap").mySortable({
+                                        "tree": ".tree-wrap",
+                                        "treeContent": ".tree-content",
+                                        "treeTitle": ".tree-tit",
+                                        "optionArea": ".option-area",
+                                        "stop":function(event,ui){
+                                            var sortedIDs = $( ".tree-wrap" ).sortable( "toArray" ,{ attribute: "data-id" });
+                                            $.post("/service/Discipline/SortDiscipline",{old_prev_order:0,old_next_order:0,new_prev_order:0,new_next_order:0,currDisciplineId:0,currParentId:0},function(res){
+                                                if(res.SuccessResponse){
+                                                    layer.msg('排序成功')
+                                                }
+                                            })
+                                        }
+                                    });
+
+                                });
+                            }
+
+                        })
+                    },
+                    //拖拽
+                    Drag:function(){
+                        return  $(".tree-wrap").mySortable({
+                            "tree": ".tree-wrap",
+                            "treeContent": ".tree-content",
+                            "treeTitle": ".tree-tit",
+                            "optionArea": ".option-area",
+                            "stop":function(event,ui){
+                                $.post("/service/Discipline/SortDiscipline",{old_prev_order:0,old_next_order:0,new_prev_order:0,new_next_order:0,currDisciplineId:0,currParentId:0},function(res){
+                                    if(res.SuccessResponse){
+                                        layer.msg('排序成功')
+                                    }
+                                })
+                            }
+                        });
+                    },
+                    //编辑网课单元
+                    editUnit: function (item, index) {
+                        Vue.set(this.Unit[index], 'Edit', true);
+                    },
+                    //编辑网课单元课次
+                    editUnit_ClassTime: function (item, index, parentIndex) {
+                        //if (parentIndex === undefined) {
+                        //    if (this.Unit[index].Edit) return false;
+                        //    Vue.set( this.Unit[index], 'Edit', true );
+                        //} else {
+                        //    if (this.Unit[parentIndex].UnitClassTimeList[index].Edit) return false;
+                        //    Vue.set(this.Unit[parentIndex].UnitClassTimeList[index], 'Edit', true )
+                        //}
+                        Vue.set(this.Unit[parentIndex].UnitClassTimeList[index], 'Edit', true)
+                    },
+
+                    add: function (item, index,parentIndex) {
+                        var self=this;
+                        //添加课次
+                        fnr.openDialog({
+                            title: '添加课次',
+                            area: ['700px', '400px'],
+                            content: ['./addCourse.html?ID='+item.ID],
+                            btn: ['确认添加'],
+                            yes: function (index, layero) {
+                                var iframeWin = window[layero.find('iframe')[0]['name']];
+                                $(iframeWin.document).find(".layui-btn").click();
+                            },
+                            events: {
+                                refresh: function (data) {
+                                    self.Unit[index].UnitClassTimeList.push(data);
+                                    layer.msg("添加成功")
+                                }
+                            },
+                        });
+                    },
+
+                    DeleteCourseUnit: function (item, index) {
+                        var self = this;
+                        layer.confirm('是否删除？', {
+                            btn: ['确定', '取消'] //按钮
+                        }, function () {
+                            $.post("/service/WebCourse/DeleteCourseUnit",{ID:item.ID},function(res){
+                                if(res.SuccessResponse){
+                                    layer.msg('删除成功');
+                                    self.Unit.splice(index,1);
+                                }
+                            })
+                        })
+                    },
+                    //删除单元课次及对应的关系表
+                    DeleteCourseUnitClassTime:function(item,index,parentIndex){
+                        var self = this;
+                        layer.confirm('是否删除？', {
+                            btn: ['确定', '取消'] //按钮
+                        }, function () {
+                            $.post("/service/WebCourse/DeleteCourseUnitClassTime",{ID:item.ID},function(res){
+                                if(res.SuccessResponse){
+                                    layer.msg('删除成功');
+                                    self.Unit[parentIndex].UnitClassTimeList.splice(index,1);
+                                }
+                            })
+                        })
+                    }
+                }
+            });
+            //上传图片
+            var uploadInst = upload.render({
+                elem: '#upload' //绑定元素
+                , url: '/upload/' //上传接口
+                , done: function (res) {
+                    //上传完毕回调
+                }
+                , error: function () {
+                    //请求异常回调
+                }
+            });
+        });
+</script>

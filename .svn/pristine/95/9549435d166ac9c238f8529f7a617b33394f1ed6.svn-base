@@ -1,0 +1,171 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        textarea {
+            resize: none;
+        }
+    </style>
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <form class="layui-form" action="" onsubmit="return false" >
+            <div class="layui-form-item">
+                <label class="layui-form-label">姓名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="title" v-model="queryFormData.Name" lay-verify="required" placeholder="请输入姓名" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">手机号码</label>
+                <div class="layui-input-block">
+                    <input type="text" name="title" v-model="queryFormData.Phone" lay-verify="phone" placeholder="请输入手机号码" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">部门负责人</label>
+                <div class="layui-input-block">
+                    <remote-rad v-bind:setting="Manage" v-bind:value.sync="queryFormData.Departs[0].IsManager" initial="off"></remote-rad>
+                   
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">部门</label>
+
+                <div class="layui-input-block" style="width:40%; float: left; margin-left: 0;">
+                    <remote-sel v-bind:setting="option" lay-verify="required" v-bind:value.sync="queryFormData.Departs[0].DepartmentID"
+                                initial="off" lay-filter="Education_ID"></remote-sel>
+                </div>
+
+            </div>
+            <div class="layui-form-item layui-hide">
+                <div class="layui-input-block">
+                    <button class="layui-btn" @click="formDemo">立即提交</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+
+</body>
+</html>
+
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt"],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var $ = layui.$;
+         
+
+            window.rootApp = new Vue({
+                el: "#root",
+                data: {
+                    queryFormData: {
+                        Name: '',
+                        Phone: '',
+                        DepartCount: 1,
+                        Departs: [{ DepartmentID: '', IsManager: 0 }],
+                    },
+                    Manage: {
+                        tags: { name: "IsManager" },
+                        options: [
+                       { key: "0", value: "否" },
+                       { key: "1", value: "是" },
+                    
+                        ],
+                        fields: { key: 'key', value: 'value' }
+                    },
+                    _userId: '',
+                    //option: {
+                    //    search: true,
+                    //    options: []
+                    //}
+                    option: {
+                        search: true,
+                        options: [],
+                        fields: { root: 'ReturnData.Data', key: 'ID', value: 'Name' },
+                        remote: { url: "/service/Company/GetListDepartment", options: { method: 'get' } }
+                    }
+                },
+                ready: function () {
+                    _this = this;
+                    _this._userId = fnr.getQueryString("ID");
+                    //请求借口填充数据
+                    if (_this._userId) {
+                        $.get("/service/Station/GetStationAccount", { ID: _this._userId }, function (rsp) {
+                            if (rsp.SuccessResponse) {
+                                _this.queryFormData.Name = rsp.ReturnData.Data.Name;
+                                _this.queryFormData.Phone = rsp.ReturnData.Data.Phone;
+                                _this.queryFormData.DepartmentID1 = rsp.ReturnData.Data.Department_ID;
+                                _this.queryFormData.Departs[0].DepartmentID = rsp.ReturnData.Data.Departments.split(":")[0];
+                                _this.queryFormData.Departs[0].IsManager = rsp.ReturnData.Data.Departments.split(":")[1]
+                               
+                            } else {
+                                layer.msg(ReturnData.Message)
+                            }
+
+                        })
+                    }
+                //    //加载下拉菜单
+                //    $.get("/serviceCompany/GetListDepartment", function (rsp) {
+                //        if (rsp.SuccessResponse) {
+                //            rsp.ReturnData.Data.map(function (a,b) {
+                //                _this.option.options.push({ key: a.ID, value: a.Name })
+                //            })
+                
+                           
+                //        } else {
+                //            layer.msg(ReturnData.Message)
+                //        }
+
+                //    })
+                },
+                methods: {
+                    //数组发生变化
+                    //arrChange: function () {
+                    //    this.arr = [];
+                    //    for (var i = 0; i < this.queryFormData.DepartCount; i++) {
+                    //        this.arr.push({ DepartmentID: "", IsManager1: "" })
+                    //    }
+                    //}
+                    //保存数据关闭弹窗
+                    formDemo: function (e) {
+                        _this = this;
+                        if (!layui.form.checkInput(e)) {
+                            return false;
+                        }
+                        if (_this._userId) {
+                            $.post("/service/Station/EditStationAccount", { ID: _this._userId, Name: _this.queryFormData.Name, Phone: _this.queryFormData.Phone,Departs:_this.queryFormData.Departs }, function (rsp) {
+                                if (rsp.SuccessResponse) {
+                                    fnr.callDialog('refresh'); //回调打开窗口events中的refresh
+                                    fnr.closeDialog(); //关闭当前的对话框
+                                } else {
+                                    layer.msg(rsp.Message)
+                                }
+                            })
+                            return false;
+                        } else {
+                            $.post("/service/Station/CreateStationAccount", _this.queryFormData, function (rsp) {
+                                if (rsp.SuccessResponse) {
+                                    fnr.callDialog('refresh'); //回调打开窗口events中的refresh
+                                    fnr.closeDialog(); //关闭当前的对话框
+                                } else {
+                                    layer.msg(rsp.Message)
+                                }
+                            })
+                            return false;
+                        }
+                        
+                    },
+                }
+            });
+        });
+</script>

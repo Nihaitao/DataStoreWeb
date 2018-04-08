@@ -1,0 +1,145 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>修改联系人</title>
+    <style>
+        .isDisplay {
+            display: none;
+        }
+    </style>
+
+</head>
+<body id="root">
+    <div class="OpenContainer">
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="Name" autocomplete="off" placeholder="请输入名称" class="layui-input"
+                           v-model="submitForm.Name">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">性别</label>
+                    <div class="layui-input-inline">
+                        <remote-rad v-bind:setting="SelectSex" v-bind:value.sync="submitForm.Sex"
+                                    initial="off"></remote-rad>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">手机号码</label>
+                    <div class="layui-input-inline">
+                        <input type="tel" name="Phone" lay-verify="Phone" placeholder="请输入手机号码" autocomplete="off" class="layui-input"
+                               v-model="submitForm.Phone">
+                    </div>
+                </div>
+              
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">电话</label>
+                    <div class="layui-input-inline">
+                        <input type="tel" name="Tel" lay-verify="Tel" placeholder="请输入手电话号码" autocomplete="off" class="layui-input"
+                               v-model="submitForm.Tel" />
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">职位</label>
+                    <div class="layui-input-inline">
+                        <input type="tel" name="Position" lay-verify="Position" placeholder="请输入职位" autocomplete="off" class="layui-input"
+                               v-model="submitForm.Position">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">Email</label>
+                    <div class="layui-input-inline">
+                        <input type="tel" name="Email" lay-verify="Email" placeholder="请输入Email" autocomplete="off" class="layui-input"
+                               v-model="submitForm.Email" />
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">部门</label>
+                    <div class="layui-input-inline">
+                        <input type="tel" name="Department" lay-verify="Department" placeholder="请输入部门" autocomplete="off" class="layui-input"
+                               v-model="submitForm.Department" />
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">备注</label>
+                <div class="layui-input-block">
+                    <textarea placeholder="请输入内容" class="layui-textarea" v-model="submitForm.Remark"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item layui-hide">
+                <button class="layui-btn" lay-submit @click="saveUpdate">提交</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/Controls/Common.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt", "laydate"],
+        function (fnr) {
+            //var laydate = layui.laydate;
+            var $ = layui.jquery;
+            window.rootApp = new Vue({
+                el: "#root",
+                data: {
+                    SelectSex: SelectSex(),
+                    submitForm: {
+                        ID: '',
+                        Name: '',
+                        Sex: 1,
+                        Phone: '',
+                        Tel: '',
+                        Position: '',
+                        Email: '',
+                        Department: '',
+                        Remark: ''
+                    }
+                },
+                ready: function () {
+                    var self = this;
+                    var laydate = layui.laydate;
+                    $.get("/service/crm/Client/GetContactPerson", { ID: fnr.getQueryString("ID") }, function (rsp) {
+                        if (rsp.SuccessResponse) {
+                            fnr.mergeJson(rsp.Data, self.submitForm);//合并ajax值fnr.closeDialog();
+                        }
+                        else {
+                            layer.msg(rsp.Message, { icon: 2 });
+                        }
+                    });
+                },
+                methods: {
+                    saveUpdate: function (e) {
+                        var self = this;
+                        if (!layui.form.checkInput(e)) {
+                            return false;
+                        };
+                        $.post("/service/crm/Client/UpdateContactPerson", this.submitForm, function (data) {
+                            fnr.callDialog('refresh', { status: data.SuccessResponse, msg: data.Message });
+                            if (data.SuccessResponse) {
+                                if (data.SuccessResponse) {
+                                    fnr.closeDialog();
+                                }
+                            }
+                            else {
+                                layer.msg(data.Message);
+                            }
+                        })
+                        return false;
+                    }
+                }
+            })
+        })
+</script>

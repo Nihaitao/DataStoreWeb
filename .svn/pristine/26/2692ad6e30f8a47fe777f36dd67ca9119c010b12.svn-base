@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+        <meta name="format-detection" content="telephone=no">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no, width=device-width " />
+		<title></title>
+		<script type="text/javascript">
+			document.addEventListener('plusready', function() {
+				//console.log("所有plus api都应该在此事件发生后调用，否则会出现plus is undefined。"
+
+			});
+		</script>
+		<link rel="stylesheet" type="text/css" href="./Resources/../Resources/css/ba.css" />
+		<link rel="stylesheet" type="text/css" href="./Resources/css/index.css" />
+		<link rel="stylesheet" type="text/css" href="./Resources/css/swiper.min.css" />
+		<link rel="stylesheet" type="text/css" href="http://at.alicdn.com/t/font_415611_hdz2l2cm02tsxlxr.css" />
+        <script src="script/artTemplate.js"></script>
+	</head>
+
+	<body>
+		<!--头部-->
+		<header>
+			<div class="ipt">
+				<span class="logo">
+					<img src="./Resources/img/logo.jpg"/>
+				</span>
+				<input type="text" name="" id="" placeholder="搜索课程、专业" />
+				<i class="iconfont icon-sousuo"></i>
+			</div>
+		</header>
+
+		<!--轮播图-->
+		<div class="banner swiper-container swiper-container1">
+			<ul class="swiper-wrapper">
+				<li class="swiper-slide">
+					<img src="./Resources/img/20170906-06-by_06.jpg" />
+				</li>
+				<li class="swiper-slide">
+					<img src="./Resources/img/20170906-06-by_06.jpg" />
+				</li>
+				<li class="swiper-slide">
+					<img src="./Resources/img/20170906-06-by_06.jpg" />
+				</li>
+			</ul>
+			<div class="swiper-pagination"></div>
+		</div>
+
+		<!--内容部分-->
+		<main class="main">
+			<!--第一个菜单栏-->
+			
+            <script type="text/html" id="course_list">
+                {{each list as value i}}
+                <div class="secCon ">
+                    <h2>
+                        <span>/</span>
+                        {{value.Name}}
+                        <span>/</span>
+                    </h2>
+                    <nav class="placeNav swiper-container swiper-container4">
+                        <ul class="place clearfix swiper-wrapper" >
+                            {{each value.ChildNodeList as value2 i2}}
+                            <li class="swiper-slide" data-id="{{value2.ID}}">
+                                {{value2.Name}}
+                                <span></span>
+                            </li>
+                            {{/each}}
+
+                            <li class="swiper-slide placeNav_active" data-id="{{value.ID}}">
+                                不限
+                                <span></span>
+                            </li>
+                        </ul>
+                        <i class="mask"></i>
+                    </nav>
+                    <div class="MKS">
+                        
+                        {{ if value.CourseList.length>0 }}
+                        {{each value.CourseList as value3 i3}}
+                        {{if i3<4}}
+                        <span class="MKS_box">
+                            <img src="{{value3.CoverPath?value3.CoverPath:'./Resources/img/20170906-06_04.jpg'}}" />
+                            <span class="MKS_box_describe">
+                                <h4>{{value3.Name}}</h4>
+                                <span class="MKS_box_describe_person">
+                                    <i class="iconfont icon-ren">{{value3.BuyCount}}人</i>
+                                    <i class="price">￥{{value3.Price}}</i>
+                                </span>
+                        </span>
+                        </span>
+                        {{/if}}
+                        {{/each}}
+                        {{/if}}
+                    </div>
+                </div>
+                {{/each}}
+            </script>
+
+		
+		</main>
+
+		<footer>
+			<nav>
+				<ul class="clearfix">
+					<li class="footer_active">
+                        <a class="footerBtn" href="index.html">
+                            <i class="iconfont icon-shouye1"></i>
+                            <p>首页</p>
+                        </a>
+					</li>
+					<li class="">
+                        <a class="footerBtn" href="./html/Course/list.html">
+                            <i class="iconfont icon-fenlei1"></i>
+                            <p>分类</p>
+                        </a>
+					</li>
+					<li class="">
+                        <a class="footerBtn" href="./html/Center/path.html">
+                            <i class="iconfont icon-wodekecheng"></i>
+                            <p>我的课程</p>
+                        </a>
+					</li>
+					<li class="">
+                        <a class="footerBtn" href="./html/Center/personalIndex.html">
+                            <i class="iconfont icon-wode"></i>
+                            <p>我的</p>
+                        </a>
+					</li>
+				</ul>
+			</nav>
+		</footer>
+	</body>
+
+</html>
+<script src="./script/jquery.js"></script>
+<script type="text/javascript" src="./js/swiper.min.js"></script>
+<script type="text/javascript" src="./js/index.js"></script>
+<script type="text/html" id="courseShow">
+    {{each CourseList as value3 i3}}
+    {{if i3<4}}
+    <span class="MKS_box">
+        <img src="{{value3.CoverPath?value3.CoverPath:'./Resources/img/20170906-06_04.jpg'}}" />
+        <span class="MKS_box_describe">
+            <h4>{{value3.Name}}</h4>
+            <span class="MKS_box_describe_person">
+                <i class="iconfont icon-ren">398人</i>
+                <i class="price">￥300</i>
+            </span>
+        </span>
+    </span>
+    {{/if}}
+    {{/each}}
+</script>

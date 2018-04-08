@@ -1,0 +1,159 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link href="~/Resources/css/layui.css" rel="stylesheet" />
+    <script src="~/Resources/js/jquery.js"></script>
+    <script src="~/Resources/js/layui.js"></script>
+    <style>
+        .layi-pull-right { float: right; }
+    </style>
+</head>
+<body>
+    <div class="mainContainer">
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <div class="layui-input-inline">
+                    <select name="SearchName" lay-verify="required">
+                        <option value="StuName">姓名</option>
+                        <option value="Phone">手机号码</option>
+                        <option value="CardNumber">身份证</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <input type="text" name="SearchValue" class="layui-input">
+                </div>
+                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="btn">查询</button>
+
+                <div class="layi-pull-right">
+                    <button class="layui-btn" lay-submit lay-filter="btnAdd"><i class="layui-icon"></i> 添加学生</button>
+                    <button class="layui-btn layui-btn-primary" lay-submit lay-filter="btnImport">导入学生</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-form">
+            <table class="layui-table">
+                <colgroup>
+                    <col width="50">
+                    <col width="400">
+                    <col width="100">
+                    <col width="100">
+                    <col width="100">
+                    <col width="100">
+                    <col width="100">
+                    <col width="100">
+                    <col width="100">
+                    <col width="100">
+                    <col width="100">
+                    <col width="100">
+                    <col width="100">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>
+                            <input type="checkbox" name="" lay-skin="primary" lay-filter="allChoose">
+                        </th>
+                        <th>说明</th>
+                        <th>总数</th>
+                        <th>自学考试</th>
+                        <th>成人高考</th>
+                        <th>远程教育</th>
+                        <th>职业资格</th>
+                        <th>电大</th>
+                        <th>
+                            统招
+                            <a href="" class="btnOrderBy">
+                                <span class="span2"></span>
+                                <span class="span1"></span>
+                            </a>
+                        </th>
+                        <th>培训</th>
+                        <th style="position: relative;">
+                            <a class="hoverBtn" href="javascript:;">
+                                总人数
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropList" style="z-index: 100;">
+                                <li class="hoverColor">
+                                    <a href="javascript:;">选项11111111</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:;">选项2</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:;">选项3</a>
+                                </li>
+                            </ul>
+                        </th>
+                        <th>联系人数</th>
+                        <th>成功率</th>
+                    </tr>
+                </thead>
+                <tbody id="Container"></tbody>
+            </table>
+        </div>
+        <div class="layui-laypage layui-laypage-default" id="PageList" style="float:right">
+        </div>
+    </div>
+    <button class="layui-btn layui-btn-primary" id="btn-repler">查询</button>
+    <script>
+        layui.use(['paging', ], function () {
+            var paging = layui.paging();
+            paging.init({
+                url: 'http://localhost:30400/Station/GetList', //地址
+                //elem: '#view', //内容容器
+                params: { //发送到服务端的参数
+
+                },
+                //type: 'GET',
+                //tempElem: '#conTemp', //模块容器
+                //pageConfig: { //分页参数配置
+
+                //    PageSize: 10 //分页大小
+                //},
+                success: function (res) { //渲染成功的回调
+
+                    console.log("渲染成功：" + res);
+                },
+                fail: function (msg) { //获取数据失败的回调
+                    console.log("失败：" + msg);
+                },
+                complate: function (res) { //完成的回调
+                    console.log("完成的回调：" + res);
+                }
+            });
+            $('#btn-repler').on('click', function () {
+                paging.Refresh();
+            });
+        });
+    </script>
+</body>
+</html>
+
+<script id="Templete" type="text/html">
+    {{#  layui.each(d, function(index, item){ }}
+    <tr>
+        <td><input type="checkbox" name="" lay-skin="primary"></td>
+        <td>{{ item.RequestId }}</td>
+        <td>{{ item.alias }}</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+    </tr>
+    {{#  }); }}
+    {{#  if(d.length === 0){ }}
+    <tr>
+        <td colspan="100" align="center">
+            暂无数据
+        </td>
+    </tr>
+    {{#  } }}
+</script>

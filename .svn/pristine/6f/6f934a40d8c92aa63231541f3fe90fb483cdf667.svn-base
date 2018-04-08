@@ -1,0 +1,193 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>学生中心登录</title>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script src="https://code.jquery.com/jquery-3.2.1.js"
+            integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+    <link rel="shortcut icon" href="" type="image/x-icon" class="favIcon" />
+    <link rel="stylesheet" href="/Resources/CSS/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/Resources/CSS/Font/css/font-awesome.min.css">
+    <script src="/Resources/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="/Resources/CSS/PC_css.css">
+    <link href="/Resources/CSS/login.css" rel="stylesheet" />
+    <style>
+        .login-tabs li { list-style: none; float: left; width: 50%; }
+    </style>
+</head>
+<body id="root">
+    <div class="login" v-cloak>
+        <div class="login-Block">
+            <img class="headerLogo" v-bind:src="headerLogo" alt="" style="width: 232px;height: 60px;">
+            <span class="headerName" style="line-height: 60px;"></span>
+            <div class="login-form">
+                <ul class="login-tabs clearfix" role="tablist">
+                    <li role="presentation" @click="submitForm.LoginType=1" class="active"><a href="#passwrod" role="tab" data-toggle="tab">密码登录</a></li>
+                    <li role="presentation" @click="submitForm.LoginType=2"><a href="#phone" role="tab" data-toggle="tab">验证码登录</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="passwrod">
+                        <input type="text" lay-verify="required" name="CardNumber" v-model="submitForm.CardNumber" class="form-control" placeholder="身份证号码">
+                        <input type="password" lay-verify="required" name="Password" v-model="submitForm.Password" class="form-control" placeholder="密码">
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="phone">
+                        <input type="text" class="form-control" placeholder="手机号码" v-model="submitForm.Phone">
+                        <div class="form-code">
+                            <input type="text" class="form-control" placeholder="验证码" v-model="submitForm.PhoneCode">
+                            <span @click="SendPhoneCode" v-bind:disabled="status.disabled">{{status.tipText}}</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="loginButton" @click="saveUpdate">登录</button>
+                <div class="clearfix" style="text-align: left;margin-bottom: 40px">
+                    <input type="checkbox" class="chk_1" id="seven"><label for="seven"></label> 记住账号
+                    <div class="pull-right"><a href="javascript:void(layer.msg('正在拼命开发中...'));">忘记密码</a><span style="margin: 0 5px">|</span><a href="/usercenter/Register.shtml">注册</a></div>
+                </div>
+                <div class="other">
+                    <div class="slot">第三方账号登录</div>
+                    <div class="other-list">
+                        <a href="javascript:void(layer.msg('正在拼命开发中...'));"><img src="/Resources/images/微信.png" alt=""></a>
+                        <a href="javascript:void(layer.msg('正在拼命开发中...'));"><img src="/Resources/images/qq.png" alt=""></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--footer-->
+        <div class="foot">
+            <p class="copyright">Copyright @2017　励弘在线　湖南八方科技有限公司　版权所有　湘ICP备10201076号-1</p>
+        </div>
+    </div>
+</body>
+</html>
+<link href="/Resources/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="/Resources/js/modules/vue/vue.min.js"></script>
+<script src="/Resources/js/modules/layer/layui.js"></script>
+<script src="/Resources/js/require_config.js"></script>
+<script src="/Resources/js/headFootLayout.js"></script>
+<script>
+    require_js_file(["table", "form", "jquery", "tableExt"],
+    function (fnr) {
+        function delAllCookie() {
+            var myDate = new Date();
+            myDate.setTime(-1000);//设置时间
+            var data = document.cookie;
+            var dataArray = data.split("; ");
+            for (var i = 0; i < dataArray.length; i++) {
+                var varName = dataArray[i].split("=");
+                document.cookie = varName[0] + "=''; expires=" + myDate.toGMTString(); + ";path=/";
+            }
+        }
+
+        var $ = layui.$;
+        window.rootApp = new Vue({
+            el: "#root",
+            data: {
+                submitForm: {
+                    CardNumber: "",
+                    Password: "",
+                    Phone: "",
+                    PhoneCode: "",
+                    LoginType: '1',//登录方式  1账号密码  2手机验证码
+                    LoginSource: 1//登录形式（1-PC端 2-移动端）
+                },
+                headerLogo: '',
+                status: {
+                    disabled: false,
+                    tipText: '获取验证码'
+                }
+            },
+            ready: function () {
+                delAllCookie();
+                this.headImgOrNameFn();
+            },
+            methods: {
+                headImgOrNameFn: function () {
+                    var self = this;
+                    $.get('/service/public/Mechanism/GetSetlist', function (res) {
+                        if (res.SuccessResponse) {
+                            if (res.Data) {
+                                self.headerLogo = res.Data.HeaderLogo ? res.Data.HeaderLogo : '/Resources/images/WxLogo.png';
+                            }
+                        } else {
+                            layer.msg(res.Message);
+                        }
+                    });
+                },
+
+                setCodeTime: function (Seconds, e) {
+                    var self = this;
+                    if (Seconds > 0) {
+                        self.status.disabled = true;
+                        self.status.tipText = Seconds + "秒";
+                        var timer = setInterval(function () {
+                            Seconds = Seconds - 1;
+                            if (Seconds > 0)
+                                self.status.tipText = Seconds + "秒";
+                            else {
+                                clearInterval(timer);
+                                self.status.tipText = "获取验证码";
+                                self.status.disabled = false;
+                            }
+                        }, 1000);
+                    } else
+                        self.status.disabled = false;
+                    return false;
+                },
+                SendPhoneCode: function (e) {
+                    if (!layui.form.checkInput(e, "phone")) {
+                        return false;
+                    }
+                    var self = this;
+                    if (self.status.disabled) {
+                        return;
+                    }
+                    self.status.disabled = true;
+                    $.post("/service/edu/Student/SendPhoneCodeBYLogin", this.submitForm, function (rsp) {
+                        if (rsp.SuccessResponse) {
+                            window.rootApp.submitForm.PhoneCode = rsp.Data.Code;
+                            self.setCodeTime(rsp.Data.Seconds, e)
+                            layer.msg(rsp.Message, { icon: 1 });
+                        }
+                        else {
+                            self.setCodeTime(rsp.Data.Seconds, e)
+                            layer.msg(rsp.Message, { icon: 2 });
+                        }
+                    })
+                    return false;
+                },
+                 setCookie:function (name,value){
+                    var Days = 30;
+                    var exp = new Date();
+                    exp.setTime(exp.getTime() + Days*24*60*60*1000);
+                    document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString()+";path=/";
+                },
+                saveUpdate: function (e) {
+                    var _this = this;
+                    var url = '';
+                    if (!layui.form.checkInput(e)) {
+                        return false;
+                    }
+                    _this.submitForm.LoginType === '1'?url='/service/edu/Student/BindStudentLoginByCardNumber':url='/service/edu/Student/BindStudentLoginByPhone'
+                    $.post(url, this.submitForm, function (rsp) {
+                        if (rsp.SuccessResponse) {
+                            //写入cookie ID
+                            _this.setCookie('StuId',rsp.Data.StuID)
+                            location.href = "/usercenter/index.shtml";
+                        }
+                        else {
+                            layer.msg(rsp.Message, { icon: 2 });
+                        }
+                    })
+                    return false;
+                }
+            }
+        });
+        LayoutFn();
+    });
+</script>

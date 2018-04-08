@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <title>修改预约提醒</title>
+    <link rel="stylesheet" href="../css/iconfont.css">
+    <link rel="stylesheet" href="../js/modules/layer/css/layui.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/client/xiegenjin.css">
+    <script src="../js/jquery.js"></script>
+    <script src="../js/modules/vue/vue.min.js"></script>
+    <script src="../js/modules/layer/layui.js"></script>
+    <script>
+        (function () {
+            document.documentElement.style.fontSize = document.documentElement.clientWidth / 7.5 + 'px';
+            window.onresize = function () {
+                document.documentElement.style.fontSize = document.documentElement.clientWidth / 7.5 + 'px';
+            };
+        })()
+    </script>
+</head>
+<body>
+    <div class="appContainer">
+        <div class="areaBox">
+            <textarea placeholder="提醒内容..."></textarea>
+            <div class="iconBtn">
+                <i class="iconfont xiangji icon-xiangji"></i>
+                <i class="iconfont yuyin icon-yuyin"></i>
+            </div>
+        </div>
+        <div class="main">
+            <!--分割线-->
+            <div class="lines"></div>
+            <ul>
+                <li>
+                    <p>实际跟进时间</p>
+                    <p>(客户)湖南双元云科技有限公司</p>
+                </li>
+                <li>
+                    <p>提醒时间</p>
+                    <p>2017-11-28 11:30 <i class="iconfont icon-jiantou"></i></p>
+                </li>
+            </ul>
+
+            <!--分割线-->
+            <div class="lines"></div>
+            <ul>
+                <li>
+                    <p>提醒类型</p>
+                    <p>预约拜访 <i class="iconfont icon-jiantou"></i></p>
+                </li>
+                <li>
+                    <p>提醒方式</p>
+                    <p>冒泡提醒 <i class="iconfont icon-jiantou"></i></p>
+                </li>
+            </ul>
+        </div>
+        <div class="footerBtnBox">
+            <p>保存</p>
+        </div>
+    </div>
+</body>
+</html>

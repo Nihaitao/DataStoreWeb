@@ -1,0 +1,215 @@
+﻿666 -->
+
+<body id="root">
+    <!--顶部-->
+    <div class="top_head clearfix headLoginState" style="display: none;">
+        <div class="container">
+            <div class="pull-left" style="margin-left: 15px">
+                <span class="headName"></span>
+            </div>
+            <div class="pull-right">
+                <a href="javascript:;" @click="LoginFn">登录</a>
+                <a href="javascript:;" @click="RegisterFn">注册</a>
+                <a href="#">注册客服中心</a>
+            </div>
+        </div>
+    </div>
+    <div class="top_head noheadLoginState" style="display: none;">
+        <div class="container">
+            <div class="pull-left" style="margin-left: 15px">
+                <span class="headName"></span>
+            </div>
+            <div class="pull-right Gcenter">
+                <a href="javascript:;" class="welcomeUser"></a>
+                <a id="exit">退出</a>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix" style="height: 120px;background-color: #fff">
+        <div class="container" style="height: 100%;">
+            <a href="../../index.html" class="pull-left" style="width: 232px; height: 60px; display: block; overflow:hidden; margin-top: 30px;">
+                <img class="headerLogo" src="../../Resources/images/WxLogo.png" alt="">
+                <span class="headerName" style="line-height: 60px;"></span>
+            </a>
+            <div class="Pro-nav pull-right">
+                <ul>
+                    <li v-for="(index, item) in navData" @mouseenter="mouseThis(item.Childs, $event)" @mouseleave="mouseleaveThis($event)" style="position: relative; top: 0; left: 0;right: 0; bottom: 0;height: 45px; line-height: 20px;" v-if="item.Valid == 1">
+                        <a v-bind:href="item.Url" v-if="item.OpenType == 0" style="display:inline-block; padding-bottom: 5px;" target="_blank">{{item.Name}}</a>
+                        <a v-bind:href="item.Url" v-else style="display:inline-block; padding-bottom: 5px;">{{item.Name}}</a>
+                        <ul class="childsList" style="position: absolute; top:40px;left:0; z-index: 9999;background-color: #fff;width: 190px;"></ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>    
+
+
+<script src="../../Resources/js/modules/vue/vue.min.js"></script>
+<script>
+    $(function () {
+        var loginState;
+        //读取COOKIE方法
+        function getCookie(name) {
+            var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+            if (arr = document.cookie.match(reg))
+                return unescape(arr[2]);
+            else
+                return null;
+        }
+
+        function delAllCookie() {
+            var myDate = new Date();
+            myDate.setTime(myDate.getTime() - 10000);//设置时间
+            var data = document.cookie;
+            var dataArray = data.split("; ");
+            for (var i = 0; i < dataArray.length; i++) {
+                var varName = dataArray[i].split("=");
+                document.cookie = varName[0] + "=''; expires=" + myDate.toGMTString();
+                document.cookie = varName[0] + "=''; expires=" + myDate.toGMTString() + ";path=/;domain=" + location.href.match(/((?:\w+\.){1}(?:cn|top|com\.cn|com\.tw|com))/)[1];
+            }
+        }
+        loginState = getCookie("UserKey")
+
+        if (loginState != undefined) {
+            $('.noheadLoginState').css('display', 'block');
+            $('.headLoginState').css('display', 'none');
+        } else {
+            $('.noheadLoginState').css('display', 'none');
+            $('.headLoginState').css('display', 'block');
+        }
+        function LayoutFn() {
+            $.get('/service/public/Mechanism/GetSetlist', function (res) {
+                if (res.SuccessResponse) {
+                    if (res.Data) {
+                        $('.headName').html('欢迎来到' + res.Data.HeaderName);
+                        if (res.Data.HeaderLogoOrName == 1) {
+                            $('.headerLogo').css('display', 'block');
+                            $('.headerLogo').attr('src', res.Data.HeaderLogo ? res.Data.HeaderLogo : '../../Resources/images/WxLogo.png');
+                            $('.headerName').css('display', 'none');
+                        } else if (res.Data.HeaderLogoOrName == 0) {
+                            $('.headerLogo').css('display', 'none');
+                            $('.headerName').css('display', 'block');
+                            $('.headerName').html(res.Data.HeaderName);
+                        }
+                    }
+                }
+            });
+        }
+        LayoutFn();
+
+        function headPhotoFn() {
+            if (!!loginState && !!getCookie("UserNameKey"))
+                $('.welcomeUser').html('hi,' + getCookie("UserNameKey"));
+        }
+        headPhotoFn();
+        $('#exit').on('click', function (e) {
+            e.preventDefault();
+            delAllCookie();
+            location.href = '../../usercenter/Login.shtml';
+        })
+    });
+
+    
+</script>
+<script>
+        var rootApp = new Vue({
+            el: '#root',
+            data: {
+                navData: [],
+                childsNavData: [],
+                LoginPageConfig: ''
+            },
+            ready: function () {
+                this.navFn();
+                this.LoginPageFn();
+            },
+            methods: {
+                LoginPageFn: function () {
+                    var self = this;
+                    $.get('/service/datastore/HConfiguration/GetConfiguration', function (res) {
+                        if (res.SuccessResponse) {
+                            self.LoginPageConfig = res.Data.LoginPageConfig;
+                        }
+                    });
+                },
+
+                RegisterFn: function () {
+                    var self = this;
+                    if (self.LoginPageConfig == 0) {
+                        layer.open({
+                            type: 2,
+                            area: ['400px', '550px'],
+                            fixed: false, //不固定
+                            maxmin: true,
+                            title: '欢迎注册',
+                            content: '../../usercenter/register_model.html'
+                        });
+                    } else {
+                        location.href = '../../usercenter/Register.shtml';
+                    }
+                    
+                },
+
+                //登录模态框
+                LoginFn: function () {
+                    var self = this;
+                    if (sessionStorage.getItem("thisUrl")) {
+                        sessionStorage.removeItem("thisUrl");
+                        sessionStorage.setItem("thisUrl", location.href);
+                    } else {
+                        sessionStorage.setItem("thisUrl", location.href);
+                    }
+                    if (self.LoginPageConfig == 0) {
+                        layer.open({
+                            type: 2,
+                            area: ['400px', '550px'],
+                            fixed: false, //不固定
+                            maxmin: true,
+                            title: '欢迎登陆',
+                            content: '../../usercenter/login_model.html',
+                        });
+                    } else {
+                        location.href = '../../usercenter/Login.shtml';
+                    }
+                },
+
+                //动态导航栏
+                navFn: function () {
+                    var self = this;
+                    $.get('/service/public/Menu/GetMenuData', function (res) {
+                        if (res.SuccessResponse) {
+                            if (res.Data != []) {
+                                $.each(res.Data, function (k, v) {
+                                    self.navData.push(v);
+                                });
+                            }
+                        }
+                    });
+                },
+
+                mouseThis: function (arr, e) {
+                    var ev = e.srcElement || e.target || e.toElement;
+                    var self = this;
+                    if (arr.length > 0) {
+                        var html = '';
+                        $.each(arr, function (k, v) {
+                            if (v.Valid == 1) {
+                                self.childsNavData.push(v);
+                                html += '<li style="white-space:nowrap;text-overflow:ellipsis;overflow:hidden;width: 100%;" title="' + v.Name + '"><a href="' + v.Url + '">' + v.Name + '</a></li>';
+                            }
+                            
+                        });
+                        $(ev).find('.childsList').html(html);
+                    }
+                },
+
+                mouseleaveThis: function (e) {
+                    var ev = e.srcElement || e.target || e.toElement;
+                    $(ev).find('.childsList').html('');
+                }
+            }
+        });
+</script>
+
+

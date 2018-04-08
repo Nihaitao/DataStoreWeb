@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>报考信息树</title>
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery-1.4.4.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery.ztree.core.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery.ztree.excheck.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery.ztree.exedit.js"></script>
+    <script src="/Resources/js/Controls/Common.js"></script>
+    <style>
+        div.layui-table-cell {
+            height: 30px;
+        }
+    </style>
+
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <div class="layui-col-xs2">
+            <ul id="treeDemo" class="ztree"></ul>
+        </div>
+        <div class="layui-form-item">
+            <button class="layui-btn layui-hide" lay-submit @click="submit">提交</button>
+        </div>
+    </div>
+</body>
+</html>
+<link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(["table", 'tree', "form", "jquery", "tableExt"],
+        function (fnr) {
+            // zTree 的参数配置，深入使用请参考 API 文档（setting 配置详解）
+            var setting = {
+                check: {
+                    enable: true
+                },
+                data: {
+                    key: {
+                        name: "name"
+                    },
+                    simpleData: {
+                        enable: true,
+                        idKey: "id",
+                        pIdKey: "pId"
+                    }
+                },
+                view: {
+                    nameIsHTML: true,
+                    showTitle: false
+                },
+               
+            };
+            //$(document).ready(function () {
+            //    $.get("/service/edu/Specialty/GetSpecialtyTrmmList", {}, function (rsp) {
+            //        zTreeObj = $.fn.zTree.init($("#treeDemo"), setting, rsp.Data);
+            //        nodes = zTreeObj.getNodes();
+            //        rootApp.GetCustomerlist();
+            //    });
+            //});
+          
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+            var zTreeObj;
+            var nodes = "";
+           
+            //搜索条件
+            var rootApp = new Vue({
+                el: '#root',
+
+                data: {
+                    Examin: [],
+                    Examination: [],
+                    queryFormData: {
+                        name: ''
+                    },
+                    CourseInfoList: ''
+                  
+                },
+                ready: function () {
+                    var self = this;
+                    $.get("/service/edu/Specialty/GetSpecialtyTrmmList", {IsHide:1 }, function (rsp) {
+                        if (rsp.SuccessResponse) {
+                            zTreeObj = $.fn.zTree.init($("#treeDemo"), setting, rsp.Data);
+                            nodes = zTreeObj.getNodes();
+                            self.GetCustomerlist();
+                        }
+                    });
+
+                },
+                methods: {
+                    submit: function () {
+                        var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+                        var nodes = treeObj.getCheckedNodes(true);
+                        for (var i = 0; i < nodes.length; i++) {
+                            if (nodes[i].Specialty_ID > 0) {
+                                this.Examination.push({ Model_ID: nodes[i].Model_ID, School_ID: nodes[i].School_ID, Level_ID: nodes[i].Level_ID, Specialty_ID: nodes[i].Specialty_ID, Path: nodes[i].id })
+                            }
+                        };
+                        fnr.callDialog('refresh', this.Examination);
+                        fnr.closeDialog();
+                    },
+                    GetCustomerlist: function () {//修改
+                        var self = this;
+                        if (GetQueryString('ID') > 0) {
+                            $.get("/service/crm/Form/GetExaminationlist", { ID: GetQueryString('ID') },
+                            function (resp) {
+                                if (resp.SuccessResponse) {
+                                    $.each(resp.Data, function (i, s) {
+                                        console.log(s)
+                                        var nodesqwq = zTreeObj.getNodesByParam("id", s.Path, null);
+                                        if (nodesqwq.length > 0) {
+                                            $.each(nodesqwq, function (i, x) {
+                                                x.checked = true;
+                                            });
+                                        }
+                                    });
+                                }
+                            },
+                            "json");
+                        }
+                    },
+                },
+            });
+            tableExt.addEvent("tool(listTable)",
+                {
+                
+                });
+            //监听复选框事件
+            table.on('checkbox(listTable)', function (obj) {
+
+            });
+        });
+</script>

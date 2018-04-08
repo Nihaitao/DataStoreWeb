@@ -1,0 +1,199 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery-1.4.4.min.js"></script>
+    <script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery.ztree.core.js"></script>
+    <script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery.ztree.excheck.js"></script>
+    <script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/zTree_v3/js/jquery.ztree.exedit.js"></script>
+</head>
+<body id="root">
+    <div class="mainContainer">
+        <blockquote class="layui-elem-quote">
+            <div class="layui-row layui-form">
+                <div class="layui-inline">
+                    <div class="layui-input-inline">
+                        <remote-sel v-bind:setting="LevelSetting" v-bind:value.sync="queryFormData.Level" laytips="难度列表" initial="off"></remote-sel>
+                    </div>
+                    <div class="layui-input-inline">
+                        <input type="text" autocomplete="off" placeholder="题目名称" class="layui-input" v-model="queryFormData.Title">
+                    </div>
+                    <button class="layui-btn layui-btn-primary" lay-filter="btn" @click="doSearch">查询</button>
+                </div>
+            </div>
+        </blockquote>
+        <!--操作模板-->
+        <table id="listTable" lay-filter="listTable"></table>
+        <div class="layui-form-item layui-hide">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-filter="demo1" lay-submit @click="saveUpdate">提交</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<link href="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+<script src="//bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+<script>
+    require_js_file(['table', 'form', 'jquery', 'tableExt', 'laydate'],
+        function (fnr) {
+            var table = layui.table;
+            var form = layui.form;
+            var tableExt = layui.tableExt;
+
+
+            //搜索条件
+            vm = new Vue({
+                el: '#root',
+                data: {
+                    queryFormData: {
+                        Title: "",
+                        Level: "",
+                        ExamPaperDetailID: fnr.getQueryString('ExamPaperDetailID'),
+                        ExamPaperID: fnr.getQueryString('ExamPaperID'),
+                        Type: fnr.getQueryString('Type'),
+                        Store: fnr.getQueryString('Store')
+                    },
+                    LevelSetting: {
+                        search: true,
+                        defaultValue: 0,
+                        options: [
+                            { key: '1', value: '难度一' },
+                            { key: '2', value: '难度二' },
+                            { key: '3', value: '难度三' },
+                            { key: '4', value: '难度四' },
+                            { key: '5', value: '难度五' }
+                        ]
+                    },
+                    questionArr: [],
+                },
+                ready: function () {
+                },
+
+                methods: {
+                    doSearch: function () {
+                        tableIns.reload({
+                            where: this.queryFormData
+                        });
+                    },
+                    saveUpdate: function (e) {
+                        if (!layui.form.checkInput(e)) {
+                            return false;
+                        }
+                        if (this.questionArr.length <= 0) {
+                            return layer.msg('请选择试题')
+                        }
+                        var Parms = { ExamPaperDetailID: fnr.getQueryString('ExamPaperDetailID'), ExamPaperID: fnr.getQueryString('ExamPaperID'), questionIds: this.questionArr }
+                        $.post("/service/datastore/ExamPaper/AddPaperDetailQuestions", Parms, function (res) {
+                            fnr.callDialog('refresh', { status: res.SuccessResponse });
+                            if (res.SuccessResponse) {
+                                fnr.closeDialog();
+                            }
+                        });
+                    },
+                    viewData: function (data) {
+                        var content = '/Html/ResourcesCenter/Question/View.html?ID=' + data.ID;
+                        if (fnr.getQueryString('Type') == 7)//组合题
+                            content = '/Html/ResourcesCenter/Question/ViewCombination.html?ID=' + data.ID;
+                        fnr.openDialog({
+                            title: '查看题目信息',
+                            area: ['600px', '410px'],
+                            content: [content],
+                            btn: ['关闭'],
+                            yes: function (index, layero) {
+                                layer.close(index);
+                            }
+                        });
+                    },
+                }
+            });
+
+            var tableIns = table.render({
+                elem: '#listTable',
+                even: true, //开启隔行背景
+                page: true, //页分
+                id: 'test',
+                cols: [
+                    [
+                        { checkbox: true },
+                        { field: 'Title', title: '题目名称', width: 160 },
+                        { field: 'QuestionTypeName', title: '题型名称', width: 150 },
+                        {
+                            field: 'Level', title: '题目难度', width: 120, templet: function () {
+                                var str = "<span style='color:orange;font-size:20px;'>★</span>"
+                                return str.repeat(this.Level)
+                            }
+                        },
+                        { field: 'QuestionStoreName', title: '所属题库', width: 145 },
+                         {
+                             fixed: 'right',
+                             field: '',
+                             title: '操作',
+                             width: 100,
+                             toolbar: function () {
+                                 var array = new Array();
+
+                                 array.push("<button class=\"layui-btn layui-btn-small\" lay-event='look'>查看</button>");
+
+                                 return "<div>" + array.join("") + "</div>";
+                             }
+                         }
+                    ]
+                ],
+                url: '/service/datastore/ExamPaper/GetNonExamPaperQuestionList',
+                where: {
+                    ExamPaperDetailID: fnr.getQueryString('ExamPaperDetailID'),
+                    ExamPaperID: fnr.getQueryString('ExamPaperID'),
+                    Type: fnr.getQueryString('Type'),
+                    Store: fnr.getQueryString('Store')
+                },
+                response: {
+                    dataName: 'Data'
+                }
+            });
+            tableExt.addEvent("tool(listTable)",
+                {
+                    //工具栏编辑事件
+                    "look": function (data, obj) {
+                        vm.viewData(data)
+                    },
+                    //工具栏删除事件
+                    "delete": function (data, obj) {
+                        var params = { ID: data.ID }
+                        $.post("/service/datastore/ExamPaper/DeleteExamPaper", params, function (res) {
+                            if (res.SuccessResponse) {
+                                tableIns.reload();
+                            }
+                        })
+                    },
+                    //工具栏配置试题
+                    "select": function (data, obj) {
+                        rootApp.AddQuestions(data)
+                    }
+                });
+            table.on('checkbox(listTable)', function (obj) {
+                if (obj.type == 'one') {
+                    if (obj.checked) {
+                        vm.questionArr.push(obj.data.ID)
+                    } else {
+                        var index = vm.questionArr.indexOf(obj.data.ID)
+                        vm.questionArr.splice(index, 1)
+                    }
+                } else if (obj.type == 'all') {
+                    if (obj.checked) {
+                        var checkStatus = table.checkStatus('test'); //test即为基础参数id对应的值
+                        for (i in checkStatus.data) {
+                            vm.questionArr.push(checkStatus.data[i].ID)
+                        }
+                    } else {
+                        vm.questionArr = [];
+                    }
+
+                }
+            })
+
+        });
+</script>

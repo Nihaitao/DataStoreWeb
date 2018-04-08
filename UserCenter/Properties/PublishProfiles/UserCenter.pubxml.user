@@ -1,0 +1,1126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+您 Web 项目的发布/打包进程将使用此文件。您可以通过编辑此 MSBuild 文件
+来自定义该进程的行为。若要了解与此相关的详细信息，请访问 http://go.microsoft.com/fwlink/?LinkID=208121。
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <_PublishTargetUrl>D:\公司审批-网校学生中心</_PublishTargetUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="bin/Aliyun.OSS.dll">
+      <publishTime>11/06/2017 10:04:27</publishTime>
+    </File>
+    <File Include="bin/Common.dll">
+      <publishTime>01/17/2018 11:21:29</publishTime>
+    </File>
+    <File Include="bin/CT.HttpProxy.dll">
+      <publishTime>01/20/2018 14:35:20</publishTime>
+    </File>
+    <File Include="bin/CT.Signature.dll">
+      <publishTime>09/30/2017 09:41:19</publishTime>
+    </File>
+    <File Include="bin/Nancy.dll">
+      <publishTime>09/20/2017 14:27:44</publishTime>
+    </File>
+    <File Include="bin/Nancy.Hosting.Aspnet.dll">
+      <publishTime>09/20/2017 14:27:44</publishTime>
+    </File>
+    <File Include="bin/Newtonsoft.Json.dll">
+      <publishTime>11/07/2017 10:41:45</publishTime>
+    </File>
+    <File Include="bin/NPOI.dll">
+      <publishTime>11/06/2017 10:04:27</publishTime>
+    </File>
+    <File Include="bin/NPOI.OOXML.dll">
+      <publishTime>11/06/2017 10:04:27</publishTime>
+    </File>
+    <File Include="bin/NPOI.OpenXml4Net.dll">
+      <publishTime>11/06/2017 10:04:27</publishTime>
+    </File>
+    <File Include="bin/NPOI.OpenXmlFormats.dll">
+      <publishTime>11/06/2017 10:04:27</publishTime>
+    </File>
+    <File Include="bin/UserCenter.dll">
+      <publishTime>01/25/2018 17:20:43</publishTime>
+    </File>
+    <File Include="favicon.ico">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="index.html">
+      <publishTime>01/25/2018 17:15:30</publishTime>
+    </File>
+    <File Include="onlineschool/CourseList.shtml">
+      <publishTime>01/20/2018 17:53:50</publishTime>
+    </File>
+    <File Include="onlineschool/IntrList.shtml">
+      <publishTime>01/23/2018 10:09:34</publishTime>
+    </File>
+    <File Include="onlineschool/ScreenList.shtml">
+      <publishTime>01/20/2018 17:53:50</publishTime>
+    </File>
+    <File Include="onlineschool/UserControl/Footer.html">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="onlineschool/UserControl/Header.html">
+      <publishTime>01/25/2018 09:47:04</publishTime>
+    </File>
+    <File Include="onlineschool/UserControl/stepHeader.html">
+      <publishTime>01/20/2018 17:53:50</publishTime>
+    </File>
+    <File Include="PublicControl/bottommenu.html">
+      <publishTime>01/25/2018 16:45:16</publishTime>
+    </File>
+    <File Include="PublicControl/leftmenu.html">
+      <publishTime>01/25/2018 17:18:23</publishTime>
+    </File>
+    <File Include="PublicControl/topmenu.html">
+      <publishTime>01/25/2018 16:45:16</publishTime>
+    </File>
+    <File Include="Resources/CSS/bootstrap/css/bootstrap.min.css">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/CSS/bootstrap/fonts/glyphicons-halflings-regular.eot">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/CSS/bootstrap/fonts/glyphicons-halflings-regular.svg">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/CSS/bootstrap/fonts/glyphicons-halflings-regular.ttf">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/CSS/bootstrap/fonts/glyphicons-halflings-regular.woff">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/CSS/bootstrap/fonts/glyphicons-halflings-regular.woff2">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/CSS/bootstrap/js/bootstrap.min.js">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/CSS/common.css">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/CSS/Font/css/font-awesome.css">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/CSS/Font/css/font-awesome.css.map">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/CSS/Font/css/font-awesome.min.css">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/CSS/Font/fonts/fontawesome-webfont.eot">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/CSS/Font/fonts/fontawesome-webfont.svg">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/CSS/Font/fonts/fontawesome-webfont.ttf">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/CSS/Font/fonts/fontawesome-webfont.woff">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/CSS/Font/fonts/fontawesome-webfont.woff2">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/CSS/Font/fonts/FontAwesome.otf">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/CSS/index.css">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/CSS/indexType2.css">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/CSS/jquery.mCustomScrollbar.css">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/CSS/login.css">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/CSS/PC_css.css">
+      <publishTime>01/16/2018 17:23:27</publishTime>
+    </File>
+    <File Include="Resources/CSS/question.css">
+      <publishTime>01/25/2018 16:45:16</publishTime>
+    </File>
+    <File Include="Resources/CSS/Resources/images/viod.png">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/CSS/video-js.css">
+      <publishTime>01/25/2018 16:45:16</publishTime>
+    </File>
+    <File Include="Resources/fonts/glyphicons-halflings-regular.eot">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/fonts/glyphicons-halflings-regular.svg">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/fonts/glyphicons-halflings-regular.ttf">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/fonts/glyphicons-halflings-regular.woff">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/fonts/glyphicons-halflings-regular.woff2">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/fonts/iconfont.css">
+      <publishTime>01/19/2018 19:47:57</publishTime>
+    </File>
+    <File Include="Resources/fonts/iconfont.eot">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/fonts/iconfont.svg">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/fonts/iconfont.ttf">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/fonts/iconfont.woff">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/images/addBanner.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/banner.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/chapter-icon.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/ch_ico.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/def.jpg">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/defBanner.jpg">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/dianshang.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/dingdan.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/file.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/gou.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/guangao.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/hd.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/head.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/headIcon.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/icon-jiantoupng.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/icon-weizhi.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/icon-密码.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/icon-账号.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/index-sprite.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/isShiT.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/JSlogo.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/justPhone.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/lhlogo.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/like-0.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/like-1.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/localtion.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/login_bot_bg.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/logo-login.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/logo.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/noneData.png">
+      <publishTime>01/17/2018 15:59:58</publishTime>
+    </File>
+    <File Include="Resources/images/noneOrder.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/null.jpg">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/password.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/paySuccess.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/phone.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/photo.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/picture.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/picture2.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/pra_icon.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/pra_leicopsd.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/qq.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/QQ1.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/QQBIG.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/QQIcon.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/questionIcon.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/SD-banner.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/shangdonglogo.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/shejiao.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/sprites.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/step041.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/tcxian.gif">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/teacher.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/test0111.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/th1.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/tk-pic.gif">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/tk.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/tk_exam.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/viod.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/weChatIcon.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/weixing.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/weixinpay.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/wxdef.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/WxLogo.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/xiaoxi.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/youxiang.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/zhifubao.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/微信.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/示例图3.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/示例图4.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/示例头像.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/课程图片.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/images/课程图片2.png">
+      <publishTime>01/10/2018 19:15:14</publishTime>
+    </File>
+    <File Include="Resources/js/bootstrap.min.js">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/Center/Center.js">
+      <publishTime>01/20/2018 15:40:47</publishTime>
+    </File>
+    <File Include="Resources/js/headFootLayout.js">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/jquery.js">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/jquery.mCustomScrollbar.min.js">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/jquery.mousewheel.min.js">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/jquery/jquery-ui.js">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/css/layui.css">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/css/layui.mobile.css">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/css/modules/code.css">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/css/modules/laydate/default/laydate.css">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/css/modules/layer/default/icon-ext.png">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/css/modules/layer/default/icon.png">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/css/modules/layer/default/layer.css">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/css/modules/layer/default/loading-0.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/css/modules/layer/default/loading-1.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/css/modules/layer/default/loading-2.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/font/iconfont.eot">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/font/iconfont.svg">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/font/iconfont.ttf">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/font/iconfont.woff">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/0.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/1.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/10.gif">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/11.gif">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/12.gif">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/13.gif">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/14.gif">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/15.gif">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/16.gif">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/17.gif">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/18.gif">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/19.gif">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/2.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/20.gif">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/21.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/22.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/23.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/24.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/25.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/26.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/27.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/28.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/29.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/3.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/30.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/31.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/32.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/33.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/34.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/35.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/36.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/37.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/38.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/39.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/4.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/40.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/41.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/42.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/43.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/44.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/45.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/46.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/47.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/48.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/49.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/5.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/50.gif">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/51.gif">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/52.gif">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/53.gif">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/54.gif">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/55.gif">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/56.gif">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/57.gif">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/58.gif">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/59.gif">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/6.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/60.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/61.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/62.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/63.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/64.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/65.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/66.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/67.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/68.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/69.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/7.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/70.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/71.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/8.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/face/9.gif">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/fileStep.png">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/images/indexLogo.png">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/lay/all-mobile.js">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/lay/all.js">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/lay/modules/carousel.js">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/lay/modules/code.js">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/lay/modules/element.js">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/lay/modules/flow.js">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/lay/modules/form.js">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/lay/modules/jquery.js">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/lay/modules/jquery.polyv.js">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/lay/modules/laydate.js">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/lay/modules/layedit.js">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/lay/modules/layer.js">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/lay/modules/laypage.js">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/lay/modules/laytpl.js">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/lay/modules/mobile.js">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/lay/modules/mobile/layer-mobile.js">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/lay/modules/mobile/layim-mobile-open.js">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/lay/modules/mobile/upload-mobile.js">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/lay/modules/mobile/zepto.js">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/lay/modules/polyvfbp.js">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/lay/modules/table.js">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/lay/modules/tableExt.js">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/lay/modules/tree.js">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/lay/modules/upload.js">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/lay/modules/util.js">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/layer/layui.js">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/modules/vue/summernote.min.js">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/vue/vue-datepicker.js">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/vue/vue-resource.min.js">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/vue/vue-validator.min.js">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/vue/vue.min.js">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/css/awesomeStyle/awesome.css">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/css/awesomeStyle/awesome.less">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/css/awesomeStyle/fa.less">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/css/awesomeStyle/img/loading.gif">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/css/demo.css">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/css/metroStyle/img/line_conn.png">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/css/metroStyle/img/loading.gif">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/css/metroStyle/img/metro.gif">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/css/metroStyle/img/metro.png">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/css/metroStyle/metroStyle.css">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/css/zTreeStyle/img/diy/1_close.png">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/css/zTreeStyle/img/diy/1_open.png">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/css/zTreeStyle/img/diy/2.png">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/css/zTreeStyle/img/diy/3.png">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/css/zTreeStyle/img/diy/4.png">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/css/zTreeStyle/img/diy/5.png">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/css/zTreeStyle/img/diy/6.png">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/css/zTreeStyle/img/diy/7.png">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/css/zTreeStyle/img/diy/8.png">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/css/zTreeStyle/img/diy/9.png">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/css/zTreeStyle/img/line_conn.gif">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/css/zTreeStyle/img/loading.gif">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/css/zTreeStyle/img/zTreeStandard.gif">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/css/zTreeStyle/img/zTreeStandard.png">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/css/zTreeStyle/zTreeStyle.css">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/js/jquery-1.4.4.min.js">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/js/jquery.ztree.all.js">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/js/jquery.ztree.all.min.js">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/js/jquery.ztree.core.js">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/js/jquery.ztree.core.min.js">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/js/jquery.ztree.excheck.js">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/js/jquery.ztree.excheck.min.js">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/js/jquery.ztree.exedit.js">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/js/jquery.ztree.exedit.min.js">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/js/jquery.ztree.exhide.js">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/modules/zTree_v3/js/jquery.ztree.exhide.min.js">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/moment.js">
+      <publishTime>01/18/2018 15:24:38</publishTime>
+    </File>
+    <File Include="Resources/js/Page.js">
+      <publishTime>01/16/2018 17:23:27</publishTime>
+    </File>
+    <File Include="Resources/js/require_config.js">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/upload/jquery.min.js">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/upload/jquery.uploadify.js">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/upload/jquery.uploadify.min.js">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="Resources/js/uploadify/jquery.min.js">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/uploadify/jquery.uploadify.js">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/uploadify/jquery.uploadify.min.js">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/uploadify/UpdateCourse.html">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/uploadify/uploadify-cancel.png">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/uploadify/uploadify.css">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/uploadify/uploadify.php">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/uploadify/uploadify.swf">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/util.js">
+      <publishTime>01/10/2018 19:15:16</publishTime>
+    </File>
+    <File Include="Resources/js/validate.js">
+      <publishTime>01/10/2018 19:15:15</publishTime>
+    </File>
+    <File Include="script/artTemplate.js">
+      <publishTime>01/10/2018 19:14:59</publishTime>
+    </File>
+    <File Include="script/bluebird.js">
+      <publishTime>01/10/2018 19:14:59</publishTime>
+    </File>
+    <File Include="script/bluebird.min.js">
+      <publishTime>01/10/2018 19:14:59</publishTime>
+    </File>
+    <File Include="script/jquery.js">
+      <publishTime>01/10/2018 19:14:59</publishTime>
+    </File>
+    <File Include="script/knockout.js">
+      <publishTime>01/10/2018 19:14:59</publishTime>
+    </File>
+    <File Include="script/layer/layer.js">
+      <publishTime>01/10/2018 19:14:59</publishTime>
+    </File>
+    <File Include="script/layer/mobile/layer.js">
+      <publishTime>01/10/2018 19:14:59</publishTime>
+    </File>
+    <File Include="script/layer/mobile/need/layer.css">
+      <publishTime>01/10/2018 19:14:59</publishTime>
+    </File>
+    <File Include="script/layer/theme/default/icon-ext.png">
+      <publishTime>01/10/2018 19:14:59</publishTime>
+    </File>
+    <File Include="script/layer/theme/default/icon.png">
+      <publishTime>01/10/2018 19:14:59</publishTime>
+    </File>
+    <File Include="script/layer/theme/default/layer.css">
+      <publishTime>01/10/2018 19:14:59</publishTime>
+    </File>
+    <File Include="script/layer/theme/default/loading-0.gif">
+      <publishTime>01/10/2018 19:14:59</publishTime>
+    </File>
+    <File Include="script/layer/theme/default/loading-1.gif">
+      <publishTime>01/10/2018 19:14:59</publishTime>
+    </File>
+    <File Include="script/layer/theme/default/loading-2.gif">
+      <publishTime>01/10/2018 19:14:59</publishTime>
+    </File>
+    <File Include="script/package.json">
+      <publishTime>01/10/2018 19:14:59</publishTime>
+    </File>
+    <File Include="script/template-web.js">
+      <publishTime>01/10/2018 19:14:59</publishTime>
+    </File>
+    <File Include="usercenter/finance/financelist.html">
+      <publishTime>01/05/2018 15:21:56</publishTime>
+    </File>
+    <File Include="usercenter/index.html">
+      <publishTime>01/20/2018 15:40:47</publishTime>
+    </File>
+    <File Include="usercenter/index.shtml">
+      <publishTime>01/25/2018 17:17:16</publishTime>
+    </File>
+    <File Include="usercenter/login.shtml">
+      <publishTime>01/25/2018 17:10:11</publishTime>
+    </File>
+    <File Include="usercenter/login_model.html">
+      <publishTime>01/25/2018 16:45:17</publishTime>
+    </File>
+    <File Include="usercenter/onlinecourse/coursemanage.html">
+      <publishTime>01/20/2018 11:21:09</publishTime>
+    </File>
+    <File Include="usercenter/onlinecourse/coursemanage.shtml">
+      <publishTime>01/25/2018 16:45:17</publishTime>
+    </File>
+    <File Include="usercenter/onlinecourse/courserecord.html">
+      <publishTime>01/20/2018 11:21:43</publishTime>
+    </File>
+    <File Include="usercenter/onlinecourse/courserecord.shtml">
+      <publishTime>01/25/2018 16:45:17</publishTime>
+    </File>
+    <File Include="usercenter/onlinecourse/Detail.shtml">
+      <publishTime>01/24/2018 14:15:17</publishTime>
+    </File>
+    <File Include="usercenter/onlinecourse/pay.html">
+      <publishTime>01/17/2018 11:17:25</publishTime>
+    </File>
+    <File Include="usercenter/onlinecourse/paysuccess.html">
+      <publishTime>01/19/2018 14:30:52</publishTime>
+    </File>
+    <File Include="usercenter/onlinecourse/payType.html">
+      <publishTime>01/19/2018 14:30:52</publishTime>
+    </File>
+    <File Include="usercenter/onlinecourse/Video.shtml">
+      <publishTime>01/19/2018 10:17:12</publishTime>
+    </File>
+    <File Include="usercenter/order/myorder.shtml">
+      <publishTime>01/25/2018 16:45:17</publishTime>
+    </File>
+    <File Include="usercenter/order/pay.html">
+      <publishTime>01/17/2018 11:17:25</publishTime>
+    </File>
+    <File Include="usercenter/order/paysuccess.html">
+      <publishTime>01/19/2018 14:30:52</publishTime>
+    </File>
+    <File Include="usercenter/order/payType.html">
+      <publishTime>01/19/2018 14:30:52</publishTime>
+    </File>
+    <File Include="usercenter/order/submitorder.html">
+      <publishTime>01/23/2018 10:10:02</publishTime>
+    </File>
+    <File Include="usercenter/questionbank/bindcellphone.html">
+      <publishTime>01/20/2018 15:41:03</publishTime>
+    </File>
+    <File Include="usercenter/questionbank/DoChapter.html">
+      <publishTime>01/05/2018 15:21:56</publishTime>
+    </File>
+    <File Include="usercenter/questionbank/DoChapterPractice.html">
+      <publishTime>01/05/2018 15:21:56</publishTime>
+    </File>
+    <File Include="usercenter/questionbank/MyCourse.html">
+      <publishTime>01/20/2018 15:41:03</publishTime>
+    </File>
+    <File Include="usercenter/questionbank/MyCourse.shtml">
+      <publishTime>01/25/2018 16:45:17</publishTime>
+    </File>
+    <File Include="usercenter/questionbank/myorder.html">
+      <publishTime>01/20/2018 15:41:03</publishTime>
+    </File>
+    <File Include="usercenter/questionbank/QuestionRecord.html">
+      <publishTime>01/24/2018 19:54:32</publishTime>
+    </File>
+    <File Include="usercenter/questionbank/QuestionRecord.shtml">
+      <publishTime>01/25/2018 16:45:17</publishTime>
+    </File>
+    <File Include="usercenter/questionbank/questionstart.html">
+      <publishTime>01/05/2018 15:21:56</publishTime>
+    </File>
+    <File Include="usercenter/questionbank/tk/chapterAnswer.html">
+      <publishTime>01/18/2018 17:22:24</publishTime>
+    </File>
+    <File Include="usercenter/questionbank/tk/courseList.shtml">
+      <publishTime>01/24/2018 17:54:38</publishTime>
+    </File>
+    <File Include="usercenter/questionbank/tk/doAnswer.html">
+      <publishTime>01/24/2018 19:17:39</publishTime>
+    </File>
+    <File Include="usercenter/questionbank/tk/doCharter.html">
+      <publishTime>01/24/2018 19:17:39</publishTime>
+    </File>
+    <File Include="usercenter/questionbank/tk/doExam.html">
+      <publishTime>01/18/2018 17:22:24</publishTime>
+    </File>
+    <File Include="usercenter/questionbank/tk/Exam/ExamAnalysis.html">
+      <publishTime>01/19/2018 19:48:03</publishTime>
+    </File>
+    <File Include="usercenter/questionbank/tk/Exam/examGetInto.html">
+      <publishTime>01/19/2018 19:47:57</publishTime>
+    </File>
+    <File Include="usercenter/questionbank/tk/Exam/examZuoti.html">
+      <publishTime>01/19/2018 19:48:03</publishTime>
+    </File>
+    <File Include="usercenter/questionbank/tk/history.html">
+      <publishTime>01/18/2018 17:22:24</publishTime>
+    </File>
+    <File Include="usercenter/questionbank/tk/myCourseList.html">
+      <publishTime>01/18/2018 17:22:24</publishTime>
+    </File>
+    <File Include="usercenter/questionbank/tk/setting.html">
+      <publishTime>01/18/2018 17:22:24</publishTime>
+    </File>
+    <File Include="usercenter/register.shtml">
+      <publishTime>01/18/2018 18:38:29</publishTime>
+    </File>
+    <File Include="usercenter/register_model.html">
+      <publishTime>01/18/2018 18:38:29</publishTime>
+    </File>
+    <File Include="usercenter/usercenter/accountsettings.html">
+      <publishTime>01/13/2018 14:05:37</publishTime>
+    </File>
+    <File Include="usercenter/usercenter/myorder.html">
+      <publishTime>01/19/2018 14:30:52</publishTime>
+    </File>
+    <File Include="usercenter/usercenter/question.html">
+      <publishTime>01/25/2018 09:46:00</publishTime>
+    </File>
+    <File Include="usercenter/usercenter/questiondetail.html">
+      <publishTime>01/13/2018 14:05:37</publishTime>
+    </File>
+    <File Include="usercenter/usercenter/submitorder.html">
+      <publishTime>01/18/2018 15:24:37</publishTime>
+    </File>
+    <File Include="Web.config">
+      <publishTime>01/25/2018 17:20:43</publishTime>
+    </File>
+  </ItemGroup>
+</Project>

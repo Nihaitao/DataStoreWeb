@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>表单提交</title>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/vue/vue.min.js"></script>
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/layui.js"></script>
+    <link href="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/modules/layer/css/layui.css" rel="stylesheet" />
+    <script src="https://bbsresources.oss-cn-hangzhou.aliyuncs.com/js/require_config.js"></script>
+    
+</head>
+    <body id="root">
+    </body>
+</html><script>
+    require_js_file(["table", "form", "jquery", "tableExt", "element"],
+   function (fnr) {
+       var table = layui.table;
+       var form = layui.form;
+       var tableExt = layui.tableExt;
+       var $ = layui.$;
+       var element = layui.element;
+       var table = layui.table;
+
+       var $ = layui.jquery;
+
+       $.ajax({
+           url: '/service/crm/Form/GetFormJson',
+           type: 'GET',
+           data: { ID: fnr.getQueryString("FormID") },
+           dataType: 'json',
+           success: function (data) {
+               if (data.SuccessResponse) {
+                   var script = $("<scr" + "ipt></scr" + "ipt>").attr("src", "https://bbsresources.oss-cn-hangzhou.aliyuncs.com/customForm/js/require.js").attr("data-main", "https://bbsresources.oss-cn-hangzhou.aliyuncs.com/customForm/js/main").attr("data-uuid", data.Data);
+                   $(document.body).append(script);
+               }
+           }
+       });
+   });
+</script>
+
